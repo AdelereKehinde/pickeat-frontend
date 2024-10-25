@@ -12,6 +12,9 @@ module.exports = {
       backgroundColor: {
         'custom-green': '#228B22',
         'custom-inactive-green': '#228b2282',
+        'custom-tan': "#ecfed6",
+        'custom-light-green': "#37f831",
+        'custom-orange': "#fda105"
       },
       borderColor: {
         'custom-green': '#228B22',

@@ -8,7 +8,7 @@ import TitleTag from '@/components/Title';
 
 export default function EnterCode(){
     const {country_code, phone_number} = useGlobalSearchParams()
-
+ 
     const [code, setCode] = useState(['', '', '', '']); // Store entered digits
     const [codeComplete, setCodeComplete] = useState(false)
     // Refs for each input to control focus

@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Dimensions } from "react-native";
+import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
-import TitleTag from '@/components/Title';
+import SpecialOffer from '@/components/SpecialOfferCard';
+
 import Account from '../assets/icon/account.svg';
 import Mail from '../assets/icon/mail.svg';
 import Notification from '../assets/icon/notification.svg';
 import Search from '../assets/icon/search.svg';
 import Filter from '../assets/icon/filter.svg';
+import Rating from '../assets/icon/rating.svg';
+import Heart from '../assets/icon/heart.svg';
+
 
 export default function Dashboard(){
     const {country_code, phone_number} = useGlobalSearchParams()
@@ -25,18 +29,54 @@ export default function Dashboard(){
 
     const {width, height} = Dimensions.get('window')
 
-    const images = [
+    const DisplayProduct = [
         { id: '1', source: require('../assets/images/image1.jpg'), name:'Green chile stew' },
         { id: '2', source: require('../assets/images/image2.jpg'), name:'Chicago-style pizza'},
         { id: '3', source: require('../assets/images/image3.jpg'), name:'Key lime pie' },
         { id: '4', source: require('../assets/images/image1.jpg'), name:'Cobb salad' },
-        // Add more images as needed
+    ];
+    const Special = [
+        { 
+            id: '1', 
+            source: require('../assets/images/image4.jpg'), 
+            title:'Stainless Kitchen', 
+            sub_title:'$2.99 Delivery fee | 15-20 min' ,
+            discount:'15',
+            discount_in_price:'10',
+            discounted_price:'45'
+        },
+        { 
+            id: '2', 
+            source: require('../assets/images/image4.jpg'), 
+            title:'Stainless Kitchen', 
+            sub_title:'$2.99 Delivery fee | 15-20 min' ,
+            discount:'15',
+            discount_in_price:'10',
+            discounted_price:'45'
+        },
+    ];
+    const Sellers = [
+        { id: '1', source: require('../assets/images/image5.jpg'), name:'Darlene Robert' },
+        { id: '2', source: require('../assets/images/image6.jpg'), name:'Darlene Robert' },
+        { id: '3', source: require('../assets/images/image7.jpg'), name:'Darlene Robert' },
+        { id: '4', source: require('../assets/images/image8.jpg'), name:'Darlene Robert' },
+        { id: '5', source: require('../assets/images/image9.jpg'), name:'Darlene Robert' },
+        { id: '6', source: require('../assets/images/image10.jpg'), name:'Darlene Robert' },
+        { id: '7', source: require('../assets/images/image1.jpg'), name:'Darlene Robert' },
+        { id: '8', source: require('../assets/images/image2.jpg'), name:'Darlene Robert' },
+    ];
+    const Kitchen = [
+        { id: '1', source: require('../assets/images/image11.jpg'), name:'GreenVita', time:"12 - 20", rating: "4.7", fee: '2.34' },
+        { id: '2', source: require('../assets/images/image12.jpg'), name:'Sushi shop', time:"10", rating: "4.7", fee: '1.99' },
+        { id: '3', source: require('../assets/images/image13.jpg'), name:'Foc i Oli', time:"20", rating: "4.7", fee: '0.00' },
+        { id: '4', source: require('../assets/images/image14.jpg'), name:'Pafinolis', time:"20 - 30", rating: "4.7", fee: '1.99' },
     ];
 
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='mt-10 flex flex-row justify-between p-4 w-full'>
+            <ScrollView>
+                <View className='mt-10 flex flex-row justify-between p-4 w-full'>
                 <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
                     <View className=''>
                         <Account />
@@ -56,73 +96,197 @@ export default function Dashboard(){
                         <Mail />
                     </View>
                 </View>
-            </View>
-
-            <View className='mt-5 w-full px-4 relative flex flex-row items-center justify-center'>
-                <View className='absolute left-6 z-10'>
-                    <Search />
                 </View>
-                <TextInput
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[14px]`}
-                    autoFocus={false}
-                    onFocus={()=>setIsFocus(true)}
-                    onBlur={()=>setIsFocus(false)}
-                    onChangeText={setAddress}
-                    defaultValue={address}
-                    placeholder="Search for available foods"
-                    placeholderTextColor=""
-                />
-                <TouchableOpacity 
-                onPress={()=>{}}
-                className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
-                    <Text
-                    className='text-custom-green'
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        Filter
-                    </Text>
-                    <View className=''>
-                        <Filter width={15} height={15} />
+
+                <View className='mt-5 w-full px-4 relative flex flex-row items-center justify-center'>
+                    <View className='absolute left-6 z-10'>
+                        <Search />
                     </View>
-                </TouchableOpacity>
-            </View>
-
-            <View className="mt-5 p-3">
-                <FlatList
-                    className='space-x-2'
-                    data={images}
-                    renderItem={({ item }) => (
-                        <View className=' flex items-center'>
-                            <Image
-                                source={item.source}
-                                className="w-36 h-36 rounded-md" // Set desired width and height
-                            />
-                            <Text
-                            style={{fontFamily: 'Inter-Regular'}} 
-                            className='text-[13px] text-gray-700 font-medium mt-1'
-                            >
-                                {item.name}
-                            </Text>
+                    <TextInput
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[13px]`}
+                        autoFocus={false}
+                        onFocus={()=>setIsFocus(true)}
+                        onBlur={()=>setIsFocus(false)}
+                        onChangeText={setAddress}
+                        defaultValue={address}
+                        placeholder="Search for available foods"
+                        placeholderTextColor=""
+                    />
+                    <TouchableOpacity 
+                    onPress={()=>{}}
+                    className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
+                        <Text
+                        className='text-custom-green'
+                        style={{fontFamily: 'Inter-Medium'}}
+                        >
+                            Filter
+                        </Text>
+                        <View className=''>
+                            <Filter width={15} height={15} />
                         </View>
-                    )}
-                    keyExtractor={item => item.id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    // Add spacing between items with ItemSeparatorComponent
-                    ItemSeparatorComponent={() => <View className='w-3' />}
-                    // pagingEnabled
-                    // onViewableItemsChanged={onViewRef.current}
-                    // viewabilityConfig={viewConfigRef.current}
-                    // ref={flatListRef}
-                />
-            </View>
+                    </TouchableOpacity>
+                </View>
 
-            <View>
-                <Text>
-                    Special offers for you
-                </Text>
-            </View>
+                <View className="mt-3 p-3 h-52">
+                    <FlatList
+                        className=''
+                        data={DisplayProduct}
+                        renderItem={({ item }) => (
+                            <View className=' flex items-center'>
+                                <Image
+                                    source={item.source}
+                                    className="w-36 h-36 rounded-md" // Set desired width and height
+                                />
+                                <Text
+                                style={{fontFamily: 'Inter-Regular'}} 
+                                className='text-[11px] text-gray-700 font-medium mt-1'
+                                >
+                                    {item.name}
+                                </Text>
+                            </View>
+                        )}
+                        keyExtractor={item => item.id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        // Add spacing between items with ItemSeparatorComponent
+                        ItemSeparatorComponent={() => <View className='w-3' />}
+                    />
+                </View>
+
+                <View className='-mt-4'>
+                    <Text
+                    style={{fontFamily: 'Inter-Medium'}}
+                    className='text-gray-500 text-[12px] px-3'
+                    >
+                        Special offers for you
+                    </Text>
+                    <View className='h-[160px] p-3'>
+                        <FlatList
+                            className=''
+                            data={Special}
+                            renderItem={({ item }) => (
+                                <SpecialOffer 
+                                key={item.id}
+                                title={item.title}
+                                sub_title={item.sub_title}
+                                discount={item.discount}
+                                discount_in_price={item.discount_in_price}
+                                discounted_price={item.discounted_price}
+                                tan_or_orange='tan'
+                                />
+                            )}
+                            keyExtractor={item => item.id}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            // Add spacing between items with ItemSeparatorComponent
+                            ItemSeparatorComponent={() => <View className='w-3' />}
+                        />
+                    </View>
+                </View>
+
+                <View className='mt-2'>
+                    <Text
+                    style={{fontFamily: 'Inter-Medium'}}
+                    className='text-gray-500 text-[12px] px-3'
+                    >
+                        Featured Sellers
+                    </Text>
+                    <View className='h-24 p-3'>
+                        <FlatList
+                            className=''
+                            data={Sellers}
+                            renderItem={({ item }) => (
+                                <View
+                                key={item.id}
+                                className='flex items-center'
+                                >
+                                    <View className='flex items-center rounded-full overflow-hidden '>
+                                        <Image 
+                                        source={item.source}
+                                        className='w-12 h-12'
+                                        />
+                                    </View>
+                                    <Text
+                                    style={{fontFamily: 'Inter-Regular'}}
+                                    className='text-[9px] mt-1'
+                                    >
+                                        {item.name}
+                                    </Text>
+                                </View>
+                            )}
+                            keyExtractor={item => item.id}
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            // Add spacing between items with ItemSeparatorComponent
+                            ItemSeparatorComponent={() => <View className='w-2' />}
+                        />
+                    </View>
+                </View>
+
+                <View className='mb-10 mt-5'>
+                    <Text
+                    style={{fontFamily: 'Inter-Medium'}}
+                    className='text-gray-500 text-[12px] px-3'
+                    >
+                        Kitchens near you
+                    </Text>
+                    {Kitchen.map((item) => (
+                        <View key={item.id} className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
+                            <View>
+                                <Image 
+                                source={item.source}
+                                className=''
+                                width={70}
+                                height={55}
+                                />
+                            </View>
+                            <View className='flex justify-start ml-2'>
+                                <Text
+                                style={{fontFamily: 'Inter-Bold'}}
+                                className=' text-[12px]'
+                                >
+                                    {item.name}
+                                </Text>
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className='text-gray-500 text-[11px] mt-2'
+                                >
+                                    Arrival in {item.time}
+                                </Text>
+                            </View>
+                            <View className='ml-auto'>
+                                <View className='flex flex-row justify-between'>
+                                    <View className='flex flex-row items-center space-x-2 py-[4px] px-3 rounded-xl bg-gray-200'>
+                                        <View className=''>
+                                            <Rating width={12} height={12} />
+                                        </View>
+                                        <Text
+                                        className='text-custom-green text-[11px]'
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        >
+                                            {item.rating}
+                                        </Text>
+                                    </View>
+                                    <TouchableOpacity 
+                                    onPress={()=>{}}
+                                    className=''>
+                                        <View className=''>
+                                            <Heart width={20} height={20} />
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className='text-[10px]'
+                                >
+                                    Delivery Fee - ${item.fee}
+                                </Text>
+                            </View>
+                        </View>
+                    ))}
+                </View>
+            </ScrollView>   
         </View>
     )
 }
