@@ -71,7 +71,7 @@ export default function EnterCode(){
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag href='/registration' title='Enter code'/>
+            <TitleTag title='Enter code' withbell={false}/>
             
             <View className='w-full'>
                 <View className="flex-row justify-center mt-36 space-x-3">

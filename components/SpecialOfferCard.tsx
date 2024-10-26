@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, Image, Dimensions } from "react-native";
-import Star from '../assets/icon/Star.svg';
+import Star from '../assets/icon/star.svg';
+import Star2 from '../assets/icon/star2.svg';
 
 interface Properties {
+    image:any,
     title: string,
     sub_title: string,
     discount: string,
@@ -12,32 +14,31 @@ interface Properties {
     tan_or_orange: string,
   }
 
-const SpecialOffer: React.FC<Properties> = ({title, sub_title, discount, discounted_price, discount_in_price, tan_or_orange}) =>{
+const SpecialOffer: React.FC<Properties> = ({image, title, sub_title, discount, discounted_price, discount_in_price, tan_or_orange}) =>{
     return(
-        <View className='rounded-md overflow-hidden'>
-            <View>
+        <View className='rounded-md overflow-hidden w-full'>
+            <View className='max-h-full h-full'>
                 <Image 
-                source={require('../assets/images/image4.jpg')}
-                width={250}
-                height={140}
+                source={image}
+                className='w-full'
                 />
             </View>
             <View className='flex items-end absolute w-full ml-auto top-3'>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}} 
-                className='rounded-l-full px-2 py-1 text-[9px] bg-custom-tan'
+                className={`rounded-l-full px-2 py-1 text-[9px] ${(parseInt(discount)>15)? 'bg-custom-green text-white': 'bg-custom-tan'}`}
                 >
                 Spend ${discounted_price}, Save ${discount_in_price}
                 </Text>
             </View>
-            <View className=''>
-                <View className='absolute bottom-0 h-11 w-full bg-custom-green'>
+            <View className='w-full'>
+                <View className={`absolute bottom-0 h-11 w-[100%] ${(parseInt(discount)>15)? 'bg-custom-orange-3': 'bg-custom-green'}`}>
                     
                 </View>
-                <View className='absolute bottom-0 h-11 w-[90%] bg-custom-light-green'>
+                <View className={`absolute bottom-0 h-11 w-[90%] ${(parseInt(discount)>15)? 'bg-custom-orange': 'bg-custom-light-green'}`}>
                 
                 </View>
-                <View className='absolute bottom-0 h-11 w-[65%] bg-custom-tan'>
+                <View className={`absolute bottom-0 h-11 w-[65%] ${(parseInt(discount)>15)? 'bg-custom-orange-2': 'bg-custom-tan'}`}>
                     
                 </View>
             </View>
@@ -51,15 +52,19 @@ const SpecialOffer: React.FC<Properties> = ({title, sub_title, discount, discoun
                     </Text>
                     <Text 
                     style={{fontFamily: 'Inter-Medium'}} 
-                    className='text-gray-400 text-[9px]'
-                    >
+                    className={`${(parseInt(discount)>15)? 'text-white': 'text-gray-500 '} text-[9px]`}>
                         {sub_title}
                     </Text>
                 </View>
 
-                <View className='flex flex-row mx-auto'>
+                <View className='flex flex-row ml-auto mr-8'>
                     <View className='absolute'>
-                        <Star />
+                        {
+                            (parseInt(discount)>15)?
+                            <Star2 width={31} height={31} />
+                            :
+                            <Star />
+                        }
                     </View>
                     <Text
                     style={{fontFamily: 'Inter-Medium'}} 

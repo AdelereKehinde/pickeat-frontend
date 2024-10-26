@@ -24,7 +24,7 @@ export default function CompleteProfile2(){
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
 
-            <TitleTag href='/complete_profile' title='Complete profile'/>
+            <TitleTag title='Complete profile' withbell={false}/>
 
             <View className='mt-5 w-full px-4 relative flex flex-row items-center justify-center'>
                 <View className='absolute left-6 z-10'>

@@ -14,7 +14,9 @@ module.exports = {
         'custom-inactive-green': '#228b2282',
         'custom-tan': "#ecfed6",
         'custom-light-green': "#37f831",
-        'custom-orange': "#fda105"
+        'custom-orange': "#FF9900CC",
+        "custom-orange-2": "#FFAD62",
+        'custom-orange-3': "#FD6E06"
       },
       borderColor: {
         'custom-green': '#228B22',

@@ -12,6 +12,7 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
     'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
+    'Inter-Medium-Italic': require('../assets/fonts/Inter-MediumItalic.ttf'),
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
@@ -35,6 +36,9 @@ export default function RootLayout() {
       <Stack.Screen name="complete_profile" options={{headerShown: false}} />
       <Stack.Screen name="complete_profile_2" options={{headerShown: false}} />
       <Stack.Screen name="dashboard" options={{headerShown: false}} />
+      <Stack.Screen name="special_offer" options={{headerShown: false}} />
+      <Stack.Screen name="kitchen_page" options={{headerShown: false}} />
+      <Stack.Screen name="kitchen_product" options={{headerShown: false}} />
     </Stack>
   );
 }

@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView } from "react-native";
+import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import SpecialOffer from '@/components/SpecialOfferCard';
+import KitchenCard from '@/components/Kitchen';
 
 import Account from '../assets/icon/account.svg';
 import Mail from '../assets/icon/mail.svg';
 import Notification from '../assets/icon/notification.svg';
 import Search from '../assets/icon/search.svg';
 import Filter from '../assets/icon/filter.svg';
-import Rating from '../assets/icon/rating.svg';
-import Heart from '../assets/icon/heart.svg';
 
 
 export default function Dashboard(){
@@ -47,12 +46,30 @@ export default function Dashboard(){
         },
         { 
             id: '2', 
+            source: require('../assets/images/image15.jpg'), 
+            title:'Mardiya Kitchen', 
+            sub_title:'$2.99 Delivery fee | 15-20 min' ,
+            discount:'22',
+            discount_in_price:'5',
+            discounted_price:'40'
+        },
+        { 
+            id: '3', 
             source: require('../assets/images/image4.jpg'), 
             title:'Stainless Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'15',
             discount_in_price:'10',
             discounted_price:'45'
+        },
+        { 
+            id: '4', 
+            source: require('../assets/images/image15.jpg'), 
+            title:'Mardiya Kitchen', 
+            sub_title:'$2.99 Delivery fee | 15-20 min' ,
+            discount:'22',
+            discount_in_price:'5',
+            discounted_price:'40'
         },
     ];
     const Sellers = [
@@ -104,7 +121,7 @@ export default function Dashboard(){
                     </View>
                     <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[13px]`}
+                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[11px]`}
                         autoFocus={false}
                         onFocus={()=>setIsFocus(true)}
                         onBlur={()=>setIsFocus(false)}
@@ -128,7 +145,7 @@ export default function Dashboard(){
                     </TouchableOpacity>
                 </View>
 
-                <View className="mt-3 p-3 h-52">
+                <View className="mt-3 p-3 h-40">
                     <FlatList
                         className=''
                         data={DisplayProduct}
@@ -136,7 +153,7 @@ export default function Dashboard(){
                             <View className=' flex items-center'>
                                 <Image
                                     source={item.source}
-                                    className="w-36 h-36 rounded-md" // Set desired width and height
+                                    className="w-28 h-28 rounded-md" // Set desired width and height
                                 />
                                 <Text
                                 style={{fontFamily: 'Inter-Regular'}} 
@@ -154,27 +171,34 @@ export default function Dashboard(){
                     />
                 </View>
 
-                <View className='-mt-4'>
-                    <Text
+                <View className=''>
+                    <Link
+                    href="/special_offer"
                     style={{fontFamily: 'Inter-Medium'}}
                     className='text-gray-500 text-[12px] px-3'
                     >
                         Special offers for you
-                    </Text>
-                    <View className='h-[160px] p-3'>
+                    </Link>
+                    <View className='h-[180px] p-3'>
                         <FlatList
                             className=''
                             data={Special}
                             renderItem={({ item }) => (
-                                <SpecialOffer 
-                                key={item.id}
-                                title={item.title}
-                                sub_title={item.sub_title}
-                                discount={item.discount}
-                                discount_in_price={item.discount_in_price}
-                                discounted_price={item.discounted_price}
-                                tan_or_orange='tan'
-                                />
+                                <View key={item.id} className='w-[250px] h-[150px]'>
+                                    <Pressable
+                                    onPress={()=>{(router.push("/kitchen_product"))}}
+                                    >
+                                        <SpecialOffer 
+                                        image={item.source}
+                                        title={item.title}
+                                        sub_title={item.sub_title}
+                                        discount={item.discount}
+                                        discount_in_price={item.discount_in_price}
+                                        discounted_price={item.discounted_price}
+                                        tan_or_orange='tan'
+                                    />
+                                    </Pressable>
+                                </View>
                             )}
                             keyExtractor={item => item.id}
                             horizontal
@@ -225,65 +249,15 @@ export default function Dashboard(){
                 </View>
 
                 <View className='mb-10 mt-5'>
-                    <Text
+                    <Link
+                    href="/kitchen_page"
                     style={{fontFamily: 'Inter-Medium'}}
                     className='text-gray-500 text-[12px] px-3'
                     >
                         Kitchens near you
-                    </Text>
+                    </Link>
                     {Kitchen.map((item) => (
-                        <View key={item.id} className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
-                            <View>
-                                <Image 
-                                source={item.source}
-                                className=''
-                                width={70}
-                                height={55}
-                                />
-                            </View>
-                            <View className='flex justify-start ml-2'>
-                                <Text
-                                style={{fontFamily: 'Inter-Bold'}}
-                                className=' text-[12px]'
-                                >
-                                    {item.name}
-                                </Text>
-                                <Text
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className='text-gray-500 text-[11px] mt-2'
-                                >
-                                    Arrival in {item.time}
-                                </Text>
-                            </View>
-                            <View className='ml-auto'>
-                                <View className='flex flex-row justify-between'>
-                                    <View className='flex flex-row items-center space-x-2 py-[4px] px-3 rounded-xl bg-gray-200'>
-                                        <View className=''>
-                                            <Rating width={12} height={12} />
-                                        </View>
-                                        <Text
-                                        className='text-custom-green text-[11px]'
-                                        style={{fontFamily: 'Inter-Medium'}}
-                                        >
-                                            {item.rating}
-                                        </Text>
-                                    </View>
-                                    <TouchableOpacity 
-                                    onPress={()=>{}}
-                                    className=''>
-                                        <View className=''>
-                                            <Heart width={20} height={20} />
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                                <Text
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className='text-[10px]'
-                                >
-                                    Delivery Fee - ${item.fee}
-                                </Text>
-                            </View>
-                        </View>
+                        <KitchenCard key={item.id} image={item.source} name={item.name} time={item.time} rating={item.rating} fee={item.fee} />
                     ))}
                 </View>
             </ScrollView>   

@@ -26,7 +26,7 @@ export default function CompleteProfile(){
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag href='/registration' title='Complete profile'/>
+            <TitleTag title='Complete profile' withbell={false}/>
             
             <View className='w-full p-5'>
                 <Text 
@@ -38,7 +38,7 @@ export default function CompleteProfile(){
                 <View className='mt-10'>
                     <CharField  placeholder="Enter first name" focus={true} name='First name' getValue={(value: string)=>setFirstName(value)}/>
                     <CharField  placeholder="Enter last name" focus={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
-                    <CharField  placeholder="Enter last name" focus={false} name='Last name' getValue={(value: string)=>setEmail(value)}/>
+                    <CharField  placeholder="Enter email address" focus={false} name='Email' getValue={(value: string)=>setEmail(value)}/>
                 </View>
                 
                 <Link
