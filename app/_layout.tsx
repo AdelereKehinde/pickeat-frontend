@@ -29,13 +29,14 @@ export default function RootLayout() {
 
   return (
     <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} /> 
+
       <Stack.Screen name="index" options={{headerShown: false}} />
       <Stack.Screen name="get_started" options={{headerShown: false}} />
       <Stack.Screen name="registration" options={{headerShown: false}} />
       <Stack.Screen name="enter_code" options={{headerShown: false}} />
       <Stack.Screen name="complete_profile" options={{headerShown: false}} />
       <Stack.Screen name="complete_profile_2" options={{headerShown: false}} />
-      <Stack.Screen name="dashboard" options={{headerShown: false}} />
       <Stack.Screen name="special_offer" options={{headerShown: false}} />
       <Stack.Screen name="kitchen_page" options={{headerShown: false}} />
       <Stack.Screen name="kitchen_product" options={{headerShown: false}} />

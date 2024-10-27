@@ -87,7 +87,7 @@ export default function KitchenPageProduct(){
     return (
         <View className=' bg-white w-full h-full flex items-center mb-10'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag title='Kitchen' withbell={true} />
+            <TitleTag withprevious={true} title='Kitchen' withbell={true} />
             
             <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
                 <View className='absolute left-6 z-10'>

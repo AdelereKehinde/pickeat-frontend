@@ -25,7 +25,7 @@ export default function KitchenPage(){
     return (
         <View className=' bg-gray-50 w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag title='Search' withbell={true} />
+            <TitleTag withprevious={true} title='Search' withbell={true} />
             
             <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
                 <View className='absolute left-6 z-10'>
@@ -71,9 +71,6 @@ export default function KitchenPage(){
                     >
                         All
                     </Text>
-                    <View className=''>
-                        
-                    </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -89,9 +86,6 @@ export default function KitchenPage(){
                     >
                         Breakfast
                     </Text>
-                    <View className=''>
-                        
-                    </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -107,9 +101,6 @@ export default function KitchenPage(){
                     >
                         Stock
                     </Text>
-                    <View className=''>
-                        
-                    </View>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -125,9 +116,6 @@ export default function KitchenPage(){
                     >
                         Desert
                     </Text>
-                    <View className=''>
-                        
-                    </View>
                 </TouchableOpacity>
             </View>
 

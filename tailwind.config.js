@@ -20,9 +20,11 @@ module.exports = {
       },
       borderColor: {
         'custom-green': '#228B22',
+        'custom-orange': "#FF9900CC",
       },
       colors: {
         'custom-green': '#228B22',
+        'custom-orange': "#FF9900CC",
       },
       ringColor:{
         'custom-green': '#228B22',

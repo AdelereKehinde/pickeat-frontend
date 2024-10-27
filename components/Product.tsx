@@ -17,11 +17,11 @@ interface Properties {
 const Product: React.FC<Properties> = ({image, name, price, discount, discounted_price, description, quantity_in_cart}) =>{
     const [quantity, setQuantity] = useState(parseInt(quantity_in_cart))
     return(
-        <View className='flex flex-row items-center border-b border-gray-300 w-full p-4 h-32'>
+        <View className='flex flex-row items-center border-b border-gray-300 w-full p-4 h-28'>
             <View className=''>    
                 <Image 
                 source={image}
-                className='w-28 h-28 rounded-lg'
+                className='w-24 h-24 rounded-lg'
                 />
             </View>
 
@@ -93,7 +93,7 @@ const Product: React.FC<Properties> = ({image, name, price, discount, discounted
                     >
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[12px] text-custom-green px-2 py-1 bg-gray-100 rounded-md'
+                        className=' text-[11px] text-center text-custom-green px-2 py-1 bg-gray-100 rounded-md'
                         >
                             Order Now
                         </Text>

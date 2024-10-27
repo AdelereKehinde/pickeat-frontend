@@ -6,11 +6,11 @@ import { FontAwesome } from '@expo/vector-icons';
 import SpecialOffer from '@/components/SpecialOfferCard';
 import KitchenCard from '@/components/Kitchen';
 
-import Account from '../assets/icon/account.svg';
-import Mail from '../assets/icon/mail.svg';
-import Notification from '../assets/icon/notification.svg';
-import Search from '../assets/icon/search.svg';
-import Filter from '../assets/icon/filter.svg';
+import Account from '../../assets/icon/account.svg';
+import Mail from '../../assets/icon/mail.svg';
+import Notification from '../../assets/icon/notification.svg';
+import Search from '../../assets/icon/search.svg';
+import Filter from '../../assets/icon/filter.svg';
 
 
 export default function Dashboard(){
@@ -29,15 +29,15 @@ export default function Dashboard(){
     const {width, height} = Dimensions.get('window')
 
     const DisplayProduct = [
-        { id: '1', source: require('../assets/images/image1.jpg'), name:'Green chile stew' },
-        { id: '2', source: require('../assets/images/image2.jpg'), name:'Chicago-style pizza'},
-        { id: '3', source: require('../assets/images/image3.jpg'), name:'Key lime pie' },
-        { id: '4', source: require('../assets/images/image1.jpg'), name:'Cobb salad' },
+        { id: '1', source: require('../../assets/images/image1.jpg'), name:'Green chile stew' },
+        { id: '2', source: require('../../assets/images/image2.jpg'), name:'Chicago-style pizza'},
+        { id: '3', source: require('../../assets/images/image3.jpg'), name:'Key lime pie' },
+        { id: '4', source: require('../../assets/images/image1.jpg'), name:'Cobb salad' },
     ];
     const Special = [
         { 
             id: '1', 
-            source: require('../assets/images/image4.jpg'), 
+            source: require('../../assets/images/image4.jpg'), 
             title:'Stainless Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'15',
@@ -46,7 +46,7 @@ export default function Dashboard(){
         },
         { 
             id: '2', 
-            source: require('../assets/images/image15.jpg'), 
+            source: require('../../assets/images/image15.jpg'), 
             title:'Mardiya Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'22',
@@ -55,7 +55,7 @@ export default function Dashboard(){
         },
         { 
             id: '3', 
-            source: require('../assets/images/image4.jpg'), 
+            source: require('../../assets/images/image4.jpg'), 
             title:'Stainless Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'15',
@@ -64,7 +64,7 @@ export default function Dashboard(){
         },
         { 
             id: '4', 
-            source: require('../assets/images/image15.jpg'), 
+            source: require('../../assets/images/image15.jpg'), 
             title:'Mardiya Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'22',
@@ -73,20 +73,20 @@ export default function Dashboard(){
         },
     ];
     const Sellers = [
-        { id: '1', source: require('../assets/images/image5.jpg'), name:'Darlene Robert' },
-        { id: '2', source: require('../assets/images/image6.jpg'), name:'Darlene Robert' },
-        { id: '3', source: require('../assets/images/image7.jpg'), name:'Darlene Robert' },
-        { id: '4', source: require('../assets/images/image8.jpg'), name:'Darlene Robert' },
-        { id: '5', source: require('../assets/images/image9.jpg'), name:'Darlene Robert' },
-        { id: '6', source: require('../assets/images/image10.jpg'), name:'Darlene Robert' },
-        { id: '7', source: require('../assets/images/image1.jpg'), name:'Darlene Robert' },
-        { id: '8', source: require('../assets/images/image2.jpg'), name:'Darlene Robert' },
+        { id: '1', source: require('../../assets/images/image5.jpg'), name:'Darlene Robert' },
+        { id: '2', source: require('../../assets/images/image6.jpg'), name:'Darlene Robert' },
+        { id: '3', source: require('../../assets/images/image7.jpg'), name:'Darlene Robert' },
+        { id: '4', source: require('../../assets/images/image8.jpg'), name:'Darlene Robert' },
+        { id: '5', source: require('../../assets/images/image9.jpg'), name:'Darlene Robert' },
+        { id: '6', source: require('../../assets/images/image10.jpg'), name:'Darlene Robert' },
+        { id: '7', source: require('../../assets/images/image1.jpg'), name:'Darlene Robert' },
+        { id: '8', source: require('../../assets/images/image2.jpg'), name:'Darlene Robert' },
     ];
     const Kitchen = [
-        { id: '1', source: require('../assets/images/image11.jpg'), name:'GreenVita', time:"12 - 20", rating: "4.7", fee: '2.34' },
-        { id: '2', source: require('../assets/images/image12.jpg'), name:'Sushi shop', time:"10", rating: "4.7", fee: '1.99' },
-        { id: '3', source: require('../assets/images/image13.jpg'), name:'Foc i Oli', time:"20", rating: "4.7", fee: '0.00' },
-        { id: '4', source: require('../assets/images/image14.jpg'), name:'Pafinolis', time:"20 - 30", rating: "4.7", fee: '1.99' },
+        { id: '1', source: require('../../assets/images/image11.jpg'), name:'GreenVita', time:"12 - 20", rating: "4.7", fee: '2.34' },
+        { id: '2', source: require('../../assets/images/image12.jpg'), name:'Sushi shop', time:"10", rating: "4.7", fee: '1.99' },
+        { id: '3', source: require('../../assets/images/image13.jpg'), name:'Foc i Oli', time:"20", rating: "4.7", fee: '0.00' },
+        { id: '4', source: require('../../assets/images/image14.jpg'), name:'Pafinolis', time:"20 - 30", rating: "4.7", fee: '1.99' },
     ];
 
     return (

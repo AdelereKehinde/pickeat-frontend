@@ -6,18 +6,23 @@ import Bell from '../assets/icon/bell.svg';
 
 interface Properties {
     title: string,
+    withprevious: boolean;
     withbell: boolean
   }
 
-const TitleTag: React.FC<Properties> = ({title, withbell})  =>{
+const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
     return (
         <View className="mt-9 w-full bg-white">
             <View className="flex flex-row justify-between h-12 items-center">
-                <Pressable 
-                onPress={()=>{router.back()}}
-                className="ml-5">
-                    <Back />
-                </ Pressable>
+                <View className="w-6 h-6 flex items-end justify-around ml-5">
+                    {withprevious && (
+                        <Pressable 
+                        onPress={()=>{router.back()}}
+                        className="">
+                            <Back />
+                        </ Pressable>
+                    )}
+                </View>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}} 
                 className="text-[14px] text-gray-700"
