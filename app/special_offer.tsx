@@ -54,7 +54,7 @@ function SpecialOfferCard(){
         { 
             id: '6', 
             source: require('../assets/images/image15.jpg'), 
-            title:'Mardiya Kitchen', 
+            title:'HayWhy Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'22',
             discount_in_price:'5',
@@ -72,7 +72,7 @@ function SpecialOfferCard(){
         { 
             id: '8', 
             source: require('../assets/images/image15.jpg'), 
-            title:'Mardiya Kitchen', 
+            title:'HayWhy Kitchen', 
             sub_title:'$2.99 Delivery fee | 15-20 min' ,
             discount:'20',
             discount_in_price:'5',
@@ -81,29 +81,33 @@ function SpecialOfferCard(){
     ];
 
     return (
-        <View className=' bg-gray-50 w-full h-full flex items-center'>
+        <View className=' bg-gray-100 w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag title='Special offer' withbell={false} />
+            <View className='bg-white w-full'>
+                <TitleTag withprevious={true} title='Special offer' withbell={false} />
+            </View>
             
-            <ScrollView className='w-full p-5 space-y-3 mb-5'>
-            {Special.map((item) => (
-                <View key={item.id} className='h-[160px]' >
-                    <Pressable
-                    onPress={()=>{(router.push("/kitchen_page"))}}
-                    >
-                        <SpecialOffer 
-                            image={item.source}
-                            title={item.title}
-                            sub_title={item.sub_title}
-                            discount={item.discount}
-                            discount_in_price={item.discount_in_price}
-                            discounted_price={item.discounted_price}
-                            tan_or_orange='tan'
-                        />
-                    </Pressable>
-                </View>    
-            ))}
-            </ScrollView>
+            <View className='w-full pb-10'>
+                <ScrollView className='w-full p-5 space-y-3'>
+                {Special.map((item) => (
+                    <View key={item.id} className='h-[160px]' >
+                        <Pressable
+                        onPress={()=>{(router.push("/kitchen_page"))}}
+                        >
+                            <SpecialOffer 
+                                image={item.source}
+                                title={item.title}
+                                sub_title={item.sub_title}
+                                discount={item.discount}
+                                discount_in_price={item.discount_in_price}
+                                discounted_price={item.discounted_price}
+                                tan_or_orange='tan'
+                            />
+                        </Pressable>
+                    </View>    
+                ))}
+                </ScrollView>
+            </View>
         </View>
     )
 }

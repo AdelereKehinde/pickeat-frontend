@@ -40,6 +40,8 @@ export default function RootLayout() {
       <Stack.Screen name="special_offer" options={{headerShown: false}} />
       <Stack.Screen name="kitchen_page" options={{headerShown: false}} />
       <Stack.Screen name="kitchen_product" options={{headerShown: false}} />
+      <Stack.Screen name="booking_history" options={{headerShown: false}} />
+      <Stack.Screen name="track_order" options={{headerShown: false}} />
     </Stack>
   );
 }

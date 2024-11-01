@@ -85,10 +85,19 @@ export default function Services(){
     ]
 
     return (
-        <View className=' bg-gray-50 w-full h-full flex items-center'>
+        <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag withprevious={false} title='Bookings' withbell={true} />
+            <View className='bg-gray-100 w-full'>
+                <TitleTag withprevious={false} title='Bookings' withbell={true} />
+            </View>
             
+            <Text
+            className='text-custom-green text-[18px] self-start pl-5 pt-5'
+            style={{fontFamily: 'Inter-SemiBold'}}
+            >
+                My Bookings
+            </Text>
+
             <View className='my-3 mt-5 flex flex-row w-full justify-around'>
                 <TouchableOpacity 
                     onPress={()=>{setFilterIndex(1)}}
@@ -98,7 +107,7 @@ export default function Services(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 1)? 'text-white': ' text-gray-500'} text-[11px]`}
+                    className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         Accepted
@@ -113,7 +122,7 @@ export default function Services(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 2)? 'text-white': ' text-gray-500'} text-[11px] `}
+                    className={`${(filterIndex == 2)? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         Cancelled
@@ -128,7 +137,7 @@ export default function Services(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 3)? 'text-white': ' text-gray-500'} text-[11px]`}
+                    className={`${(filterIndex == 3)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         Completed
@@ -136,7 +145,7 @@ export default function Services(){
                 </TouchableOpacity>
             </View>
 
-            <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
+            <View className='bg-white w-full my-3 mb-52 relative flex flex-row items-center justify-center'>
                 <ScrollView className='w-full mt-4 space-y-1'>
                     {Item.map((item) => (
                         <View key={item.id}>

@@ -87,7 +87,9 @@ export default function KitchenPageProduct(){
     return (
         <View className=' bg-white w-full h-full flex items-center mb-10'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag withprevious={true} title='Kitchen' withbell={true} />
+            <View className='bg-white w-full'>
+                <TitleTag withprevious={true} title='Kitchen' withbell={true} />
+            </View>
             
             <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
                 <View className='absolute left-6 z-10'>
@@ -119,22 +121,23 @@ export default function KitchenPageProduct(){
                 </TouchableOpacity>
             </View>
 
-            <ScrollView className='w-full mt-4 space-y-1'>
-                {KitchenProduct.map((item) => (
-                    <View key={item.id}>
-                        <Product 
-                        image={item.source} 
-                        name={item.name} 
-                        price={item.price} 
-                        discount={item.discount} 
-                        discounted_price={item.discounted_price} 
-                        quantity_in_cart={item.quantity_in_cart}
-                        description={item.description}
-                        />
-                    </View>
-                ))}
-            </ScrollView>
-            
+            <View className='w-full bg-gray-50 mb-40 pb-2 '>
+                <ScrollView className='w-full space-y-1'>
+                    {KitchenProduct.map((item) => (
+                        <View key={item.id}>
+                            <Product 
+                            image={item.source} 
+                            name={item.name} 
+                            price={item.price} 
+                            discount={item.discount} 
+                            discounted_price={item.discounted_price} 
+                            quantity_in_cart={item.quantity_in_cart}
+                            description={item.description}
+                            />
+                        </View>
+                    ))}
+                </ScrollView>
+            </View>
         </View>
     )
 }

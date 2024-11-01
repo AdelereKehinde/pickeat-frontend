@@ -2,95 +2,113 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
-import CartItem from '@/components/CartItem';
+import ServicesLayout from '@/components/Services';
 
-export default function Cart(){
+export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
-
+    
     const Item = [
         { 
             id: '1', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'pending',
         },
         { 
             id: '2', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'completed',
         },
         { 
             id: '3', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'canceled',
         },
         { 
             id: '4', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'pending',
         },
         { 
             id: '5', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'completed',
         },
         { 
             id: '6', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'canceled',
         },
         { 
             id: '7', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'completed',
         },
         { 
             id: '8', 
             kitchen: "Mardiya Kitchen", 
             items: ['rice', 'milk shake', 'chicken'],
+            order_id: 'ERFH76',
             date: "Sep 4, 2021 at 12:14 am",
             price:'17.84',
+            status: 'canceled',
         },
-        { 
-            id: '9', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-        },
-    ];
-    
+    ]
+
     return (
-        <View className=' bg-gray-50 w-full h-full flex items-center'>
+        <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
             <View className='bg-gray-100 w-full'>
-                <TitleTag withprevious={false} title='Cart' withbell={true} />
+                <TitleTag withprevious={true} title='' withbell={false} />
             </View>
             
-            <View className='bg-white w-full  mb-24 relative flex flex-row items-center justify-center'>
+            <Text
+            className='text-custom-green text-[18px] self-start pl-5 mt-5'
+            style={{fontFamily: 'Inter-SemiBold'}}
+            >
+                Booking History
+            </Text>
+
+            <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
                 <ScrollView className='w-full mt-4 space-y-1'>
                     {Item.map((item) => (
                         <View key={item.id}>
-                            <CartItem 
+                            <ServicesLayout 
                             kitchen={item.kitchen} 
                             price={item.price} 
                             date={item.date}
                             items={item.items}
-                            />
+                            order_id={item.order_id}
+                            status={item.status}
+                            /> 
                         </View>
                     ))}
                 </ScrollView>

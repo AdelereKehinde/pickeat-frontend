@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Image, TouchableOpacity } from "react-native";
+import { router } from 'expo-router'
 import TitleCase from './TitleCase';
 
 interface Properties {
@@ -69,7 +70,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                 <View className='flex flex-row items-center'>
                     {(status=='pending') && (
                         <TouchableOpacity
-                        onPress={()=>{alert('Tracking now')}}
+                        onPress={()=>{(router.push("/track_order"))}}
                         >   
                             {}
                             <Text

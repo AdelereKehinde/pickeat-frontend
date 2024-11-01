@@ -23,7 +23,7 @@ export default function KitchenPage(){
     const [filterIndex, setFilterIndex] = useState(1);
     
     return (
-        <View className=' bg-gray-50 w-full h-full flex items-center'>
+        <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
             <TitleTag withprevious={true} title='Search' withbell={true} />
             
@@ -66,7 +66,7 @@ export default function KitchenPage(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 1)? 'text-white': ' text-gray-500'} text-[11px]`}
+                    className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         All
@@ -81,7 +81,7 @@ export default function KitchenPage(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 2)? 'text-white': ' text-gray-500'} text-[11px]`}
+                    className={`${(filterIndex == 2)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         Breakfast
@@ -96,7 +96,7 @@ export default function KitchenPage(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 3)? 'text-white': ' text-gray-500'} text-[11px]`}
+                    className={`${(filterIndex == 3)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         Stock
@@ -111,7 +111,7 @@ export default function KitchenPage(){
                         <Check />
                     )}
                     <Text
-                    className={`${(filterIndex == 4)? 'text-white': ' text-gray-500'} text-[11px]`}
+                    className={`${(filterIndex == 4)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
                         Desert
