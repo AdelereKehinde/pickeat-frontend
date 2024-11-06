@@ -11,7 +11,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 
 
-export default function Registration(){
+export default function Login(){
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
@@ -20,10 +20,9 @@ export default function Registration(){
     const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
-    const [showPassword2, setShowPassword2] = useState(false)
 
     const validateInput = () =>{
-      if(email.includes(".com") && (password.length>5) && (password2.length>5) && (password.trim() == password2.trim())){
+      if(email.includes(".com") && (password.length>5)){
         return true;
       }
       return false;
@@ -33,11 +32,11 @@ export default function Registration(){
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
-    const handleRegistration = async () => {
+    const handleLogin = async () => {
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          const res = await axios.post(ENDPOINTS['signup'], {
+          const res = await axios.post(ENDPOINTS['signin'], {
             email: email,
             password: password,
             password2: password2,
@@ -47,16 +46,14 @@ export default function Registration(){
 
           Toast.show({
             type: 'success',
-            text1: "Otp Sent",
-            text2: res.data['message'],
-            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+            text1: "Welcome back",
+            visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
           });
           await Delay(3000)
 
           router.push({
-            pathname: '/enter_code',
-            params: { email: email.toLowerCase(), id: res.data['data']['id'] },
+            pathname: '/complete_profile_2',
           }); 
         }
 
@@ -65,11 +62,11 @@ export default function Registration(){
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response.data['data']['message'],
+          text2: error.response?.data?.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data['data']['message']); // Set error message
+        setError(error.response.data?.data?.message || 'Unknown Error'); // Set error message
       }
     };
 
@@ -123,51 +120,19 @@ export default function Registration(){
                       />
                     </TouchableOpacity>
                   </View>
-                  
-                  <View className="w-full flex-row items-center relative rounded-lg">
-                    <TextInput
-                      style={{fontFamily: 'Inter-Medium'}}
-                      className={`bg-gray-100 rounded-xl p-3 text-[13px] w-full`}
-                      onChangeText={setPassword2}
-                      // maxLength={10}
-                      // keyboardType="number-pad"
-                      placeholder='Confirm Password'
-                      placeholderTextColor="black"
-                      secureTextEntry={!showPassword2}
-                    />
-                    <TouchableOpacity onPress={() => setShowPassword2(!showPassword2)}
-                    className='absolute inset-y-2 right-2 my-auto'
-                    >
-                      <FontAwesome
-                        name={showPassword2 ? 'eye-slash' : 'eye'}
-                        size={20}
-                        color="#4b5563"
-                        style={{ padding: 8 }}
-                      />
-                    </TouchableOpacity>
-                  </View>
                 </View>
             </View> 
 
-            
-              <Text
+            <Text
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500'
               >
-                Already have an account? <Link href="/login" className='text-custom-green'>Login</Link> 
-              </Text>
-            
-
-            <View className='w-[90%] mx-auto mt-32'>
-              <Text
-              style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[9px] text-gray-500 tracking-tighter'
-              >
-                By continuing you agree to our <Text className='text-custom-green'>Terms and condition</Text> and the <Text className='text-custom-green'>privacy policy.</Text> 
+                Don't have an account? <Link href="/registration" className='text-custom-green'>Register</Link> 
               </Text>
 
+            <View className='w-[90%] mx-auto mt-52'>
               <TouchableOpacity
-              onPress={handleRegistration}
+              onPress={handleLogin}
               className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
                 {loading && (
@@ -180,7 +145,7 @@ export default function Registration(){
                 className='text-white'
                 style={{fontFamily: 'Inter-Regular'}}
                 >
-                  Continue
+                  Login
                 </Text>
                     
               </TouchableOpacity>

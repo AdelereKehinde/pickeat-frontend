@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
+import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import Product from '@/components/Product';
 

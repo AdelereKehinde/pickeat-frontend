@@ -34,6 +34,7 @@ export default function RootLayout() {
       <Stack.Screen name="index" options={{headerShown: false}} />
       <Stack.Screen name="get_started" options={{headerShown: false}} />
       <Stack.Screen name="registration" options={{headerShown: false}} />
+      <Stack.Screen name="login" options={{headerShown: false}} />
       <Stack.Screen name="enter_code" options={{headerShown: false}} />
       <Stack.Screen name="complete_profile" options={{headerShown: false}} />
       <Stack.Screen name="complete_profile_2" options={{headerShown: false}} />
@@ -42,6 +43,9 @@ export default function RootLayout() {
       <Stack.Screen name="kitchen_product" options={{headerShown: false}} />
       <Stack.Screen name="booking_history" options={{headerShown: false}} />
       <Stack.Screen name="track_order" options={{headerShown: false}} />
+      <Stack.Screen name="support" options={{headerShown: false}} />
+      <Stack.Screen name="device" options={{headerShown: false}} />
+      <Stack.Screen name="confirm_order" options={{headerShown: false}} />
     </Stack>
   );
 }

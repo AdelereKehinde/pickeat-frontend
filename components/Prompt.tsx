@@ -13,36 +13,38 @@ const Prompt: React.FC<Properties> = ({main_text, sub_text, clickFunction}) => {
   const [isFocused, setIsFocus] = useState(false);
 
   return (
-    <View className="mb-4">
-      
-      <View>
-        <Success/>
-      </View>
+    <View className="absolute mb-4 w-full h-full flex items-center justify-around bg-transparent z-10" style={{backgroundColor: '#1212122b'}}>
+      <View className='w-72 h-72 bg-white flex items-center justify-around px-2 py-4 rounded-3xl shadow-2xl'>
+        <View>
+          <Success/>
+        </View>
 
-      <Text
-      style={{fontFamily: 'Inter-Medium'}}
-      className='absolute left-2 p-1 top-1 z-10 text-gray-400 text-[13px]'
-      >
-        {main_text}
-      </Text>
+        <Text
+        style={{fontFamily: 'Inter-SemiBold'}}
+        className='p-1 z-10 text-[15px] text-center'
+        >
+          {main_text}
+        </Text>
 
-      <Text
-      style={{fontFamily: 'Inter-Medium'}}
-      className='absolute left-2 p-1 top-1 z-10 text-gray-400 text-[13px]'
-      >
-        {sub_text}
-      </Text>
+        <Text
+        style={{fontFamily: 'Inter-Medium'}}
+        className='p-1 z-10 text-gray-400 text-[12px] text-center'
+        >
+          {sub_text}
+        </Text>
 
-      <TouchableOpacity 
-        onPress={()=>{}}
-        className='flex flex-row items-center px-4 py-2 rounded-lg bg-gray-100 my-auto'>
+        <TouchableOpacity 
+          onPress={()=>{clickFunction()}}
+          className='flex flex-row items-center px-8 py-2 rounded-lg bg-custom-green mt-5'>
             <Text
-            className='text-custom-green text-[11px]'
+            className='text-white text-[12px] items-center'
             style={{fontFamily: 'Inter-SemiBold'}}
             >
-                OK
+                Ok
             </Text>
         </TouchableOpacity>
+      </View>
+      
     </View>
   );
 };

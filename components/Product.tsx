@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Image, TouchableOpacity } from "react-native";
+import { router, useGlobalSearchParams } from 'expo-router';
 import Rating from '../assets/icon/rating.svg';
 import Heart from '../assets/icon/heart.svg';
 import Time from '../assets/icon/time.svg';
@@ -89,11 +90,11 @@ const Product: React.FC<Properties> = ({image, name, price, discount, discounted
 
                 <View className=''>
                     <TouchableOpacity
-                    onPress={()=>{alert('order now')}}
+                    onPress={()=>{router.push('/confirm_order')}}
                     >
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[11px] text-center text-custom-green px-2 py-1 bg-gray-100 rounded-md'
+                        className={`text-[11px] text-center ${(quantity>0)? 'text-white bg-custom-green': ' text-custom-green bg-gray-100' } px-2 py-1 rounded-md`}
                         >
                             Order Now
                         </Text>

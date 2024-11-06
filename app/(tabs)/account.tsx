@@ -21,7 +21,7 @@ export default function Account(){
     return (
         <View className=' bg-gray-50 w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag withprevious={false} title='Search' withbell={false} />
+            <TitleTag withprevious={false} title='Profile' withbell={false} />
             
             <View className='bg-gray-100 w-full py-4 relative flex items-center justify-center'>
                 <View className='w-24 h-24 overflow-hidden rounded-full'>
@@ -117,7 +117,7 @@ export default function Account(){
                 </View>
                 <View className='w-full px-5 my-1'>
                     <Pressable
-                    onPress={()=>{alert('clicked')}}
+                    onPress={()=>{(router.push("/device"))}}
                     className='flex flex-row w-full items-center'
                     >
                         <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>
@@ -149,7 +149,7 @@ export default function Account(){
                 </View>
                 <View className='w-full px-5 my-1'>
                     <Pressable
-                    onPress={()=>{alert('clicked')}}
+                    onPress={()=>{(router.push("/support"))}}
                     className='flex flex-row w-full items-center'
                     >
                         <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>

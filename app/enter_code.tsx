@@ -1,16 +1,70 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { Link } from "expo-router";
-import { FontAwesome } from '@expo/vector-icons';
 import TitleTag from '@/components/Title';
 
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
+
+import ENDPOINTS from '@/constants/Endpoint';
+import Delay from '@/constants/Delay';
 
 export default function EnterCode(){
-    const {country_code, phone_number} = useGlobalSearchParams()
- 
+    const {email, id} = useGlobalSearchParams()
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+      };
     const [code, setCode] = useState(['', '', '', '']); // Store entered digits
     const [codeComplete, setCodeComplete] = useState(false)
+    const [data, setData] = useState(null); // To store the API data
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState(''); // Error state 
+
+    const handleSubmit = async () => {
+      try {
+        if(!loading){
+          setLoading(true)
+          const res = await axios.get(`${ENDPOINTS['verify']}verify/${id}/${code.join('')}`);
+          setLoading(false)
+          setData(res.data); // Display or use response data as needed
+
+          Toast.show({
+            type: 'success',
+            text1: "Email Verified",
+            // text2: res.data['message'],
+            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+          });
+          await AsyncStorage.setItem('token', res.data['data']['token']);
+          await AsyncStorage.setItem('refresh', res.data['data']['refresh']);
+
+          await Delay(2000)
+
+          router.push({
+            pathname: '/complete_profile',
+          }); 
+        }
+
+      } catch (error:any) {
+        setLoading(false)
+        Toast.show({
+          type: 'error',
+          text1: "An error occured",
+          text2: error.response.data['message'],
+          visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+          autoHide: true,
+        });
+        setError(error.response.data['message']); // Set error message
+      }
+    };
+
+
+    
     // Refs for each input to control focus
     const inputRefs = [
         useRef<TextInput>(null),
@@ -71,8 +125,10 @@ export default function EnterCode(){
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag title='Enter code' withbell={false}/>
-            
+            <TitleTag withprevious={true} title='Enter code' withbell={false}/>
+
+            <Toast config={toastConfig} />
+
             <View className='w-full'>
                 <View className="flex-row justify-center mt-36 space-x-3">
                     {code.map((digit, index) => (
@@ -96,19 +152,26 @@ export default function EnterCode(){
                 style={{fontFamily: 'Inter-Regular'}}
                 className='text-center text-[11px] text-gray-500 tracking-tighter mt-14'
                 >
-                    Enter the four digit code sent to {'\n'} {country_code}{phone_number}
+                    Enter the four digit code sent to {'\n'} {email}
                 </Text>
 
                 <TouchableOpacity
-                onPress={()=>{codeComplete? router.replace('/complete_profile'):''}}
-                className={`text-center ${codeComplete? 'bg-custom-green' : 'bg-custom-inactive-green'} rounded-xl p-4 w-[85%] mt-80 self-center `}
+                onPress={handleSubmit}
+                className={`text-center ${(codeComplete || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-80 flex items-center justify-around`}
                 >
+                    {loading && (
+                    <View className='absolute w-full top-4'>
+                        <ActivityIndicator size="small" color="#fff" />
+                    </View>
+                    )}
+                
                     <Text
+                    className='text-white'
                     style={{fontFamily: 'Inter-Regular'}}
-                    className='text-white m-auto'
                     >
-                        Continue
+                    Continue
                     </Text>
+                        
                 </TouchableOpacity>
 
             </View>

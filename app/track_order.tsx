@@ -4,8 +4,11 @@ import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import DoubleCheck from '../assets/icon/double_check.svg';
 import RadioButton from '../assets/icon/radio-button.svg';
+import Prompt from '@/components/Prompt';
 
 function TrackOrder(){
+
+    const [showPrompt, setShowPrompt] = useState(false)
 
     const [orderDetail, setOrderDetail] = useState({
         order_time: '09:45am',
@@ -18,6 +21,9 @@ function TrackOrder(){
     return (
         <View className=' bg-white w-full h-full flex'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+            {showPrompt && (
+                <Prompt main_text='Thank you for choosing PickEat PickIt' sub_text='You’ve confirmed you’ve now collected your order' clickFunction={()=>{setShowPrompt(false)}} />
+            )}
             <View className='bg-white w-full'>
                 <TitleTag withprevious={true} title='Track order' withbell={false} />
             </View>
@@ -161,7 +167,7 @@ function TrackOrder(){
                     </Text> BH76898
                 </Text>
                 <TouchableOpacity 
-                onPress={()=>{}}
+                onPress={()=>{setShowPrompt(true)}}
                 className='flex flex-row items-center px-4 py-1 rounded-lg bg-gray-100 my-auto'>
                     <Text
                     className='text-custom-green text-[11px]'
