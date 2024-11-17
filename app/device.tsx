@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, Pressable, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, Pressable, StyleSheet } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 
@@ -24,8 +24,8 @@ function Device(){
 
     return (
         <View className=' bg-gray-100 w-full h-full flex'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-gray-100 w-full'>
+            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+            <View className='bg-blue-100 w-full'>
                 <TitleTag withprevious={true} title='' withbell={false} />
             </View>
 
@@ -37,7 +37,10 @@ function Device(){
             </Text>
 
             
-            <View className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'>
+            <View 
+            style={styles.shadow_box}
+            className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
+            >
                 {devices.map((item) => (
                     <View 
                     key={item.id}
@@ -60,6 +63,19 @@ function Device(){
             
         </View>
     )
+    
 }
+
+const styles = StyleSheet.create({
+    shadow_box: {
+      // iOS shadow properties
+      shadowColor: '#1212126a',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 5,
+      // Android shadow property
+      elevation: 100,
+    },
+  });
 
 export default Device;

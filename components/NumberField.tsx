@@ -24,8 +24,8 @@ const PhoneNumber: React.FC<Properties> = ({name, placeholder, focus, getValue})
 
       {/* TextInput */}
       <TextInput
-        style={{fontFamily: 'Inter-Medium'}}
-        className={`${isFocused? 'border-custom-green border bg-white': 'border-gray-400 bg-gray-100'} rounded-xl px-3 py-2 pt-7 text-[14px]`}
+        style={{fontFamily: 'Inter-Regular'}}
+        className={`${isFocused? 'border-custom-green border bg-white': 'border-gray-300 bg-gray-100'} rounded-xl px-3 py-2 pt-7 text-[14px]`}
         onFocus={()=>setIsFocus(true)}
         onBlur={()=>setIsFocus(false)}
         autoFocus={focus}

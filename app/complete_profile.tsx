@@ -103,10 +103,16 @@ export default function CompleteProfile(){
                     Let us know how to properly address you
                 </Text>    
 
-                <View className='mt-10'>
-                    <CharField  placeholder="Enter first name" focus={true} name='First name' getValue={(value: string)=>setFirstName(value)}/>
-                    <CharField  placeholder="Enter last name" focus={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
-                    <PhoneNumber  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
+                <View className='mt-10 space-y-3'>
+                    <View>
+                      <CharField  placeholder="Enter first name" focus={true} border={false} name='First name' getValue={(value: string)=>setFirstName(value)}/>
+                    </View>
+                    <View>
+                      <CharField  placeholder="Enter last name" focus={false} border={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
+                    </View>
+                    <View>
+                      <PhoneNumber  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
+                    </View>
                 </View>
                 
                 <TouchableOpacity

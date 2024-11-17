@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, Pressable, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, Pressable, StyleSheet } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import WhatsAPP from '../assets/icon/whatsapp.svg';
@@ -20,11 +20,11 @@ function Support(){
 
     return (
         <View className=' bg-gray-100 w-full h-full flex'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
             {showPrompt && (
                 <Prompt main_text='Thank you for choosing PickEat PickIt' sub_text='You’ve confirmed you’ve now collected your order' clickFunction={()=>{setShowPrompt(false)}} />
             )}
-            <View className='bg-gray-100 w-full'>
+            <View style={styles.shadow_box} className='bg-blue-100 w-full'>
                 <TitleTag withprevious={true} title='' withbell={false} />
             </View>
 
@@ -38,7 +38,7 @@ function Support(){
             <View className='mt-10'>
                 <Text
                 className='text-gray-600 text-[13px] px-4'
-                style={{fontFamily: 'Inter-Medium'}}
+                style={{fontFamily: 'Inter-SemiBold'}}
                 >
                     PickEat PickIt Support
                 </Text>
@@ -98,5 +98,17 @@ function Support(){
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    shadow_box: {
+      // iOS shadow properties
+      shadowColor: '#1212126a',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 5,
+      // Android shadow property
+      elevation: 100,
+    },
+  });
 
 export default Support;

@@ -33,7 +33,7 @@ export default function Index(){
                     </Link>
 
                     <Link 
-                    href="/get_started"
+                    href="/vendor/welcome"
                     style={{fontFamily: 'Inter-Medium'}}
                     className={`rounded-2xl bg-gray-100 p-4 text-custom-green text-center`}>
                         Vendor
