@@ -85,7 +85,7 @@ export default function Account(){
                 </View>
                 <View className='w-full px-5 my-1'>
                     <Pressable
-                    onPress={()=>{alert('clicked')}}
+                    onPress={()=>{(router.push("/wallet_page"))}}
                     className='flex flex-row w-full items-center'
                     >
                         <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,StatusBar, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -7,9 +7,114 @@ import Profile from '../../assets/icon/profile.svg';
 import Camera from '../../assets/icon/camera.svg';
 import TitleTag from '@/components/Title';
 
+import ENDPOINTS from '@/constants/Endpoint';
+import { patchRequest } from '@/api/RequestHandler';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
+import Delay from '@/constants/Delay';
+
 export default function AccountSetup2(){
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+    };
     const [description, setDescription] = useState('')
     const [additionalInfo, setAdditionalInfo] = useState('')
+    const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
+    const [document, setDocument] = useState<string | null>(null);
+
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState(''); // Error state 
+    
+    const validateInput = () =>{
+      if((description !== '') && (additionalInfo !== '')){
+        return true;
+      }
+      return false; 
+    }
+
+    const pickImage = async (image: string) => {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert('Permission to access camera roll is required!');
+        return;
+      }
+  
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [5, 5],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        (image == 'profile')?
+        setProfilePhoto(result.assets[0].uri) 
+        :
+        setDocument(result.assets[0].uri) 
+      }
+    };
+
+    const handleRequest = async () => {
+      try {
+        setLoading(true)
+        //PREPARE THE FORMDATA
+        const formData = new FormData();
+        const file1 = {
+          uri: profilePhoto,
+          name: 'upload.jpg',
+          type: 'image/jpeg',
+        };
+        const file2 = {
+          uri: document,
+          name: 'upload.jpg',
+          type: 'image/jpeg',
+        };
+        if (Platform.OS === 'android') {
+          formData.append('avatar', {
+            uri: file1.uri,
+            name: file1.name,
+            type: file1.type,
+          } as any); 
+          formData.append('document', {
+            uri: file2.uri,
+            name: file2.name,
+            type: file2.type,
+          } as any);  
+        } else {
+          formData.append('avatar', file1 as any);
+          formData.append('document', file2 as any);
+        }
+        // Append additional fields
+        formData.append('description', description);
+        formData.append('additional_info', additionalInfo);
+
+        const updatedProfile = await patchRequest(ENDPOINTS['vendor']['onboard'], formData, true, true);
+        setLoading(false)
+        Toast.show({
+          type: 'success',
+          text1: "Profile Updated Successfully.",
+          visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+          autoHide: true,
+        });
+        await Delay(3000)
+        router.push({
+          pathname: '/vendor/account_setup_3',
+        }); 
+        
+      } catch (error: any) {
+          setLoading(false)
+          Toast.show({
+            type: 'error',
+            text1: "An error occured",
+            text2: error.data?.data?.message || 'Unknown Error',
+            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+        });
+        setError(error.data?.data?.message || 'Unknown Error'); // Set error message
+      }
+    };
+
     return (
         <View 
         className='w-full h-full bg-gray-100 flex items-center'
@@ -22,15 +127,26 @@ export default function AccountSetup2(){
             <View className='px-4 w-full mt-4'>
 
               <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center'>
-                <View className='w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center'>
-                  <Camera/>
-                  <Text
-                  style={{fontFamily: 'Inter-SemiBold'}}
-                  className='text-[8px] text-gray-700 text-center -mt-2'
-                  >
-                    Upload{'\n'} Profile Photo
-                  </Text>
-                </View>
+              <TouchableOpacity
+                onPress={()=>pickImage('profile')}
+                className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${profilePhoto && 'border-2 border-custom-green'}`}>
+                  {/* Image Preview */}
+                  {profilePhoto?
+                    <Image 
+                    source={{ uri: profilePhoto }} 
+                    style={{ width: 100, height: 100}} />
+                    :
+                    <View>
+                      <Camera/>
+                      <Text
+                      style={{fontFamily: 'Inter-SemiBold'}}
+                      className='text-[8px] text-gray-700 text-center -mt-2'
+                      >
+                        Upload{'\n'} Profile Photo
+                      </Text>
+                    </View>
+                  }
+                </TouchableOpacity>
                 <View  className='ml-4'>
                   <Text
                   style={{fontFamily: 'Inter-Bold'}}
@@ -60,15 +176,26 @@ export default function AccountSetup2(){
               </View>
 
               <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center mt-4'>
-                <View className='w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center'>
-                  <Camera/>
-                  <Text
-                  style={{fontFamily: 'Inter-SemiBold'}}
-                  className='text-[8px] text-gray-700 text-center -mt-2'
-                  >
-                    Upload{'\n'} Profile Photo
-                  </Text>
-                </View>
+              <TouchableOpacity
+                onPress={()=>pickImage('document')}
+                className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${document && 'border-2 border-custom-green'}`}>
+                  {/* Image Preview */}
+                  {document?
+                    <Image 
+                    source={{ uri: document }} 
+                    style={{ width: 100, height: 100}} />
+                    :
+                    <View>
+                      <Camera/>
+                      <Text
+                      style={{fontFamily: 'Inter-SemiBold'}}
+                      className='text-[8px] text-gray-700 text-center -mt-2'
+                      >
+                        Upload{'\n'} Document
+                      </Text>
+                    </View>
+                  }
+                </TouchableOpacity>
                 <View  className='ml-4'>
                   <Text
                   style={{fontFamily: 'Inter-SemiBold'}}
@@ -125,19 +252,26 @@ export default function AccountSetup2(){
               
               <View className='w-[90%] mx-auto mb-16 mt-3'>
                 <TouchableOpacity
-                onPress={()=>{router.push('/vendor/account_setup_3')}}
-                className={`text-center bg-custom-green relative rounded-xl p-4 w-full self-center mt-5 flex items-center justify-around`}
-                >
-                  <Text
-                  className='text-white'
-                  style={{fontFamily: 'Inter-Regular'}}
+                  onPress={handleRequest}
+                  className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
                   >
-                    Continue
-                  </Text>
+                    {loading && (
+                    <View className='absolute w-full top-4'>
+                        <ActivityIndicator size="small" color="#fff" />
+                    </View>
+                    )}
                   
+                    <Text
+                      className='text-white'
+                    style={{fontFamily: 'Inter-Regular'}}
+                    >
+                      Continue
+                    </Text>
+                          
                 </TouchableOpacity>
               </View>
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

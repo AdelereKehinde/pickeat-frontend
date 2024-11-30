@@ -13,7 +13,7 @@ export default function VendorWelcome(){
         >
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
             <View className='w-full mt-4'>
-              <Skip next='/vendor/(tabs)/order' />
+              <Skip next='/vendor/get_started' />
             </View>
 
             <Text
@@ -37,7 +37,7 @@ export default function VendorWelcome(){
             <View className='w-[90%] mx-auto mb-16 mt-3'>
               <TouchableOpacity
               // onPress={()=>{router.push("/vendor/create_profile")}}
-              onPress={()=>{router.push("/vendor/account_setup_1")}}
+              onPress={()=>{router.push("/vendor/create_profile")}}
               className={`text-center bg-custom-green relative rounded-xl p-4 w-full self-center mt-5 flex items-center justify-around`}
               >
                 <Text

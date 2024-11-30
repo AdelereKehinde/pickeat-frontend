@@ -3,6 +3,7 @@ import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import SpecialOffer from '@/components/SpecialOfferCard';
 import KitchenCard from '@/components/Kitchen';
 
@@ -11,111 +12,83 @@ import Mail from '../../assets/icon/mail.svg';
 import Notification from '../../assets/icon/notification.svg';
 import Search from '../../assets/icon/search.svg';
 import Filter from '../../assets/icon/filter.svg';
-
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import { TruncatedText } from '@/components/TitleCase';
 
 export default function Dashboard(){
     const {country_code, phone_number} = useGlobalSearchParams()
 
     const [address, setAddress] = useState('')
 
-    const ValidateFormContent = ():boolean =>{
-        if((address !== '')){
-            return true
-        }
-        return false
-    }
+    type VendorStore = { id: string; avatar: string; business_name: string;};
+    type CategoryArray = { id: string; category_name: string;}[];
+    type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
+
+    type SellerResponseResult = { id: string; avatar: string; full_name: string; email: string; phone_number: string; email_verified: boolean}[];
+    type sellerResponse = { count: string; next: string; previous: string; results: SellerResponseResult;};
+
+    type kitchenResponseResult = { id: string; avatar: string; business_name: string; is_favourite: boolean}[];
+    type kitchenResponse = { count: string; next: string; previous: string; results: kitchenResponseResult;};
+
+    const [meals, setMeals] = useState<MealArray>([]);
+    const [specialOffer, setSpecialOffer] = useState<MealArray>([]);
+    const [sellers, setSellers] = useState<SellerResponseResult>([]);
+    const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await getRequest<MealResponse>(ENDPOINTS['inventory']['meal-list'], true); // Authenticated
+                // alert(JSON.stringify(response.results))
+                setMeals(response.results) 
+                const response2 = await getRequest<MealResponse>(ENDPOINTS['inventory']['special-offer-meal-list'], true);
+                // alert(JSON.stringify(response2.results))
+                setSpecialOffer(response2.results) 
+                const response3 = await getRequest<sellerResponse>(ENDPOINTS['vendor']['list'], true);
+                // alert(JSON.stringify(response3.results))
+                setSellers(response3.results) 
+                const response4 = await getRequest<kitchenResponse>(ENDPOINTS['vendor']['store-list'], true);
+                // alert(JSON.stringify(response4.results))
+                setKitchens(response4.results)
+            } catch (error) {
+                alert(error); 
+            }
+        };
+    
+        fetchCategories();
+    }, []); // Empty dependency array ensures this runs once
+
     const [isFocused, setIsFocus] = useState(false);
-
     const {width, height} = Dimensions.get('window')
-
-    const DisplayProduct = [
-        { id: '1', source: require('../../assets/images/image1.jpg'), name:'Green chile stew' },
-        { id: '2', source: require('../../assets/images/image2.jpg'), name:'Chicago-style pizza'},
-        { id: '3', source: require('../../assets/images/image3.jpg'), name:'Key lime pie' },
-        { id: '4', source: require('../../assets/images/image1.jpg'), name:'Cobb salad' },
-    ];
-    const Special = [
-        { 
-            id: '1', 
-            source: require('../../assets/images/image4.jpg'), 
-            title:'Stainless Kitchen', 
-            sub_title:'$2.99 Delivery fee | 15-20 min' ,
-            discount:'15',
-            discount_in_price:'10',
-            discounted_price:'45'
-        },
-        { 
-            id: '2', 
-            source: require('../../assets/images/image15.jpg'), 
-            title:'Mardiya Kitchen', 
-            sub_title:'$2.99 Delivery fee | 15-20 min' ,
-            discount:'22',
-            discount_in_price:'5',
-            discounted_price:'40'
-        },
-        { 
-            id: '3', 
-            source: require('../../assets/images/image4.jpg'), 
-            title:'Stainless Kitchen', 
-            sub_title:'$2.99 Delivery fee | 15-20 min' ,
-            discount:'15',
-            discount_in_price:'10',
-            discounted_price:'45'
-        },
-        { 
-            id: '4', 
-            source: require('../../assets/images/image15.jpg'), 
-            title:'Mardiya Kitchen', 
-            sub_title:'$2.99 Delivery fee | 15-20 min' ,
-            discount:'22',
-            discount_in_price:'5',
-            discounted_price:'40'
-        },
-    ];
-    const Sellers = [
-        { id: '1', source: require('../../assets/images/image5.jpg'), name:'Darlene Robert' },
-        { id: '2', source: require('../../assets/images/image6.jpg'), name:'Darlene Robert' },
-        { id: '3', source: require('../../assets/images/image7.jpg'), name:'Darlene Robert' },
-        { id: '4', source: require('../../assets/images/image8.jpg'), name:'Darlene Robert' },
-        { id: '5', source: require('../../assets/images/image9.jpg'), name:'Darlene Robert' },
-        { id: '6', source: require('../../assets/images/image10.jpg'), name:'Darlene Robert' },
-        { id: '7', source: require('../../assets/images/image1.jpg'), name:'Darlene Robert' },
-        { id: '8', source: require('../../assets/images/image2.jpg'), name:'Darlene Robert' },
-    ];
-    const Kitchen = [
-        { id: '1', source: require('../../assets/images/image11.jpg'), name:'GreenVita', time:"12 - 20", rating: "4.7", fee: '2.34' },
-        { id: '2', source: require('../../assets/images/image12.jpg'), name:'Sushi shop', time:"10", rating: "4.7", fee: '1.99' },
-        { id: '3', source: require('../../assets/images/image13.jpg'), name:'Foc i Oli', time:"20", rating: "4.7", fee: '0.00' },
-        { id: '4', source: require('../../assets/images/image14.jpg'), name:'Pafinolis', time:"20 - 30", rating: "4.7", fee: '1.99' },
-    ];
 
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <ScrollView>
-                <View className='mt-10 flex flex-row justify-between p-4 w-full'>
-                <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
-                    <View className=''>
-                        <Account />
+            <ScrollView className={`overflow-hidden`}>
+                <View className='mt-10 flex flex-row justify-between py-2 px-4 w-full`'>
+                    <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
+                        <View className=''>
+                            <Account />
+                        </View>
+                        <Text
+                        style={{fontFamily: 'Inter-SemiBold'}}
+                        >
+                            Welcome, HayWhy
+                        </Text>
                     </View>
-                    <Text
-                    style={{fontFamily: 'Inter-SemiBold'}}
-                    >
-                        Welcome, HayWhy
-                    </Text>
+
+                    <View className='flex flex-row space-x-2 rounded-2xl bg-gray-100 p-3'>
+                        <View className=' '>
+                            <Notification />
+                        </View>
+                        <View className=''>
+                            <Mail />
+                        </View>
+                    </View>
                 </View>
 
-                <View className='flex flex-row space-x-2 rounded-2xl bg-gray-100 p-3'>
-                    <View className=' '>
-                        <Notification />
-                    </View>
-                    <View className=''>
-                        <Mail />
-                    </View>
-                </View>
-                </View>
-
-                <View className='mt-5 w-full px-4 relative flex flex-row items-center justify-center'>
+                <View className='mt-5 w-full px-5 relative flex flex-row items-center justify-center'>
                     <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
@@ -145,21 +118,39 @@ export default function Dashboard(){
                     </TouchableOpacity>
                 </View>
 
-                <View className="mt-3 p-3 h-40">
+                <View className="mt-3 px-3 h-40">
+                    {(meals.length === 0) && 
+                    <View className='flex flex-row space-x-2 w-screen p-2 overflow-hidden'>
+                        {Array.from({ length: 3 }).map((_, index) => (
+                            <View key={index}>
+                                <ContentLoader
+                                    width={140}
+                                    height={140}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="0" y="0" rx="5" ry="5" width="140" height="112" />
+                                        <Rect x="10" y="115" rx="5" ry="5" width="120" height="15" />
+                                </ContentLoader>
+                            </View>
+                        ))}
+                    </View>
+                    }
                     <FlatList
                         className=''
-                        data={DisplayProduct}
+                        data={meals}
                         renderItem={({ item }) => (
                             <View className=' flex items-center'>
                                 <Image
-                                    source={item.source}
+                                    source={{uri: item.thumbnail}}
                                     className="w-28 h-28 rounded-md" // Set desired width and height
                                 />
                                 <Text
                                 style={{fontFamily: 'Inter-Regular'}} 
                                 className='text-[11px] text-gray-700 font-medium mt-1'
                                 >
-                                    {item.name}
+                                    {TruncatedText(item.meal_name, 13)}
                                 </Text>
                             </View>
                         )}
@@ -179,21 +170,41 @@ export default function Dashboard(){
                     >
                         Special offers for you
                     </Link>
-                    <View className='h-[180px] p-3'>
+                    <View className={`h-[180px] p-3`}>
+                        {(specialOffer.length === 0) && 
+                        <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 2 }).map((_, index) => (
+                                <View key={index} className='flex items-center'>
+                                    <ContentLoader
+                                    width={250}
+                                    height={150}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="0" y="0" rx="5" ry="5" width="250" height="150" />
+                                        <Rect x="120" y="20" rx="10" ry="20" width="150" height="25" />
+                                        <Rect x="5" y="100" rx="5" ry="5" width="240" height="45" />
+                                        <Circle cx="220" cy="122" r="20" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                        }
                         <FlatList
                             className=''
-                            data={Special}
+                            data={specialOffer}
                             renderItem={({ item }) => (
                                 <View key={item.id} className='w-[250px] h-[150px]'>
                                     <Pressable
-                                    onPress={()=>{(router.push("/kitchen_product"))}}
+                                    onPress={()=>{(router.push(`/kitchen_product?kitchen_id=${item.vendor_store.id}`))}}
                                     >
                                         <SpecialOffer 
-                                        image={item.source}
-                                        title={item.title}
-                                        sub_title={item.sub_title}
+                                        image={item.thumbnail}
+                                        title={TruncatedText(item.vendor_store.business_name, 25)}
+                                        sub_title='$2.99 Delivery fee | 15-20 min'
                                         discount={item.discount}
-                                        discount_in_price={item.discount_in_price}
+                                        discount_in_price={item.discount}
                                         discounted_price={item.discounted_price}
                                         tan_or_orange='tan'
                                     />
@@ -217,9 +228,27 @@ export default function Dashboard(){
                         Featured Sellers
                     </Text>
                     <View className='h-24 p-3'>
+                        {(specialOffer.length === 0) && 
+                            <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <View key={index} className='flex items-center'>
+                                        <ContentLoader
+                                        width={100}
+                                        height={101}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            <Circle cx="50" cy="20" r="20" />
+                                            <Rect x="5" y="50" rx="5" ry="5" width="90" height="10" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                        }
                         <FlatList
                             className=''
-                            data={Sellers}
+                            data={sellers}
                             renderItem={({ item }) => (
                                 <View
                                 key={item.id}
@@ -227,7 +256,7 @@ export default function Dashboard(){
                                 >
                                     <View className='flex items-center rounded-full overflow-hidden '>
                                         <Image 
-                                        source={item.source}
+                                        source={{ uri: item.avatar}}
                                         className='w-12 h-12'
                                         />
                                     </View>
@@ -235,7 +264,7 @@ export default function Dashboard(){
                                     style={{fontFamily: 'Inter-Regular'}}
                                     className='text-[9px] mt-1'
                                     >
-                                        {item.name}
+                                        {item.full_name}
                                     </Text>
                                 </View>
                             )}
@@ -248,7 +277,7 @@ export default function Dashboard(){
                     </View>
                 </View>
 
-                <View className='mb-10 mt-5'>
+                <View className='mb-3 mt-5'>
                     <Link
                     href="/kitchen_page"
                     style={{fontFamily: 'Inter-Medium'}}
@@ -256,8 +285,28 @@ export default function Dashboard(){
                     >
                         Kitchens near you
                     </Link>
-                    {Kitchen.map((item) => (
-                        <KitchenCard key={item.id} image={item.source} name={item.name} time={item.time} rating={item.rating} fee={item.fee} />
+                    {(kitchens.length === 0) && 
+                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <View key={index} className='mt-5 border-b border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                        <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                        <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                    }
+                    {kitchens.map((item) => (
+                        <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
                     ))}
                 </View>
             </ScrollView>   

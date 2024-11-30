@@ -1,23 +1,53 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import Rating from '../assets/icon/rating.svg';
 import Heart from '../assets/icon/heart.svg';
+import ActiveHeart from '../assets/icon/active_heart.svg';
 import Time from '../assets/icon/time.svg';
+import { postRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
 
 interface Properties {
     image:any,
+    kitchen_id: string,
+    is_favourite: boolean,
     name: string,
     time: string,
     rating: string,
     fee: string,
   }
 
-const KitchenCard: React.FC<Properties> = ({image, name, time, rating, fee}) =>{
+const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, name, time, rating, fee}) =>{
+    const [data, setData] = useState(null); // To store the API data
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState(''); // Error state 
+    
+    const [isFavourite, setIsFavourite] = useState(is_favourite)
+
+    const FavouriteStore = async () => {
+        try {
+          if(!loading){
+            setLoading(true)
+            type DataResponse = { message: string; token:string; refresh: string };
+            type ApiResponse = { status: string; message: string; data:DataResponse };
+            const res = await postRequest<ApiResponse>(`${ENDPOINTS['buyer']['add-remove-favourite-store']}${kitchen_id}/favourite/add-remove`, {}, true);
+            setIsFavourite(!isFavourite)
+            // alert(JSON.stringify(res))
+            setLoading(false)
+          }
+  
+        } catch (error:any) {
+          setLoading(false)
+        //   alert(JSON.stringify(error))
+          setError(error.data?.data?.message || 'Unknown Error'); // Set error message
+        }
+      };
+
     return(
         <View className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
             <View>    
                 <Image 
-                source={image}
+                source={{uri: image}}
                 className=''
                 width={70}
                 height={55}
@@ -56,11 +86,20 @@ const KitchenCard: React.FC<Properties> = ({image, name, time, rating, fee}) =>{
                         </Text>
                     </View>
                     <TouchableOpacity 
-                    onPress={()=>{}}
+                    onPress={()=>{FavouriteStore()}}
                     className=''
                     >
+                        {loading && (
+                        <View className='absolute w-full top-0'>
+                            <ActivityIndicator size="small" color="#000000" />
+                        </View>
+                        )}
                         <View className=''>
+                            {isFavourite? 
+                            <ActiveHeart width={20} height={20} />
+                            :
                             <Heart width={20} height={20} />
+                            }
                         </View>
                     </TouchableOpacity>
                 </View>

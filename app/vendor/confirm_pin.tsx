@@ -14,9 +14,10 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import Email from '../../assets/icon/mail2.svg';
 import Logo from '../../assets/images/Logo.svg';
+import { getRequest } from '@/api/RequestHandler';
 
 export default function ConfirmPin(){
-    const {email, id} = useGlobalSearchParams()
+    const {email, id, service} = useGlobalSearchParams()
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -27,44 +28,54 @@ export default function ConfirmPin(){
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
+    var endpoint = '';
+    switch (service) {
+        case 'vendor':
+            endpoint = ENDPOINTS['vendor']['validate-password-reset']
+            break;
+        case 'buyer':
+            endpoint = ENDPOINTS['buyer']['validate-password-reset']
+            break;
+        default:
+            endpoint = ENDPOINTS['vendor']['validate-password-reset']
+            break;
+    }
+
     const handleSubmit = async () => {
       try {
         if(!loading){
+            setLoading(true)
+            type DataResponse = { id: string; token: string; };
+            type ApiResponse = { status: string; message: string; data:DataResponse };
+            const res = await getRequest<ApiResponse>(`${endpoint}/${id}/${code.join('')}`);
+            // alert(JSON.stringify(res))
+            setLoading(false)
+          
+            Toast.show({
+                type: 'success',
+                text1: "OTP Validated",
+                visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+            
+            await Delay(3000)
             router.push({
-                    pathname: 'vendor/login',
-                  });
-        //   setLoading(true)
-        //   const res = await axios.get(`${ENDPOINTS['verify']}verify/${id}/${code.join('')}`);
-        //   setLoading(false)
-        //   setData(res.data); // Display or use response data as needed
-
-        //   Toast.show({
-        //     type: 'success',
-        //     text1: "Email Verified",
-        //     // text2: res.data['message'],
-        //     visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
-        //     autoHide: true,
-        //   });
-        //   await AsyncStorage.setItem('token', res.data['data']['token']);
-        //   await AsyncStorage.setItem('refresh', res.data['data']['refresh']);
-
-        //   await Delay(2000)
-
-        //   router.push({
-        //     pathname: '/complete_profile',
-        //   }); 
+                pathname: '/vendor/reset_password',
+                params: { token: res.data.token, id: res.data.id, service: service},
+            }); 
         }
 
       } catch (error:any) {
         setLoading(false)
+        alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response.data['message'],
+          text2: error.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data['message']); // Set error message
+        setError(error.data?.message || 'Unknown Error'); // Set error message
       }
     };
 
@@ -130,8 +141,6 @@ export default function ConfirmPin(){
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-
-            <Toast config={toastConfig} />
 
             <View className='mt-5'>
               <Logo width={120} height={120} />
@@ -203,7 +212,7 @@ export default function ConfirmPin(){
 
                 <TouchableOpacity
                 onPress={handleSubmit}
-                className={`text-center mt-10 ${(codeComplete || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
+                className={`text-center mt-10 ${(codeComplete || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
                 >
                     {loading && (
                     <View className='absolute w-full top-4'>
@@ -221,7 +230,7 @@ export default function ConfirmPin(){
                 </TouchableOpacity>
 
             </View>
-            
+            <Toast config={toastConfig} />
         </View>
     )
 }

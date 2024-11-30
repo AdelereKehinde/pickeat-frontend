@@ -23,7 +23,7 @@ interface Properties {
     onLoading: (value: boolean) => void
   }
 
-const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, kitchen, image, cart_id, date, price, items, parentLoadSignal, onRemove, onUpdate, onLoading}) =>{
+const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, kitchen, image, cart_id, date, price, items,parentLoadSignal, onRemove, onUpdate, onLoading}) =>{
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -35,7 +35,7 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
     
     const AddToCart = async (increase:boolean) => {
         try {
-          if(!loading && (quantity != 0 || increase && !parentLoadSignal)){
+          if(!loading && (quantity != 0 || increase  && !parentLoadSignal)){
             setLoading(true)
             onLoading(true)
             type DataResponse = { message: string; token:string; refresh: string };
@@ -79,6 +79,7 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
             const res = await deleteRequest<ApiResponse>(`${ENDPOINTS['cart']['remove']}?cart_id=${cart_id}`, true)
             // alert(JSON.stringify(res))
             onRemove(cart_id)
+            onLoading(false)
             Toast.show({
                 type: 'success',
                 text1: res.message,
@@ -86,13 +87,12 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                 autoHide: true,
               });
             setLoading(false)
-            onLoading(false)
           }
   
         } catch (error:any) {
             setLoading(false)
             onLoading(false)
-            alert(JSON.stringify(error))
+            // alert(JSON.stringify(error))
             Toast.show({
                 type: 'error',
                 text1: "An error occured",
@@ -114,8 +114,8 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                     />
                 </View>
                 
-                <View className='grow ml-2 flex flex-row'>
-                    <View className='flex items-start grow'>
+                <View className='grow ml-2 flex flex-row items-center'>
+                    <View className='flex grow'>
                         <Text
                         style={{fontFamily: 'Inter-Bold'}}
                         className=' text-[14px] text-gray-700 mr-auto'
@@ -123,73 +123,21 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                             {meal_name}
                         </Text>
                         <Text
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[10px] text-custom-green mr-auto'
-                        >
-                            {TruncatedText(kitchen, 15)}
-                        </Text>
-                        <Text
                         style={{fontFamily: 'Inter-SemiBold'}}
-                        className=' text-[12px] text-custom-green mt-2'
+                        className=' text-[12px] text-custom-green mt-4'
                         >
                             ${price * quantity}
                         </Text>
-                        {/* <Text className='text-[10px] text-gray-500'>
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className='text-[12px] text-custom-green'
-                            >
-                                {items.length} item{(items.length==1)? '': 's'} {''}
-                            </Text>
-                            {'\('}
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className='text-[10px] text-gray-400'
-                            >
-                                {items.map((item, index) => (
-                                    <Text key={index}>{item},</Text>
-                                ))}  
-                            </Text> 
-                            {'\)'}
-                        </Text> */}
                     </View>
-                    {/* <View className='ml-auto flex items-end'>
-                        <Text
-                        style={{fontFamily: 'Inter-Bold'}}
-                        className=' text-[15px] text-gray-700'
-                        >
-                            ${price}
-                        </Text>
-                        <Text
-                        style={{fontFamily: 'Inter-Bold'}}
-                        className=' text-[10px] text-gray-700 text-custom-orange'
-                        >
-                            Pending
-                        </Text>
-                    </View> */}
-                
 
                     <View className='flex items-end justify-between mb-2'>
-                        {/* <Text
+                        <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[10px] text-gray-500'
+                        className=' text-[13px] text-gray-800'
                         >
-                            {date}
-                        </Text> */}
-                        <View className='w-7 h-7 flex justify-around items-center'>
-                            {(loading || parentLoadSignal) && (
-                                <View className='absolute w-full top-[4px] '>
-                                    <ActivityIndicator size="small" color="#000000" />
-                                </View>
-                            )}
-                            <TouchableOpacity
-                            onPress={RemoveFromCart}
-                            >
-                                <Remove />
-                            </TouchableOpacity>
-                            
-                        </View>
-                        <View className='flex flex-row justify-between'>
+                            X{quantity}
+                        </Text>
+                        <View className='flex flex-row justify-between mt-4'>
                             
                             <TouchableOpacity
                             className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
@@ -239,4 +187,4 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
     )
 }
 
-export default CartItem;
+export default PaymentItem;

@@ -46,7 +46,7 @@ export default function CompleteProfile(){
             //Fetch token
             const token = (await AsyncStorage.getItem('token'))?.trim();
             //Send request
-            const res = await axios.patch(ENDPOINTS['user-data'], {
+            const res = await axios.patch(ENDPOINTS['buyer']['user-data'], {
                 first_name: firstName,
                 last_name: lastName,
                 phone_number: phoneNumber
@@ -61,6 +61,7 @@ export default function CompleteProfile(){
             setLoading(false)
             // Display or use response data as needed
             setData(res.data); 
+           
             Toast.show({
               type: 'success',
               text1: "Details Updated",
@@ -78,15 +79,22 @@ export default function CompleteProfile(){
   
         } catch (error:any) {
             // alert(JSON.stringify(error.response))
-          setLoading(false)
-          Toast.show({
-            type: 'error',
-            text1: "An error occured",
-            text2: error.response?.data?.message || "Unknown Error",
-            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
-            autoHide: true,
-          });
-          setError(error.response?.data?.message || "Unknown Error"); // Set error message
+          if (error.response?.status === 401){
+            router.push({
+              pathname: '/login',
+              params: { next: 'complete_profile' },
+            });
+          }else{
+            setLoading(false)
+            Toast.show({
+              type: 'error',
+              text1: "An error occured",
+              text2: error.response?.data?.message || "Unknown Error",
+              visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+              autoHide: true,
+            });
+            setError(error.response?.data?.message || "Unknown Error"); // Set error message
+          }
         }
       };
 

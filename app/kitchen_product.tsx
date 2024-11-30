@@ -3,86 +3,48 @@ import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import Product from '@/components/Product';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
 
 import Search from '../assets/icon/search.svg';
 import Filter from '../assets/icon/filter.svg';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import { TruncatedText } from '@/components/TitleCase';
 
 export default function KitchenPageProduct(){
-    const KitchenProduct = [
-        { 
-            id: '1', 
-            source: require('../assets/images/image16.jpg'), 
-            name:'Fried Plantain', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'Fried rice is sweet',
-        },
-        { 
-            id: '2', 
-            source: require('../assets/images/image18.jpg'), 
-            name:'Chicken', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'Fried rice is sweet',
-        },
-        { 
-            id: '3', 
-            source: require('../assets/images/image19.jpg'), 
-            name:'Fried Rice', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '2',
-            description:'Fried rice is sweet',
-        },
-        { 
-            id: '4', 
-            source: require('../assets/images/image20.jpg'), 
-            name:'Salad', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '1',
-            description:'Tastes better',
-        },
-        { 
-            id: '5', 
-            source: require('../assets/images/image17.jpg'), 
-            name:'Fish Grill', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'Yummy',
-        },
-        { 
-            id: '6', 
-            source: require('../assets/images/image21.jpg'), 
-            name:'Chicken BBQ', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '2',
-            description:'Assorted',
-        },
-        { 
-            id: '7', 
-            source: require('../assets/images/image20.jpg'), 
-            name:'Burger', 
-            price:'28.35',
-            discount: '15',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'So sweet',
-        },
-    ];
+    const {kitchen_id} = useGlobalSearchParams()
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+    };
+
+    type VendorStore = { id: string; avatar: string; business_name: string;};
+    type CategoryArray = { id: string; category_name: string;}[];
+    type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
+
+    const [kitchenMeal, setKitchenMeal] = useState<MealArray>([]);
+    useEffect(() => {
+        const fetchMeals = async () => {
+            try {
+                const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list`, true);
+                // alert(JSON.stringify(response.results))
+                setKitchenMeal(response.results) 
+            } catch (error) {
+                alert(error);
+            }
+        };
+    
+        fetchMeals();
+    }, []); // Empty dependency array ensures this runs once
+    
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
+
+
     
     return (
         <View className=' bg-white w-full h-full flex items-center mb-10'>
@@ -122,22 +84,44 @@ export default function KitchenPageProduct(){
             </View>
 
             <View className='w-full bg-gray-50 mb-40 pb-2 '>
+                {(kitchenMeal.length === 0) && 
+                    <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <View key={index} className='mt-5 border-b border-gray-300'>
+                                <ContentLoader
+                                width="100%"
+                                height={100}
+                                backgroundColor="#f3f3f3"
+                                foregroundColor="#ecebeb"
+                                >
+                                    {/* Add custom shapes for your skeleton */}
+                                    <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                    <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                    <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                    <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                </ContentLoader>
+                            </View> 
+                        ))}
+                    </View>
+                }
                 <ScrollView className='w-full space-y-1'>
-                    {KitchenProduct.map((item) => (
+                    {kitchenMeal.map((item) => (
                         <View key={item.id}>
                             <Product 
-                            image={item.source} 
-                            name={item.name} 
+                            image={item.thumbnail} 
+                            meal_id={item.id}
+                            name={TruncatedText(item.meal_name, 17)} 
                             price={item.price} 
                             discount={item.discount} 
                             discounted_price={item.discounted_price} 
-                            quantity_in_cart={item.quantity_in_cart}
-                            description={item.description}
+                            quantity_in_cart={item.cart_quantity}
+                            description={TruncatedText(item.meal_description, 18)}
                             />
                         </View>
                     ))}
                 </ScrollView>
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

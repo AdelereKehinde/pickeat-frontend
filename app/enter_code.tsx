@@ -29,7 +29,7 @@ export default function EnterCode(){
       try {
         if(!loading){
           setLoading(true)
-          const res = await axios.get(`${ENDPOINTS['verify']}verify/${id}/${code.join('')}`);
+          const res = await axios.get(`${ENDPOINTS['buyer']['verify']}verify/${id}/${code.join('')}`);
           setLoading(false)
           setData(res.data); // Display or use response data as needed
 

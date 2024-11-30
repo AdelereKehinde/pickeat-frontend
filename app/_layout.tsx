@@ -46,6 +46,10 @@ export default function RootLayout() {
       <Stack.Screen name="support" options={{headerShown: false}} />
       <Stack.Screen name="device" options={{headerShown: false}} />
       <Stack.Screen name="confirm_order" options={{headerShown: false}} />
+      <Stack.Screen name="wallet_page" options={{headerShown: false}} />
+      <Stack.Screen name="add_card" options={{headerShown: false}} />
+      <Stack.Screen name="payment" options={{headerShown: false}} />
+      <Stack.Screen name="payment_confirmation" options={{headerShown: false}} />
 
       {/* VENDOR */}
       <Stack.Screen name="vendor/(tabs)" options={{ headerShown: false }} />  
@@ -62,6 +66,7 @@ export default function RootLayout() {
       <Stack.Screen name="vendor/login" options={{headerShown: false}} />
       <Stack.Screen name="vendor/forgot_password" options={{headerShown: false}} />
       <Stack.Screen name="vendor/confirm_pin" options={{headerShown: false}} />
+      <Stack.Screen name="vendor/reset_password" options={{headerShown: false}} />
       <Stack.Screen name="vendor/account_setup_1" options={{headerShown: false}} />
       <Stack.Screen name="vendor/account_setup_2" options={{headerShown: false}} />
       <Stack.Screen name="vendor/account_setup_3" options={{headerShown: false}} />

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Logo from '../../assets/images/Logo.svg';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
@@ -10,7 +11,7 @@ import Locked from '../../assets/icon/locked.svg';
 import Email from '../../assets/icon/mail2.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
-
+import { postRequest } from '@/api/RequestHandler';
 
 export default function VendorLogin(){
     const toastConfig = {
@@ -18,7 +19,6 @@ export default function VendorLogin(){
       error: CustomToast,
     };
     const [password, setPassword] = useState('')
-    const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
 
@@ -30,48 +30,47 @@ export default function VendorLogin(){
     }
 
     const [focus, setFocus] = useState('')
-    const [data, setData] = useState(null); // To store the API data
+    const [data, setData] = useState({}); // To store the API data
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
     const handleLogin = async () => {
       try {
         if(!loading && validateInput()){
-            router.push({
-                    pathname: '/vendor/account_setup_1',
-                  }); 
-        //   setLoading(true)
-        //   const res = await axios.post(ENDPOINTS['signin'], {
-        //     email: email,
-        //     password: password,
-        //     password2: password2,
-        //   }); 
-        //   setLoading(false)
-        //   setData(res.data); // Display or use response data as needed
+          setLoading(true)
+          type DataResponse = { onboarded: string; message: string; token:string; refresh: string };
+          type ApiResponse = { status: string; message: string; data:DataResponse };
+          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {email: email,password: password}, true);
 
-        //   Toast.show({
-        //     type: 'success',
-        //     text1: "Welcome back",
-        //     visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
-        //     autoHide: true,
-        //   });
-        //   await Delay(3000)
+          await AsyncStorage.setItem('token', res.data.token);
+          await AsyncStorage.setItem('refresh', res.data.refresh);
+          setLoading(false)
+          setData(res); // Display or use response data as needed
 
-        //   router.push({
-        //     pathname: '/complete_profile_2',
-        //   }); 
+          Toast.show({
+            type: 'success',
+            text1: "Welcome back",
+            visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+          });
+
+          await Delay(3000)
+          router.push({
+            pathname: res.data.onboarded? '/vendor/(tabs)/home': '/vendor/account_setup_1',
+          }); 
         }
 
       } catch (error:any) {
         setLoading(false)
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response?.data?.data?.message || 'Unknown Error',
+          text2: error.data?.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data?.data?.message || 'Unknown Error'); // Set error message
+        setError(error.data?.data?.message || 'Unknown Error'); // Set error message
       }
     };
 
@@ -79,8 +78,6 @@ export default function VendorLogin(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <Toast config={toastConfig} />
-
             <View className='mt-5'>
               <Logo width={120} height={120} />
             </View>
@@ -159,7 +156,7 @@ export default function VendorLogin(){
             </View> 
 
             <Link 
-            href="/vendor/forgot_password" 
+            href="/vendor/forgot_password?service=vendor" 
             style={{fontFamily: 'Inter-Medium'}} 
             className='text-gray-500 text-[12px] ml-auto mr-5'>
                Forget Password?
@@ -169,13 +166,13 @@ export default function VendorLogin(){
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500  mt-52'
               >
-                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
+                Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
               </Text>
 
             <View className='w-[90%] mx-auto'>
               <TouchableOpacity
               onPress={handleLogin}
-              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              className={`text-center ${(validateInput())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
                 {loading && (
                   <View className='absolute w-full top-4'>
@@ -192,6 +189,7 @@ export default function VendorLogin(){
                     
               </TouchableOpacity>
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

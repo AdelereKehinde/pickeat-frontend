@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,StatusBar, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput,  } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -10,23 +10,131 @@ import Notice from '../../assets/icon/notice.svg';
 import CharField from '@/components/CharField';
 import CharFieldDropDown from '@/components/CharFieldDropdown';
 
-export default function CreateProduct(){
-    const [description, setDescription] = useState('')
-    const [additionalInfo, setAdditionalInfo] = useState('')
-    const [firstName, setFirstName] = useState('')
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
+import { getRequest, postRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import Delay from '@/constants/Delay';
+import PhoneNumber from '@/components/NumberField';
 
-    const dropdown = [
-        { label: 'Option 1', value: 1 },
-        { label: 'Option 2', value: 2 },
-        { label: 'Option 3', value: 3 },
-        { label: 'Option 4', value: 4 },
-        { label: 'Option 5', value: 5 },
-        { label: 'Option 6', value: 6 },
-        { label: 'Option 7', value: 7 },
-        { label: 'Option 8', value: 8 },
-        { label: 'Option 9', value: 9 },
-        { label: 'Option 10', value: 10 },
-    ]
+
+export default function CreateProduct(){
+    const toastConfig = {
+      success: CustomToast,
+      error: CustomToast,
+    };
+
+    type ApiCategories = { id: string; category_name: string;};
+    // Define the type for an array of ApiCategories objects
+    type ApiCategoriesArray = ApiCategories[];
+    const [category_option, setCategoryOption] = useState<ApiCategories[]>([]);
+
+    const [description, setDescription] = useState('')
+    const [mealName, setMealName] = useState('')
+    const [mealPrice, setMealPrice] = useState('')
+    const [priceDiscount, setPriceDiscount] = useState('')
+    const [mealCategory, setMealCategory] = useState('')
+    const [thumbnail, setThumbnail] = useState<string | null>(null);
+
+    const [data, setData] = useState({}); // To store the API data
+    const [loading, setLoading] = useState(false); // Loading state
+    const [error, setError] = useState(''); // Error state 
+
+    const validateInput = () =>{
+      if((mealName !== "") && (parseInt(mealPrice) !== 0) && (mealCategory !== "") && (description !== "") && (parseInt(priceDiscount) !== 0) && (thumbnail !== "")){
+        return true;
+      }
+      return false;
+    }
+
+    useEffect(() => {
+      const fetchCategories = async () => {
+          try {
+              const response = await getRequest<ApiCategoriesArray>(ENDPOINTS['inventory']['categories'], false); // Authenticated
+              setCategoryOption(response)
+          } catch (error) {
+              alert(error);
+          }
+      };
+  
+      fetchCategories();
+    }, []); // Empty dependency array ensures this runs once
+
+    const pickImage = async () => {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        alert('Permission to access camera roll is required!');
+        return;
+      }
+  
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [5, 5],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        setThumbnail(result.assets[0].uri);
+      }
+    };
+
+    const handleRequest = async () => {
+      try {
+        if(!loading && validateInput()){
+          setLoading(true)
+          //PREPARE THE FORMDATA
+          const formData = new FormData();
+          const file = {
+            uri: thumbnail,
+            name: 'upload.jpg',
+            type: 'image/jpeg',
+          };
+          if (Platform.OS === 'android') {
+            formData.append('thumbnail', {
+              uri: file.uri,
+              name: file.name,
+              type: file.type,
+            } as any);  
+          } else {
+            formData.append('thumbnail', file as any);
+          }
+          // Append additional fields
+          formData.append('meal_name', mealName);
+          formData.append('meal_description', description);
+          formData.append('category', mealCategory);
+          formData.append('discount', priceDiscount);
+          formData.append('price', mealPrice);
+
+          const res = await postRequest(ENDPOINTS['inventory']['create-meal'], formData, true, true);
+          // alert(JSON.stringify(res))
+          setLoading(false)
+
+          Toast.show({
+            type: 'success',
+            text1: "Meal Successfully Created",
+            visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+          });
+
+          await Delay(2000)
+          router.back()
+        }
+
+      } catch (error:any) {
+        setLoading(false)
+        // alert(JSON.stringify(error))
+        Toast.show({
+          type: 'error',
+          text1: "An error occured",
+          text2: error.response?.data?.data?.message || 'Unknown Error',
+          visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+          autoHide: true,
+        });
+        setError(error.response.data?.data?.message || 'Unknown Error'); // Set error message
+      }
+    };
+    
     return (
         <View 
         className='w-full h-full bg-gray-100 flex items-center'
@@ -38,15 +146,26 @@ export default function CreateProduct(){
 
             <View className='px-4 w-full mt-4'>
               <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center mt-4'>
-                <View className='w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center'>
-                  <Camera/>
-                  <Text
-                  style={{fontFamily: 'Inter-SemiBold'}}
-                  className='text-[8px] text-gray-700 text-center -mt-2'
-                  >
-                    Upload{'\n'} Profile Photo
-                  </Text>
-                </View>
+                <TouchableOpacity
+                onPress={pickImage}
+                className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${thumbnail && 'border-2 border-custom-green'}`}>
+                  {/* Image Preview */}
+                  {thumbnail?
+                    <Image 
+                    source={{ uri: thumbnail }} 
+                    style={{ width: 100, height: 100}} />
+                    :
+                    <View>
+                      <Camera/>
+                      <Text
+                      style={{fontFamily: 'Inter-SemiBold'}}
+                      className='text-[8px] text-gray-700 text-center -mt-2'
+                      >
+                        Upload{'\n'} Meal Photo
+                      </Text>
+                    </View>
+                  }
+                </TouchableOpacity>
                 <View  className='ml-4'>
                   <Text
                   style={{fontFamily: 'Inter-SemiBold'}}
@@ -82,13 +201,16 @@ export default function CreateProduct(){
                 className='flex w-full mt-3 space-y-1'
                 >   
                 <View>
-                    <CharField  placeholder="Meal Name*" focus={false} border={true} name='' getValue={(value: string)=>setFirstName(value)}/>
+                    <CharField  placeholder="Meal Name*" focus={false} border={true} name='' getValue={(value: string)=>setMealName(value)}/>
                 </View>
                 <View>
-                    <CharField  placeholder="Enter Meal Price*" focus={false} border={true} name='' getValue={(value: string)=>setFirstName(value)}/>
+                    <PhoneNumber  placeholder="Enter Meal Price*" focus={false} border={true} name='' getValue={(value: string)=>setMealPrice(value)}/>
                 </View>
                 <View>
-                    <CharFieldDropDown options={dropdown}  placeholder="Category?" focus={false} border={true} name='' getValue={(value: string)=>setFirstName(value)}/>
+                    <PhoneNumber  placeholder="Enter Price Discount*" focus={false} border={true} name='' getValue={(value: string)=>setPriceDiscount(value)}/>
+                </View>
+                <View>
+                    <CharFieldDropDown options={category_option.map(item => ({label: item.category_name, value: item.id}))}  placeholder="Category?" focus={false} border={true} name='' getValue={(value: string)=>setMealCategory(value)}/>
                 </View>
             </View>
 
@@ -110,20 +232,27 @@ export default function CreateProduct(){
               </View>
               
               <View className='w-[90%] mx-auto mb-16 mt-3'>
-                <TouchableOpacity
-                onPress={()=>{router.push('/vendor/account_setup_3')}}
-                className={`text-center bg-custom-green relative rounded-xl p-4 w-full self-center mt-5 flex items-center justify-around`}
+              <TouchableOpacity
+              onPress={handleRequest}
+              className={`text-center ${(validateInput())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              >
+                {loading && (
+                  <View className='absolute w-full top-4'>
+                    <ActivityIndicator size="small" color="#fff" />
+                  </View>
+                )}
+            
+                <Text
+                className='text-white'
+                style={{fontFamily: 'Inter-Regular'}}
                 >
-                  <Text
-                  className='text-white'
-                  style={{fontFamily: 'Inter-Regular'}}
-                  >
-                    Save
-                  </Text>
-                  
-                </TouchableOpacity>
+                  Save
+                </Text>
+                    
+              </TouchableOpacity>
               </View>
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

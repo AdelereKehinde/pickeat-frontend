@@ -13,7 +13,7 @@ import CustomToast from '@/components/ToastConfig';
 
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
-
+import { postRequest } from '@/api/RequestHandler';
 
 export default function SignUp(){
     const toastConfig = {
@@ -44,32 +44,32 @@ export default function SignUp(){
     const handleRegistration = async () => {
       try {
         if(!loading && validateInput()){
+          setLoading(true)
+          setLoading(true)
+          type DataResponse = { id: string; };
+          type ApiResponse = { status: string; message: string; data:DataResponse };
+          var request_body = {
+            email: email,
+            full_name: fullName,
+            phone_number: phoneNumber,
+            password: password,
+            password2: password2,
+          }
+          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signup'], request_body, false);
+          setLoading(false)
+
+          Toast.show({
+            type: 'success',
+            text1: "Otp Sent",
+            text2: res.message,
+            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+          });
+          await Delay(3000)
           router.push({
-                pathname: '/vendor/enter_code',
-                params: { email: email.toLowerCase() },
-              }); 
-        //   setLoading(true)
-        //   const res = await axios.post(ENDPOINTS['signup'], {
-        //     email: email,
-        //     password: password,
-        //     password2: password2,
-        //   }); 
-        //   setLoading(false)
-        //   setData(res.data); // Display or use response data as needed
-
-        //   Toast.show({
-        //     type: 'success',
-        //     text1: "Otp Sent",
-        //     text2: res.data['message'],
-        //     visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
-        //     autoHide: true,
-        //   });
-        //   await Delay(3000)
-
-        //   router.push({
-        //     pathname: '/enter_code',
-        //     params: { email: email.toLowerCase(), id: res.data['data']['id'] },
-        //   }); 
+            pathname: '/vendor/enter_code',
+            params: { email: email.toLowerCase(), id: res.data.id},
+          }); 
         }
 
       } catch (error:any) {
@@ -89,8 +89,6 @@ export default function SignUp(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <Toast config={toastConfig} />
-
             <View className='mt-10'>
               <Logo width={120} height={120} />
             </View>
@@ -234,7 +232,7 @@ export default function SignUp(){
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500 mt-5'
               >
-                Already have an account? <Link href="/login" className='text-gray-800'>Sign in</Link> 
+                Already have an account? <Link href="/vendor/login" className='text-gray-800'>Sign in</Link> 
               </Text>
             
 
@@ -242,7 +240,7 @@ export default function SignUp(){
 
               <TouchableOpacity
               onPress={handleRegistration}
-              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
                 {loading && (
                   <View className='absolute w-full top-4'>
@@ -259,6 +257,7 @@ export default function SignUp(){
                     
               </TouchableOpacity>
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

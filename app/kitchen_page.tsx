@@ -6,18 +6,29 @@ import KitchenCard from '@/components/Kitchen';
 import Search from '../assets/icon/search.svg';
 import Filter from '../assets/icon/filter.svg';
 import Check from '../assets/icon/check.svg'
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 
 export default function KitchenPage(){
-    const Kitchen = [
-        { id: '1', source: require('../assets/images/image11.jpg'), name:'GreenVita', time:"12 - 20", rating: "4.7", fee: '2.34' },
-        { id: '2', source: require('../assets/images/image12.jpg'), name:'Sushi shop', time:"10", rating: "4.7", fee: '1.99' },
-        { id: '3', source: require('../assets/images/image13.jpg'), name:'Foc i Oli', time:"20", rating: "4.7", fee: '0.00' },
-        { id: '4', source: require('../assets/images/image14.jpg'), name:'Pafinolis', time:"20 - 30", rating: "4.7", fee: '1.99' },
-        { id: '5', source: require('../assets/images/image11.jpg'), name:'GreenVita', time:"12 - 20", rating: "4.7", fee: '2.34' },
-        { id: '6', source: require('../assets/images/image12.jpg'), name:'Sushi shop', time:"10", rating: "4.7", fee: '1.99' },
-        { id: '7', source: require('../assets/images/image13.jpg'), name:'Foc i Oli', time:"20", rating: "4.7", fee: '0.00' },
-        { id: '8', source: require('../assets/images/image14.jpg'), name:'Pafinolis', time:"20 - 30", rating: "4.7", fee: '1.99' },
-    ];
+    type kitchenResponseResult = { id: string; avatar: string; business_name: string; is_favourite: boolean}[];
+    type kitchenResponse = { count: string; next: string; previous: string; results: kitchenResponseResult;};
+
+    const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await getRequest<kitchenResponse>(ENDPOINTS['vendor']['store-list'], true);
+                // alert(JSON.stringify(response.results))
+                setKitchens(response.results)
+            } catch (error) {
+                alert(error); 
+            }
+        };
+    
+        fetchCategories();
+    }, []); // Empty dependency array ensures this runs once
+
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
@@ -120,9 +131,29 @@ export default function KitchenPage(){
             </View>
 
             <ScrollView className='w-full p-1 pb-5 mt-5 space-y-2'>
-            {Kitchen.map((item) => (
+            {(kitchens.length === 0) && 
+                <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                    {Array.from({ length: 7 }).map((_, index) => (
+                        <View key={index} className='mt-5 border-b border-gray-300'>
+                            <ContentLoader
+                            width="100%"
+                            height={100}
+                            backgroundColor="#f3f3f3"
+                            foregroundColor="#ecebeb"
+                            >
+                                {/* Add custom shapes for your skeleton */}
+                                <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                            </ContentLoader>
+                        </View> 
+                    ))}
+                </View>
+            }
+            {kitchens.map((item) => (
                 <View key={item.id}>
-                    <KitchenCard image={item.source} name={item.name} time={item.time} rating={item.rating} fee={item.fee} />
+                    <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
                 </View>
             ))}
             </ScrollView>

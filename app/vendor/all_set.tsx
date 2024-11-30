@@ -33,7 +33,7 @@ export default function AllSet(){
 
             <View className='w-[90%] mx-auto mb-16 mt-3'>
               <TouchableOpacity
-              onPress={()=>{router.push('/vendor/orders')}}
+              onPress={()=>{router.push('/vendor/(tabs)/home')}}
               className={`text-center bg-custom-green relative rounded-xl p-4 w-full self-center mt-5 flex items-center justify-around`}
               >
                 <Text

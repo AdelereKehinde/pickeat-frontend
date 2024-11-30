@@ -3,91 +3,36 @@ import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatLis
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import VendorProductList from '@/components/VendorProductList';
+import TitleCase from '@/components/TitleCase';
 
 import Search from '../../assets/icon/search.svg';
 import Add from '../../assets/icon/add_product.svg';
 import Check from '../../assets/icon/check.svg'
 
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+
 export default function Menu(){
-    const KitchenProduct = [
-        { 
-            id: '1', 
-            source: require('../../assets/images/image16.jpg'), 
-            name:'Fried Plantain', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'Fried rice is sweet',
-        },
-        { 
-            id: '2', 
-            source: require('../../assets/images/image18.jpg'), 
-            name:'Chicken', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'Fried rice is sweet',
-        },
-        { 
-            id: '3', 
-            source: require('../../assets/images/image19.jpg'), 
-            name:'Fried Rice', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '2',
-            description:'Fried rice is sweet',
-        },
-        { 
-            id: '4', 
-            source: require('../../assets/images/image20.jpg'), 
-            name:'Salad', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '1',
-            description:'Tastes better',
-        },
-        { 
-            id: '5', 
-            source: require('../../assets/images/image17.jpg'), 
-            name:'Fish Grill', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'Yummy',
-        },
-        { 
-            id: '6', 
-            source: require('../../assets/images/image21.jpg'), 
-            name:'Chicken BBQ', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '2',
-            description:'Assorted',
-        },
-        { 
-            id: '7', 
-            source: require('../../assets/images/image20.jpg'), 
-            name:'Burger', 
-            price:'28.35',
-            discount: '15',
-            category: 'Dessert',
-            discounted_price:'23.45',
-            quantity_in_cart: '0',
-            description:'So sweet',
-        },
-    ];
+    type CategoryArray = { id: string; category_name: string;}[];
+    type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type ApiResponse = { count: string; next: string; previous: string; results: MealArray;};
+    
+    const [meals, setMeals] = useState<MealArray>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await getRequest<ApiResponse>(ENDPOINTS['inventory']['vendor-meal-list'], true); // Authenticated
+                // alert(JSON.stringify(response.results))
+                setMeals(response.results) 
+            } catch (error) {
+                alert(error);
+            }
+        };
+    
+        fetchCategories();
+      }, []); // Empty dependency array ensures this runs once
+    
     const Details = {
         kitchen: {
             name: 'Mardiya Kitchen',
@@ -201,6 +146,13 @@ export default function Menu(){
                 </TouchableOpacity>
             </View>
 
+            <Text
+            className={`text-[15px] self-start ml-3 mt-5`}
+            style={{fontFamily: 'Inter-SemiBold'}}
+            >
+                Add ons
+            </Text>
+
             <View className="px-4 py-3 h-[130px]">
                 <FlatList
                     className=''
@@ -226,20 +178,34 @@ export default function Menu(){
                     ItemSeparatorComponent={() => <View className='' />}
                 />
             </View>
-
+            {meals.length == 0 && (
+                <View className='flex items-center'>
+                    <Text
+                    className='text-custom-green text-[18px]'
+                    style={{fontFamily: 'Inter-Bold'}}
+                    >
+                        Create Product
+                    </Text>
+                    <TouchableOpacity
+                    onPress={()=>{router.push('/vendor/create_product')}}
+                    className=''>
+                        <Add width={100} height={100} />
+                    </TouchableOpacity>
+                </View>
+            )} 
             <View className='w-full bg-gray-50 mb-40 pb-2 '>
-                <ScrollView className='w-full space-y-1 mb-16'>
-                    {KitchenProduct.map((item) => (
+                <ScrollView className='w-full space-y-1 mb-56'>
+                    {meals.map((item) => (
                         <View key={item.id}>
                             <VendorProductList 
-                            image={item.source} 
-                            category={item.category}
-                            name={item.name} 
+                            image={item.thumbnail} 
+                            category={TitleCase(item.category[0].category_name)}
+                            name={TitleCase(item.meal_name)} 
                             price={item.price} 
                             discount={item.discount} 
                             discounted_price={item.discounted_price} 
-                            quantity_in_cart={item.quantity_in_cart}
-                            description={item.description}
+                            quantity_in_cart={item.cart_quantity}
+                            description={item.meal_description}
                             />
                         </View>
                     ))}

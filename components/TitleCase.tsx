@@ -6,4 +6,9 @@ const TitleCase = (text: string) => {
     .join(' ')
 }
 
+export const TruncatedText = (text: string, maxLength: number) => {
+    const truncatedText = text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return truncatedText
+  };
+
 export default TitleCase

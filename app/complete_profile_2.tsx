@@ -55,7 +55,7 @@ export default function CompleteProfile2(){
             //Fetch token
             const token = (await AsyncStorage.getItem('token'))?.trim();
             //Send request
-            const res = await axios.post(ENDPOINTS['create-address'], {
+            const res = await axios.post(ENDPOINTS['buyer']['create-address'], {
                 latitude: lat,
                 longitude: long,
                 address: address,
@@ -87,14 +87,21 @@ export default function CompleteProfile2(){
   
         } catch (error:any) {
           setLoading(false)
-          Toast.show({
-            type: 'error',
-            text1: "An error occured",
-            text2: error.response?.data?.message || "Unknown Error",
-            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
-            autoHide: true,
-          });
-          setError(error.response?.data?.message || "Unknown Error"); // Set error message
+          if (error.response?.status === 401){
+            router.push({
+              pathname: '/login',
+              params: { next: 'complete_profile2' },
+            });
+          }else{
+            Toast.show({
+                type: 'error',
+                text1: "An error occured",
+                text2: error.response?.data?.message || "Unknown Error",
+                visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+            setError(error.response?.data?.message || "Unknown Error"); // Set error message
+          }
         }
       };
 

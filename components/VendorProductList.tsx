@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
-import Rating from '../assets/icon/rating.svg';
-import Heart from '../assets/icon/heart.svg';
-import Time from '../assets/icon/time.svg';
-
+import { TruncatedText } from './TitleCase';
 interface Properties {
     image:any,
     name: string,
@@ -22,7 +19,7 @@ const VendorProductList: React.FC<Properties> = ({image, name, price, category, 
         <View className='flex flex-row items-center border-b border-gray-300 w-full p-4 h-28'>
             <View className=''>    
                 <Image 
-                source={image}
+                source={{ uri: image }}
                 className='w-24 h-24 rounded-lg'
                 />
             </View>
@@ -32,13 +29,13 @@ const VendorProductList: React.FC<Properties> = ({image, name, price, category, 
                 style={{fontFamily: 'Inter-Bold'}}
                 className=' text-[12px] text-gray-700'
                 >
-                    {name}
+                    {TruncatedText(name, 16)}
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}}
                 className=' text-[11px] text-custom-green mt-2'
                 >
-                    {category}
+                    {category} 
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}}
@@ -50,7 +47,7 @@ const VendorProductList: React.FC<Properties> = ({image, name, price, category, 
                 style={{fontFamily: 'Inter-Medium-Italic'}}
                 className='text-[12px] text-gray-400 mt-1'
                 >
-                    {description}
+                    {TruncatedText(description, 16)}
                 </Text>
             </View>
 

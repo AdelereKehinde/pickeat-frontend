@@ -19,8 +19,8 @@ const SpecialOffer: React.FC<Properties> = ({image, title, sub_title, discount, 
         <View className='rounded-md overflow-hidden w-full'>
             <View className='max-h-full h-full'>
                 <Image 
-                source={image}
-                className='w-full'
+                source={{ uri: image }}
+                className='w-full h-full'
                 />
             </View>
             <View className='flex items-end absolute w-full ml-auto top-3'>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
-import { Link, router } from "expo-router";
+import { Link, router, useGlobalSearchParams } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../../assets/images/Logo.svg';
 import axios from 'axios';
@@ -10,17 +10,16 @@ import Locked from '../../assets/icon/locked.svg';
 import Email from '../../assets/icon/mail2.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
-
+import { postRequest } from '@/api/RequestHandler';
 
 export default function ForgetPassword(){
+    const {service,} = useGlobalSearchParams()
+
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
     };
-    const [password, setPassword] = useState('')
-    const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('');
-    const [showPassword, setShowPassword] = useState(false)
 
     const validateInput = () =>{
       if(email.includes(".com")){
@@ -34,45 +33,55 @@ export default function ForgetPassword(){
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
+    var endpoint = '';
+    switch (service) {
+      case 'vendor':
+        endpoint = ENDPOINTS['vendor']['forget-password']
+        break;
+      case 'buyer':
+        endpoint = ENDPOINTS['buyer']['forget-password']
+        break;
+      default:
+        endpoint = ENDPOINTS['vendor']['forget-password']
+        break;
+    }
+
     const handleForgetPassword = async () => {
       try {
         if(!loading && validateInput()){
-            router.push({
-                pathname: '/vendor/confirm_pin',
-                params: { email: email.toLowerCase() },
-              }); 
-        //   setLoading(true)
-        //   const res = await axios.post(ENDPOINTS['signin'], {
-        //     email: email,
-        //     password: password,
-        //     password2: password2,
-        //   }); 
-        //   setLoading(false)
-        //   setData(res.data); // Display or use response data as needed
+          setLoading(true)
+          type DataResponse = { id: string; };
+          type ApiResponse = { status: string; message: string; data:DataResponse };
 
-        //   Toast.show({
-        //     type: 'success',
-        //     text1: "Welcome back",
-        //     visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
-        //     autoHide: true,
-        //   });
-        //   await Delay(3000)
-
-        //   router.push({
-        //     pathname: '/complete_profile_2',
-        //   }); 
+          const res = await postRequest<ApiResponse>(endpoint, {email: email}, false);
+          // alert(JSON.stringify(res))
+          setLoading(false)
+  
+          Toast.show({
+            type: 'success',
+            text1: "OTP Sent to email address",
+            visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+          });
+    
+          await Delay(2000)
+          router.push({
+            pathname: '/vendor/confirm_pin',
+            params: { email: email.toLowerCase(), id: res.data.id, service: service},
+          }); 
         }
 
       } catch (error:any) {
         setLoading(false)
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response?.data?.data?.message || 'Unknown Error',
+          text2: error.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data?.data?.message || 'Unknown Error'); // Set error message
+        setError(error.data?.message || 'Unknown Error'); // Set error message
       }
     };
 
@@ -80,8 +89,6 @@ export default function ForgetPassword(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <Toast config={toastConfig} />
-
             <View className='mt-5'>
               <Logo width={120} height={120} />
             </View>
@@ -135,7 +142,7 @@ export default function ForgetPassword(){
             <View className='w-[90%] mx-auto'>
               <TouchableOpacity
               onPress={handleForgetPassword}
-              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
                 {loading && (
                   <View className='absolute w-full top-4'>
@@ -158,7 +165,8 @@ export default function ForgetPassword(){
               className='text-center text-[12px] text-gray-500  mt-36'
               >
                 Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
-              </Text>
+            </Text>
+          <Toast config={toastConfig} />
         </View>
     )
 }
