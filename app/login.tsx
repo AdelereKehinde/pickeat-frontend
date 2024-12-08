@@ -38,9 +38,9 @@ export default function Login(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { message: string; token:string; refresh: string };
+          type DataResponse = { message: string; token:string; refresh: string, name:string; };
           type ApiResponse = { status: string; message: string; data:DataResponse };
-          const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signin'], {email: email,password: password}, true);
+          const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signin'], {email: email,password: password}, false);
           
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
@@ -54,8 +54,9 @@ export default function Login(){
           });
 
           await Delay(2000)
-          router.push({
+          router.replace({
             pathname: '/dashboard',
+            params: { name: res.data.name},
           }); 
         }
 

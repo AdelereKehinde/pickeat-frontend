@@ -3,85 +3,46 @@ import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import ServicesLayout from '@/components/Services';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import Empty from '../assets/icon/empy_transaction.svg';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 
 export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
     
-    const Item = [
-        { 
-            id: '1', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'pending',
-        },
-        { 
-            id: '2', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'completed',
-        },
-        { 
-            id: '3', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'canceled',
-        },
-        { 
-            id: '4', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'pending',
-        },
-        { 
-            id: '5', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'completed',
-        },
-        { 
-            id: '6', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'canceled',
-        },
-        { 
-            id: '7', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'completed',
-        },
-        { 
-            id: '8', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'canceled',
-        },
-    ]
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+    };
+    const [loading, setLoading] = useState(false);
+
+    type ListData = { id: number; store_name: string; price: string; status: string; order_id: string; items: string; date: string;}[];
+    type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
+
+    const [orders, serOrders] = useState<ListData>([]);
+    const [nextUrl, setNextUrl] = useState('')
+
+    useEffect(() => {
+        const fetchMeals = async () => {
+            try {
+                setLoading(true)
+                const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}`, true);
+                // alert(JSON.stringify(response))
+                serOrders(response.results)
+                setNextUrl(response.next)
+                setLoading(false)
+            } catch (error) {
+                alert(error);
+            }
+        };
+    
+        fetchMeals(); 
+    }, []); // Empty dependency array ensures this runs once
+
 
     return (
         <View className=' bg-white w-full h-full flex items-center'>
@@ -99,10 +60,37 @@ export default function BookingHistory(){
 
             <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
                 <ScrollView className='w-full mt-4 space-y-1'>
-                    {Item.map((item) => (
+                    {(!loading && orders.length === 0) && (
+                        <View className='flex items-center'> 
+                            <Empty/>
+                        </View>
+                    )}
+                    {(orders.length === 0 && loading) && 
+                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 4 }).map((_, index) => (
+                                <View key={index} className='border-b border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                        <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                        <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
+                                        <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                        <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                    }
+                    {orders.map((item) => (
                         <View key={item.id}>
                             <ServicesLayout 
-                            kitchen={item.kitchen} 
+                            kitchen={item.store_name} 
                             price={item.price} 
                             date={item.date}
                             items={item.items}

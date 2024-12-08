@@ -3,11 +3,17 @@ import { Text, View, TouchableOpacity, Alert, Image, TextInput, StatusBar, Press
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../assets/images/Logo.svg';
+import CustomSplashScreen from '@/components/SplashScreen';
 
 
 export default function Index(){
     const [isOpen, setIsOpen] = useState(false)
     const [userHover, setUserHover] = useState(false)
+    const [isAppReady, setAppReady] = useState(false);
+
+    if (!isAppReady) {
+        return <CustomSplashScreen onReady={() => setAppReady(true)} />;
+    }
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />

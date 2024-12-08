@@ -12,6 +12,7 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { useFocusEffect } from "@react-navigation/native";
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Cart(){
     const toastConfig = {
@@ -24,28 +25,31 @@ export default function Cart(){
     type ListData = { total_price: number; cart_items: ItemsArray; };
     type MealResponse = { status: string; message: string; data: ListData;};
 
-    const [cartItems, setCartItems] = useState<ItemsArray>([]); 
+    const [cartItems, setCartItems] = useState<ItemsArray>([]);
     const [resData, setResData] = useState<ListData>();
     const [totalPrice, setTotalPrice] = useState(Number)
     const [loadSignal, setLoadSignal] = useState(false)
 
+    const isFocused = useIsFocused();
+
     useEffect(() => {
-        const fetchMeals = async () => {
-            try {
-                setLoading(true)
-                const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['list']}`, true);
-                // alert(JSON.stringify(response.data))
-                setResData(response.data)
-                setCartItems(response.data.cart_items)
-                setTotalPrice(response.data.total_price)
-                setLoading(false)
-            } catch (error) {
-                alert(error);
+        if(isFocused){
+            const fetchMeals = async () => {
+                try {
+                    setLoading(true)
+                    const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['list']}`, true);
+                    // alert(JSON.stringify(response.data))
+                    setResData(response.data)
+                    setCartItems(response.data.cart_items)
+                    setTotalPrice(response.data.total_price)
+                    setLoading(false)
+                } catch (error) {
+                    alert(error);
+                }
             }
-        };
-    
-        fetchMeals();
-    }, []); // Empty dependency array ensures this runs once
+            fetchMeals();
+        }
+    }, [isFocused]); // Empty dependency array ensures this runs once
 
     const handleCheckout = async () => {
       try {
@@ -54,12 +58,13 @@ export default function Cart(){
           setLoadSignal(true)
           const res = await postRequest(ENDPOINTS['cart']['checkout'], {}, true);
           setLoading(false)
-          router.replace('/payment')
+          setLoadSignal(false)
+          router.push('/payment')
         }
       } catch (error:any) {
         setLoading(false)
         setLoadSignal(false)
-        Toast.show({
+        Toast.show({ 
             type: 'error',
             text1: "An error occured",
             text2: error.data?.data?.message || 'Unknown Error',
@@ -86,21 +91,21 @@ export default function Cart(){
           );
         setCartItems(newCart); 
         let TotalPrice = 0
-        cartItems.forEach((item) => {
+        newCart.forEach((item) => {
             TotalPrice += item.discounted_price * item.quantity;
         });
         setTotalPrice(TotalPrice)
     }
 
-    const handleRemoveItem = (itemId: number) => {
-        alert(itemId)
+    const handleRemoveItem = (itemId: number) => { 
+        // alert(itemId)
         var newCart = cartItems.filter((item)=>item.id != itemId)
         let TotalPrice = 0
-        cartItems.forEach((item) => {
+        newCart.forEach((item) => {
             TotalPrice += item.discounted_price * item.quantity;
         });
         setTotalPrice(TotalPrice)
-        setCartItems(newCart);
+        setCartItems(newCart); 
     };
     
     
@@ -110,16 +115,15 @@ export default function Cart(){
             <View className='bg-gray-100 w-full'>
                 <TitleTag withprevious={false} title='Cart' withbell={true} />
             </View>
-            
-            {(!loading && cartItems.length == 0) && (
-                <View className='flex items-center'>
-                    <Empty/>
-                </View>
-            )}
 
             <View className='bg-white w-full relative flex flex-row justify-center mt-3 h-[550px]'>
+                {(!loading && cartItems.length == 0) && (
+                    <View className='flex items-center w-full'> 
+                        <Empty/>
+                    </View>
+                )}
                 <ScrollView className='w-full space-y-1'>
-                    {(cartItems.length === 0) && 
+                    {(cartItems.length === 0 && loading) && 
                         <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                             {Array.from({ length: 4 }).map((_, index) => (
                                 <View key={index} className='border-b border-gray-300'>

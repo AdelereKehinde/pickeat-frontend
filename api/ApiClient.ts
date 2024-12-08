@@ -11,7 +11,7 @@ export const getAuthToken = async (): Promise<string | null> => {
 };
 
 const apiClient = axios.create({
-  baseURL: 'https://0141-102-89-68-244.ngrok-free.app/api/v1/',
+  baseURL: 'https://4f14-102-89-75-10.ngrok-free.app/api/v1/',
   // timeout: 10000,
   // headers: {
   //   'Content-Type': 'multipart/form-data',

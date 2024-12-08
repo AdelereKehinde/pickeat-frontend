@@ -16,7 +16,7 @@ import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 
 export default function ResetPassword(){
-  const {token, id, service} = useGlobalSearchParams()
+    const {token, id, service} = useGlobalSearchParams()
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,

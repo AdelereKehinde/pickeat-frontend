@@ -1,19 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
 import KitchenCard from '@/components/Kitchen';
 import AtmBlack from '../assets/icon/atm_black.svg';
 import AtmChip from '../assets/icon/atm_gold_chip.svg';
 import Empty from '../assets/icon/empy_transaction.svg'
-import { getRequest } from '@/api/RequestHandler';
+import { getRequest, postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import TitleCase from '@/components/TitleCase';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
 
 export default function WalletPage(){
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+      };
     type CardsResponse = { id: string; card_number: string; card_name: string; expiry: string; cvv: string;}[];
-    type TransactionResponse = { id: string; bank_name: string; amount: string; date: string; status: string}[];
+    type TransactionResponse = { id: number; bank_name: string; total_amount: string; date: string; status: string}[];
     type WalletResponse = { amount_in_wallet: string; cards: CardsResponse; transactions: TransactionResponse;};
     type ApiResponse = { status: string; message: string; data: WalletResponse;};
 
@@ -22,12 +28,14 @@ export default function WalletPage(){
     const [amount, setAmount] = useState('');
 
     const [loading, setLoading] = useState(true);
+    const [isFocused, setIsFocus] = useState('');
+    const [amountToFund, setAmountToFund] = useState('');
+    const [fundLoading, setFundLoading] = useState(false);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 const response = await getRequest<ApiResponse>(ENDPOINTS['payment']['wallet-dashboard'], true);
-                // alert(JSON.stringify(response))
                 setCards(response.data.cards) 
                 setTransactions(response.data.transactions)
                 setAmount(response.data.amount_in_wallet)
@@ -40,6 +48,37 @@ export default function WalletPage(){
         fetchCategories();
     }, []); // Empty dependency array ensures this runs once
 
+
+    const handleFunding = async () => {
+        try {
+          if(!fundLoading && (parseInt(amountToFund) > 100)){
+            setFundLoading(true)
+            type DataResponse = { message: string; token:string; refresh: string };
+            type ApiResponse = { status: string; message: string; data:DataResponse };
+            const res = await postRequest<ApiResponse>(ENDPOINTS['payment']['fund-wallet'], {amount:amountToFund}, true);
+            setFundLoading(false)
+            setAmount(`${parseInt(amount) + parseInt(amountToFund)}`)
+            setAmountToFund('')
+            Toast.show({
+              type: 'success',
+              text1: "Wallet Funding Successful",
+              visibilityTime: 6000, // time in milliseconds (5000ms = 5 seconds)
+              autoHide: true,
+            });
+          }
+  
+        } catch (error:any) {
+          setFundLoading(false)
+          // alert(JSON.stringify(error))
+          Toast.show({
+            type: 'error',
+            text1: "An error occured",
+            text2: error.data?.data?.message || 'Unknown Error',
+            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+            autoHide: true,
+          });
+        }
+      };
     
     return (
         <View className=' bg-white w-full h-full flex items-center'>
@@ -72,17 +111,38 @@ export default function WalletPage(){
                         {amount}
                     </Text>
                 }
-                
-                <TouchableOpacity
-                className={`rounded-md ${loading? 'bg-custom-inactive-green': 'bg-custom-green'} self-end py-1 px-4 mt-2`}
-                >
-                    <Text
-                        className={`text-white text-[10px]`}
+
+                <View className='self-end mt-2 flex flex-row items-center space-x-2'>
+                    <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
+                        className={`w-20 ${isFocused=='amount'? 'border-custom-green border': 'border-gray-400 border'} rounded-md px-4 text-[10px]`}
+                        autoFocus={false}
+                        onFocus={()=>setIsFocus('amount')}
+                        onBlur={()=>setIsFocus('')}
+                        onChangeText={setAmountToFund}
+                        defaultValue={amountToFund}
+                        placeholder="Amount"
+                        maxLength={10}
+                        keyboardType="number-pad"
+                        placeholderTextColor=""
+                    />
+                    <TouchableOpacity
+                    className={`rounded-md ${loading? 'bg-custom-inactive-green': 'bg-custom-green'} py-[7px] px-4 relative flex items-center`}
+                    onPress={handleFunding}
                     >
-                        Add funds
-                    </Text>
-                </TouchableOpacity>
+                        <Text
+                            className={`text-white text-[10px]`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                        >
+                            Add funds
+                        </Text>
+                        {(fundLoading) && (
+                            <View className='absolute w-full top-1'>
+                                <ActivityIndicator size="small" color="#fff" />
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                </View>
             </View>
             
             <Text
@@ -186,7 +246,7 @@ export default function WalletPage(){
             >
                 Transaction History
             </Text>
-            <ScrollView className='w-full p-1 pb-5 mt-5 space-y-2'>
+            <ScrollView className='w-full p-1 mb-3 mt-5 space-y-1'>
             {loading && 
                 <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                     {Array.from({ length: 5 }).map((_, index) => (
@@ -217,16 +277,22 @@ export default function WalletPage(){
                 <View key={item.id} className='flex w-full py-2 px-4 border-y border-gray-200'>
                     <View className='flex flex-row items-center w-full justify-between'>
                         <Text
-                        className={`text-gray-700 text-[12px]`}
+                        className={`text-gray-700 text-[13px]`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            {item.bank_name}
+                            {TitleCase(item.bank_name) + ' - '}
+                            <Text
+                            className={`text-gray-700 text-[13px] ${(item.bank_name == 'wallet')? 'text-red-500' : 'text-custom-green'}`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {(item.bank_name == 'wallet')? 'Debit' : 'Credit'}
+                            </Text>
                         </Text>
                         <Text
                         className={`text-gray-700 text-[12px]`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            ${item.amount}
+                            ${item.total_amount}
                         </Text>
                     </View>
                     <View className='flex flex-row items-center w-full justify-between mt-2'>
@@ -237,16 +303,17 @@ export default function WalletPage(){
                             {item.date}
                         </Text>
                         <Text
-                        className={`text-custom-green text-[12px]`}
+                        className={`text-custom-green text-[12px] ${(item.status == 'pending') && 'text-yellow-500'}`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
-                            {item.status}
+                            {TitleCase(item.status)}
                         </Text>
                     </View>
                 </View>   
             ))}
 
             </ScrollView>
+            <Toast config={toastConfig} />
         </View>
     )
 }

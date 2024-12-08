@@ -119,7 +119,7 @@ export default function CompleteProfile(){
                       <CharField  placeholder="Enter last name" focus={false} border={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
                     </View>
                     <View>
-                      <PhoneNumber  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
+                      <PhoneNumber border={false}  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
                     </View>
                 </View>
                 

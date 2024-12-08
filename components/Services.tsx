@@ -5,7 +5,7 @@ import TitleCase from './TitleCase';
 
 interface Properties {
     kitchen:any,
-    items: string[],
+    items: string,
     date: string,
     price: string,
     order_id: string,
@@ -40,7 +40,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                         style={{fontFamily: 'Inter-Medium'}}
                         className='text-[12px] text-custom-green'
                         >
-                            {items.length} item{(items.length==1)? '': 's'}
+                            {items}
                         </Text>
                     </Text>
                 </View>
@@ -53,7 +53,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                     </Text>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className={`text-[10px] text-gray-700 ${(status=='pending') && 'text-custom-orange'} ${(status=='completed') && 'text-custom-green'} ${(status=='canceled') && 'text-red-600'} `}
+                    className={`text-[10px] text-gray-700 ${status.includes('Pending') && 'text-custom-orange'} ${(status=='completed') && 'text-custom-green'} ${(status=='Cancelled') && 'text-red-600'} `}
                     >
                         {TitleCase(status)}
                     </Text>
@@ -68,7 +68,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                     {date}
                 </Text>
                 <View className='flex flex-row items-center'>
-                    {(status=='pending') && (
+                    {status.includes('Pending') && (
                         <TouchableOpacity
                         onPress={()=>{(router.push("/track_order"))}}
                         >   
@@ -81,7 +81,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                             </Text>
                         </TouchableOpacity>
                     )}
-                    {((status=='completed') || (status=='canceled')) && (
+                    {((status=='Completed') || (status=='Canceled')) && (
                         <TouchableOpacity
                         onPress={()=>{alert('Re Order now')}}
                         >   

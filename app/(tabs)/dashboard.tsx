@@ -17,7 +17,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
 
 export default function Dashboard(){
-    const {country_code, phone_number} = useGlobalSearchParams()
+    const {name} = useGlobalSearchParams()
 
     const [address, setAddress] = useState('')
 
@@ -71,11 +71,25 @@ export default function Dashboard(){
                         <View className=''>
                             <Account />
                         </View>
-                        <Text
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Welcome, HayWhy
-                        </Text>
+                        {(name)?
+                            <Text
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Welcome, {name}
+                            </Text>
+                            :
+                            <TouchableOpacity
+                            onPress={()=>router.replace('/login')}
+                            >
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className=''
+                                >
+                                Please Login
+                                </Text>
+                            </TouchableOpacity>
+                        }
+                        
                     </View>
 
                     <View className='flex flex-row space-x-2 rounded-2xl bg-gray-100 p-3'>

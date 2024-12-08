@@ -21,7 +21,8 @@ const ENDPOINTS = {
         'forget-password': `${BUYER_BASE}password/forget`,
         'validate-password-reset': `${BUYER_BASE}password/validate-otp`,
         'reset-password': `${BUYER_BASE}password/reset`,
-        'add-remove-favourite-store': `${BUYER_BASE}store/`
+        'add-remove-favourite-store': `${BUYER_BASE}store/`,
+        'information': `${BUYER_BASE}information`
     },
     'vendor': {
         'signin': `${VENDOR_BASE}signin`,
@@ -49,10 +50,13 @@ const ENDPOINTS = {
         'edit': `${CART_BASE}edit`,
         'checkout': `${CART_BASE}checkout`,
         'checkout-summary': `${CART_BASE}checkout/summary`,
+        'buyer-orders': `${CART_BASE}buyer/orders`,
     },
     'payment': {
         'buyer-create': `${PAYMENT_BASE}buyer/card/create`,
         'wallet-dashboard': `${PAYMENT_BASE}buyer/wallet/dashboard`,
+        'fund-wallet': `${PAYMENT_BASE}buyer/wallet/fund`,
+        'pay': `${PAYMENT_BASE}buyer/pay`,
     },
 }
 

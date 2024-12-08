@@ -4,85 +4,78 @@ import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import ServicesLayout from '@/components/Services';
 import Check from '../../assets/icon/check.svg'
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import Empty from '../../assets/icon/empy_transaction.svg';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+import { useIsFocused } from '@react-navigation/native';
+import Index from '..';
 
 export default function Services(){
-    const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
     
-    const Item = [
-        { 
-            id: '1', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'pending',
-        },
-        { 
-            id: '2', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'completed',
-        },
-        { 
-            id: '3', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'canceled',
-        },
-        { 
-            id: '4', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'pending',
-        },
-        { 
-            id: '5', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'completed',
-        },
-        { 
-            id: '6', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'canceled',
-        },
-        { 
-            id: '7', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'completed',
-        },
-        { 
-            id: '8', 
-            kitchen: "Mardiya Kitchen", 
-            items: ['rice', 'milk shake', 'chicken'],
-            order_id: 'ERFH76',
-            date: "Sep 4, 2021 at 12:14 am",
-            price:'17.84',
-            status: 'canceled',
-        },
-    ]
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+    };
+    const [loading, setLoading] = useState(false);
+
+    type ListData = { id: number; store_name: string; price: string; status: string; order_id: string; items: string; date: string;}[];
+    type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
+
+    const [parentorders, setParentOrders] = useState<ListData>([]);
+    const [orders, setOrders] = useState<ListData>([]);
+    const [nextUrl, setNextUrl] = useState('')
+
+    const Filter = (index: number) =>{
+        setFilterIndex(index)
+        switch (index) {
+            case 1:
+                var newOrder = parentorders.filter((item)=>item.status.includes("Pending"))
+                setOrders(newOrder)
+                break;
+            case 2:
+                var newOrder = parentorders.filter((item)=>item.status.includes("Completed"))
+                setOrders(newOrder)
+                break;
+            case 3:
+                var newOrder = parentorders.filter((item)=>item.status.includes("Cancelled"))
+                setOrders(newOrder)
+                break;
+            default:
+                alert('default')
+                var newOrder = parentorders.filter((item)=>item.status.includes("Pending"))
+                setOrders(newOrder)
+                break;
+        }
+    }
+
+    const isFocused = useIsFocused();
+    const [ranOnce, setRanOnce] = useState(false);
+    useEffect(() => {
+        if (isFocused){
+            const fetchMeals = async () => {
+                try {
+                    setLoading(true)
+                    const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}`, true);
+                    setParentOrders(response.results)
+                    if(!ranOnce){
+                        setOrders(response.results)
+                        setRanOnce(true)
+                    }
+                    setNextUrl(response.next)
+                    setLoading(false)
+                } catch (error) {
+                    alert(error);
+                }
+            };
+        
+            fetchMeals(); 
+        }
+    }, [isFocused]); // Empty dependency array ensures this runs once
+
 
     return (
         <View className=' bg-white w-full h-full flex items-center'>
@@ -100,7 +93,7 @@ export default function Services(){
 
             <View className='my-3 mt-5 flex flex-row w-full justify-around'>
                 <TouchableOpacity 
-                    onPress={()=>{setFilterIndex(1)}}
+                    onPress={()=>{Filter(1) }}
                     className={`${(filterIndex == 1)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                 >   
                     {(filterIndex == 1) && (
@@ -110,12 +103,12 @@ export default function Services(){
                     className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                     style={{fontFamily: 'Inter-Medium'}}
                     >
-                        Accepted
+                        Pending
                     </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
-                    onPress={()=>{setFilterIndex(2)}}
+                    onPress={()=>{Filter(2)}}
                     className={`${(filterIndex == 2)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                 >
                     {(filterIndex == 2) && (
@@ -130,7 +123,7 @@ export default function Services(){
                 </TouchableOpacity>
 
                 <TouchableOpacity 
-                    onPress={()=>{setFilterIndex(3)}}
+                    onPress={()=>{Filter(3)}}
                     className={`${(filterIndex == 3)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                 >
                     {(filterIndex == 3) && (
@@ -146,11 +139,39 @@ export default function Services(){
             </View>
 
             <View className='bg-white w-full my-3 mb-52 relative flex flex-row items-center justify-center'>
+                
                 <ScrollView className='w-full mt-4 space-y-1'>
-                    {Item.map((item) => (
-                        <View key={item.id}>
+                    {((!loading || (parentorders.length !== 0)) && orders.length === 0 ) && (
+                        <View className='flex items-center'> 
+                            <Empty/>
+                        </View>
+                    )}
+                    {(parentorders.length === 0 && loading) && 
+                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 4 }).map((_, index) => (
+                                <View key={index} className='border-b border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                        <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                        <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
+                                        <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                        <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                    }
+                    {orders.map((item) => (
+                        <View key={item.id}> 
                             <ServicesLayout 
-                            kitchen={item.kitchen} 
+                            kitchen={item.store_name} 
                             price={item.price} 
                             date={item.date}
                             items={item.items}
@@ -161,6 +182,7 @@ export default function Services(){
                     ))}
                 </ScrollView>
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

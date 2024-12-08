@@ -50,6 +50,7 @@ export default function RootLayout() {
       <Stack.Screen name="add_card" options={{headerShown: false}} />
       <Stack.Screen name="payment" options={{headerShown: false}} />
       <Stack.Screen name="payment_confirmation" options={{headerShown: false}} />
+      <Stack.Screen name="profile_page" options={{headerShown: false}} />
 
       {/* VENDOR */}
       <Stack.Screen name="vendor/(tabs)" options={{ headerShown: false }} />  

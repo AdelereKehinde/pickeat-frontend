@@ -6,7 +6,7 @@ import Logo from '../assets/images/Logo.svg';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
-
+import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 
@@ -28,28 +28,28 @@ export default function Registration(){
       }
       return false;
     }
-
-    const [data, setData] = useState(null); // To store the API data
+    type DataResponse = { id: number;};
+    type ApiResponse = { status: string; message: string; data:DataResponse };
+    const [data, setData] = useState<ApiResponse>(); // To store the API data
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
     const handleRegistration = async () => {
       try {
         if(!loading && validateInput()){
-          
           setLoading(true)
-          const res = await axios.post(ENDPOINTS['buyer']['signup'], {
+          const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signup'], {
             email: email,
             password: password,
             password2: password2,
-          }); 
+          }, false);
           setLoading(false)
-          setData(res.data); // Display or use response data as needed
-
+          setData(res); // Display or use response data as needed
+          alert(JSON.stringify(res))
           Toast.show({
             type: 'success',
             text1: "Otp Sent",
-            text2: res.data['message'],
+            text2: res.message,
             visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
           });
@@ -57,20 +57,21 @@ export default function Registration(){
 
           router.push({
             pathname: '/enter_code',
-            params: { email: email.toLowerCase(), id: res.data['data']['id'] },
+            params: { email: email.toLowerCase(), id: res.data.id},
           }); 
         }
 
       } catch (error:any) {
         setLoading(false)
+        alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response.data['data']['message'],
+          text2: error.data?.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data['data']['message']); // Set error message
+        setError(error.data?.data?.message || 'Unknown Error'); // Set error message
       }
     };
 
@@ -169,7 +170,7 @@ export default function Registration(){
 
               <TouchableOpacity
               onPress={handleRegistration}
-              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
                 {loading && (
                   <View className='absolute w-full top-4'>

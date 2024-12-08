@@ -63,17 +63,16 @@ export default function PaymentPage(){
           );
         setCartItems(newCart); 
         let TotalPrice = 0
-        cartItems.forEach((item) => {
+        newCart.forEach((item) => {
             TotalPrice += item.discounted_price * item.quantity;
         });
         setSubTotal(TotalPrice)
     }
 
     const handleRemoveItem = (itemId: number) => {
-        alert(itemId)
         var newCart = cartItems.filter((item)=>item.id != itemId)
         let TotalPrice = 0
-        cartItems.forEach((item) => {
+        newCart.forEach((item) => {
             TotalPrice += item.discounted_price * item.quantity;
         });
         setSubTotal(TotalPrice)
@@ -239,7 +238,7 @@ export default function PaymentPage(){
                         
                 </TouchableOpacity>
                 <TouchableOpacity
-                onPress={()=>{!(cartItems.length === 0 || loading || loadSignal) && router.replace('/payment_confirmation')}}
+                onPress={()=>{!(cartItems.length === 0 || loading || loadSignal) && router.push('/payment_confirmation')}}
                 className={`text-center bg-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl grow  p-4 self-center flex items-center justify-around`}
                 >
                     {(loadSignal) && (
@@ -247,7 +246,7 @@ export default function PaymentPage(){
                             <ActivityIndicator size="small" color="#000000" />
                         </View>
                     )}
-                    <Text
+                    <Text   
                     className='text-white'
                     style={{fontFamily: 'Inter-Regular'}}
                     >

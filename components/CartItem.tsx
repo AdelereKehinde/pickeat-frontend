@@ -177,17 +177,16 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                             {date}
                         </Text> */}
                         <View className='w-7 h-7 flex justify-around items-center'>
-                            {(loading || parentLoadSignal) && (
-                                <View className='absolute w-full top-[4px] '>
-                                    <ActivityIndicator size="small" color="#000000" />
-                                </View>
-                            )}
                             <TouchableOpacity
                             onPress={RemoveFromCart}
                             >
                                 <Remove />
                             </TouchableOpacity>
-                            
+                            {(loading || parentLoadSignal) && (
+                                <View className='absolute w-full top-[4px] '>
+                                    <ActivityIndicator size="small" color="#6b7280" />
+                                </View>
+                            )}
                         </View>
                         <View className='flex flex-row justify-between'>
                             
@@ -195,17 +194,17 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                             className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
                             onPress={()=>{AddToCart(false)}}
                             >   
-                                {(loading || parentLoadSignal) && (
-                                <View className='absolute w-full top-1'>
-                                    <ActivityIndicator size="small" color="#000000" />
-                                </View>
-                                )}
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
                                 className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
                                 >
                                     -
                                 </Text>
+                                {(loading || parentLoadSignal) && (
+                                <View className='absolute w-full top-1'>
+                                    <ActivityIndicator size="small" color="#6b7280" />
+                                </View>
+                                )}
                             </TouchableOpacity>
                             <View className='w-7 h-7 mx-2 rounded-md flex justify-around items-center'>
                                 <Text
@@ -219,17 +218,17 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                             className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
                             onPress={()=>{AddToCart(true)}}
                             >
-                                {(loading || parentLoadSignal) && (
-                                <View className='absolute w-full top-1'>
-                                    <ActivityIndicator size="small" color="#000000" />
-                                </View>
-                                )}
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
                                 className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
                                 >
                                     +
                                 </Text>
+                                {(loading || parentLoadSignal) && (
+                                <View className='absolute w-full top-1'>
+                                    <ActivityIndicator size="small" color="#6b7280" />
+                                </View>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>

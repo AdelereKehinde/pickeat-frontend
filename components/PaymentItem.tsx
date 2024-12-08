@@ -43,7 +43,11 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id,
             const res = await postRequest<ApiResponse>(`${ENDPOINTS['cart']['add']}?meal=${meal_id}`, {quantity: increase? (quantity+1): (quantity-1)}, true);
             // alert(JSON.stringify(res))
             setQuantity(increase? (quantity+1): (quantity-1))
-            onUpdate(cart_id, increase? (quantity+1): (quantity-1))
+            if(quantity==0){
+                onRemove(cart_id)
+            }else{
+                onUpdate(cart_id, increase? (quantity+1): (quantity-1))
+            }
             Toast.show({
                 type: 'success',
                 text1: res.message,
@@ -143,17 +147,17 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id,
                             className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
                             onPress={()=>{AddToCart(false)}}
                             >   
-                                {(loading || parentLoadSignal) && (
-                                <View className='absolute w-full top-1'>
-                                    <ActivityIndicator size="small" color="#000000" />
-                                </View>
-                                )}
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
                                 className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
                                 >
                                     -
                                 </Text>
+                                {(loading || parentLoadSignal) && (
+                                <View className='absolute w-full top-1'>
+                                    <ActivityIndicator size="small" color="#6b7280" />
+                                </View>
+                                )}
                             </TouchableOpacity>
                             <View className='w-7 h-7 mx-2 rounded-md flex justify-around items-center'>
                                 <Text
@@ -167,17 +171,17 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id,
                             className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
                             onPress={()=>{AddToCart(true)}}
                             >
-                                {(loading || parentLoadSignal) && (
-                                <View className='absolute w-full top-1'>
-                                    <ActivityIndicator size="small" color="#000000" />
-                                </View>
-                                )}
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
                                 className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
                                 >
                                     +
                                 </Text>
+                                {(loading || parentLoadSignal) && (
+                                <View className='absolute w-full top-1'>
+                                    <ActivityIndicator size="small" color="#6b7280" />
+                                </View>
+                                )}
                             </TouchableOpacity>
                         </View>
                     </View>
