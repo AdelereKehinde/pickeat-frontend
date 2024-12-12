@@ -11,7 +11,6 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { useIsFocused } from '@react-navigation/native';
-import Index from '..';
 
 export default function Services(){
     const [filterIndex, setFilterIndex] = useState(1);

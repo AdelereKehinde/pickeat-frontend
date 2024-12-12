@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput,  } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
-import { Link, router } from "expo-router";
+import { Link, router, useGlobalSearchParams } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Profile from '../../assets/icon/profile.svg';
 import Camera from '../../assets/icon/camera.svg';
@@ -16,14 +16,18 @@ import { getRequest, postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import PhoneNumber from '@/components/NumberField';
-
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 export default function CreateProduct(){
+    const {id} = useGlobalSearchParams()
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
     };
 
+    type mealInfo = { id: number; category: string; meal_name: 'string'; meal_description: string; thumbnail: string; discount: string; price: string; in_stock: string;}
+    const [mealData, setMealData] = useState<mealInfo>()
+    
     type ApiCategories = { id: string; category_name: string;};
     // Define the type for an array of ApiCategories objects
     type ApiCategoriesArray = ApiCategories[];
@@ -38,6 +42,7 @@ export default function CreateProduct(){
 
     const [data, setData] = useState({}); // To store the API data
     const [loading, setLoading] = useState(false); // Loading state
+    const [fetchloading, setFetchLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
     const validateInput = () =>{
@@ -50,9 +55,22 @@ export default function CreateProduct(){
     useEffect(() => {
       const fetchCategories = async () => {
           try {
+              if(id){
+                setFetchLoading(true)
+                const mealDetails = await getRequest<mealInfo>(`${ENDPOINTS['inventory']['meal']}${id}`, true);
+                // alert(JSON.stringify(mealDetails)) 
+                setMealData(mealDetails)
+                setMealName(mealDetails.meal_name)
+                setDescription(mealDetails.meal_description)
+                setPriceDiscount(mealDetails.discount)
+                setMealPrice(mealDetails.price)
+
+                setFetchLoading(false)
+              }
               const response = await getRequest<ApiCategoriesArray>(ENDPOINTS['inventory']['categories'], false); // Authenticated
               setCategoryOption(response)
           } catch (error) {
+              setFetchLoading(false)
               alert(error);
           }
       };
@@ -144,26 +162,36 @@ export default function CreateProduct(){
               <TitleTag withprevious={true} title='Menu' withbell={false}/>
             </View>
 
+            {fetchloading && (
+              <FullScreenLoader />
+            )}
+
             <View className='px-4 w-full mt-4'>
               <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center mt-4'>
                 <TouchableOpacity
                 onPress={pickImage}
                 className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${thumbnail && 'border-2 border-custom-green'}`}>
                   {/* Image Preview */}
-                  {thumbnail?
+                  {id?
                     <Image 
-                    source={{ uri: thumbnail }} 
+                    source={{ uri: mealData?.thumbnail }} 
                     style={{ width: 100, height: 100}} />
                     :
-                    <View>
-                      <Camera/>
-                      <Text
-                      style={{fontFamily: 'Inter-SemiBold'}}
-                      className='text-[8px] text-gray-700 text-center -mt-2'
-                      >
-                        Upload{'\n'} Meal Photo
-                      </Text>
-                    </View>
+                    thumbnail?
+                      <Image 
+                      source={{ uri: thumbnail }} 
+                      style={{ width: 100, height: 100}} />
+                      :
+                      <View>
+                        <Camera/>
+                        <Text
+                        style={{fontFamily: 'Inter-SemiBold'}}
+                        className='text-[8px] text-gray-700 text-center -mt-2'
+                        >
+                          Upload{'\n'} Meal Photo
+                        </Text>
+                      </View>
+                    
                   }
                 </TouchableOpacity>
                 <View  className='ml-4'>
@@ -201,13 +229,13 @@ export default function CreateProduct(){
                 className='flex w-full mt-3 space-y-1'
                 >   
                 <View>
-                    <CharField  placeholder="Meal Name*" focus={false} border={true} name='' getValue={(value: string)=>setMealName(value)}/>
+                    <CharField  placeholder="Meal Name*" focus={false} border={true} setValue={mealName} name='' getValue={(value: string)=>setMealName(value)}/>
                 </View>
                 <View>
-                    <PhoneNumber  placeholder="Enter Meal Price*" focus={false} border={true} name='' getValue={(value: string)=>setMealPrice(value)}/>
+                    <PhoneNumber  placeholder="Enter Meal Price*" focus={false} setValue={mealPrice} border={true} name=''  getValue={(value: string)=>setMealPrice(value)}/>
                 </View>
                 <View>
-                    <PhoneNumber  placeholder="Enter Price Discount*" focus={false} border={true} name='' getValue={(value: string)=>setPriceDiscount(value)}/>
+                    <PhoneNumber  placeholder="Enter Price Discount*" focus={false} setValue={priceDiscount} border={true} name='' getValue={(value: string)=>setPriceDiscount(value)}/>
                 </View>
                 <View>
                     <CharFieldDropDown options={category_option.map(item => ({label: item.category_name, value: item.id}))}  placeholder="Category?" focus={false} border={true} name='' getValue={(value: string)=>setMealCategory(value)}/>
@@ -223,6 +251,7 @@ export default function CreateProduct(){
                 </Text>
                 <TextInput
                   onChangeText={setDescription}
+                  value={description}
                   multiline={true}
                   numberOfLines={5}
                   style={{fontFamily: 'Inter-SemiBold'}}

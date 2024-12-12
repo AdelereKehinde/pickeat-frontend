@@ -1,18 +1,23 @@
 import { View, TextInput, Animated, Text } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface Properties {
   name: string,
   placeholder: string,
   border: boolean,
   focus: boolean,
+  setValue?: string,
   getValue: (value: string) => void
 }
 
-const CharField: React.FC<Properties> = ({name, placeholder, border, focus, getValue}) => {
-  const [inputValue, setInputValue] = useState('');
+const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setValue, getValue}) => {
+  const [inputValue, setInputValue] = useState(setValue);
   const [isFocused, setIsFocus] = useState(false);
-
+  
+  useEffect(() => {
+    setInputValue(setValue)
+  }, [setValue]); // Empty dependency array ensures this runs only once (on mount/unmount)
+  
   return (
     <View className="">
       {/* Animated Label */}

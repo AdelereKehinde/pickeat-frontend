@@ -4,6 +4,7 @@ import { router, useGlobalSearchParams } from 'expo-router';
 import { TruncatedText } from './TitleCase';
 interface Properties {
     image:any,
+    id: number,
     name: string,
     price: string,
     discount: string,
@@ -13,7 +14,7 @@ interface Properties {
     description: string,
   }
 
-const VendorProductList: React.FC<Properties> = ({image, name, price, category, discount, discounted_price, description, quantity_in_cart}) =>{
+const VendorProductList: React.FC<Properties> = ({image, id, name, price, category, discount, discounted_price, description, quantity_in_cart}) =>{
     const [quantity, setQuantity] = useState(parseInt(quantity_in_cart))
     return(
         <View className='flex flex-row items-center border-b border-gray-300 w-full p-4 h-28'>
@@ -54,7 +55,7 @@ const VendorProductList: React.FC<Properties> = ({image, name, price, category, 
             <View className='flex h-full justify-between ml-auto'>
                 <View className='px-6 py-1 bg-custom-green rounded-md'>
                     <TouchableOpacity
-                    onPress={()=>{router.push('/vendor/create_product')}}
+                    onPress={()=>{router.push({pathname:'/vendor/create_product', params: { id: id},})}}
                     >
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
@@ -66,7 +67,7 @@ const VendorProductList: React.FC<Properties> = ({image, name, price, category, 
                 </View>
                 <View className='px-6 py-1 bg-blue-100 rounded-md'>
                     <TouchableOpacity
-                    onPress={()=>{router.push('/vendor/create_product')}}
+                    onPress={()=>{router.push({pathname:'/vendor/create_product', params: { id: id},})}}
                     >
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}

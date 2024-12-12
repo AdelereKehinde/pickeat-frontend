@@ -34,11 +34,14 @@ const ENDPOINTS = {
         'reset-password': `${VENDOR_BASE}password/reset`,
         'list': `${VENDOR_BASE}list`,
         'store-list': `${VENDOR_BASE}store/list`,
+        'dashboard': `${VENDOR_BASE}dashboard`,
+        'review': `${VENDOR_BASE}review`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,
         'create-meal': `${INVENTORY_BASE}meal/create`,
         'meal-list': `${INVENTORY_BASE}meal/list`,
+        'meal': `${INVENTORY_BASE}meal/`,
         'special-offer-meal-list': `${INVENTORY_BASE}meal/list/special-offer`,
         'vendor-meal-list': `${INVENTORY_BASE}meal/list/vendor`,
         'kitchen-meal': `${INVENTORY_BASE}meal/`,
@@ -51,12 +54,14 @@ const ENDPOINTS = {
         'checkout': `${CART_BASE}checkout`,
         'checkout-summary': `${CART_BASE}checkout/summary`,
         'buyer-orders': `${CART_BASE}buyer/orders`,
+        'vendor-orders': `${CART_BASE}vendor/orders`,
     },
     'payment': {
         'buyer-create': `${PAYMENT_BASE}buyer/card/create`,
         'wallet-dashboard': `${PAYMENT_BASE}buyer/wallet/dashboard`,
         'fund-wallet': `${PAYMENT_BASE}buyer/wallet/fund`,
         'pay': `${PAYMENT_BASE}buyer/pay`,
+        'vendor-transactions': `${PAYMENT_BASE}transaction/vendor`,
     },
 }
 

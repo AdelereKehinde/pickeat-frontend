@@ -74,6 +74,8 @@ export default function RootLayout() {
       <Stack.Screen name="vendor/order_history" options={{headerShown: false}} />
       <Stack.Screen name="vendor/menu" options={{headerShown: false}} />
       <Stack.Screen name="vendor/create_product" options={{headerShown: false}} />
+      <Stack.Screen name="vendor/earnings" options={{headerShown: false}} />
+      <Stack.Screen name="vendor/reviews" options={{headerShown: false}} />
     </Stack>
   );
 }

@@ -6,7 +6,7 @@ import Time from '../assets/icon/time.svg';
 import Location from '../assets/icon/location.svg';
 
 interface Properties {
-    image:any,
+    image:string,
     name: string,
     time: string,
     address: string,
@@ -18,7 +18,7 @@ const VendorOrder: React.FC<Properties> = ({image, name, address, time, status})
         <View className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
             <View className=''>    
                 <Image 
-                source={image}
+                source={{uri: image}}
                 className='border'
                 width={55}
                 height={70}
@@ -79,7 +79,7 @@ const VendorOrder: React.FC<Properties> = ({image, name, address, time, status})
                 </View>
             )}
 
-            {(status === 'confirmed') && (
+            {(status === 'completed') && (
                 <View className='ml-auto'>
                     <TouchableOpacity 
                     onPress={()=>{}}

@@ -6,19 +6,17 @@ import TitleCase from './TitleCase';
 interface Properties {
     kitchen:any,
     image:any,
-    items: string[],
     date: string,
     price: string,
-    order_id: string,
     status: string
   }
 
-const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, items, order_id, status}) =>{
+const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, status}) =>{
     return(
         <View className='flex flex-row items-center justify-between border-b border-gray-300 w-full py-3 px-6'>
             <View className=''>    
                 <Image 
-                source={image}
+                source={{uri: image}}
                 className='border'
                 width={55}
                 height={70}

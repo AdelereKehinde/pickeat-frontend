@@ -4,17 +4,18 @@ import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import VendorProductList from '@/components/VendorProductList';
 import TitleCase from '@/components/TitleCase';
-
+import Empty from '../../assets/icon/Empty2.svg';
 import Search from '../../assets/icon/search.svg';
 import Add from '../../assets/icon/add_product.svg';
 import Check from '../../assets/icon/check.svg'
-
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 
 export default function Menu(){
+    const [loading, setLoading] = useState(false);
     type CategoryArray = { id: string; category_name: string;}[];
-    type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type MealArray = { id: number; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type ApiResponse = { count: string; next: string; previous: string; results: MealArray;};
     
     const [meals, setMeals] = useState<MealArray>([]);
@@ -22,11 +23,14 @@ export default function Menu(){
     useEffect(() => {
         const fetchCategories = async () => {
             try {
+                setLoading(true)
                 const response = await getRequest<ApiResponse>(ENDPOINTS['inventory']['vendor-meal-list'], true); // Authenticated
                 // alert(JSON.stringify(response.results))
                 setMeals(response.results) 
+                setLoading(false)
             } catch (error) {
-                alert(error);
+                // alert(JSON.stringify(error));
+                setLoading(false)
             }
         };
     
@@ -178,27 +182,49 @@ export default function Menu(){
                     ItemSeparatorComponent={() => <View className='' />}
                 />
             </View>
-            {meals.length == 0 && (
-                <View className='flex items-center'>
-                    <Text
-                    className='text-custom-green text-[18px]'
-                    style={{fontFamily: 'Inter-Bold'}}
-                    >
-                        Create Product
-                    </Text>
-                    <TouchableOpacity
-                    onPress={()=>{router.push('/vendor/create_product')}}
-                    className=''>
-                        <Add width={100} height={100} />
-                    </TouchableOpacity>
-                </View>
-            )} 
+            
             <View className='w-full bg-gray-50 mb-40 pb-2 '>
                 <ScrollView className='w-full space-y-1 mb-56'>
+                    {(!loading && meals.length == 0) && (
+                        <View className='flex items-center'>
+                            <Text
+                            className='text-custom-green text-[18px]'
+                            style={{fontFamily: 'Inter-Bold'}}
+                            >
+                                Empty
+                            </Text>
+                            <TouchableOpacity
+                            onPress={()=>{router.push('/vendor/create_product')}}
+                            className=''>
+                                <Add width={100} height={100} />
+                            </TouchableOpacity>
+                        </View>
+                    )} 
+                    {(loading) && 
+                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 5 }).map((_, index) => (
+                                <View key={index} className='mt-5 border-b border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                        <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                        <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                    }
                     {meals.map((item) => (
                         <View key={item.id}>
                             <VendorProductList 
                             image={item.thumbnail} 
+                            id={item.id}
                             category={TitleCase(item.category[0].category_name)}
                             name={TitleCase(item.meal_name)} 
                             price={item.price} 

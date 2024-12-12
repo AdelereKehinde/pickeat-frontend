@@ -1,0 +1,232 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Text, View, TouchableOpacity,StatusBar, ScrollView, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
+import { Link, router } from "expo-router";
+import { FontAwesome } from '@expo/vector-icons';
+import TitleTag from '@/components/Title';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import RatingMeter from '@/components/Rating Meter';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+import Empty from '../../assets/icon/empy_transaction.svg';
+
+export default function Reviews(){
+    type RatingData = { total_reviews: number; average_rating: number; star_5_count: number; star_4_count: number; star_3_count: number; star_2_count: number; star_1_count: number;};
+    type ReviewData = { id: number; name: string; avatar: string; rating: number; comment: string; date: string;}[];
+    type EarningResponse = {rating: RatingData; review: ReviewData};
+    type ApiResponse = { status: string; message: string; data: EarningResponse;};
+    const [data, setData] = useState<ApiResponse>()
+    const [loading, setLoading] = useState(false); // Loading state
+    
+    const [reviewData, setReviewData] = useState<ReviewData>([]);
+    const [ratingData, setRatingData] = useState<RatingData>();
+    const [rating, setRating] = useState(0);
+    const [noOfReview, setNoOfReview] = useState(0);
+    const [noOf5Star, setNoOf5Star] = useState(0);
+    const [noOf4Star, setNoOf4Star] = useState(0);
+    const [noOf3Star, setNoOf3Star] = useState(0);
+    const [noOf2Star, setNoOf2Star] = useState(0);
+    const [noOf1Star, setNoOf1Star] = useState(0);
+    
+
+    useEffect(() => {
+        const fetchMeals = async () => {
+            try {
+                setLoading(true)
+                const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['review']}`, true);
+                // alert(JSON.stringify(response))
+                setRatingData(response.data.rating)
+                setReviewData(response.data.review)
+                setRating(response.data.rating.average_rating)
+                setNoOfReview(response.data.rating.total_reviews)
+                setNoOf5Star(response.data.rating.star_5_count)
+                setNoOf4Star(response.data.rating.star_4_count)
+                setNoOf3Star(response.data.rating.star_3_count)
+                setNoOf2Star(response.data.rating.star_2_count)
+                setNoOf1Star(response.data.rating.star_1_count)
+                setData(response)
+                setLoading(false)
+            } catch (error) {
+                setLoading(false) 
+                alert(error);
+            } 
+        };
+    
+    fetchMeals(); 
+    }, []); // Empty dependency array ensures this runs once
+
+    const maxStars = 5; // Maximum stars
+    // Create an array to represent each star
+    const stars = Array.from({ length: maxStars }, (_, i) => {
+        if (i < Math.floor(rating)) {
+        return 'full'; // Full star
+        } else if (i < rating) {
+        return 'half'; // Half star
+        } else {
+        return 'empty'; // Empty star
+        }
+    });
+
+    const subStars= (rating: number) => Array.from({ length: maxStars }, (_, i) => {
+        if (i < Math.floor(rating)) {
+        return 'full'; // Full star
+        } else if (i < rating) {
+        return 'half'; // Half star
+        } else {
+        return 'empty'; // Empty star
+        }
+    });
+
+
+    return (
+        <View 
+        className='w-full h-full bg-white flex items-center'
+        >
+            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+            <View className='w-full bg-gray-100'>
+                <TitleTag withprevious={false} title='Reviews' withbell={false} />
+            </View>
+
+            <ScrollView className='w-full px-2'>
+                <View 
+                style={styles.shadow_box}
+                className='w-full p-4 rounded-lg shadow-2xl'
+                >
+                    <Text
+                    className='text-[16px] self-start mt-5'
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        Reviews
+                    </Text>
+                    <View className='w-full mx-auto'>
+                        <Text 
+                        className='text-[30px] text-gray-700'
+                        style={{fontFamily: 'Inter-Bold'}}>
+                            {rating.toFixed(1)}
+                        </Text>
+                        <View className='flex flex-row space-x-2'>
+                            {stars.map((type, index) => (
+                                <FontAwesome
+                                key={index}
+                                name={
+                                    type === 'full'
+                                    ? 'star'
+                                    : type === 'half'
+                                    ? 'star-half-o'
+                                    : 'star-o'
+                                }
+                                size={30}
+                                color="#228B22" // Gold color for stars
+                                />
+                            ))}
+                        </View>
+                        <Text 
+                        className='text-[13px] text-gray-500'
+                        style={{fontFamily: 'Inter-Medium'}}>
+                            ({noOfReview} Reviews)
+                        </Text>
+                    </View>
+                </View>
+
+                <View className='px-4 mt-2 mb-4'>
+                    <RatingMeter star={5} rating={noOf5Star} total={noOfReview} />
+                    <RatingMeter star={4} rating={noOf4Star} total={noOfReview} />
+                    <RatingMeter star={3} rating={noOf3Star} total={noOfReview} />
+                    <RatingMeter star={2} rating={noOf2Star} total={noOfReview} />
+                    <RatingMeter star={1} rating={noOf1Star} total={noOfReview} />
+                </View>
+
+                <View className='w-full space-y-5 mt-5 mb-10'>
+                    {((!loading || (reviewData.length !== 0)) && reviewData.length === 0 ) && (
+                        <View className='flex items-center'> 
+                            <Empty/>
+                            <Text
+                            className={`text-[11px] text-gray-600`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                You don't have a review yet
+                            </Text>
+                        </View>
+                    )}
+                    {(reviewData.length === 0 && loading) && 
+                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <View key={index} className='border-b border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                        <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                        <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
+                                        <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                        <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                    }
+                    {reviewData.map((item, index) => (
+                        <View key={index} className='w-full px-4'>
+                            <Text 
+                            className='text-[13px] text-gray-500'
+                            style={{fontFamily: 'Inter-Medium'}}>
+                                {item.date}
+                            </Text>
+                            <View className='flex flex-row items-center space-x-3 mt-2'>
+                                <View className='bg-green-100 rounded-full w-10 h-10 flex items-center justify-around'>
+                                    <Text 
+                                    className='text-[13px] text-custom-green'
+                                    style={{fontFamily: 'Inter-Medium'}}>
+                                        AK
+                                    </Text>
+                                </View>
+                                <Text 
+                                className='text-[13px]'
+                                style={{fontFamily: 'Inter-Medium'}}>
+                                    {item.name}
+                                </Text>
+                            </View>
+                            <View className='flex flex-row space-x-2 mt-2'>
+                                {subStars(item.rating).map((type, index) => (
+                                    <FontAwesome
+                                    key={index}
+                                    name={
+                                        type === 'full'
+                                        ? 'star'
+                                        : type === 'half'
+                                        ? 'star-half-o'
+                                        : 'star-o'
+                                    }
+                                    size={20}
+                                    color="#228B22" // Gold color for stars
+                                    />
+                                ))}
+                            </View>
+                            <Text 
+                            className='text-[14px] text-gray-800 mt-2'
+                            style={{fontFamily: 'Inter-Regular'}}>
+                                {item.comment}
+                            </Text>
+                        </View>                
+                    ))}
+                </View>
+            </ScrollView>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    shadow_box: {
+      // iOS shadow properties
+      shadowColor: '#1212126a',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 5,
+      // Android shadow property
+      elevation: 100,
+    },
+  });

@@ -21,6 +21,7 @@ export default function Account(){
         'email': 'sussyjames@outlook.com',
         'phone_number': '+2349063287855'
     })
+    
     return (
         <View className=' bg-gray-50 w-full h-full flex items-center'>
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
@@ -106,7 +107,7 @@ export default function Account(){
                 </View>
                 <View className='w-full px-5 my-1'>
                     <Pressable
-                    onPress={()=>{alert('clicked')}}
+                    onPress={()=>{(router.push("/vendor/earnings"))}}
                     className='flex flex-row w-full items-center'
                     >
                         <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>
@@ -138,7 +139,7 @@ export default function Account(){
                 </View>
                 <View className='w-full px-5 my-1'>
                     <Pressable
-                    onPress={()=>{alert('clicked')}}
+                    onPress={()=>{(router.push("/vendor/reviews"))}}
                     className='flex flex-row w-full items-center'
                     >
                         <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>
