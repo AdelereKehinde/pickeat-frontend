@@ -162,7 +162,7 @@ export default function Account(){
                 </View>
 
                 <Pressable
-                onPress={()=>{alert('Logged out')}}
+                onPress={()=>{()=>{router.replace('/login')}}}
                 className={`text-center bg-custom-green rounded-xl p-4 w-[90%] self-center mt-7 text-white flex flex-row items-center`}
                 >
                     <Text
