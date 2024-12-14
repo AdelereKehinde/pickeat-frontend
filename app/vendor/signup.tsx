@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../../assets/images/Logo.svg';
@@ -74,14 +74,15 @@ export default function SignUp(){
 
       } catch (error:any) {
         setLoading(false)
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response.data['data']['message'],
+          text2: error.data?.data?.message || "Unknown Error",
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data['data']['message']); // Set error message
+        setError(error.data?.data?.message || "Unknown Error"); // Set error message
       }
     };
 
@@ -89,13 +90,14 @@ export default function SignUp(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <View className='mt-10'>
+          <ScrollView className='w-full'>
+            <View className='mt-10 mx-auto'>
               <Logo width={120} height={120} />
             </View>
 
             <Text
             style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green text -mt-8'
+            className='text-custom-green text -mt-8 mx-auto'
             >
               PickEAT PickIT
             </Text>
@@ -258,6 +260,7 @@ export default function SignUp(){
               </TouchableOpacity>
             </View>
             <Toast config={toastConfig} />
+          </ScrollView>
         </View>
     )
 }

@@ -37,6 +37,12 @@ export default function Menu(){
         fetchCategories();
       }, []); // Empty dependency array ensures this runs once
     
+    const handleRemoveItem = (itemId: number) => { 
+        // alert(itemId)
+        var newMeals = meals.filter((item)=>item.id != itemId)
+        setMeals(newMeals); 
+    };
+
     const Details = {
         kitchen: {
             name: 'Mardiya Kitchen',
@@ -187,16 +193,10 @@ export default function Menu(){
                 <ScrollView className='w-full space-y-1 mb-56'>
                     {(!loading && meals.length == 0) && (
                         <View className='flex items-center'>
-                            <Text
-                            className='text-custom-green text-[18px]'
-                            style={{fontFamily: 'Inter-Bold'}}
-                            >
-                                Empty
-                            </Text>
                             <TouchableOpacity
                             onPress={()=>{router.push('/vendor/create_product')}}
                             className=''>
-                                <Add width={100} height={100} />
+                                <Empty />
                             </TouchableOpacity>
                         </View>
                     )} 
@@ -223,6 +223,7 @@ export default function Menu(){
                     {meals.map((item) => (
                         <View key={item.id}>
                             <VendorProductList 
+                            onRemove={handleRemoveItem}
                             image={item.thumbnail} 
                             id={item.id}
                             category={TitleCase(item.category[0].category_name)}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StatusBar, Pressable, Image, TouchableOpacity } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Link } from "expo-router";
+import { useUser } from '@/context/UserProvider';
 import TitleTag from '@/components/Title';
 import User from '../../../assets/icon/user.svg'
 import History from '../../../assets/icon/history.svg'
@@ -16,11 +17,7 @@ import Earnings from '../../../assets/icon/earnings.svg'
 import Logout from '../../../assets/icon/log_out.svg'
 
 export default function Account(){
-    const [userData, setUserData] = useState({
-        'name': 'James Sussy Milburn',
-        'email': 'sussyjames@outlook.com',
-        'phone_number': '+2349063287855'
-    })
+    const { user } = useUser();
     
     return (
         <View className=' bg-gray-50 w-full h-full flex items-center'>
@@ -32,7 +29,7 @@ export default function Account(){
             <View className='bg-gray-100 w-full py-4 relative flex items-center justify-center'>
                 <View className='w-24 h-24 overflow-hidden rounded-full'>
                     <Image 
-                    source={require('../../../assets/images/image22.jpg')}
+                    source={{uri: user?.avatar}}
                     className='w-24 h-24'
                     />
                 </View>
@@ -40,19 +37,19 @@ export default function Account(){
                 className='text-2xl'
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
-                    {userData.name}
+                    {user?.full_name || 'No full name'}
                 </Text>
                 <Text
                 className='text-[13px] text-gray-500'
                 style={{fontFamily: 'Inter-Medium'}}
                 >
-                    {userData.email}
+                    {user?.email || "No email"}
                 </Text>
                 <Text
                 className='text-[12px] text-custom-green'
                 style={{fontFamily: 'Inter-Medium'}}
                 >
-                    {userData.phone_number}
+                    {user?.phone_number || "no number"}
                 </Text>
             </View>
 
@@ -171,7 +168,7 @@ export default function Account(){
                 </View>
 
                 <Pressable
-                onPress={()=>{alert('Logged out')}}
+                onPress={()=>{router.replace('/vendor/login')}}
                 className={`text-center bg-custom-green rounded-xl p-4 w-[90%] self-center mt-7 text-white flex flex-row items-center`}
                 >
                     <Text

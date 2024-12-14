@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -124,7 +124,7 @@ export default function AccountSetup2(){
               <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             </View>
 
-            <View className='px-4 w-full mt-4'>
+            <ScrollView className='px-4 w-full mt-4'>
 
               <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center'>
               <TouchableOpacity
@@ -270,7 +270,7 @@ export default function AccountSetup2(){
                           
                 </TouchableOpacity>
               </View>
-            </View>
+            </ScrollView>
             <Toast config={toastConfig} />
         </View>
     )

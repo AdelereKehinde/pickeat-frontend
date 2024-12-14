@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StatusBar, Pressable, Image, TouchableOpacity } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Link } from "expo-router";
+import { useUser } from '@/context/UserProvider';
 import TitleTag from '@/components/Title';
 import User from '../../assets/icon/user.svg'
 import History from '../../assets/icon/history.svg'
@@ -13,11 +14,7 @@ import Support from '../../assets/icon/support.svg'
 import Logout from '../../assets/icon/log_out.svg'
 
 export default function Account(){
-    const [userData, setUserData] = useState({
-        'name': 'James Sussy Milburn',
-        'email': 'sussyjames@outlook.com',
-        'phone_number': '+2349063287855'
-    })
+    const { user } = useUser();
     return (
         <View className=' bg-gray-50 w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
@@ -34,19 +31,19 @@ export default function Account(){
                 className='text-2xl'
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
-                    {userData.name}
+                    {user?.full_name}
                 </Text>
                 <Text
                 className='text-[13px] text-gray-500'
                 style={{fontFamily: 'Inter-Medium'}}
                 >
-                    {userData.email}
+                    {user?.email || "No email"}
                 </Text>
                 <Text
                 className='text-[12px] text-custom-green'
                 style={{fontFamily: 'Inter-Medium'}}
                 >
-                    {userData.phone_number}
+                    {user?.phone_number || "No number"}
                 </Text>
             </View>
 

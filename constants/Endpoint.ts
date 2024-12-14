@@ -45,6 +45,7 @@ const ENDPOINTS = {
         'special-offer-meal-list': `${INVENTORY_BASE}meal/list/special-offer`,
         'vendor-meal-list': `${INVENTORY_BASE}meal/list/vendor`,
         'kitchen-meal': `${INVENTORY_BASE}meal/`,
+        'delete-meal': `${INVENTORY_BASE}meal/delete`,
     },
     'cart': {
         'add': `${CART_BASE}add`,

@@ -12,8 +12,11 @@ import Email from '../../assets/icon/mail2.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
+import { useUser } from '@/context/UserProvider';
 
 export default function VendorLogin(){
+    const { setUser } = useUser();
+
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
@@ -38,13 +41,20 @@ export default function VendorLogin(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { onboarded: string; message: string; token:string; refresh: string };
+          type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {email: email,password: password}, true);
 
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
           setLoading(false)
+          setUser({
+            email: res.data.email,
+            phone_number:  res.data.phone_number,
+            avatar: res.data.avatar,
+            first_name: res.data.first_name,
+            full_name: res.data.full_name
+          })
           setData(res); // Display or use response data as needed
 
           Toast.show({

@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import SpecialOffer from '@/components/SpecialOfferCard';
 import KitchenCard from '@/components/Kitchen';
-
+import { useUser } from '@/context/UserProvider';
 import Account from '../../assets/icon/account.svg';
 import Mail from '../../assets/icon/mail.svg';
 import Notification from '../../assets/icon/notification.svg';
@@ -18,7 +18,7 @@ import { TruncatedText } from '@/components/TitleCase';
 
 export default function Dashboard(){
     const {name} = useGlobalSearchParams()
-
+    const { user } = useUser();
     const [address, setAddress] = useState('')
 
     type VendorStore = { id: string; avatar: string; business_name: string;};
@@ -75,7 +75,7 @@ export default function Dashboard(){
                             <Text
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                Welcome, {name}
+                                Welcome, {user?.first_name}
                             </Text>
                             :
                             <TouchableOpacity

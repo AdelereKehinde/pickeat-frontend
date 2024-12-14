@@ -4,17 +4,17 @@ import { Link, router, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../assets/images/Logo.svg';
-import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
+import { useUser } from '@/context/UserProvider';
 
 export default function Login(){
     const {next} = useGlobalSearchParams()
-
+    const { setUser } = useUser();
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
@@ -38,14 +38,20 @@ export default function Login(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { message: string; token:string; refresh: string, name:string; };
+          type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signin'], {email: email,password: password}, false);
           
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
           setLoading(false)
-
+          setUser({
+            email: res.data.email,
+            phone_number:  res.data.phone_number,
+            avatar: res.data.avatar,
+            first_name: res.data.first_name,
+            full_name: res.data.full_name
+          })
           Toast.show({
             type: 'success',
             text1: "Welcome back",

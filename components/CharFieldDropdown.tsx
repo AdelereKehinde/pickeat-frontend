@@ -1,5 +1,5 @@
 import { View, TextInput, Animated, Text,TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 
 type OptionType = {
@@ -13,15 +13,24 @@ interface Properties {
   border: boolean,
   focus: boolean,
   options: OptionType[],
+  setValue?: string,
   getValue: (value: string) => void
 }
 
-const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, getValue}) => {
+const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, setValue,  getValue}) => {
     const [inputValue, setInputValue] = useState('');
     const [isFocused, setIsFocus] = useState(false);
 
     const [isVisible, setIsVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState(''); 
+    useEffect(() => {
+        for(var i=0; i<options.length; i++){
+            if(options[i].value == setValue){
+                setInputValue(options[i].label + "")
+                break
+            }
+        }
+      }, [setValue]); // Empty dependency array ensures this runs only once (on mount/unmount)
 
     const handleSelect = (option:string, value:string|number) => {
         setSelectedOption(option);

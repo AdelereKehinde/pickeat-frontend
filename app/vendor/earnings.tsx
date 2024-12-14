@@ -131,7 +131,7 @@ export default function Earnings(){
                         className={`text-[11px] text-gray-600`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
-                            We’ll notify you when there’s an order
+                            We’ll notify you when there’s a transaction
                         </Text>
                     </View>
                 )}
