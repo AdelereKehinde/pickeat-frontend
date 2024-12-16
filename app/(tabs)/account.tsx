@@ -23,7 +23,7 @@ export default function Account(){
             <View className='bg-gray-100 w-full py-4 relative flex items-center justify-center'>
                 <View className='w-24 h-24 overflow-hidden rounded-full'>
                     <Image 
-                    source={require('../../assets/images/image22.jpg')}
+                    source={{uri: user?.avatar}}
                     className='w-24 h-24'
                     />
                 </View>

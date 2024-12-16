@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable } from "react-native";
+import { Text, View, StatusBar, ActivityIndicator, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable, Keyboard } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
@@ -15,11 +15,13 @@ import Filter from '../../assets/icon/filter.svg';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
+import { useIsFocused } from '@react-navigation/native';
+import useDebounce from '@/components/Debounce';
 
 export default function Dashboard(){
     const {name} = useGlobalSearchParams()
     const { user } = useUser();
-    const [address, setAddress] = useState('')
+    const [searchValue, setSearchValue] = useState('')
 
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
@@ -36,32 +38,73 @@ export default function Dashboard(){
     const [specialOffer, setSpecialOffer] = useState<MealArray>([]);
     const [sellers, setSellers] = useState<SellerResponseResult>([]);
     const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
+
+    const isNavFocused = useIsFocused();
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await getRequest<MealResponse>(ENDPOINTS['inventory']['meal-list'], true); // Authenticated
-                // alert(JSON.stringify(response.results))
-                setMeals(response.results) 
-                const response2 = await getRequest<MealResponse>(ENDPOINTS['inventory']['special-offer-meal-list'], true);
-                // alert(JSON.stringify(response2.results))
-                setSpecialOffer(response2.results) 
-                const response3 = await getRequest<sellerResponse>(ENDPOINTS['vendor']['list'], true);
-                // alert(JSON.stringify(response3.results))
-                setSellers(response3.results) 
-                const response4 = await getRequest<kitchenResponse>(ENDPOINTS['vendor']['store-list'], true);
-                // alert(JSON.stringify(response4.results))
-                setKitchens(response4.results)
-            } catch (error) {
-                alert(error); 
-            }
-        };
-    
-        fetchCategories();
+        if (isNavFocused){
+            const fetchCategories = async () => {
+                try {
+                    const response = await getRequest<MealResponse>(ENDPOINTS['inventory']['meal-list'], true); // Authenticated
+                    // alert(JSON.stringify(response.results))
+                    setMeals(response.results) 
+                    const response2 = await getRequest<MealResponse>(ENDPOINTS['inventory']['special-offer-meal-list'], true);
+                    // alert(JSON.stringify(response2.results))
+                    setSpecialOffer(response2.results) 
+                    const response3 = await getRequest<sellerResponse>(ENDPOINTS['vendor']['list'], true);
+                    // alert(JSON.stringify(response3.results))
+                    setSellers(response3.results) 
+                    const response4 = await getRequest<kitchenResponse>(ENDPOINTS['vendor']['store-list'], true);
+                    // alert(JSON.stringify(response4.results))
+                    setKitchens(response4.results)
+                } catch (error) {
+                    alert(error); 
+                }
+            };
+        
+            fetchCategories();
+        }
     }, []); // Empty dependency array ensures this runs once
 
     const [isFocused, setIsFocus] = useState(false);
     const {width, height} = Dimensions.get('window')
 
+    const [loading, setLoading] = useState(false);
+    const [searchResults, setSearchResults] = useState<MealArray>([])
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const searchMeals = async (query: string) => {
+        setLoading(true);
+        try {
+          const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?search=${query}`, true);
+          setSearchResults(response.results); // Update results or set empty array
+        //   alert(JSON.stringify(response.results))
+          setDropdownVisible(query.length > 0 && searchResults.length > 0);
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+    // Create a debounced version of fetchMeals with 500ms delay
+    const debouncedSearch = useDebounce(searchMeals, 2000);
+
+    const handleSearch = (query: string) => {
+        setSearchValue(query);
+        if (query.trim() === '') {
+          setSearchResults([]); // Clear results if input is empty
+          setLoading(false);
+          return;
+        }
+        debouncedSearch(query); // Call debounced function
+    };
+
+    const handleCancel = () => {
+        setSearchValue(''); // Clear search query
+        setSearchResults([]); // Clear search results
+        setDropdownVisible(false); // Hide the dropdown
+        Keyboard.dismiss(); // Optionally dismiss the keyboard
+    };
+    
     return (
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
@@ -112,12 +155,22 @@ export default function Dashboard(){
                         autoFocus={false}
                         onFocus={()=>setIsFocus(true)}
                         onBlur={()=>setIsFocus(false)}
-                        onChangeText={setAddress}
-                        defaultValue={address}
+                        onChangeText={handleSearch}
+                        value={searchValue}
                         placeholder="Search for available foods"
                         placeholderTextColor=""
                     />
-                    <TouchableOpacity 
+                    {(loading) && (
+                        <View className='absolute top-3 right-10'>
+                            <ActivityIndicator size="small" color="#228B22" />
+                        </View>
+                    )}
+                    {(searchValue.length  > 0 && dropdownVisible) && (
+                        <TouchableOpacity onPress={handleCancel} className="ml-2 absolute top-3 right-7">
+                            <Text className="text-custom-green">Cancel</Text>
+                        </TouchableOpacity>
+                    )}
+                    {/* <TouchableOpacity 
                     onPress={()=>{}}
                     className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
                         <Text
@@ -129,8 +182,42 @@ export default function Dashboard(){
                         <View className=''>
                             <Filter width={15} height={15} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
+                    
+                {/* Dropdown Scrollable List */}
+                {dropdownVisible && (
+                    <View
+                    className="absolute top-44 bg-gray-100 w-full shadow-md max-h-52 border border-gray-200 z-40 mt-2"
+                    >
+                        <ScrollView
+                        className='w-full'
+                        >
+                        {searchResults.map((meal) => (
+                            <TouchableOpacity
+                            key={meal.id}
+                            className="flex-row items-center px-4 py-2 border-b border-gray-300"
+                            onPress={handleCancel} // Close dropdown on meal select
+                            >
+                            <Image
+                                source={{ uri: meal.thumbnail }}
+                                className="w-10 h-10 rounded-md mr-3"
+                            />
+                            <Text
+                            style={{fontFamily: 'Inter-Regular'}}
+                            className="text-base font-medium text-[12px]">
+                                {meal.meal_name}
+                            </Text>
+                            </TouchableOpacity>
+                        ))}
+                        </ScrollView>
+                    </View>
+                )}
+
+                {/* No results found text */}
+                {searchResults.length === 0 && searchValue !== '' && (
+                    <Text style={{fontFamily: 'Inter-Regular'}} className="text-center text-gray-500">No products found</Text>
+                )}
 
                 <View className="mt-3 px-3 h-40">
                     {(meals.length === 0) && 

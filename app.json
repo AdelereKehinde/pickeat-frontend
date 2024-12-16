@@ -15,10 +15,20 @@
       "supportsTablet": true
     },
     "android": {
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon/logo.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "config": {
+        "networkSecurityConfig": {
+          "cleartextTrafficPermitted": true
+        }
+      },
+      "package": "com.dev_haywhy.Pickeat"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +41,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8d931e4d-7f0b-452d-9300-23b9f10f7318"
+      }
     }
   }
 }
