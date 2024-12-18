@@ -11,6 +11,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Services(){
     const [filterIndex, setFilterIndex] = useState(1);
@@ -77,111 +78,113 @@ export default function Services(){
 
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-gray-100 w-full'>
-                <TitleTag withprevious={false} title='Bookings' withbell={true} />
-            </View>
-            
-            <Text
-            className='text-custom-green text-[18px] self-start pl-5 pt-5'
-            style={{fontFamily: 'Inter-SemiBold'}}
-            >
-                My Bookings
-            </Text>
-
-            <View className='my-3 mt-5 flex flex-row w-full justify-around'>
-                <TouchableOpacity 
-                    onPress={()=>{Filter(1) }}
-                    className={`${(filterIndex == 1)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                >   
-                    {(filterIndex == 1) && (
-                        <Check />
-                    )}
-                    <Text
-                    className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        Pending
-                    </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                    onPress={()=>{Filter(2)}}
-                    className={`${(filterIndex == 2)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                >
-                    {(filterIndex == 2) && (
-                        <Check />
-                    )}
-                    <Text
-                    className={`${(filterIndex == 2)? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        Cancelled
-                    </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity 
-                    onPress={()=>{Filter(3)}}
-                    className={`${(filterIndex == 3)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                >
-                    {(filterIndex == 3) && (
-                        <Check />
-                    )}
-                    <Text
-                    className={`${(filterIndex == 3)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        Completed
-                    </Text>
-                </TouchableOpacity>
-            </View>
-
-            <View className='bg-white w-full my-3 mb-52 relative flex flex-row items-center justify-center'>
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <View className='bg-gray-100 w-full'>
+                    <TitleTag withprevious={false} title='Bookings' withbell={true} />
+                </View>
                 
-                <ScrollView className='w-full mt-4 space-y-1'>
-                    {((!loading || (parentorders.length !== 0)) && orders.length === 0 ) && (
-                        <View className='flex items-center'> 
-                            <Empty/>
-                        </View>
-                    )}
-                    {(parentorders.length === 0 && loading) && 
-                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                            {Array.from({ length: 4 }).map((_, index) => (
-                                <View key={index} className='border-b border-gray-300'>
-                                    <ContentLoader
-                                    width="100%"
-                                    height={100}
-                                    backgroundColor="#f3f3f3"
-                                    foregroundColor="#ecebeb"
-                                    >
-                                        {/* Add custom shapes for your skeleton */}
-                                        {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                        <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                        <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                        <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                        <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                        <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
-                                    </ContentLoader>
-                                </View> 
-                            ))}
-                        </View>
-                    }
-                    {orders.map((item) => (
-                        <View key={item.id}> 
-                            <ServicesLayout 
-                            kitchen={item.store_name} 
-                            price={item.price} 
-                            date={item.date}
-                            items={item.items}
-                            order_id={item.order_id}
-                            status={item.status}
-                            /> 
-                        </View>
-                    ))}
-                </ScrollView>
+                <Text
+                className='text-custom-green text-[18px] self-start pl-5 pt-5'
+                style={{fontFamily: 'Inter-SemiBold'}}
+                >
+                    My Bookings
+                </Text>
+
+                <View className='my-3 mt-5 flex flex-row w-full justify-around'>
+                    <TouchableOpacity 
+                        onPress={()=>{Filter(1) }}
+                        className={`${(filterIndex == 1)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                    >   
+                        {(filterIndex == 1) && (
+                            <Check />
+                        )}
+                        <Text
+                        className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        style={{fontFamily: 'Inter-Medium'}}
+                        >
+                            Pending
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={()=>{Filter(2)}}
+                        className={`${(filterIndex == 2)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                    >
+                        {(filterIndex == 2) && (
+                            <Check />
+                        )}
+                        <Text
+                        className={`${(filterIndex == 2)? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
+                        style={{fontFamily: 'Inter-Medium'}}
+                        >
+                            Cancelled
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                        onPress={()=>{Filter(3)}}
+                        className={`${(filterIndex == 3)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                    >
+                        {(filterIndex == 3) && (
+                            <Check />
+                        )}
+                        <Text
+                        className={`${(filterIndex == 3)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        style={{fontFamily: 'Inter-Medium'}}
+                        >
+                            Completed
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
+                    
+                    <ScrollView className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {((!loading || (parentorders.length !== 0)) && orders.length === 0 ) && (
+                            <View className='flex items-center'> 
+                                <Empty/>
+                            </View>
+                        )}
+                        {(parentorders.length === 0 && loading) && 
+                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <View key={index} className='border-b border-gray-300'>
+                                        <ContentLoader
+                                        width="100%"
+                                        height={100}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                        }
+                        {orders.map((item) => (
+                            <View key={item.id}> 
+                                <ServicesLayout 
+                                kitchen={item.store_name} 
+                                price={item.price} 
+                                date={item.date}
+                                items={item.items}
+                                order_id={item.order_id}
+                                status={item.status}
+                                /> 
+                            </View>
+                        ))}
+                    </ScrollView>
+                </View>
+                <Toast config={toastConfig} />
             </View>
-            <Toast config={toastConfig} />
-        </View>
+        </SafeAreaView>
     )
 }

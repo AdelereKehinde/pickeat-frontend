@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, ActivityIndicator, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 
@@ -11,7 +11,7 @@ import TitleTag from '@/components/Title';
 import CharField from '@/components/CharField';
 import PhoneNumber from '@/components/NumberField';
 import { postRequest, patchRequest } from '@/api/RequestHandler';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CompleteProfile(){
     const toastConfig = {
@@ -73,48 +73,53 @@ export default function CompleteProfile(){
 
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
-            <View className='w-full p-5'>
-                <Text 
-                style={{fontFamily: 'Inter-Regular'}}
-                className='text-gray-400 text-[13px]'>
-                    Let us know how to properly address you
-                </Text>    
+        <SafeAreaView>
+          <View className=' bg-white w-full h-full flex items-center'>
+              <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+              <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
 
-                <View className='mt-10 space-y-3'>
-                    <View>
-                      <CharField  placeholder="Enter first name" focus={true} border={false} name='First name' getValue={(value: string)=>setFirstName(value)}/>
-                    </View>
-                    <View>
-                      <CharField  placeholder="Enter last name" focus={false} border={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
-                    </View>
-                    <View>
-                      <PhoneNumber border={false}  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
-                    </View>
-                </View>
-                
-                <TouchableOpacity
-                onPress={handleSubmit}
-                className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-72 flex items-center justify-around`}
-                >
-                    {loading && (
-                    <View className='absolute w-full top-4'>
-                        <ActivityIndicator size="small" color="#fff" />
-                    </View>
-                    )}
-                
-                    <Text
-                    className='text-white'
+              <ScrollView className='w-full p-5' contentContainerStyle={{ flexGrow: 1 }}>
+                {/* <View className='w-full p-5'> */}
+                    <Text 
                     style={{fontFamily: 'Inter-Regular'}}
+                    className='text-gray-400 text-[13px]'>
+                        Let us know how to properly address you
+                    </Text>    
+
+                    <View className='mt-10 space-y-3'>
+                        <View>
+                          <CharField  placeholder="Enter first name" focus={true} border={false} name='First name' getValue={(value: string)=>setFirstName(value)}/>
+                        </View>
+                        <View>
+                          <CharField  placeholder="Enter last name" focus={false} border={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
+                        </View>
+                        <View>
+                          <PhoneNumber border={false}  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
+                        </View>
+                    </View>
+                    
+                    <TouchableOpacity
+                    onPress={handleSubmit}
+                    className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-auto mb-5 flex items-center justify-around`}
                     >
-                    Continue
-                    </Text>
-                        
-                </TouchableOpacity>
-            </View>
-            <Toast config={toastConfig} />
-        </View>
+                        {loading && (
+                        <View className='absolute w-full top-4'>
+                            <ActivityIndicator size="small" color="#fff" />
+                        </View>
+                        )}
+                    
+                        <Text
+                        className='text-white'
+                        style={{fontFamily: 'Inter-Regular'}}
+                        >
+                        Continue
+                        </Text>
+                            
+                    </TouchableOpacity>
+                {/* </View> */}
+              </ScrollView>
+              <Toast config={toastConfig} />
+          </View>
+        </SafeAreaView>
     )
 }

@@ -9,7 +9,7 @@ import CustomToast from '@/components/ToastConfig';
 import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Registration(){
     const toastConfig = {
@@ -76,11 +76,12 @@ export default function Registration(){
     };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-          <ScrollView>
-            <View className='mt-10 mx-auto'>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <View className='mx-auto'>
               <Logo width={200} height={200} />
             </View>
 
@@ -159,7 +160,7 @@ export default function Registration(){
               </Text>
             
 
-            <View className='w-[90%] mx-auto mt-32'>
+            <View className='w-[90%] mx-auto mt-auto'>
               <Text
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[9px] text-gray-500 tracking-tighter'
@@ -170,7 +171,7 @@ export default function Registration(){
               <TouchableOpacity
               // onPress={()=>{router.push("/enter_code")}}
               onPress={handleRegistration}
-              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 mb-10 flex items-center justify-around`}
               >
                 {loading && (
                   <View className='absolute w-full top-4'>
@@ -191,5 +192,6 @@ export default function Registration(){
           </ScrollView>
           <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }

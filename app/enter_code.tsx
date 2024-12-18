@@ -13,6 +13,7 @@ import CustomToast from '@/components/ToastConfig';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { getRequest } from '@/api/RequestHandler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function EnterCode(){
     const {email, id} = useGlobalSearchParams()
@@ -129,58 +130,60 @@ export default function EnterCode(){
     };
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag withprevious={true} title='Enter code' withbell={false}/>
-            <ScrollView className='w-full'>
-            <View className='w-full'>
-                <View className="flex-row justify-center mt-36 space-x-3">
-                    {code.map((digit, index) => (
-                        <TextInput
-                        key={index}
-                        ref={inputRefs[index]}
-                        className={`w-12 h-12 text-center text-[18px] rounded-md bg-gray-100  ${(focusedIndex === index) && ('border border-custom-green')}`}
-                        value={digit}
-                        onFocus={() => handleFocus(index)} // Handle focus event
-                        onBlur={handleBlur} // Handle blur event
-                        onChangeText={(text) => handleChangeText(text, index)}
-                        onKeyPress={(e) => handleKeyPress(e, index)}
-                        keyboardType="number-pad"
-                        maxLength={1}
-                        autoFocus={index === 0} // Autofocus the first input
-                        />
-                    ))}
-                </View>
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <TitleTag withprevious={true} title='Enter code' withbell={false}/>
+                <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+                    
+                        <View className="flex-row justify-center mt-36 space-x-3">
+                            {code.map((digit, index) => (
+                                <TextInput
+                                key={index}
+                                ref={inputRefs[index]}
+                                className={`w-12 h-12 text-center text-[18px] rounded-md bg-gray-100  ${(focusedIndex === index) && ('border border-custom-green')}`}
+                                value={digit}
+                                onFocus={() => handleFocus(index)} // Handle focus event
+                                onBlur={handleBlur} // Handle blur event
+                                onChangeText={(text) => handleChangeText(text, index)}
+                                onKeyPress={(e) => handleKeyPress(e, index)}
+                                keyboardType="number-pad"
+                                maxLength={1}
+                                autoFocus={index === 0} // Autofocus the first input
+                                />
+                            ))}
+                        </View>
 
-                <Text
-                style={{fontFamily: 'Inter-Regular'}}
-                className='text-center text-[11px] text-gray-500 tracking-tighter mt-14'
-                >
-                    Enter the four digit code sent to {'\n'} {email}
-                </Text>
+                        <Text
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className='text-center text-[11px] text-gray-500 tracking-tighter mt-14'
+                        >
+                            Enter the four digit code sent to {'\n'} {email}
+                        </Text>
 
-                <TouchableOpacity
-                onPress={handleSubmit}
-                className={`text-center ${(codeComplete)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-80 flex items-center justify-around`}
-                >
-                    {loading && (
-                    <View className='absolute w-full top-4'>
-                        <ActivityIndicator size="small" color="#fff" />
-                    </View>
-                    )}
-                
-                    <Text
-                    className='text-white'
-                    style={{fontFamily: 'Inter-Regular'}}
-                    >
-                    Continue
-                    </Text>
+                        <TouchableOpacity
+                        onPress={handleSubmit}
+                        className={`text-center ${(codeComplete)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-auto flex items-center justify-around mb-10`}
+                        >
+                            {loading && (
+                            <View className='absolute w-full top-4'>
+                                <ActivityIndicator size="small" color="#fff" />
+                            </View>
+                            )}
                         
-                </TouchableOpacity>
+                            <Text
+                            className='text-white'
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                            Continue
+                            </Text>
+                                
+                        </TouchableOpacity>
 
+                    
+                </ScrollView>
+                <Toast config={toastConfig} />
             </View>
-            </ScrollView>
-            <Toast config={toastConfig} />
-        </View>
+        </SafeAreaView>
     )
 }

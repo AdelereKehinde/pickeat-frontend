@@ -7,6 +7,7 @@ import Mail from '../assets/icon/mail.svg';
 import Notification from '../assets/icon/notification.svg';
 import Search from '../assets/icon/search.svg';
 import Filter from '../assets/icon/filter.svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export default function ConfirmOrder(){
@@ -29,77 +30,79 @@ export default function ConfirmOrder(){
     };
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-white w-full'>
-                <TitleTag withprevious={true} title='Confirm order' withbell={false} />
-            </View>
-
-            <View className='px-4 mt-4'>
-                <View className='flex flex-row'>
-                    <View>
-                        <Image
-                        source={require('../assets/images/image23.jpg')}
-                        />
-                    </View>
-
-                    <View className='ml-2'>
-                        <Text
-                        style={{fontFamily: 'Inter-SemiBold'}} 
-                        className='text-[13px] mt-1'
-                        >
-                            {Details.kitchen.name}  
-                        </Text>
-                        <Text
-                        style={{fontFamily: 'Inter-Regular'}} 
-                        className='text-[10px] text-gray-700 font-medium mt-1'
-                        >
-                            {Details.kitchen.description}
-                        </Text>
-                    </View>
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <View className='bg-white w-full'>
+                    <TitleTag withprevious={true} title='Confirm order' withbell={false} />
                 </View>
-               
-                <Text
-                    style={{fontFamily: 'Inter-Regular'}} 
-                    className='text-[10px] text-gray-700 font-medium mt-3'
-                >
-                    {Details.kitchen.delivery_condition}
-                </Text>
-                
-            </View>
 
-            <Text
-                style={{fontFamily: 'Inter-SemiBold'}} 
-                className='text-[14px] mt-4 pl-8 w-full'
-                >
-                    Add Ons
-                </Text>
-
-            <View className="px-4 py-3 h-38 ">
-                <FlatList
-                    className=''
-                    data={Details.products}
-                    renderItem={({ item }) => (
-                        <View className='w-20 flex items-center'>
+                <View className='px-4 mt-4'>
+                    <View className='flex flex-row'>
+                        <View>
                             <Image
-                                source={item.source}
-                                className="w-16 h-16 rounded-full" // Set desired width and height
+                            source={require('../assets/images/image23.jpg')}
                             />
+                        </View>
+
+                        <View className='ml-2'>
+                            <Text
+                            style={{fontFamily: 'Inter-SemiBold'}} 
+                            className='text-[13px] mt-1'
+                            >
+                                {Details.kitchen.name}  
+                            </Text>
                             <Text
                             style={{fontFamily: 'Inter-Regular'}} 
-                            className='text-[10px] text-gray-700 mt-1 text-center'
+                            className='text-[10px] text-gray-700 font-medium mt-1'
                             >
-                                {item.name}
+                                {Details.kitchen.description}
                             </Text>
                         </View>
-                    )}
-                    keyExtractor={item => item.id}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    // Add spacing between items with ItemSeparatorComponent
-                    ItemSeparatorComponent={() => <View className='w-2' />}
-                />
+                    </View>
+                
+                    <Text
+                        style={{fontFamily: 'Inter-Regular'}} 
+                        className='text-[10px] text-gray-700 font-medium mt-3'
+                    >
+                        {Details.kitchen.delivery_condition}
+                    </Text>
+                    
+                </View>
+
+                <Text
+                    style={{fontFamily: 'Inter-SemiBold'}} 
+                    className='text-[14px] mt-4 pl-8 w-full'
+                    >
+                        Add Ons
+                    </Text>
+
+                <View className="px-4 py-3 h-38 ">
+                    <FlatList
+                        className=''
+                        data={Details.products}
+                        renderItem={({ item }) => (
+                            <View className='w-20 flex items-center'>
+                                <Image
+                                    source={item.source}
+                                    className="w-16 h-16 rounded-full" // Set desired width and height
+                                />
+                                <Text
+                                style={{fontFamily: 'Inter-Regular'}} 
+                                className='text-[10px] text-gray-700 mt-1 text-center'
+                                >
+                                    {item.name}
+                                </Text>
+                            </View>
+                        )}
+                        keyExtractor={item => item.id}
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        // Add spacing between items with ItemSeparatorComponent
+                        ItemSeparatorComponent={() => <View className='w-2' />}
+                    />
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }

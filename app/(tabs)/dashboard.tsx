@@ -17,6 +17,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
 import { useIsFocused } from '@react-navigation/native';
 import useDebounce from '@/components/Debounce';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Dashboard(){
     const {name} = useGlobalSearchParams()
@@ -106,210 +107,154 @@ export default function Dashboard(){
     };
     
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <ScrollView className={`overflow-hidden`}>
-                <View className='mt-10 flex flex-row justify-between py-2 px-4 w-full`'>
-                    <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
-                        <View className=''>
-                            <Account />
-                        </View>
-                        {(name)?
-                            <Text
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Welcome, {user?.first_name}
-                            </Text>
-                            :
-                            <TouchableOpacity
-                            onPress={()=>router.replace('/login')}
-                            >
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <ScrollView className={`overflow-hidden`} contentContainerStyle={{ flexGrow: 1 }}>
+                    <View className='flex flex-row justify-between py-2 px-4 w-full`'>
+                        <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
+                            <View className=''>
+                                <Account />
+                            </View>
+                            {(name)?
                                 <Text
                                 style={{fontFamily: 'Inter-SemiBold'}}
-                                className=''
                                 >
-                                Please Login
+                                    Welcome, {user?.first_name}
                                 </Text>
-                            </TouchableOpacity>
-                        }
-                        
-                    </View>
-
-                    <View className='flex flex-row space-x-2 rounded-2xl bg-gray-100 p-3'>
-                        <View className=' '>
-                            <Notification />
-                        </View>
-                        <View className=''>
-                            <Mail />
-                        </View>
-                    </View>
-                </View>
-
-                <View className='mt-5 w-full px-5 relative flex flex-row items-center justify-center'>
-                    <View className='absolute left-6 z-10'>
-                        <Search />
-                    </View>
-                    <TextInput
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[11px]`}
-                        autoFocus={false}
-                        onFocus={()=>setIsFocus(true)}
-                        onBlur={()=>setIsFocus(false)}
-                        onChangeText={handleSearch}
-                        value={searchValue}
-                        placeholder="Search for available foods"
-                        placeholderTextColor=""
-                    />
-                    {(loading) && (
-                        <View className='absolute top-3 right-10'>
-                            <ActivityIndicator size="small" color="#228B22" />
-                        </View>
-                    )}
-                    {(searchValue.length  > 0 && dropdownVisible) && (
-                        <TouchableOpacity onPress={handleCancel} className="ml-2 absolute top-3 right-7">
-                            <Text className="text-custom-green">Cancel</Text>
-                        </TouchableOpacity>
-                    )}
-                    {/* <TouchableOpacity 
-                    onPress={()=>{}}
-                    className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
-                        <Text
-                        className='text-custom-green'
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Filter
-                        </Text>
-                        <View className=''>
-                            <Filter width={15} height={15} />
-                        </View>
-                    </TouchableOpacity> */}
-                </View>
-                    
-                {/* Dropdown Scrollable List */}
-                {dropdownVisible && (
-                    <View
-                    className="absolute top-44 bg-gray-100 w-full shadow-md max-h-52 border border-gray-200 z-40 mt-2"
-                    >
-                        <ScrollView
-                        className='w-full'
-                        >
-                        {searchResults.map((meal) => (
-                            <TouchableOpacity
-                            key={meal.id}
-                            className="flex-row items-center px-4 py-2 border-b border-gray-300"
-                            onPress={handleCancel} // Close dropdown on meal select
-                            >
-                            <Image
-                                source={{ uri: meal.thumbnail }}
-                                className="w-10 h-10 rounded-md mr-3"
-                            />
-                            <Text
-                            style={{fontFamily: 'Inter-Regular'}}
-                            className="text-base font-medium text-[12px]">
-                                {meal.meal_name}
-                            </Text>
-                            </TouchableOpacity>
-                        ))}
-                        </ScrollView>
-                    </View>
-                )}
-
-                {/* No results found text */}
-                {searchResults.length === 0 && searchValue !== '' && (
-                    <Text style={{fontFamily: 'Inter-Regular'}} className="text-center text-gray-500">No products found</Text>
-                )}
-
-                <View className="mt-3 px-3 h-40">
-                    {(meals.length === 0) && 
-                    <View className='flex flex-row space-x-2 w-screen p-2 overflow-hidden'>
-                        {Array.from({ length: 3 }).map((_, index) => (
-                            <View key={index}>
-                                <ContentLoader
-                                    width={140}
-                                    height={140}
-                                    backgroundColor="#f3f3f3"
-                                    foregroundColor="#ecebeb"
+                                :
+                                <TouchableOpacity
+                                onPress={()=>router.replace('/login')}
+                                >
+                                    <Text
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    className=''
                                     >
-                                        {/* Add custom shapes for your skeleton */}
-                                        <Rect x="0" y="0" rx="5" ry="5" width="140" height="112" />
-                                        <Rect x="10" y="115" rx="5" ry="5" width="120" height="15" />
-                                </ContentLoader>
+                                    Please Login
+                                    </Text>
+                                </TouchableOpacity>
+                            }
+                            
+                        </View>
+
+                        <View className='flex flex-row space-x-2 rounded-2xl bg-gray-100 p-3'>
+                            <View className=' '>
+                                <Notification />
                             </View>
-                        ))}
+                            <View className=''>
+                                <Mail />
+                            </View>
+                        </View>
                     </View>
-                    }
-                    <FlatList
-                        className=''
-                        data={meals}
-                        renderItem={({ item }) => (
-                            <View className=' flex items-center'>
-                                <Image
-                                    source={{uri: item.thumbnail}}
-                                    className="w-28 h-28 rounded-md" // Set desired width and height
-                                />
-                                <Text
-                                style={{fontFamily: 'Inter-Regular'}} 
-                                className='text-[11px] text-gray-700 font-medium mt-1'
-                                >
-                                    {TruncatedText(item.meal_name, 13)}
-                                </Text>
+
+                    <View className='mt-5 w-full px-5 relative flex flex-row items-center justify-center'>
+                        <View className='absolute left-6 z-10'>
+                            <Search />
+                        </View>
+                        <TextInput
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[11px]`}
+                            autoFocus={false}
+                            onFocus={()=>setIsFocus(true)}
+                            onBlur={()=>setIsFocus(false)}
+                            onChangeText={handleSearch}
+                            value={searchValue}
+                            placeholder="Search for available foods"
+                            placeholderTextColor=""
+                        />
+                        {(loading) && (
+                            <View className='absolute top-3 right-10'>
+                                <ActivityIndicator size="small" color="#228B22" />
                             </View>
                         )}
-                        keyExtractor={item => item.id}
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        // Add spacing between items with ItemSeparatorComponent
-                        ItemSeparatorComponent={() => <View className='w-3' />}
-                    />
-                </View>
+                        {(searchValue.length  > 0 && dropdownVisible) && (
+                            <TouchableOpacity onPress={handleCancel} className="ml-2 absolute top-3 right-7">
+                                <Text className="text-custom-green">Cancel</Text>
+                            </TouchableOpacity>
+                        )}
+                        {/* <TouchableOpacity 
+                        onPress={()=>{}}
+                        className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
+                            <Text
+                            className='text-custom-green'
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                Filter
+                            </Text>
+                            <View className=''>
+                                <Filter width={15} height={15} />
+                            </View>
+                        </TouchableOpacity> */}
+                    </View>
+                        
+                    {/* Dropdown Scrollable List */}
+                    {dropdownVisible && (
+                        <View
+                        className="absolute top-44 bg-gray-100 w-full shadow-md max-h-52 border border-gray-200 z-40 mt-2"
+                        >
+                            <ScrollView
+                            className='w-full'
+                            >
+                            {searchResults.map((meal) => (
+                                <TouchableOpacity
+                                key={meal.id}
+                                className="flex-row items-center px-4 py-2 border-b border-gray-300"
+                                onPress={handleCancel} // Close dropdown on meal select
+                                >
+                                <Image
+                                    source={{ uri: meal.thumbnail }}
+                                    className="w-10 h-10 rounded-md mr-3"
+                                />
+                                <Text
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className="text-base font-medium text-[12px]">
+                                    {meal.meal_name}
+                                </Text>
+                                </TouchableOpacity>
+                            ))}
+                            </ScrollView>
+                        </View>
+                    )}
 
-                <View className=''>
-                    <Link
-                    href="/special_offer"
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className='text-gray-500 text-[12px] px-3'
-                    >
-                        Special offers for you
-                    </Link>
-                    <View className={`h-[180px] p-3`}>
-                        {(specialOffer.length === 0) && 
-                        <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
-                            {Array.from({ length: 2 }).map((_, index) => (
-                                <View key={index} className='flex items-center'>
+                    {/* No results found text */}
+                    {searchResults.length === 0 && searchValue !== '' && (
+                        <Text style={{fontFamily: 'Inter-Regular'}} className="text-center text-gray-500">No products found</Text>
+                    )}
+
+                    <View className="mt-3 px-3 h-40">
+                        {(meals.length === 0) && 
+                        <View className='flex flex-row space-x-2 w-screen p-2 overflow-hidden'>
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <View key={index}>
                                     <ContentLoader
-                                    width={250}
-                                    height={150}
-                                    backgroundColor="#f3f3f3"
-                                    foregroundColor="#ecebeb"
-                                    >
-                                        {/* Add custom shapes for your skeleton */}
-                                        <Rect x="0" y="0" rx="5" ry="5" width="250" height="150" />
-                                        <Rect x="120" y="20" rx="10" ry="20" width="150" height="25" />
-                                        <Rect x="5" y="100" rx="5" ry="5" width="240" height="45" />
-                                        <Circle cx="220" cy="122" r="20" />
+                                        width={140}
+                                        height={140}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            <Rect x="0" y="0" rx="5" ry="5" width="140" height="112" />
+                                            <Rect x="10" y="115" rx="5" ry="5" width="120" height="15" />
                                     </ContentLoader>
-                                </View> 
+                                </View>
                             ))}
                         </View>
                         }
                         <FlatList
                             className=''
-                            data={specialOffer}
+                            data={meals}
                             renderItem={({ item }) => (
-                                <View key={item.id} className='w-[250px] h-[150px]'>
-                                    <Pressable
-                                    onPress={()=>{(router.push(`/kitchen_product?kitchen_id=${item.vendor_store.id}`))}}
-                                    >
-                                        <SpecialOffer 
-                                        image={item.thumbnail}
-                                        title={TruncatedText(item.vendor_store.business_name, 25)}
-                                        sub_title='$2.99 Delivery fee | 15-20 min'
-                                        discount={item.discount}
-                                        discount_in_price={item.discount}
-                                        discounted_price={item.discounted_price}
-                                        tan_or_orange='tan'
+                                <View className=' flex items-center'>
+                                    <Image
+                                        source={{uri: item.thumbnail}}
+                                        className="w-28 h-28 rounded-md" // Set desired width and height
                                     />
-                                    </Pressable>
+                                    <Text
+                                    style={{fontFamily: 'Inter-Regular'}} 
+                                    className='text-[11px] text-gray-700 font-medium mt-1'
+                                    >
+                                        {TruncatedText(item.meal_name, 13)}
+                                    </Text>
                                 </View>
                             )}
                             keyExtractor={item => item.id}
@@ -319,98 +264,156 @@ export default function Dashboard(){
                             ItemSeparatorComponent={() => <View className='w-3' />}
                         />
                     </View>
-                </View>
 
-                <View className='mt-2'>
-                    <Text
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className='text-gray-500 text-[12px] px-3'
-                    >
-                        Featured Sellers
-                    </Text>
-                    <View className='h-24 p-3'>
-                        {(specialOffer.length === 0) && 
+                    <View className=''>
+                        <Link
+                        href="/special_offer"
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className='text-gray-500 text-[12px] px-3'
+                        >
+                            Special offers for you
+                        </Link>
+                        <View className={`h-[180px] p-3`}>
+                            {(specialOffer.length === 0) && 
                             <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 4 }).map((_, index) => (
+                                {Array.from({ length: 2 }).map((_, index) => (
                                     <View key={index} className='flex items-center'>
                                         <ContentLoader
-                                        width={100}
-                                        height={101}
+                                        width={250}
+                                        height={150}
                                         backgroundColor="#f3f3f3"
                                         foregroundColor="#ecebeb"
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            <Circle cx="50" cy="20" r="20" />
-                                            <Rect x="5" y="50" rx="5" ry="5" width="90" height="10" />
+                                            <Rect x="0" y="0" rx="5" ry="5" width="250" height="150" />
+                                            <Rect x="120" y="20" rx="10" ry="20" width="150" height="25" />
+                                            <Rect x="5" y="100" rx="5" ry="5" width="240" height="45" />
+                                            <Circle cx="220" cy="122" r="20" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                            }
+                            <FlatList
+                                className=''
+                                data={specialOffer}
+                                renderItem={({ item }) => (
+                                    <View key={item.id} className='w-[250px] h-[150px]'>
+                                        <Pressable
+                                        onPress={()=>{(router.push(`/kitchen_product?kitchen_id=${item.vendor_store.id}`))}}
+                                        >
+                                            <SpecialOffer 
+                                            image={item.thumbnail}
+                                            title={TruncatedText(item.vendor_store.business_name, 25)}
+                                            sub_title='$2.99 Delivery fee | 15-20 min'
+                                            discount={item.discount}
+                                            discount_in_price={item.discount}
+                                            discounted_price={item.discounted_price}
+                                            tan_or_orange='tan'
+                                        />
+                                        </Pressable>
+                                    </View>
+                                )}
+                                keyExtractor={item => item.id}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                // Add spacing between items with ItemSeparatorComponent
+                                ItemSeparatorComponent={() => <View className='w-3' />}
+                            />
+                        </View>
+                    </View>
+
+                    <View className='mt-2'>
+                        <Text
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className='text-gray-500 text-[12px] px-3'
+                        >
+                            Featured Sellers
+                        </Text>
+                        <View className='h-24 p-3'>
+                            {(specialOffer.length === 0) && 
+                                <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
+                                    {Array.from({ length: 4 }).map((_, index) => (
+                                        <View key={index} className='flex items-center'>
+                                            <ContentLoader
+                                            width={100}
+                                            height={101}
+                                            backgroundColor="#f3f3f3"
+                                            foregroundColor="#ecebeb"
+                                            >
+                                                {/* Add custom shapes for your skeleton */}
+                                                <Circle cx="50" cy="20" r="20" />
+                                                <Rect x="5" y="50" rx="5" ry="5" width="90" height="10" />
+                                            </ContentLoader>
+                                        </View> 
+                                    ))}
+                                </View>
+                            }
+                            <FlatList
+                                className=''
+                                data={sellers}
+                                renderItem={({ item }) => (
+                                    <View
+                                    key={item.id}
+                                    className='flex items-center'
+                                    >
+                                        <View className='flex items-center rounded-full overflow-hidden '>
+                                            <Image 
+                                            source={{ uri: item.avatar}}
+                                            className='w-12 h-12'
+                                            />
+                                        </View>
+                                        <Text
+                                        style={{fontFamily: 'Inter-Regular'}}
+                                        className='text-[9px] mt-1'
+                                        >
+                                            {TruncatedText(item.full_name, 18)}
+                                        </Text>
+                                    </View>
+                                )}
+                                keyExtractor={item => item.id}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                // Add spacing between items with ItemSeparatorComponent
+                                ItemSeparatorComponent={() => <View className='w-2' />}
+                            />
+                        </View>
+                    </View>
+
+                    <View className='mb-3 mt-5'>
+                        <Link
+                        href="/kitchen_page"
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className='text-gray-500 text-[12px] px-3'
+                        >
+                            Kitchens near you
+                        </Link>
+                        {(kitchens.length === 0) && 
+                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                                {Array.from({ length: 3 }).map((_, index) => (
+                                    <View key={index} className='mt-5 border-b border-gray-300'>
+                                        <ContentLoader
+                                        width="100%"
+                                        height={100}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                            <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}
                             </View>
                         }
-                        <FlatList
-                            className=''
-                            data={sellers}
-                            renderItem={({ item }) => (
-                                <View
-                                key={item.id}
-                                className='flex items-center'
-                                >
-                                    <View className='flex items-center rounded-full overflow-hidden '>
-                                        <Image 
-                                        source={{ uri: item.avatar}}
-                                        className='w-12 h-12'
-                                        />
-                                    </View>
-                                    <Text
-                                    style={{fontFamily: 'Inter-Regular'}}
-                                    className='text-[9px] mt-1'
-                                    >
-                                        {TruncatedText(item.full_name, 18)}
-                                    </Text>
-                                </View>
-                            )}
-                            keyExtractor={item => item.id}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            // Add spacing between items with ItemSeparatorComponent
-                            ItemSeparatorComponent={() => <View className='w-2' />}
-                        />
+                        {kitchens.map((item) => (
+                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
+                        ))}
                     </View>
-                </View>
-
-                <View className='mb-3 mt-5'>
-                    <Link
-                    href="/kitchen_page"
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className='text-gray-500 text-[12px] px-3'
-                    >
-                        Kitchens near you
-                    </Link>
-                    {(kitchens.length === 0) && 
-                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                            {Array.from({ length: 3 }).map((_, index) => (
-                                <View key={index} className='mt-5 border-b border-gray-300'>
-                                    <ContentLoader
-                                    width="100%"
-                                    height={100}
-                                    backgroundColor="#f3f3f3"
-                                    foregroundColor="#ecebeb"
-                                    >
-                                        {/* Add custom shapes for your skeleton */}
-                                        <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                        <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                        <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                        <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
-                                    </ContentLoader>
-                                </View> 
-                            ))}
-                        </View>
-                    }
-                    {kitchens.map((item) => (
-                        <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
-                    ))}
-                </View>
-            </ScrollView>   
-        </View>
+                </ScrollView>   
+            </View>
+        </SafeAreaView>
     )
 }

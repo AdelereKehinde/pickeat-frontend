@@ -9,6 +9,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AccountSetup3(){
     const toastConfig = {
@@ -130,12 +131,14 @@ export default function AccountSetup3(){
   };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-white flex items-center px-4'
         >
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
             <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='w-full grow'>
               <View className='bg-custom-green p-2'>
                 <View className='space-y-1'>
@@ -237,7 +240,9 @@ export default function AccountSetup3(){
                 </TouchableOpacity>
               </View>
             </View>
-            <Toast config={toastConfig} />
+          </ScrollView>
+          <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }

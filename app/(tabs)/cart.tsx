@@ -13,6 +13,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { useIsFocused } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Cart(){
     const toastConfig = {
@@ -116,94 +117,96 @@ export default function Cart(){
     
     
     return (
-        <View className=' bg-gray-50 w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-gray-100 w-full'>
-                <TitleTag withprevious={false} title='Cart' withbell={true} />
-            </View>
+        <SafeAreaView>
+            <View className=' bg-gray-50 w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <View className='bg-gray-100 w-full'>
+                    <TitleTag withprevious={false} title='Cart' withbell={true} />
+                </View>
 
-            <View className='bg-white w-full relative flex flex-row justify-center mt-3 h-[550px]'>
-                {(!loading && cartItems.length == 0) && (
-                    <View className='flex items-center w-full'> 
-                        <Empty/>
-                    </View>
-                )}
-                <ScrollView className='w-full space-y-1'>
-                    {(cartItems.length === 0 && loading) && 
-                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                            {Array.from({ length: 4 }).map((_, index) => (
-                                <View key={index} className='border-b border-gray-300'>
-                                    <ContentLoader
-                                    width="100%"
-                                    height={100}
-                                    backgroundColor="#f3f3f3"
-                                    foregroundColor="#ecebeb"
-                                    >
-                                        {/* Add custom shapes for your skeleton */}
-                                        <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                        <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                        <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                        <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
-                                    </ContentLoader>
-                                </View> 
-                            ))}
-                        </View>
-                    }
-                    {cartItems.map((item) => (
-                        <View key={item.id} className=''>
-                            <CartItem 
-                            quantity_in_cart={item.quantity}
-                            image={item.thumbnail}
-                            kitchen={item.store_name}
-                            cart_id={item.id}
-                            meal_name={item.meal_name} 
-                            meal_id={item.meal_id}
-                            price={item.discounted_price} 
-                            date="Sep 4, 2021 at 12:14 am"
-                            items={['rice', 'milk shake', 'chicken']}
-                            parentLoadSignal={loadSignal}
-                            onRemove={handleRemoveItem}
-                            onUpdate={UpdateTotalPrice}
-                            onLoading={handleSetLoading}
-                            />
-                        </View>
-                    ))}
-                </ScrollView>
-            </View>
-            <View className='flex flex-row items-center px-5 w-full'>
-                <View className=''>
-                    <Text
-                        className='text-gray-500'
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                        Total: 
-                    </Text>
-                    <Text
-                        className='text-custom-green text-[16px]'
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                        ${totalPrice}
-                    </Text>
-                    </View>
-                <TouchableOpacity
-                onPress={handleCheckout}
-                className={`text-center bg-custom-green ${(cartItems.length == 0 || (loading && !ranOnce) || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
-                >
-                    <Text
-                    className='text-white'
-                    style={{fontFamily: 'Inter-Regular'}}
-                    >
-                    Checkout
-                    </Text>
-                    {(loadSignal) && (
-                        <View className='absolute w-full top-4'>
-                            <ActivityIndicator size="small" color="#000000" />
+                <View className='bg-white w-full relative flex flex-row justify-center mt-3 h-[550px]'>
+                    {(!loading && cartItems.length == 0) && (
+                        <View className='flex items-center w-full'> 
+                            <Empty/>
                         </View>
                     )}
-                </TouchableOpacity>
+                    <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {(cartItems.length === 0 && loading) && 
+                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <View key={index} className='border-b border-gray-300'>
+                                        <ContentLoader
+                                        width="100%"
+                                        height={100}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                            <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                        }
+                        {cartItems.map((item) => (
+                            <View key={item.id} className=''>
+                                <CartItem 
+                                quantity_in_cart={item.quantity}
+                                image={item.thumbnail}
+                                kitchen={item.store_name}
+                                cart_id={item.id}
+                                meal_name={item.meal_name} 
+                                meal_id={item.meal_id}
+                                price={item.discounted_price} 
+                                date="Sep 4, 2021 at 12:14 am"
+                                items={['rice', 'milk shake', 'chicken']}
+                                parentLoadSignal={loadSignal}
+                                onRemove={handleRemoveItem}
+                                onUpdate={UpdateTotalPrice}
+                                onLoading={handleSetLoading}
+                                />
+                            </View>
+                        ))}
+                    </ScrollView>
+                </View>
+                <View className='flex flex-row items-center px-5 w-full'>
+                    <View className=''>
+                        <Text
+                            className='text-gray-500'
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                            Total: 
+                        </Text>
+                        <Text
+                            className='text-custom-green text-[16px]'
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                            ${totalPrice}
+                        </Text>
+                        </View>
+                    <TouchableOpacity
+                    onPress={handleCheckout}
+                    className={`text-center bg-custom-green ${(cartItems.length == 0 || (loading && !ranOnce) || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
+                    >
+                        <Text
+                        className='text-white'
+                        style={{fontFamily: 'Inter-Regular'}}
+                        >
+                        Checkout
+                        </Text>
+                        {(loadSignal) && (
+                            <View className='absolute w-full top-4'>
+                                <ActivityIndicator size="small" color="#000000" />
+                            </View>
+                        )}
+                    </TouchableOpacity>
+                </View>
+                
+                <Toast config={toastConfig} />
             </View>
-            
-            <Toast config={toastConfig} />
-        </View>
+        </SafeAreaView>
     )
 }

@@ -11,6 +11,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Login(){
     const {next} = useGlobalSearchParams()
@@ -82,10 +83,11 @@ export default function Login(){
     };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-          <ScrollView>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-10 mx-auto'>
               <Logo width={200} height={200} />
             </View>
@@ -142,12 +144,12 @@ export default function Login(){
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500  mt-48'
+              className='text-center text-[12px] text-gray-500 mt-auto'
               >
                 Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
               </Text>
 
-            <View className='w-[90%] mx-auto'>
+            <View className='w-[90%] mx-auto mb-10'>
               <TouchableOpacity
               onPress={handleLogin}
               className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
@@ -170,5 +172,6 @@ export default function Login(){
           </ScrollView>
           <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }

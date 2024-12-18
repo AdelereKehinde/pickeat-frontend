@@ -15,6 +15,7 @@ import PhoneNumber from '@/components/NumberField';
 import Delay from '@/constants/Delay';
 import { getRequest, postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AccountSetup1(){
     const { setUser } = useUser();
@@ -136,282 +137,282 @@ export default function AccountSetup1(){
     };
 
     return (
-        <View 
-        className='w-full h-full bg-white flex items-center'
-        >
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+        <SafeAreaView>
+            <View 
+            className='w-full h-full bg-white flex items-center'
+            >
+                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
 
-            <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
-            
-            
+                <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
 
-            <ScrollView className=''>
-                <View className=' w-[95%] mx-auto'>
-                    <View
-                    className='w-full mt-3 flex flex-row items-center p-3 rounded-lg bg-blue-100'
-                    >
-                        <Notice/>
-                        <Text
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className='text-custom-green ml-2 text-[11px]'
+                <ScrollView className='' contentContainerStyle={{ flexGrow: 1 }}>
+                    <View className=' w-[95%] mx-auto'>
+                        <View
+                        className='w-full mt-3 flex flex-row items-center p-3 rounded-lg bg-blue-100'
                         >
-                        Please Kindly provide the correct info below
-                        </Text>
-                    </View>
-
-                    <View
-                    className='flex w-full mt-3 space-y-2'
-                    >
-                        <View>
-                            {
-                                (data.business_name !== "" ) && (
-                                    <Text
-                                    style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-[12px] text-custom-green ml-1 mt'
-                                    >
-                                    Business Name
-                                    </Text>
-                                )
-                            }
-                            <CharField  placeholder="Business Name*" focus={true} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_name: value}))}/>
-                        </View>
-                        {/* <View>
-                            <CharField  placeholder="How do you want to address?" focus={false} border={true} name='' getValue={(value: string)=>setFirstName(value)}/>
-                        </View> */}
-                        {/* <View>
-                            <CharField  placeholder="Full Name*" focus={false} border={true} name='' getValue={(value: string)=>setBusinessName(value)}/>
-                        </View> */}
-                        <View>
-                            {
-                                (data.experience !== 0 ) && (
-                                    <Text
-                                    style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-[12px] text-custom-green ml-1 mt'
-                                    >
-                                    Years of Experience
-                                    </Text>
-                                )
-                            }
-                            <Pressable
-                            className='w-full z-10'
-                            onPress={()=>{setOpenState(prevState => ({...prevState, experience: !openState.experience}));}}
-                            >
-                                <CharFieldDropDown options={experience_options} open={openState.experience}  placeholder="Years of Experience" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, experience: parseInt(value),})); setOpenState(prevState => ({...prevState, experience: false}))}}/>
-                            </Pressable>
-                        </View>
-                    </View>
-
-                    <View
-                    className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
-                    >
-                        <Notice/>
-                        <Text
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className='text-custom-green ml-2 text-[11px]'
-                        >
-                        All necessary info will be sent to business contact provided below
-                        </Text>
-                    </View>
-
-                    <View
-                    className='flex w-full mt-3 space-y-1'
-                    >   
-                        <View>
-                            {
-                                (data.business_email !== "" ) && (
-                                    <Text
-                                    style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-[12px] text-custom-green ml-1 mt'
-                                    >
-                                    Business mail
-                                    </Text>
-                                )
-                            }
-                            <CharField  placeholder="Business mail*" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_email: value}))}/>
-                        </View>
-                        <View className='py-3 border rounded-md border-gray-300 bg-gray-100 px-2'>
+                            <Notice/>
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className='text-[12px] ml-1 mt'
+                            className='text-custom-green ml-2 text-[11px]'
                             >
-                                Selected Country Region
-                                <Text
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className='text-[12px] text-custom-green ml-1 mt'
-                                >
-                                    (Nigeria)
-                                </Text>
+                            Please Kindly provide the correct info below
                             </Text>
                         </View>
-                        {
-                            (data.business_number !== "" ) && (
+
+                        <View
+                        className='flex w-full mt-3 space-y-2'
+                        >
+                            <View>
+                                {
+                                    (data.business_name !== "" ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        Business Name
+                                        </Text>
+                                    )
+                                }
+                                <CharField  placeholder="Business Name*" focus={true} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_name: value}))}/>
+                            </View>
+                            {/* <View>
+                                <CharField  placeholder="How do you want to address?" focus={false} border={true} name='' getValue={(value: string)=>setFirstName(value)}/>
+                            </View> */}
+                            {/* <View>
+                                <CharField  placeholder="Full Name*" focus={false} border={true} name='' getValue={(value: string)=>setBusinessName(value)}/>
+                            </View> */}
+                            <View>
+                                {
+                                    (data.experience !== 0 ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        Years of Experience
+                                        </Text>
+                                    )
+                                }
+                                <Pressable
+                                className='w-full z-10'
+                                onPress={()=>{setOpenState(prevState => ({...prevState, experience: !openState.experience}));}}
+                                >
+                                    <CharFieldDropDown options={experience_options} open={openState.experience}  placeholder="Years of Experience" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, experience: parseInt(value),})); setOpenState(prevState => ({...prevState, experience: false}))}}/>
+                                </Pressable>
+                            </View>
+                        </View>
+
+                        <View
+                        className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
+                        >
+                            <Notice/>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-custom-green ml-2 text-[11px]'
+                            >
+                            All necessary info will be sent to business contact provided below
+                            </Text>
+                        </View>
+
+                        <View
+                        className='flex w-full mt-3 space-y-1'
+                        >   
+                            <View>
+                                {
+                                    (data.business_email !== "" ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        Business mail
+                                        </Text>
+                                    )
+                                }
+                                <CharField  placeholder="Business mail*" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_email: value}))}/>
+                            </View>
+                            <View className='py-3 border rounded-md border-gray-300 bg-gray-100 px-2'>
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
-                                className='text-[12px] text-custom-green ml-1 mt'
+                                className='text-[12px] ml-1 mt'
                                 >
-                                Business phone number
-                                </Text>
-                            )
-                        }
-                        <View className='flex flex-row'>
-                            <View className='rounded-md w-12 bg-gray-100 h-12 flex items-center justify-around mr-2 border border-gray-300'>
-                                <Text
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className='text-gray-600 text-[11px] text-center'
-                                >
-                                    +234
+                                    Selected Country Region
+                                    <Text
+                                    style={{fontFamily: 'Inter-Medium'}}
+                                    className='text-[12px] text-custom-green ml-1 mt'
+                                    >
+                                        (Nigeria)
+                                    </Text>
                                 </Text>
                             </View>
-                            <View className='grow'>
-                                <PhoneNumber  placeholder="Business Phone Number" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_number: value}))}/>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View
-                    className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
-                    >
-                        <Notice/>
-                        <Text
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className='text-custom-green ml-2 text-[11px]'
-                        >
-                        All details you provided must be true, accurate and non-misleading. In the event you provided wrong information, you shall be held liable for such misconduct
-                        </Text>
-                    </View>
-
-                    <View 
-                    className='flex w-full mt-3 space-y-1'
-                    >   
-                        <View>
                             {
-                                (data.profession !== 0 ) && (
+                                (data.business_number !== "" ) && (
                                     <Text
                                     style={{fontFamily: 'Inter-Medium'}}
                                     className='text-[12px] text-custom-green ml-1 mt'
                                     >
-                                    Profession
+                                    Business phone number
                                     </Text>
                                 )
                             }
-                            <Pressable
-                            className='w-full z-30'
-                            onPress={()=>{setOpenState(prevState => ({...prevState, profession: !openState.profession}));}}
-                            >
-                                <CharFieldDropDown options={profession_option.map(item => ({label: item.name, value: item.id}))} open={openState.profession}  placeholder="Profession*" focus={false} border={true} name='' getValue={(value: string)=>{loadCategory(value); setOpenState(prevState => ({...prevState, profession: false}))}}/>
-                            </Pressable>
-                        </View> 
-                        <View>
-                            {/* <CharFieldDropDown options={profession_category_option.map(item => ({label: item.category_name, value: item.id}))}  placeholder="Category*" focus={false} border={true} name='' getValue={(value: string)=>setProfessionCategory(value)}/> */}
-                            {
-                                (data.profession_category !== 0 ) && (
+                            <View className='flex flex-row'>
+                                <View className='rounded-md w-12 bg-gray-100 h-12 flex items-center justify-around mr-2 border border-gray-300'>
                                     <Text
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-[12px] text-custom-green ml-1 mt'
+                                    className='text-gray-600 text-[11px] text-center'
                                     >
-                                    Category
+                                        +234
                                     </Text>
-                                )
-                            }
-                            <Pressable
-                            className='w-full z-20'
-                            onPress={()=>{setOpenState(prevState => ({...prevState, profession_category: !openState.profession_category}));}}
-                            >
-                                <CharFieldDropDown options={profession_category_option.map(item => ({label: item.category_name, value: item.id}))} open={openState.profession_category}  placeholder="Category*" focus={false} border={true} setValue={profession_category} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, profession_category: parseInt(value),})); setOpenState(prevState => ({...prevState, profession_category: false}))}}/>
-                            </Pressable>
-                        </View>
-                        <View>
-                            {
-                                (data.work_alone !== "" ) && (
-                                    <Text
-                                    style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-[12px] text-custom-green ml-1 mt'
-                                    >
-                                    You work alone?
-                                    </Text>
-                                )
-                            }
-                            <Pressable
-                            className='w-full z-10'
-                            onPress={()=>{setOpenState(prevState => ({...prevState, work_alone: !openState.work_alone}));}}
-                            >
-                                <CharFieldDropDown options={work_alone_options} open={openState.work_alone}  placeholder="You work alone?" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, work_alone: value})); setOpenState(prevState => ({...prevState, work_alone: false}))}}/>
-                            </Pressable>
-                        </View> 
-                    </View>
-
-
-                    <View
-                    className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
-                    >
-                        <Notice/>
-                        <Text
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className='text-custom-green ml-2 text-[11px]'
-                        >
-                        In order to make points and benefits from PickEat {'\n'}PickIt please enter your membership ID
-                        </Text>
-                    </View>
-
-                    <View
-                    className='flex w-full mt-3 space-y-1'
-                    >   
-                        <View>
-                            {
-                                (data.promoID !== "" ) && (
-                                    <Text
-                                    style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-[12px] text-custom-green ml-1 mt'
-                                    >
-                                    Membership ID/Promo Code
-                                    </Text>
-                                )
-                            }
-                            <CharField  placeholder="Membership ID/Promo Code" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, promoID: value}))}}/>
-                        </View>
-                    </View>
-                    
-                    <View className='flex flex-row mt-4'>
-                        <TouchableOpacity
-                        onPress={()=>{{setData(prevState => ({...prevState, terms: !prevState.terms}))}}}
-                        className='mr-1 flex flex-row w-full space-x-1'
-                        >
-                            {data.terms? 
-                                <Checkbox/>:
-                                <View className='border border-gray-300 h-5 w-5 rounded-sm'>
-                            
                                 </View>
-                            }
-                            <Text
-                            style={{fontFamily: 'Inter-Regular'}}
-                            className='text-center text-[11px] text-gray-500'
-                            >
-                                I understand and agree with the <Link href="/registration" style={{fontFamily: 'Inter-SemiBold'}} className='text-gray-800'>Terms and Conditions</Link> 
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View className='w-[90%] mx-auto mb-16 mt-3'>
-                        <TouchableOpacity
-                        onPress={handleRequest}
-                        className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
-                        >
-                            <Text
-                            className='text-white'
-                            style={{fontFamily: 'Inter-Regular'}}
-                            >
-                            Continue
-                            </Text>
-                            {loading && (
-                            <View className='absolute w-full top-4'>
-                                <ActivityIndicator size="small" color="#fff" />
+                                <View className='grow'>
+                                    <PhoneNumber  placeholder="Business Phone Number" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_number: value}))}/>
+                                </View>
                             </View>
-                            )}
-                        </TouchableOpacity>
+                        </View>
+
+                        <View
+                        className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
+                        >
+                            <Notice/>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-custom-green ml-2 text-[11px]'
+                            >
+                            All details you provided must be true, accurate and non-misleading. In the event you provided wrong information, you shall be held liable for such misconduct
+                            </Text>
+                        </View>
+
+                        <View 
+                        className='flex w-full mt-3 space-y-1'
+                        >   
+                            <View>
+                                {
+                                    (data.profession !== 0 ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        Profession
+                                        </Text>
+                                    )
+                                }
+                                <Pressable
+                                className='w-full z-30'
+                                onPress={()=>{setOpenState(prevState => ({...prevState, profession: !openState.profession}));}}
+                                >
+                                    <CharFieldDropDown options={profession_option.map(item => ({label: item.name, value: item.id}))} open={openState.profession}  placeholder="Profession*" focus={false} border={true} name='' getValue={(value: string)=>{loadCategory(value); setOpenState(prevState => ({...prevState, profession: false}))}}/>
+                                </Pressable>
+                            </View> 
+                            <View>
+                                {/* <CharFieldDropDown options={profession_category_option.map(item => ({label: item.category_name, value: item.id}))}  placeholder="Category*" focus={false} border={true} name='' getValue={(value: string)=>setProfessionCategory(value)}/> */}
+                                {
+                                    (data.profession_category !== 0 ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        Category
+                                        </Text>
+                                    )
+                                }
+                                <Pressable
+                                className='w-full z-20'
+                                onPress={()=>{setOpenState(prevState => ({...prevState, profession_category: !openState.profession_category}));}}
+                                >
+                                    <CharFieldDropDown options={profession_category_option.map(item => ({label: item.category_name, value: item.id}))} open={openState.profession_category}  placeholder="Category*" focus={false} border={true} setValue={profession_category} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, profession_category: parseInt(value),})); setOpenState(prevState => ({...prevState, profession_category: false}))}}/>
+                                </Pressable>
+                            </View>
+                            <View>
+                                {
+                                    (data.work_alone !== "" ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        You work alone?
+                                        </Text>
+                                    )
+                                }
+                                <Pressable
+                                className='w-full z-10'
+                                onPress={()=>{setOpenState(prevState => ({...prevState, work_alone: !openState.work_alone}));}}
+                                >
+                                    <CharFieldDropDown options={work_alone_options} open={openState.work_alone}  placeholder="You work alone?" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, work_alone: value})); setOpenState(prevState => ({...prevState, work_alone: false}))}}/>
+                                </Pressable>
+                            </View> 
+                        </View>
+
+
+                        <View
+                        className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
+                        >
+                            <Notice/>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-custom-green ml-2 text-[11px]'
+                            >
+                            In order to make points and benefits from PickEat {'\n'}PickIt please enter your membership ID
+                            </Text>
+                        </View>
+
+                        <View
+                        className='flex w-full mt-3 space-y-1'
+                        >   
+                            <View>
+                                {
+                                    (data.promoID !== "" ) && (
+                                        <Text
+                                        style={{fontFamily: 'Inter-Medium'}}
+                                        className='text-[12px] text-custom-green ml-1 mt'
+                                        >
+                                        Membership ID/Promo Code
+                                        </Text>
+                                    )
+                                }
+                                <CharField  placeholder="Membership ID/Promo Code" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, promoID: value}))}}/>
+                            </View>
+                        </View>
+                        
+                        <View className='flex flex-row mt-4'>
+                            <TouchableOpacity
+                            onPress={()=>{{setData(prevState => ({...prevState, terms: !prevState.terms}))}}}
+                            className='mr-1 flex flex-row w-full space-x-1'
+                            >
+                                {data.terms? 
+                                    <Checkbox/>:
+                                    <View className='border border-gray-300 h-5 w-5 rounded-sm'>
+                                
+                                    </View>
+                                }
+                                <Text
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className='text-center text-[11px] text-gray-500'
+                                >
+                                    I understand and agree with the <Link href="/registration" style={{fontFamily: 'Inter-SemiBold'}} className='text-gray-800'>Terms and Conditions</Link> 
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <View className='w-[90%] mx-auto mb-10 mt-3'>
+                            <TouchableOpacity
+                            onPress={handleRequest}
+                            className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+                            >
+                                <Text
+                                className='text-white'
+                                style={{fontFamily: 'Inter-Regular'}}
+                                >
+                                Continue
+                                </Text>
+                                {loading && (
+                                <View className='absolute w-full top-4'>
+                                    <ActivityIndicator size="small" color="#fff" />
+                                </View>
+                                )}
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            </ScrollView>
-            <Toast config={toastConfig} />
-        </View>
+                </ScrollView>
+                <Toast config={toastConfig} />
+            </View>
+        </SafeAreaView>
     )
 }

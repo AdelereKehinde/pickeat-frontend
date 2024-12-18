@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, TouchableOpacity,ActivityIndicator, ScrollView, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../../assets/images/Logo.svg';
@@ -11,6 +11,7 @@ import Email from '../../assets/icon/mail2.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ForgetPassword(){
     const {service,} = useGlobalSearchParams()
@@ -86,16 +87,18 @@ export default function ForgetPassword(){
     };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <View className='mt-5'>
+          <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+            <View className='mt-5 mx-auto'>
               <Logo width={120} height={120} />
             </View>
 
             <Text
             style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green text-lg -mt-8'
+            className='text-custom-green text-lg -mt-8 mx-auto'
             >
               PickEAT PickIT
             </Text>
@@ -166,7 +169,9 @@ export default function ForgetPassword(){
               >
                 Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
             </Text>
+          </ScrollView>
           <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }

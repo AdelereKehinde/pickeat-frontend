@@ -12,6 +12,7 @@ import Filter from '../assets/icon/filter.svg';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function KitchenPageProduct(){
     const {kitchen_id} = useGlobalSearchParams()
@@ -47,81 +48,83 @@ export default function KitchenPageProduct(){
 
     
     return (
-        <View className=' bg-white w-full h-full flex items-center mb-10'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-white w-full'>
-                <TitleTag withprevious={true} title='Kitchen' withbell={true} />
-            </View>
-            
-            <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
-                <View className='absolute left-6 z-10'>
-                    <Search />
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center mb-10'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <View className='bg-white w-full'>
+                    <TitleTag withprevious={true} title='Kitchen' withbell={true} />
                 </View>
-                <TextInput
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
-                    autoFocus={false}
-                    onFocus={()=>setIsFocus(true)}
-                    onBlur={()=>setIsFocus(false)}
-                    onChangeText={setSearchValue}
-                    defaultValue={searchValue}
-                    placeholder="Search for available home services"
-                    placeholderTextColor=""
-                />
-                <TouchableOpacity 
-                onPress={()=>{}}
-                className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
-                    <Text
-                    className='text-custom-green'
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        Filter
-                    </Text>
-                    <View className=''>
-                        <Filter width={15} height={15} />
+                
+                <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
+                    <View className='absolute left-6 z-10'>
+                        <Search />
                     </View>
-                </TouchableOpacity>
-            </View>
-
-            <View className='w-full bg-gray-50 mb-40 pb-2 '>
-                {(kitchenMeal.length === 0) && 
-                    <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                        {Array.from({ length: 5 }).map((_, index) => (
-                            <View key={index} className='mt-5 border-b border-gray-300'>
-                                <ContentLoader
-                                width="100%"
-                                height={100}
-                                backgroundColor="#f3f3f3"
-                                foregroundColor="#ecebeb"
-                                >
-                                    {/* Add custom shapes for your skeleton */}
-                                    <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                    <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                    <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                    <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
-                                </ContentLoader>
-                            </View> 
-                        ))}
-                    </View>
-                }
-                <ScrollView className='w-full space-y-1'>
-                    {kitchenMeal.map((item) => (
-                        <View key={item.id}>
-                            <Product 
-                            image={item.thumbnail} 
-                            meal_id={item.id}
-                            name={TruncatedText(item.meal_name, 17)} 
-                            price={item.price} 
-                            discount={item.discount} 
-                            discounted_price={item.discounted_price} 
-                            quantity_in_cart={item.cart_quantity}
-                            description={TruncatedText(item.meal_description, 18)}
-                            />
+                    <TextInput
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
+                        autoFocus={false}
+                        onFocus={()=>setIsFocus(true)}
+                        onBlur={()=>setIsFocus(false)}
+                        onChangeText={setSearchValue}
+                        defaultValue={searchValue}
+                        placeholder="Search for available home services"
+                        placeholderTextColor=""
+                    />
+                    <TouchableOpacity 
+                    onPress={()=>{}}
+                    className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
+                        <Text
+                        className='text-custom-green'
+                        style={{fontFamily: 'Inter-Medium'}}
+                        >
+                            Filter
+                        </Text>
+                        <View className=''>
+                            <Filter width={15} height={15} />
                         </View>
-                    ))}
-                </ScrollView>
+                    </TouchableOpacity>
+                </View>
+
+                <View className='w-full bg-gray-50 mb-40 pb-2 '>
+                    {(kitchenMeal.length === 0) && 
+                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            {Array.from({ length: 5 }).map((_, index) => (
+                                <View key={index} className='mt-5 border-b border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor="#f3f3f3"
+                                    foregroundColor="#ecebeb"
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                        <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
+                                        <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
+                    }
+                    <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {kitchenMeal.map((item) => (
+                            <View key={item.id}>
+                                <Product 
+                                image={item.thumbnail} 
+                                meal_id={item.id}
+                                name={TruncatedText(item.meal_name, 17)} 
+                                price={item.price} 
+                                discount={item.discount} 
+                                discounted_price={item.discounted_price} 
+                                quantity_in_cart={item.cart_quantity}
+                                description={TruncatedText(item.meal_description, 18)}
+                                />
+                            </View>
+                        ))}
+                    </ScrollView>
+                </View>
+                <Toast config={toastConfig} />
             </View>
-            <Toast config={toastConfig} />
-        </View>
+        </SafeAreaView>
     )
 }

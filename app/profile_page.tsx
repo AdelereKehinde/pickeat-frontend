@@ -11,6 +11,7 @@ import RadioActive from '../assets/icon/radio_active.svg';
 import RadioInctive from '../assets/icon/radio_inactive.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Delay from '@/constants/Delay';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfilePage(){
     const toastConfig = {
@@ -107,229 +108,231 @@ export default function ProfilePage(){
       };
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-gray-100 w-full'>
-                <TitleTag withprevious={true} title='' withbell={false} />
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <View className='bg-gray-100 w-full'>
+                    <TitleTag withprevious={true} title='' withbell={false} />
+                </View>
+
+                <ScrollView className='w-full space-y-1'  contentContainerStyle={{ flexGrow: 1 }}>
+                    <Text
+                    className='text-custom-green text-[16px] self-start pl-5 mt-5'
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        Personal Information
+                    </Text>
+                    <View className='w-[90%] mx-auto space-y-3 mb-3'>
+                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                            <View className='grow'>
+                                <Text
+                                className='text-gray-400 text-[11px]'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    First Name
+                                </Text>
+                                <TextInput
+                                    style={{fontFamily: 'Inter-Medium'}}
+                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    autoFocus={false}
+                                    readOnly={loading}
+                                    onChangeText={setFirstName}
+                                    defaultValue={firstName}
+                                    placeholderTextColor=""
+                                />
+                            </View>
+                            <TouchableOpacity
+                            className={` bg-custom-green ${(loading || resData?.first_name == firstName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
+                            onPress={()=>{handleUpdate('first_name')}}
+                            >
+                                <Text
+                                className='text-white text-[11px] self-start'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Edit
+                                </Text>
+                                {loading && (
+                                    <View className='absolute w-full'>
+                                        <ActivityIndicator size="small" color="#fff" />
+                                    </View>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                            <View className='grow'>
+                                <Text
+                                className='text-gray-400 text-[11px]'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Last Name
+                                </Text>
+                                <TextInput
+                                    style={{fontFamily: 'Inter-Medium'}}
+                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    autoFocus={false}
+                                    readOnly={loading}
+                                    onChangeText={setLastName}
+                                    defaultValue={lastName}
+                                    placeholderTextColor=""
+                                />
+                            </View>
+                            <TouchableOpacity
+                            className={`bg-custom-green ${(loading || resData?.last_name == lastName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
+                            onPress={()=>{handleUpdate('last_name')}}
+                            >
+                                <Text
+                                className='text-white text-[11px] self-start'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Edit
+                                </Text>
+                                {loading && (
+                                    <View className='absolute w-full'>
+                                        <ActivityIndicator size="small" color="#fff" />
+                                    </View>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                            <View className='grow'>
+                                <Text
+                                className='text-gray-400 text-[11px]'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Email
+                                </Text>
+                                <TextInput
+                                    style={{fontFamily: 'Inter-Medium'}}
+                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    autoFocus={false}
+                                    onChangeText={setEmail}
+                                    defaultValue={email}
+                                    readOnly={true}
+                                    placeholderTextColor=""
+                                />
+                            </View>
+                        </View>
+                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                            <View className='grow'>
+                                <Text
+                                className='text-gray-400 text-[11px]'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Phone Number
+                                </Text>
+                                <TextInput
+                                    style={{fontFamily: 'Inter-Medium'}}
+                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    autoFocus={false}
+                                    readOnly={loading}
+                                    onChangeText={setPhoneNumber}
+                                    defaultValue={phoneNumber}
+                                    placeholderTextColor=""
+                                />
+                            </View>
+                            <TouchableOpacity
+                            className={`bg-custom-green ${(loading || resData?.phone_number == phoneNumber) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
+                            onPress={()=>{handleUpdate('phone_number')}}
+                            >
+                                <Text
+                                className='text-white text-[11px] self-start'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Edit 
+                                </Text>
+                                {loading && (
+                                    <View className='absolute w-full'>
+                                        <ActivityIndicator size="small" color="#fff" />
+                                    </View>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+
+                    <Text
+                    className='text-[13px] self-start pl-5'
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        Service Options
+                    </Text>
+                    <View className='px-3 w-[90%] mx-auto mb-3'>
+                        <TouchableOpacity
+                        onPress={()=>{setServiceOption(1)}}
+                        className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
+                        >
+                            <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 1) && 'border-gray-300'} p-1 rounded-full`}>
+                                {(serviceOption == 1)?
+                                    <RadioActive />
+                                    :
+                                    <RadioInctive width={6} height={6} />
+                                }
+                            </View>
+                            <Text
+                            className='text-[12px] self-start text-gray-500'
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Hand it to me Directly
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={()=>{setServiceOption(2)}}
+                        className={`flex flex-row items-center space-x-2 border-b border-gray-200 py-2`}
+                        >
+                            <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 2) && 'border-gray-300'} p-1 rounded-full `}>
+                                {(serviceOption == 2)?
+                                    <RadioActive />
+                                    :
+                                    <RadioInctive width={6} height={6} />
+                                }       
+                            </View>
+                            <Text
+                            className='text-[12px] self-start text-gray-500'
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Hand to me or who’s available
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={()=>{setServiceOption(3)}}
+                        className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
+                        >
+                            <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 3) && 'border-gray-300'} p-1 rounded-full`}>
+                                {(serviceOption == 3)?
+                                    <RadioActive />
+                                    :
+                                    <RadioInctive width={6} height={6} />
+                                }
+                            </View>
+                            <Text
+                            className='text-[12px] self-start text-gray-500'
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Leave it at my door
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <Text
+                    className='text-[13px] pl-5 mt-10'
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        Instruction for Rider
+                    </Text>
+                    <View className='w-[90%] mx-auto'>
+                        <TextInput
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`w-full rounded-lg text-[11px] text-gray-500`}
+                        autoFocus={false}
+                        readOnly={loading}
+                        onChangeText={setRiderInstruction}
+                        defaultValue={riderInstruction}
+                        placeholder='e.g enter the main street, its 1st door on the right'
+                        placeholderTextColor=""
+                        />
+                    </View>
+                </ScrollView>
             </View>
-
-            <ScrollView className='w-full space-y-1'>
-                <Text
-                className='text-custom-green text-[16px] self-start pl-5 mt-5'
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Personal Information
-                </Text>
-                <View className='w-[90%] mx-auto space-y-3 mb-3'>
-                    <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
-                        <View className='grow'>
-                            <Text
-                            className='text-gray-400 text-[11px]'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                First Name
-                            </Text>
-                            <TextInput
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className={`w-full rounded-lg text-[11px] text-black`}
-                                autoFocus={false}
-                                readOnly={loading}
-                                onChangeText={setFirstName}
-                                defaultValue={firstName}
-                                placeholderTextColor=""
-                            />
-                        </View>
-                        <TouchableOpacity
-                        className={` bg-custom-green ${(loading || resData?.first_name == firstName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
-                        onPress={()=>{handleUpdate('first_name')}}
-                        >
-                            <Text
-                            className='text-white text-[11px] self-start'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Edit
-                            </Text>
-                            {loading && (
-                                <View className='absolute w-full'>
-                                    <ActivityIndicator size="small" color="#fff" />
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                    <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
-                        <View className='grow'>
-                            <Text
-                            className='text-gray-400 text-[11px]'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Last Name
-                            </Text>
-                            <TextInput
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className={`w-full rounded-lg text-[11px] text-black`}
-                                autoFocus={false}
-                                readOnly={loading}
-                                onChangeText={setLastName}
-                                defaultValue={lastName}
-                                placeholderTextColor=""
-                            />
-                        </View>
-                        <TouchableOpacity
-                        className={`bg-custom-green ${(loading || resData?.last_name == lastName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
-                        onPress={()=>{handleUpdate('last_name')}}
-                        >
-                            <Text
-                            className='text-white text-[11px] self-start'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Edit
-                            </Text>
-                            {loading && (
-                                <View className='absolute w-full'>
-                                    <ActivityIndicator size="small" color="#fff" />
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                    <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
-                        <View className='grow'>
-                            <Text
-                            className='text-gray-400 text-[11px]'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Email
-                            </Text>
-                            <TextInput
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className={`w-full rounded-lg text-[11px] text-black`}
-                                autoFocus={false}
-                                onChangeText={setEmail}
-                                defaultValue={email}
-                                readOnly={true}
-                                placeholderTextColor=""
-                            />
-                        </View>
-                    </View>
-                    <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
-                        <View className='grow'>
-                            <Text
-                            className='text-gray-400 text-[11px]'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Phone Number
-                            </Text>
-                            <TextInput
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className={`w-full rounded-lg text-[11px] text-black`}
-                                autoFocus={false}
-                                readOnly={loading}
-                                onChangeText={setPhoneNumber}
-                                defaultValue={phoneNumber}
-                                placeholderTextColor=""
-                            />
-                        </View>
-                        <TouchableOpacity
-                        className={`bg-custom-green ${(loading || resData?.phone_number == phoneNumber) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
-                        onPress={()=>{handleUpdate('phone_number')}}
-                        >
-                            <Text
-                            className='text-white text-[11px] self-start'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Edit 
-                            </Text>
-                            {loading && (
-                                <View className='absolute w-full'>
-                                    <ActivityIndicator size="small" color="#fff" />
-                                </View>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-
-                <Text
-                className='text-[13px] self-start pl-5'
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Service Options
-                </Text>
-                <View className='px-3 w-[90%] mx-auto mb-3'>
-                    <TouchableOpacity
-                    onPress={()=>{setServiceOption(1)}}
-                    className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
-                    >
-                        <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 1) && 'border-gray-300'} p-1 rounded-full`}>
-                            {(serviceOption == 1)?
-                                <RadioActive />
-                                :
-                                <RadioInctive width={6} height={6} />
-                            }
-                        </View>
-                        <Text
-                        className='text-[12px] self-start text-gray-500'
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Hand it to me Directly
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                    onPress={()=>{setServiceOption(2)}}
-                    className={`flex flex-row items-center space-x-2 border-b border-gray-200 py-2`}
-                    >
-                        <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 2) && 'border-gray-300'} p-1 rounded-full `}>
-                            {(serviceOption == 2)?
-                                <RadioActive />
-                                :
-                                <RadioInctive width={6} height={6} />
-                            }       
-                        </View>
-                        <Text
-                        className='text-[12px] self-start text-gray-500'
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Hand to me or who’s available
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                    onPress={()=>{setServiceOption(3)}}
-                    className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
-                    >
-                        <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 3) && 'border-gray-300'} p-1 rounded-full`}>
-                            {(serviceOption == 3)?
-                                <RadioActive />
-                                :
-                                <RadioInctive width={6} height={6} />
-                            }
-                        </View>
-                        <Text
-                        className='text-[12px] self-start text-gray-500'
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Leave it at my door
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-
-                <Text
-                className='text-[13px] pl-5 mt-10'
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Instruction for Rider
-                </Text>
-                <View className='w-[90%] mx-auto'>
-                    <TextInput
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full rounded-lg text-[11px] text-gray-500`}
-                    autoFocus={false}
-                    readOnly={loading}
-                    onChangeText={setRiderInstruction}
-                    defaultValue={riderInstruction}
-                    placeholder='e.g enter the main street, its 1st door on the right'
-                    placeholderTextColor=""
-                    />
-                </View>
-            </ScrollView>
-        </View>
+        </SafeAreaView>
     )
 }

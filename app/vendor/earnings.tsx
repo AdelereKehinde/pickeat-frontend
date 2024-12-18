@@ -12,6 +12,7 @@ import { getRequest } from '@/api/RequestHandler';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import ENDPOINTS from '@/constants/Endpoint';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Earnings(){
     type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
@@ -50,154 +51,157 @@ export default function Earnings(){
     }
 
     return (
-        <View 
-        className='w-full h-full bg-gray-50 flex items-center'
-        >
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-            <View className='w-full bg-white'>
-                <TitleTag withprevious={false} title='Earnings and Payment' withbell={false} />
-            </View>
-
+        <SafeAreaView>
             <View 
-            style={styles.shadow_box}
-            className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
+            className='w-full h-full bg-gray-50 flex items-center'
             >
-                <Text
-                className={`text-[11px] text-custom-green`}
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Total Earning
-                </Text>
-                <View 
-                className='flex flex-row items-center py-3 rounded-lg'>
-                    <Naira />
-                    <Text
-                    className={`text-[20px] mx-4`}
-                    style={{fontFamily: 'Inter-SemiBold'}}
-                    >
-                        {showAmount? data?.data.amount_in_wallet:'****'}
-                    </Text>
-                    <View className='flex flex-row px-2 rounded-2xl items-center bg-gray-100 space-x-1 ml-10'>
-                        <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
-                        className=''
-                        >
-                        <FontAwesome
-                            name={showAmount ? 'eye' : 'eye-slash'}
-                            size={18}
-                            color="#4b5563"
-                        />
-                        </TouchableOpacity>
-                        <Nigeria />
-                    </View>
+                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+                <View className='w-full bg-white'>
+                    <TitleTag withprevious={false} title='Earnings and Payment' withbell={false} />
                 </View>
 
-                <View>
-                    <Text
-                    className={`text-[10px] text-gray-500`}
-                    style={{fontFamily: 'Inter-SemiBold'}}
+                <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+                    <View 
+                    style={styles.shadow_box}
+                    className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
                     >
-                        Pending Payout - <Text className='text-custom-green'>N {showAmount? data?.data.pending_payout:'****'}</Text>
-                    </Text>
-                </View>
-            </View>
-
-
-            <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
-                <View className='flex flex-row space-x-2'>
-                    <Text
-                    className={`'text-custom-green text-[13px]`}
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        Transactions
-                    </Text>
-                </View>
-            
-                <View className='flex flex-row items-center space-x-2'>
-                    <Text
-                    className='text-[11px] text-gray-500'
-                    style={{fontFamily: 'Inter-Regular'}}
-                    >
-                        21st May - 25th Aug
-                    </Text>
-                    <Calender />
-                </View>
-            </View>
-
-            <ScrollView className='w-[98%] max-h-[50%] px-3 mt-2'>
-                {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
-                    <View className='flex items-center'> 
-                        <Empty/>
                         <Text
-                        className={`text-[11px] text-gray-600`}
-                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`text-[11px] text-custom-green`}
+                        style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            We’ll notify you when there’s a transaction
+                            Total Earning
                         </Text>
-                    </View>
-                )}
-                {(transactions.length === 0 && loading) && 
-                    <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                        {Array.from({ length: 4 }).map((_, index) => (
-                            <View key={index} className='border-b border-gray-300'>
-                                <ContentLoader
-                                width="100%"
-                                height={100}
-                                backgroundColor="#f3f3f3"
-                                foregroundColor="#ecebeb"
+                        <View 
+                        className='flex flex-row items-center py-3 rounded-lg'>
+                            <Naira />
+                            <Text
+                            className={`text-[20px] mx-4`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {showAmount? data?.data.amount_in_wallet:'****'}
+                            </Text>
+                            <View className='flex flex-row px-2 rounded-2xl items-center bg-gray-100 space-x-1 ml-10'>
+                                <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
+                                className=''
                                 >
-                                    {/* Add custom shapes for your skeleton */}
-                                    {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                    <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                    <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                    <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                    <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                    <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
-                                </ContentLoader>
-                            </View> 
-                        ))}
-                    </View>
-                }
-                {transactions.map((item) => (
-                    (item.type=='credit')
-                    ?
-                    <OrderTransaction key={item.id} 
-                    receiver={item.bank_name}
-                    time={item.date} 
-                    commission={item.commision} 
-                    amount={item.price}
-                    status='Successful' 
-                    order_id = {item.order_id}
-                    item = {['Fried Rice', 'Chicken']}
-                    price = "8000.00"
-                    date={item.date}
-                    />
-                    :
-                    <MoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
-                ))}
-            </ScrollView>
-            
-            <View className='w-[90%] mx-auto'>
-              <TouchableOpacity
-              onPress={HandleDownload}
-              className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
-              >
-                {loading && (
-                  <View className='absolute w-full top-4'>
-                    <ActivityIndicator size="small" color="#fff" />
-                  </View>
-                )}
-            
-                <Text
-                className='text-white'
-                style={{fontFamily: 'Inter-Regular'}}
-                >
-                  Download
-                </Text>
-                    
-              </TouchableOpacity>
-            </View>
+                                <FontAwesome
+                                    name={showAmount ? 'eye' : 'eye-slash'}
+                                    size={18}
+                                    color="#4b5563"
+                                />
+                                </TouchableOpacity>
+                                <Nigeria />
+                            </View>
+                        </View>
 
-        </View>
+                        <View>
+                            <Text
+                            className={`text-[10px] text-gray-500`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Pending Payout - <Text className='text-custom-green'>N {showAmount? data?.data.pending_payout:'****'}</Text>
+                            </Text>
+                        </View>
+                    </View>
+
+
+                    <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
+                        <View className='flex flex-row space-x-2'>
+                            <Text
+                            className={`'text-custom-green text-[13px]`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                Transactions
+                            </Text>
+                        </View>
+                    
+                        <View className='flex flex-row items-center space-x-2'>
+                            <Text
+                            className='text-[11px] text-gray-500'
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                                21st May - 25th Aug
+                            </Text>
+                            <Calender />
+                        </View>
+                    </View>
+
+                    <ScrollView className='w-[98%] max-h-[50%] px-3 mt-2' contentContainerStyle={{ flexGrow: 1 }}>
+                        {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
+                            <View className='flex items-center'> 
+                                <Empty/>
+                                <Text
+                                className={`text-[11px] text-gray-600`}
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    We’ll notify you when there’s a transaction
+                                </Text>
+                            </View>
+                        )}
+                        {(transactions.length === 0 && loading) && 
+                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <View key={index} className='border-b border-gray-300'>
+                                        <ContentLoader
+                                        width="100%"
+                                        height={100}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                        }
+                        {transactions.map((item) => (
+                            (item.type=='credit')
+                            ?
+                            <OrderTransaction key={item.id} 
+                            receiver={item.bank_name}
+                            time={item.date} 
+                            commission={item.commision} 
+                            amount={item.price}
+                            status='Successful' 
+                            order_id = {item.order_id}
+                            item = {['Fried Rice', 'Chicken']}
+                            price = "8000.00"
+                            date={item.date}
+                            />
+                            :
+                            <MoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
+                        ))}
+                    </ScrollView>
+                    
+                    <View className='w-[90%] mx-auto mt-auto mb-10'>
+                    <TouchableOpacity
+                    onPress={HandleDownload}
+                    className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+                    >
+                        {loading && (
+                        <View className='absolute w-full top-4'>
+                            <ActivityIndicator size="small" color="#fff" />
+                        </View>
+                        )}
+                    
+                        <Text
+                        className='text-white'
+                        style={{fontFamily: 'Inter-Regular'}}
+                        >
+                        Download
+                        </Text>
+                            
+                    </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </View>
+        </SafeAreaView>
     )
 }
 

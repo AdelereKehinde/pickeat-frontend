@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, ScrollView, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput,  } from "react-native";
+import { Text, View, ScrollView, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput, Pressable} from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -17,6 +17,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import PhoneNumber from '@/components/NumberField';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CreateProduct(){
     const {id} = useGlobalSearchParams()
@@ -24,6 +25,8 @@ export default function CreateProduct(){
       success: CustomToast,
       error: CustomToast,
     };
+
+    const [openState, setOpenState] = useState({category:false})  
 
     type mealInfo = { id: number; category: number[]; meal_name: 'string'; meal_description: string; thumbnail: string; discount: string; price: string; in_stock: string;}
     const [mealData, setMealData] = useState<mealInfo>()
@@ -196,6 +199,7 @@ export default function CreateProduct(){
     };
     
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-gray-100 flex items-center'
         >
@@ -208,7 +212,7 @@ export default function CreateProduct(){
               <FullScreenLoader />
             )}
 
-            <ScrollView className='w-full'>
+            <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
               <View className='px-4 w-full mt-4'>
                 <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center mt-4'>
                   <TouchableOpacity
@@ -305,7 +309,12 @@ export default function CreateProduct(){
                     >
                       {(mealCategory !== "")  && 'Category'}
                     </Text>  
-                    <CharFieldDropDown options={category_option.map(item => ({label: item.category_name, value: item.id}))} setValue={mealCategory}  placeholder="Category?" focus={false} border={true} name='' getValue={(value: string)=>setMealCategory(value)}/>
+                    <Pressable
+                    className='w-full z-30'
+                    onPress={()=>{setOpenState(prevState => ({...prevState, category: !openState.category}));}}
+                    >
+                        <CharFieldDropDown options={category_option.map(item => ({label: item.category_name, value: item.id}))} open={openState.category} setValue={mealCategory}  placeholder="Category?" focus={false} border={true} name='' getValue={(value: string)=>{setMealCategory(value); setOpenState(prevState => ({...prevState, category: false}))}}/>
+                    </Pressable>
                   </View>
               </View>
 
@@ -351,6 +360,7 @@ export default function CreateProduct(){
             </ScrollView>
             <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }
 

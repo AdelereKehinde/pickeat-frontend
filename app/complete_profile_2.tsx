@@ -16,6 +16,7 @@ import Delay from '@/constants/Delay';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { postRequest } from '@/api/RequestHandler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CompleteProfile2(){
     const toastConfig = {
@@ -136,153 +137,156 @@ export default function CompleteProfile2(){
     };
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
 
-            <ScrollView
-            className='w-full'
-            >
-                <View className='mt-5 w-full px-4 relative flex flex-row items-center justify-center'>
-                    <View
-                    className='w-full relative flex flex-row items-center justify-center'
-                    >
-                        <View className='absolute left-3 z-10'>
-                            <Search />
-                        </View>
-                        <TextInput
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[14px]`}
-                            autoFocus={false}
-                            onFocus={()=>setIsFocus(true)}
-                            onBlur={()=>setIsFocus(false)}
-                            onChangeText={handleSearch}
-                            value={searchQuery}
-                            placeholder="Enter a new address"
-                            placeholderTextColor=""
-                        />
-                    </View>
-                    {/* Search Results */}
-                    {results.length > 0 && (
-                        <View
-                        style={styles.shadow_box}
-                        className='bg-white w-full absolute top-14 z-30  mb-2 border border-gray-400 rounded-lg'
-                        >
-                            <ScrollView
-                            className=" bg-white shadow-lg max-h-60 rounded-lg"
-                            >
-                                {results.map((item) => (
-                                    <TouchableOpacity
-                                    key={item.place_id}
-                                    className="px-4 py-2 border-b border-gray-200"
-                                    onPress={() => handleSelectAddress(item.place_id, item.description)}
-                                    >
-                                        <Text className="text-gray-700">{item.description}</Text>
-                                    </TouchableOpacity>                
-                                ))}
-                                
-                            </ScrollView>
-                        </View>
-                    )}
-                </View>
-
-                <View className='flex flex-row items-center w-[90%] mx-auto px-5 my-4 border-b border-gray-400 py-2'>
-                    <View>
-                        <Map />
-                    </View>
-                    <Pressable
-                    onPress={()=>{setShowMap(!showMap)}}
-                    className='ml-4'
-                    >
-                        <Text
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className='text-custom-green m-auto text-[12px]'
-                        >
-                            {showMap? 'Hide map':'Show map'}
-                        </Text>
-                    </Pressable>
-                </View>
-
-                {/* {showMap && (
-                    <View className='w-[90%] h-[400px]'>
-                        <LocationPicker getAddress={(value: string)=>setAddress(value)} onLocationSelected={handleLocationSelected}/>
-                    </View>
-                )} */}
-
-                {showMap && (
-                    <MapView
-                        className="flex-1 border w-[90%] h-96 mx-auto mb-3"
-                        initialRegion={userLocation || {
-                        latitude: 37.7749, // Default to San Francisco if location not available
-                        longitude: -122.4194,
-                        latitudeDelta: 0.05,
-                        longitudeDelta: 0.05,
-                        }}
-                        region={
-                        selectedLocation
-                            ? {
-                                ...selectedLocation,
-                                latitudeDelta: 0.05,
-                                longitudeDelta: 0.05,
-                            }
-                            : undefined
-                        }
-                    >
-                        {/* User's Current Location Marker */}
-                        {userLocation && (
-                        <Marker coordinate={userLocation} title="Your Location" />
-                        )}
-
-                        {/* Selected Address Marker */}
-                        {selectedLocation && (
-                        <Marker coordinate={selectedLocation} title="Selected Location" />
-                        )}
-                    </MapView>
-                )}
-
-                <View className='w-[90%] mx-auto my-2'>
-                    <Text
-                    className='text-[12px]'
-                    style={{fontFamily: 'Inter-Regular'}}
-                    >
-                        Address: {(selectedLocation.address == '')?
-                            <Text
-                            className='text-[12px] text-red-500'
-                            style={{fontFamily: 'Inter-Regular'}}
-                            >
-                                {' '}Search and select your address
-                            </Text>
-                            :
-                            <Text
-                            className='text-[12px] text-custom-green'
-                            style={{fontFamily: 'Inter-Regular'}}
-                            >
-                                {' '}{selectedLocation.address}
-                            </Text> 
-                        }
-                    </Text>  
-                </View>
-
-                <TouchableOpacity
-                onPress={handleSubmit}
-                className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-[50px] mb-8 flex items-center justify-around`}
+                <ScrollView
+                className='w-full'
+                contentContainerStyle={{ flexGrow: 1 }}
                 >
-                    {loading && (
-                    <View className='absolute w-full top-4'>
-                        <ActivityIndicator size="small" color="#fff" />
+                    <View className='mt-5 w-full px-4 relative flex flex-row items-center justify-center'>
+                        <View
+                        className='w-full relative flex flex-row items-center justify-center'
+                        >
+                            <View className='absolute left-3 z-10'>
+                                <Search />
+                            </View>
+                            <TextInput
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[14px]`}
+                                autoFocus={false}
+                                onFocus={()=>setIsFocus(true)}
+                                onBlur={()=>setIsFocus(false)}
+                                onChangeText={handleSearch}
+                                value={searchQuery}
+                                placeholder="Enter a new address"
+                                placeholderTextColor=""
+                            />
+                        </View>
+                        {/* Search Results */}
+                        {results.length > 0 && (
+                            <View
+                            style={styles.shadow_box}
+                            className='bg-white w-full absolute top-14 z-30  mb-2 border border-gray-400 rounded-lg'
+                            >
+                                <ScrollView
+                                className=" bg-white shadow-lg max-h-60 rounded-lg"
+                                >
+                                    {results.map((item) => (
+                                        <TouchableOpacity
+                                        key={item.place_id}
+                                        className="px-4 py-2 border-b border-gray-200"
+                                        onPress={() => handleSelectAddress(item.place_id, item.description)}
+                                        >
+                                            <Text className="text-gray-700">{item.description}</Text>
+                                        </TouchableOpacity>                
+                                    ))}
+                                    
+                                </ScrollView>
+                            </View>
+                        )}
                     </View>
+
+                    <View className='flex flex-row items-center w-[90%] mx-auto px-5 my-4 border-b border-gray-400 py-2'>
+                        <View>
+                            <Map />
+                        </View>
+                        <Pressable
+                        onPress={()=>{setShowMap(!showMap)}}
+                        className='ml-4'
+                        >
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-custom-green m-auto text-[12px]'
+                            >
+                                {showMap? 'Hide map':'Show map'}
+                            </Text>
+                        </Pressable>
+                    </View>
+
+                    {/* {showMap && (
+                        <View className='w-[90%] h-[400px]'>
+                            <LocationPicker getAddress={(value: string)=>setAddress(value)} onLocationSelected={handleLocationSelected}/>
+                        </View>
+                    )} */}
+
+                    {showMap && (
+                        <MapView
+                            className="flex-1 border w-[90%] h-96 mx-auto mb-3"
+                            initialRegion={userLocation || {
+                            latitude: 37.7749, // Default to San Francisco if location not available
+                            longitude: -122.4194,
+                            latitudeDelta: 0.05,
+                            longitudeDelta: 0.05,
+                            }}
+                            region={
+                            selectedLocation
+                                ? {
+                                    ...selectedLocation,
+                                    latitudeDelta: 0.05,
+                                    longitudeDelta: 0.05,
+                                }
+                                : undefined
+                            }
+                        >
+                            {/* User's Current Location Marker */}
+                            {userLocation && (
+                            <Marker coordinate={userLocation} title="Your Location" />
+                            )}
+
+                            {/* Selected Address Marker */}
+                            {selectedLocation && (
+                            <Marker coordinate={selectedLocation} title="Selected Location" />
+                            )}
+                        </MapView>
                     )}
-                    
-                    <Text
-                    className='text-white'
-                    style={{fontFamily: 'Inter-Regular'}}
+
+                    <View className='w-[90%] mx-auto my-2'>
+                        <Text
+                        className='text-[12px]'
+                        style={{fontFamily: 'Inter-Regular'}}
+                        >
+                            Address: {(selectedLocation.address == '')?
+                                <Text
+                                className='text-[12px] text-red-500'
+                                style={{fontFamily: 'Inter-Regular'}}
+                                >
+                                    {' '}Search and select your address
+                                </Text>
+                                :
+                                <Text
+                                className='text-[12px] text-custom-green'
+                                style={{fontFamily: 'Inter-Regular'}}
+                                >
+                                    {' '}{selectedLocation.address}
+                                </Text> 
+                            }
+                        </Text>  
+                    </View>
+
+                    <TouchableOpacity
+                    onPress={handleSubmit}
+                    className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-[50px] mb-8 flex items-center justify-around`}
                     >
-                    Select
-                    </Text>     
-                </TouchableOpacity>
-            </ScrollView>
-            <Toast config={toastConfig} />
-        </View>
+                        {loading && (
+                        <View className='absolute w-full top-4'>
+                            <ActivityIndicator size="small" color="#fff" />
+                        </View>
+                        )}
+                        
+                        <Text
+                        className='text-white'
+                        style={{fontFamily: 'Inter-Regular'}}
+                        >
+                        Select
+                        </Text>     
+                    </TouchableOpacity>
+                </ScrollView>
+                <Toast config={toastConfig} />
+            </View>
+        </SafeAreaView>
     )
 }
 

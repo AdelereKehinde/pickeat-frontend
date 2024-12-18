@@ -14,6 +14,7 @@ import CustomToast from '@/components/ToastConfig';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SignUp(){
     const toastConfig = {
@@ -87,11 +88,12 @@ export default function SignUp(){
     };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-          <ScrollView className='w-full'>
-            <View className='mt-10 mx-auto'>
+          <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+            <View className='mx-auto'>
               <Logo width={120} height={120} />
             </View>
 
@@ -238,7 +240,7 @@ export default function SignUp(){
               </Text>
             
 
-            <View className='w-[90%] mx-auto'>
+            <View className='w-[90%] mx-auto mt-auto mb-10'>
 
               <TouchableOpacity
               onPress={handleRegistration}
@@ -263,5 +265,6 @@ export default function SignUp(){
             <Toast config={toastConfig} />
           </ScrollView>
         </View>
+      </SafeAreaView>
     )
 }

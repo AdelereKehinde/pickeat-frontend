@@ -12,7 +12,7 @@ interface Properties {
 
 const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
     return (
-        <View className="mt-9 w-full">
+        <View className="w-full">
             <View className="flex flex-row justify-between h-12 items-center">
                 <View className="w-6 h-6 flex items-end justify-around ml-5">
                     {withprevious && (

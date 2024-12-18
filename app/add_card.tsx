@@ -13,7 +13,7 @@ import { postRequest } from '@/api/RequestHandler';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddCard(){
     const toastConfig = {
@@ -82,145 +82,149 @@ export default function AddCard(){
     
     
     return (
+      <SafeAreaView>
         <View className=' bg-gray-100 w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
             <View className='bg-gray-100 w-full'>
                 <TitleTag withprevious={true} title='' withbell={false} />
             </View>
             
-            <Text
-            className='text-custom-green text-[15px] bg-white w-full text-left py-3 px-4'
-            style={{fontFamily: 'Inter-SemiBold'}}
-            >
-                Add Card
-            </Text>
-
-            <View className='w-full my-3 px-6 flex items-start justify-center mt-10'>
-                <Text
-                className='text-custom-green text-[12px] text-left'
-                style={{fontFamily: 'Inter-Medium'}}
-                >
-                    Card number
-                </Text>
-                <TextInput
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full ${isFocused=='number'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
-                    autoFocus={false}
-                    onFocus={()=>setIsFocus('number')}
-                    onBlur={()=>setIsFocus('')}
-                    onChangeText={setCardNumber}
-                    defaultValue={cardNumber}
-                    keyboardType="number-pad"
-                    placeholder=""
-                    placeholderTextColor=""
-                />
-            </View>
-            <View className='w-full my-3 px-6 flex flex-row space-x-2 justify-center'>
-                <View className='grow'>
-                    <Text
-                    className='text-custom-green text-[12px] text-left'
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        MM
-                    </Text>
-                    <TextInput
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused=='mm'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
-                        autoFocus={false}
-                        onFocus={()=>setIsFocus('mm')}
-                        onBlur={()=>setIsFocus('')}
-                        onChangeText={setMm}
-                        defaultValue={mm}
-                        placeholder=""
-                        maxLength={2}
-                        keyboardType="number-pad"
-                        placeholderTextColor=""
-                    />
-                </View>
-                <View className='grow'>
-                    <Text
-                    className='text-custom-green text-[12px] text-left'
-                    style={{fontFamily: 'Inter-Medium'}}
-                    >
-                        YY
-                    </Text>
-                    <TextInput
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused=='yy'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
-                        autoFocus={false}
-                        onFocus={()=>setIsFocus('yy')}
-                        onBlur={()=>setIsFocus('')}
-                        onChangeText={setYy}
-                        defaultValue={yy}
-                        placeholder=""
-                        maxLength={2}
-                        keyboardType="number-pad"
-                        placeholderTextColor=""
-                    />
-                </View>
-            </View>
-            <View className='w-full my-3 px-6 flex items-start justify-center'>
-                <Text
-                className='text-custom-green text-[12px] text-left'
-                style={{fontFamily: 'Inter-Medium'}}
-                >
-                    CVV
-                </Text>
-                <TextInput
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full ${isFocused=='cvv'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
-                    autoFocus={false}
-                    onFocus={()=>setIsFocus('cvv')}
-                    onBlur={()=>setIsFocus('')}
-                    onChangeText={setCvv}
-                    defaultValue={cvv}
-                    maxLength={3}
-                    keyboardType="number-pad"
-                    placeholder=""
-                    placeholderTextColor=""
-                />
-            </View>
-            <View className='w-full my-3 px-6 flex items-start justify-center'>
-                <Text
-                className='text-custom-green text-[12px] text-left'
-                style={{fontFamily: 'Inter-Medium'}}
-                >
-                    Name on card
-                </Text>
-                <TextInput
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full ${isFocused=='name'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
-                    autoFocus={false}
-                    onFocus={()=>setIsFocus('name')}
-                    onBlur={()=>setIsFocus('')}
-                    onChangeText={setName}
-                    defaultValue={name}
-                    placeholder=""
-                    placeholderTextColor=""
-                />
-            </View>
-
-            <View className='w-[90%] mx-auto'>
-              <TouchableOpacity
-              onPress={handleLogin}
-              className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+            <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+              <Text
+              className='text-custom-green text-[15px] bg-white w-full text-left py-3 px-4'
+              style={{fontFamily: 'Inter-SemiBold'}}
               >
-                {loading && (
-                  <View className='absolute w-full top-4'>
-                    <ActivityIndicator size="small" color="#fff" />
+                  Add Card
+              </Text>
+
+              <View className='w-full my-3 px-6 flex items-start justify-center mt-10'>
+                  <Text
+                  className='text-custom-green text-[12px] text-left'
+                  style={{fontFamily: 'Inter-Medium'}}
+                  >
+                      Card number
+                  </Text>
+                  <TextInput
+                      style={{fontFamily: 'Inter-Medium'}}
+                      className={`w-full ${isFocused=='number'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
+                      autoFocus={false}
+                      onFocus={()=>setIsFocus('number')}
+                      onBlur={()=>setIsFocus('')}
+                      onChangeText={setCardNumber}
+                      defaultValue={cardNumber}
+                      keyboardType="number-pad"
+                      placeholder=""
+                      placeholderTextColor=""
+                  />
+              </View>
+              <View className='w-full my-3 px-6 flex flex-row space-x-2 justify-center'>
+                  <View className='grow'>
+                      <Text
+                      className='text-custom-green text-[12px] text-left'
+                      style={{fontFamily: 'Inter-Medium'}}
+                      >
+                          MM
+                      </Text>
+                      <TextInput
+                          style={{fontFamily: 'Inter-Medium'}}
+                          className={`w-full ${isFocused=='mm'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
+                          autoFocus={false}
+                          onFocus={()=>setIsFocus('mm')}
+                          onBlur={()=>setIsFocus('')}
+                          onChangeText={setMm}
+                          defaultValue={mm}
+                          placeholder=""
+                          maxLength={2}
+                          keyboardType="number-pad"
+                          placeholderTextColor=""
+                      />
                   </View>
-                )}
-            
-                <Text
-                className='text-white'
-                style={{fontFamily: 'Inter-Regular'}}
+                  <View className='grow'>
+                      <Text
+                      className='text-custom-green text-[12px] text-left'
+                      style={{fontFamily: 'Inter-Medium'}}
+                      >
+                          YY
+                      </Text>
+                      <TextInput
+                          style={{fontFamily: 'Inter-Medium'}}
+                          className={`w-full ${isFocused=='yy'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
+                          autoFocus={false}
+                          onFocus={()=>setIsFocus('yy')}
+                          onBlur={()=>setIsFocus('')}
+                          onChangeText={setYy}
+                          defaultValue={yy}
+                          placeholder=""
+                          maxLength={2}
+                          keyboardType="number-pad"
+                          placeholderTextColor=""
+                      />
+                  </View>
+              </View>
+              <View className='w-full my-3 px-6 flex items-start justify-center'>
+                  <Text
+                  className='text-custom-green text-[12px] text-left'
+                  style={{fontFamily: 'Inter-Medium'}}
+                  >
+                      CVV
+                  </Text>
+                  <TextInput
+                      style={{fontFamily: 'Inter-Medium'}}
+                      className={`w-full ${isFocused=='cvv'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
+                      autoFocus={false}
+                      onFocus={()=>setIsFocus('cvv')}
+                      onBlur={()=>setIsFocus('')}
+                      onChangeText={setCvv}
+                      defaultValue={cvv}
+                      maxLength={3}
+                      keyboardType="number-pad"
+                      placeholder=""
+                      placeholderTextColor=""
+                  />
+              </View>
+              <View className='w-full my-3 px-6 flex items-start justify-center'>
+                  <Text
+                  className='text-custom-green text-[12px] text-left'
+                  style={{fontFamily: 'Inter-Medium'}}
+                  >
+                      Name on card
+                  </Text>
+                  <TextInput
+                      style={{fontFamily: 'Inter-Medium'}}
+                      className={`w-full ${isFocused=='name'? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[14px]`}
+                      autoFocus={false}
+                      onFocus={()=>setIsFocus('name')}
+                      onBlur={()=>setIsFocus('')}
+                      onChangeText={setName}
+                      defaultValue={name}
+                      placeholder=""
+                      placeholderTextColor=""
+                  />
+              </View>
+
+              <View className='w-[90%] mx-auto'>
+                <TouchableOpacity
+                onPress={handleLogin}
+                className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
                 >
-                  Add card
-                </Text>
-                    
-              </TouchableOpacity>
-            </View>
+                  {loading && (
+                    <View className='absolute w-full top-4'>
+                      <ActivityIndicator size="small" color="#fff" />
+                    </View>
+                  )}
+              
+                  <Text
+                  className='text-white'
+                  style={{fontFamily: 'Inter-Regular'}}
+                  >
+                    Add card
+                  </Text>
+                      
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
             <Toast config={toastConfig} />
-        </View>
+          </View>
+      </SafeAreaView>
     )
 }

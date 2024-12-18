@@ -11,6 +11,7 @@ import { patchRequest } from '@/api/RequestHandler';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AccountSetup2(){
     const { user } = useUser();
@@ -116,6 +117,7 @@ export default function AccountSetup2(){
     };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-gray-100 flex items-center'
         >
@@ -124,7 +126,7 @@ export default function AccountSetup2(){
               <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             </View>
 
-            <ScrollView className='px-4 w-full mt-4'>
+            <ScrollView className='px-4 w-full mt-4' contentContainerStyle={{ flexGrow: 1 }}>
 
               <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center'>
               <TouchableOpacity
@@ -273,6 +275,7 @@ export default function AccountSetup2(){
             </ScrollView>
             <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }
 

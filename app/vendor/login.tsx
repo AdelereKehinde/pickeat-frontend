@@ -13,6 +13,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function VendorLogin(){
     const { setUser } = useUser();
@@ -86,10 +87,11 @@ export default function VendorLogin(){
     };
 
     return (
+      <SafeAreaView>
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-          <ScrollView className='w-full'>
+          <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-5 mx-auto'>
               <Logo width={120} height={120} />
             </View>
@@ -170,13 +172,13 @@ export default function VendorLogin(){
             <Link 
             href="/vendor/forgot_password?service=vendor" 
             style={{fontFamily: 'Inter-Medium'}} 
-            className='text-gray-500 text-[12px] ml-auto mr-5'>
+            className='text-gray-500 text-[12px] ml-auto mr-5 mb-10'>
                Forget Password?
             </Link> 
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500  mt-52'
+              className='text-center text-[12px] text-gray-500  mt-auto'
               >
                 Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
               </Text>
@@ -184,7 +186,7 @@ export default function VendorLogin(){
             <View className='w-[90%] mx-auto'>
               <TouchableOpacity
               onPress={handleLogin}
-              className={`text-center ${(validateInput())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+              className={`text-center ${(validateInput())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 mb-10 flex items-center justify-around`}
               >
                 {loading && (
                   <View className='absolute w-full top-4'>
@@ -204,5 +206,6 @@ export default function VendorLogin(){
           </ScrollView>
           <Toast config={toastConfig} />
         </View>
+      </SafeAreaView>
     )
 }

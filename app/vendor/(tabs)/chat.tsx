@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal } from 'react-native';
 import Search from '../../../assets/icon/search.svg';
 import ChatListCard from '@/components/ChatList';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ChatList: React.FC = () => {
   const [isFocused, setIsFocus] = useState(false);
@@ -22,65 +23,67 @@ const ChatList: React.FC = () => {
 ];
 
   return (
-    <View className='bg-gray-100'>
-        <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-        <View className='mt-9 w-full px-4 py-3 relative flex flex-row items-center justify-center bg-white'>
-            <View className='absolute left-6 z-10'>
-                <Search />
-            </View>
-            <TextInput
-                style={{fontFamily: 'Inter-Medium'}}
-                className={`w-full ${isFocused && 'border-custom-green border'} bg-gray-300 rounded-xl px-3 pl-10 py-2 text-[12px]`}
-                autoFocus={false}
-                onFocus={()=>setIsFocus(true)}
-                onBlur={()=>setIsFocus(false)}
-                onChangeText={setSearchValue}
-                defaultValue={searchValue}
-                 placeholder="Search Messages"
-                placeholderTextColor=""
-            />
-        </View>
-        <Text
-        className='text-custom-green text-[16px] self-start pl-5 my-3'
-        style={{fontFamily: 'Inter-SemiBold'}}
-        >
-            Messages
-        </Text>
-
-        <View className='flex flex-row w-full bg-blue-100'>
-            <TouchableOpacity
-            onPress={()=>{setChatFilter('active')}}
-            className={`grow ${(chatFilter == 'active') && 'bg-custom-green'}`}
-            >
-                <Text
-                className={`${(chatFilter == 'active')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Active Bookings
-                </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-            onPress={()=>{setChatFilter('pending')}}
-            className={`grow ${(chatFilter == 'pending') && 'bg-custom-green'}`}
-            >
-                <Text
-                className={`${(chatFilter == 'pending')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Pending Bookings
-                </Text>
-            </TouchableOpacity>
-        </View>
-        
-        <ScrollView className='w-full mb-48'>
-            {Chats.map((item) => (
-                <View key={item.id} className='w-full'>
-                    <ChatListCard image={item.source} name={item.name} time={item.time} message={item.message} unread={item.unread}/>
+    <SafeAreaView>
+        <View className='bg-gray-100'>
+            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+            <View className='w-full px-4 py-3 relative flex flex-row items-center justify-center bg-white'>
+                <View className='absolute left-6 z-10'>
+                    <Search />
                 </View>
-            ))}
-        </ScrollView>
-      
-    </View>
+                <TextInput
+                    style={{fontFamily: 'Inter-Medium'}}
+                    className={`w-full ${isFocused && 'border-custom-green border'} bg-gray-300 rounded-xl px-3 pl-10 py-2 text-[12px]`}
+                    autoFocus={false}
+                    onFocus={()=>setIsFocus(true)}
+                    onBlur={()=>setIsFocus(false)}
+                    onChangeText={setSearchValue}
+                    defaultValue={searchValue}
+                    placeholder="Search Messages"
+                    placeholderTextColor=""
+                />
+            </View>
+            <Text
+            className='text-custom-green text-[16px] self-start pl-5 my-3'
+            style={{fontFamily: 'Inter-SemiBold'}}
+            >
+                Messages
+            </Text>
+
+            <View className='flex flex-row w-full bg-blue-100'>
+                <TouchableOpacity
+                onPress={()=>{setChatFilter('active')}}
+                className={`grow ${(chatFilter == 'active') && 'bg-custom-green'}`}
+                >
+                    <Text
+                    className={`${(chatFilter == 'active')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        Active Bookings
+                    </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                onPress={()=>{setChatFilter('pending')}}
+                className={`grow ${(chatFilter == 'pending') && 'bg-custom-green'}`}
+                >
+                    <Text
+                    className={`${(chatFilter == 'pending')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        Pending Bookings
+                    </Text>
+                </TouchableOpacity>
+            </View>
+            
+            <ScrollView className='w-full mb-48' contentContainerStyle={{ flexGrow: 1 }}>
+                {Chats.map((item) => (
+                    <View key={item.id} className='w-full'>
+                        <ChatListCard image={item.source} name={item.name} time={item.time} message={item.message} unread={item.unread}/>
+                    </View>
+                ))}
+            </ScrollView>
+        
+        </View>
+    </SafeAreaView>
   );
 };
 

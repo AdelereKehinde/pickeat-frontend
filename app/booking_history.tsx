@@ -9,6 +9,7 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Empty from '../assets/icon/empy_transaction.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
@@ -45,62 +46,64 @@ export default function BookingHistory(){
 
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-gray-100 w-full'>
-                <TitleTag withprevious={true} title='' withbell={false} />
-            </View>
-            
-            <Text
-            className='text-custom-green text-[18px] self-start pl-5 mt-5'
-            style={{fontFamily: 'Inter-SemiBold'}}
-            >
-                Booking History
-            </Text>
+        <SafeAreaView>
+            <View className=' bg-white w-full h-full flex items-center'>
+                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+                <View className='bg-gray-100 w-full'>
+                    <TitleTag withprevious={true} title='' withbell={false} />
+                </View>
+                
+                <Text
+                className='text-custom-green text-[18px] self-start pl-5 mt-5'
+                style={{fontFamily: 'Inter-SemiBold'}}
+                >
+                    Booking History
+                </Text>
 
-            <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
-                <ScrollView className='w-full mt-4 space-y-1'>
-                    {(!loading && orders.length === 0) && (
-                        <View className='flex items-center'> 
-                            <Empty/>
-                        </View>
-                    )}
-                    {(orders.length === 0 && loading) && 
-                        <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                            {Array.from({ length: 4 }).map((_, index) => (
-                                <View key={index} className='border-b border-gray-300'>
-                                    <ContentLoader
-                                    width="100%"
-                                    height={100}
-                                    backgroundColor="#f3f3f3"
-                                    foregroundColor="#ecebeb"
-                                    >
-                                        {/* Add custom shapes for your skeleton */}
-                                        {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                        <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                        <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                        <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                        <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                        <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
-                                    </ContentLoader>
-                                </View> 
-                            ))}
-                        </View>
-                    }
-                    {orders.map((item) => (
-                        <View key={item.id}>
-                            <ServicesLayout 
-                            kitchen={item.store_name} 
-                            price={item.price} 
-                            date={item.date}
-                            items={item.items}
-                            order_id={item.order_id}
-                            status={item.status}
-                            /> 
-                        </View>
-                    ))}
-                </ScrollView>
+                <View className='bg-white w-full my-3 mb-28 relative flex flex-row items-center justify-center'>
+                    <ScrollView className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {(!loading && orders.length === 0) && (
+                            <View className='flex items-center'> 
+                                <Empty/>
+                            </View>
+                        )}
+                        {(orders.length === 0 && loading) && 
+                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <View key={index} className='border-b border-gray-300'>
+                                        <ContentLoader
+                                        width="100%"
+                                        height={100}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* Add custom shapes for your skeleton */}
+                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                        }
+                        {orders.map((item) => (
+                            <View key={item.id}>
+                                <ServicesLayout 
+                                kitchen={item.store_name} 
+                                price={item.price} 
+                                date={item.date}
+                                items={item.items}
+                                order_id={item.order_id}
+                                status={item.status}
+                                /> 
+                            </View>
+                        ))}
+                    </ScrollView>
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }

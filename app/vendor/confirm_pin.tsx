@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Link } from "expo-router";
@@ -15,6 +15,7 @@ import Delay from '@/constants/Delay';
 import Email from '../../assets/icon/mail2.svg';
 import Logo from '../../assets/images/Logo.svg';
 import { getRequest } from '@/api/RequestHandler';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ConfirmPin(){
     const {email, id, service} = useGlobalSearchParams()
@@ -67,7 +68,7 @@ export default function ConfirmPin(){
 
       } catch (error:any) {
         setLoading(false)
-        alert(JSON.stringify(error))
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
@@ -139,98 +140,102 @@ export default function ConfirmPin(){
     };
 
     return (
-        <View className=' bg-white w-full h-full flex items-center'>
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+        <SafeAreaView>
+            <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+                <View className=' bg-white w-full h-full flex items-center'>
+                    <StatusBar barStyle="light-content" backgroundColor="#228B22" />
 
-            <View className='mt-5'>
-              <Logo width={120} height={120} />
-            </View>
-
-            <Text
-            style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green '
-            >
-              PickEAT PickIT
-            </Text>
-
-            <View
-            className='mx-7 mt-10 w-full'
-            >
-                <Text
-                style={{fontFamily: 'Inter-Bold'}}
-                className={`pl-3 text-[17px] w-full text-gray-800`}
-                >
-                    Confirm Pin
-                </Text>
-                <Text
-                style={{fontFamily: 'Inter-Medium'}}
-                className={`pl-3 text-[11px] w-full text-gray-500`}
-                >
-                    To continue, kindly enter the pin sent to your mail address
-                </Text>
-            </View>
-            
-            <View className={`flex-row items-center border border-custom-green rounded-md mx-7 mt-5 p-4`}>
-                <View className=''>
-                    <Email />
-                </View>
-                <Text
-                style={{fontFamily: 'Inter-Medium'}}
-                className={`pl-3 text-[13px] w-full text-custom-green`}
-                >
-                    {email}
-                </Text>
-            </View>
-
-            <View className='w-full'>
-                <View className="flex-row justify-center mt-16 space-x-3">
-                    {code.map((digit, index) => (
-                        <TextInput
-                        key={index}
-                        ref={inputRefs[index]}
-                        className={`w-12 h-12 text-center text-[18px] border-b-2  ${(focusedIndex === index)? (' border-custom-green'):('border-gray-700')}`}
-                        value={digit}
-                        onFocus={() => handleFocus(index)} // Handle focus event
-                        onBlur={handleBlur} // Handle blur event
-                        onChangeText={(text) => handleChangeText(text, index)}
-                        onKeyPress={(e) => handleKeyPress(e, index)}
-                        keyboardType="number-pad"
-                        maxLength={1}
-                        autoFocus={index === 0} // Autofocus the first input
-                        />
-                    ))}
-                </View>
-
-                <Text
-                style={{fontFamily: 'Inter-Regular'}}
-                className='text-center text-[11px] text-gray-500 tracking-tighter mt-4'
-                >
-                    Enter the Four Digit code sent {'\n'}
-                    to your email
-                </Text>
-                
-
-                <TouchableOpacity
-                onPress={handleSubmit}
-                className={`text-center mt-10 ${(codeComplete || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
-                >
-                    {loading && (
-                    <View className='absolute w-full top-4'>
-                        <ActivityIndicator size="small" color="#fff" />
+                    <View className='mt-5 mx-auto'>
+                    <Logo width={120} height={120} />
                     </View>
-                    )}
-                
-                    <Text
-                    className='text-white'
-                    style={{fontFamily: 'Inter-Regular'}}
-                    >
-                    Done
-                    </Text>
-                        
-                </TouchableOpacity>
 
-            </View>
-            <Toast config={toastConfig} />
-        </View>
+                    <Text
+                    style={{fontFamily: 'Inter-Black'}}
+                    className='text-custom-green mx-auto'
+                    >
+                    PickEAT PickIT
+                    </Text>
+
+                    <View
+                    className='mx-7 mt-10 w-full'
+                    >
+                        <Text
+                        style={{fontFamily: 'Inter-Bold'}}
+                        className={`pl-3 text-[17px] w-full text-gray-800`}
+                        >
+                            Confirm Pin
+                        </Text>
+                        <Text
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`pl-3 text-[11px] w-full text-gray-500`}
+                        >
+                            To continue, kindly enter the pin sent to your mail address
+                        </Text>
+                    </View>
+                    
+                    <View className={`flex-row items-center border border-custom-green rounded-md mx-7 mt-5 p-4`}>
+                        <View className=''>
+                            <Email />
+                        </View>
+                        <Text
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`pl-3 text-[13px] w-full text-custom-green`}
+                        >
+                            {email}
+                        </Text>
+                    </View>
+
+                    <View className='w-full'>
+                        <View className="flex-row justify-center mt-16 space-x-3">
+                            {code.map((digit, index) => (
+                                <TextInput
+                                key={index}
+                                ref={inputRefs[index]}
+                                className={`w-12 h-12 text-center text-[18px] border-b-2  ${(focusedIndex === index)? (' border-custom-green'):('border-gray-700')}`}
+                                value={digit}
+                                onFocus={() => handleFocus(index)} // Handle focus event
+                                onBlur={handleBlur} // Handle blur event
+                                onChangeText={(text) => handleChangeText(text, index)}
+                                onKeyPress={(e) => handleKeyPress(e, index)}
+                                keyboardType="number-pad"
+                                maxLength={1}
+                                autoFocus={index === 0} // Autofocus the first input
+                                />
+                            ))}
+                        </View>
+
+                        <Text
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className='text-center text-[11px] text-gray-500 tracking-tighter mt-4'
+                        >
+                            Enter the Four Digit code sent {'\n'}
+                            to your email
+                        </Text>
+                        
+
+                        <TouchableOpacity
+                        onPress={handleSubmit}
+                        className={`text-center mt-10 ${(codeComplete || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
+                        >
+                            {loading && (
+                            <View className='absolute w-full top-4'>
+                                <ActivityIndicator size="small" color="#fff" />
+                            </View>
+                            )}
+                        
+                            <Text
+                            className='text-white'
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                            Done
+                            </Text>
+                                
+                        </TouchableOpacity>
+
+                    </View>
+                    <Toast config={toastConfig} />
+                </View>
+            </ScrollView> 
+        </SafeAreaView>
     )
 }
