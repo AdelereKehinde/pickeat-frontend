@@ -31,11 +31,17 @@ export default function Cart(){
     const [loadSignal, setLoadSignal] = useState(false)
 
     const isFocused = useIsFocused();
-
+    const [ranOnce, setRanOnce] = useState(false)
     useEffect(() => {
         if(isFocused){
             const fetchMeals = async () => {
                 try {
+                    if(ranOnce){
+                        setLoading(true)
+                    }else{
+                        setRanOnce(true)
+                        setLoading(true)
+                    }
                     setLoading(true)
                     const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['list']}`, true);
                     // alert(JSON.stringify(response.data))
@@ -181,7 +187,7 @@ export default function Cart(){
                     </View>
                 <TouchableOpacity
                 onPress={handleCheckout}
-                className={`text-center bg-custom-green ${(cartItems.length == 0 || loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
+                className={`text-center bg-custom-green ${(cartItems.length == 0 || (loading && !ranOnce) || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
                 >
                     <Text
                     className='text-white'

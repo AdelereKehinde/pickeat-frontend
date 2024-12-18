@@ -10,7 +10,7 @@ interface Properties {
   getValue: (value: string) => void
 }
 
-const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setValue, getValue}) => {
+const PhoneNumber: React.FC<Properties> = ({name, placeholder, border, focus, setValue, getValue}) => {
   const [inputValue, setInputValue] = useState(setValue);
   const [isFocused, setIsFocus] = useState(false);
 
@@ -21,7 +21,7 @@ const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setV
   return (
     <View className="">
       {/* Animated Label */}
-      {(name == "") && (
+      {(name !== "") && (
         <Text
         style={{fontFamily: 'Inter-Medium'}}
         className='absolute left-2 p-1 top-1 z-10 text-gray-400 text-[13px]'
@@ -49,4 +49,4 @@ const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setV
   );
 };
 
-export default CharField
+export default PhoneNumber

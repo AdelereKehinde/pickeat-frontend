@@ -365,7 +365,7 @@ export default function Dashboard(){
                                     style={{fontFamily: 'Inter-Regular'}}
                                     className='text-[9px] mt-1'
                                     >
-                                        {item.full_name}
+                                        {TruncatedText(item.full_name, 18)}
                                     </Text>
                                 </View>
                             )}

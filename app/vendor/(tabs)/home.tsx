@@ -110,7 +110,7 @@ function Home(){
                         className='text-[13px] text-custom-green'
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            ₦{data?.data.total_amount}
+                            ₦{data?.data.total_amount || 0}
                         </Text>
                     </View>
                 </View>

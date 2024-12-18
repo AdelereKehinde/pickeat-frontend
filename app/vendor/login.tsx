@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, TouchableOpacity,ActivityIndicator, ScrollView, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,7 +41,7 @@ export default function VendorLogin(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string;};
+          type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {email: email,password: password}, true);
 
@@ -53,7 +53,8 @@ export default function VendorLogin(){
             phone_number:  res.data.phone_number,
             avatar: res.data.avatar,
             first_name: res.data.first_name,
-            full_name: res.data.full_name
+            full_name: res.data.full_name,
+            store_name: res.data.store_name
           })
           setData(res); // Display or use response data as needed
 
@@ -66,7 +67,7 @@ export default function VendorLogin(){
 
           await Delay(3000)
           router.push({
-            pathname: res.data.onboarded? '/vendor/(tabs)/home': '/vendor/account_setup_1',
+            pathname: res.data.onboarded? res.data.set_profile? '/vendor/account_setup_2' : res.data.set_availability? '/vendor/account_setup_3' : '/vendor/(tabs)/home': '/vendor/account_setup_1',
           }); 
         }
 
@@ -88,13 +89,14 @@ export default function VendorLogin(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <View className='mt-5'>
+          <ScrollView className='w-full'>
+            <View className='mt-5 mx-auto'>
               <Logo width={120} height={120} />
             </View>
 
             <Text
             style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green text-lg -mt-8'
+            className='text-custom-green text-lg -mt-8 mx-auto'
             >
               PickEAT PickIT
             </Text>
@@ -199,7 +201,8 @@ export default function VendorLogin(){
                     
               </TouchableOpacity>
             </View>
-            <Toast config={toastConfig} />
+          </ScrollView>
+          <Toast config={toastConfig} />
         </View>
     )
 }

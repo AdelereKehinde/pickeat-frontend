@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput, ScrollView  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../assets/images/Logo.svg';
@@ -79,15 +79,14 @@ export default function Registration(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <Toast config={toastConfig} />
-
-            <View className='mt-10'>
+          <ScrollView>
+            <View className='mt-10 mx-auto'>
               <Logo width={200} height={200} />
             </View>
 
             <Text
             style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green text-lg -mt-8'
+            className='text-custom-green text-lg -mt-8 mx-auto'
             >
               PickEAT PickIT
             </Text>
@@ -169,6 +168,7 @@ export default function Registration(){
               </Text>
 
               <TouchableOpacity
+              // onPress={()=>{router.push("/enter_code")}}
               onPress={handleRegistration}
               className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
@@ -186,7 +186,10 @@ export default function Registration(){
                 </Text>
                     
               </TouchableOpacity>
+              
             </View>
+          </ScrollView>
+          <Toast config={toastConfig} />
         </View>
     )
 }

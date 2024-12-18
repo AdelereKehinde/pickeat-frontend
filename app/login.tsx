@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
+import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput, ScrollView  } from "react-native";
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
@@ -38,7 +38,7 @@ export default function Login(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; };
+          type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; address: boolean };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signin'], {email: email,password: password}, false);
           
@@ -50,7 +50,8 @@ export default function Login(){
             phone_number:  res.data.phone_number,
             avatar: res.data.avatar,
             first_name: res.data.first_name,
-            full_name: res.data.full_name
+            full_name: res.data.full_name,
+            store_name: ''
           })
           Toast.show({
             type: 'success',
@@ -61,7 +62,7 @@ export default function Login(){
 
           await Delay(2000)
           router.replace({
-            pathname: '/dashboard',
+            pathname: (res.data.first_name == '')?'/complete_profile': (res.data.address)?'/dashboard':'/complete_profile_2',
             params: { name: res.data.name},
           }); 
         }
@@ -84,13 +85,14 @@ export default function Login(){
         <View 
         className='w-full h-full bg-white flex items-center'
         >
-            <View className='mt-10'>
+          <ScrollView>
+            <View className='mt-10 mx-auto'>
               <Logo width={200} height={200} />
             </View>
 
             <Text
             style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green text-lg -mt-8'
+            className='text-custom-green text-lg -mt-8 mx-auto'
             >
               PickEAT PickIT
             </Text>
@@ -140,7 +142,7 @@ export default function Login(){
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500  mt-52'
+              className='text-center text-[12px] text-gray-500  mt-48'
               >
                 Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
               </Text>
@@ -160,12 +162,13 @@ export default function Login(){
                 className='text-white'
                 style={{fontFamily: 'Inter-Regular'}}
                 >
-                  Signin
+                  Sign In
                 </Text>
                     
               </TouchableOpacity>
             </View>
-            <Toast config={toastConfig} />
+          </ScrollView>
+          <Toast config={toastConfig} />
         </View>
     )
 }

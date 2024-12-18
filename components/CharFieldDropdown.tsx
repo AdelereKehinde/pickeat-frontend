@@ -14,14 +14,15 @@ interface Properties {
   focus: boolean,
   options: OptionType[],
   setValue?: string,
+  open: boolean,
   getValue: (value: string) => void
 }
 
-const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, setValue,  getValue}) => {
+const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, setValue, open,  getValue}) => {
     const [inputValue, setInputValue] = useState('');
     const [isFocused, setIsFocus] = useState(false);
 
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState(open);
     const [selectedOption, setSelectedOption] = useState(''); 
     useEffect(() => {
         for(var i=0; i<options.length; i++){
@@ -31,7 +32,7 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
             }
         }
       }, [setValue]); // Empty dependency array ensures this runs only once (on mount/unmount)
-
+    
     const handleSelect = (option:string, value:string|number) => {
         setSelectedOption(option);
         setIsVisible(false);
@@ -64,37 +65,42 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
                     placeholderTextColor="black"
                     readOnly={true}
                 />
-                <TouchableOpacity 
-                    onPress={() => setIsVisible(!isVisible)} 
+                <View 
+                    // onPress={() => setIsVisible(!isVisible)} 
                     className={`absolute right-4 ${(name=='')? 'inset-y-4': 'inset-y-5'}  text-gray-400 w-5 h-5`}
                 >   
                     <FontAwesome 
-                    name={isVisible ? 'chevron-up' : 'chevron-down'} 
+                    name={open ? 'chevron-up' : 'chevron-down'} 
                     size={14} 
                     color="#9ca3af" 
                     />
-                </TouchableOpacity>
+                </View>
             </View>
         
         {/* Dropdown list */}
-        {isVisible && (
-            <View style={styles.shadow_box} className="absolute w-full top-10 z-[100] border border-gray-300 rounded-md bg-white mt-2 max-h-44">
-            <ScrollView nestedScrollEnabled={true}>
-                {options.map((item, index) => (
-                <TouchableOpacity
-                    key={index}
-                    onPress={() => handleSelect(item.label, item.value)}
-                    className="p-3 border-b border-gray-100"
-                >
-                    <Text 
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className="text-[12px] text-gray-600"
-                    >
-                        {item.label}
-                    </Text>
-                </TouchableOpacity>
-                ))}
-            </ScrollView>
+        {open && (
+            <View style={styles.shadow_box} className="absolute w-full top-10 z-50 border border-gray-300 rounded-md bg-white mt-2">
+                <View>
+                    <ScrollView
+                    nestedScrollEnabled={false} 
+                    showsVerticalScrollIndicator={true} 
+                    className='max-h-44'>
+                        {options.map((item, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                onPress={() => handleSelect(item.label, item.value)}
+                                className="p-3 border-b border-gray-100"
+                            >
+                                <Text 
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className="text-[12px] text-gray-600"
+                                >
+                                    {item.label}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
             </View>
         )}
         </View>

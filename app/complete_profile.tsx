@@ -1,21 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, ActivityIndicator, TouchableOpacity } from "react-native";
-import { Link } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 
 import ENDPOINTS from '@/constants/Endpoint';
-import GetToken from '@/constants/FetchToken';
 import Delay from '@/constants/Delay';
 
-import { FontAwesome } from '@expo/vector-icons';
 import TitleTag from '@/components/Title';
 import CharField from '@/components/CharField';
 import PhoneNumber from '@/components/NumberField';
-
+import { postRequest } from '@/api/RequestHandler';
 
 
 export default function CompleteProfile(){
@@ -43,48 +38,26 @@ export default function CompleteProfile(){
           if(!loading && ValidateFormContent()){
             //Activate the Activity indication
             setLoading(true)
-            //Fetch token
-            const token = (await AsyncStorage.getItem('token'))?.trim();
-            //Send request
-            const res = await axios.patch(ENDPOINTS['buyer']['user-data'], {
-                first_name: firstName,
-                last_name: lastName,
-                phone_number: phoneNumber
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json'
-                }
-            });
-            //Activate the Activity indication
+            const res = await postRequest(ENDPOINTS['buyer']['user-data'], {
+              first_name: firstName,
+              last_name: lastName,
+              phone_number: phoneNumber
+            }, true);
             setLoading(false)
-            // Display or use response data as needed
-            setData(res.data); 
-           
             Toast.show({
               type: 'success',
-              text1: "Details Updated",
-              // text2: res.data['message'],
-              visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+              text1: "Address Created",
+              visibilityTime: 3000, // time in milliseconds (5000ms = 5 seconds)
               autoHide: true,
             });
-  
+
             await Delay(1000)
-  
             router.push({
               pathname: '/complete_profile_2',
             }); 
           }
   
         } catch (error:any) {
-            // alert(JSON.stringify(error.response))
-          if (error.response?.status === 401){
-            router.push({
-              pathname: '/login',
-              params: { next: 'complete_profile' },
-            });
-          }else{
             setLoading(false)
             Toast.show({
               type: 'error',
@@ -95,7 +68,6 @@ export default function CompleteProfile(){
             });
             setError(error.response?.data?.message || "Unknown Error"); // Set error message
           }
-        }
       };
 
 
@@ -103,7 +75,6 @@ export default function CompleteProfile(){
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
             <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
-            <Toast config={toastConfig} />
             <View className='w-full p-5'>
                 <Text 
                 style={{fontFamily: 'Inter-Regular'}}
@@ -141,8 +112,8 @@ export default function CompleteProfile(){
                     </Text>
                         
                 </TouchableOpacity>
-
             </View>
+            <Toast config={toastConfig} />
         </View>
     )
 }

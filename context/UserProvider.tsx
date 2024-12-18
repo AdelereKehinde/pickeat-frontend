@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 type User = {
-  email: string;
-  avatar: string;
-  full_name: string;
-  phone_number: string;
-  first_name: string;
+  email?: string;
+  avatar?: string;
+  full_name?: string;
+  phone_number?: string;
+  first_name?: string;
+  store_name?: string;
 };
 
 type UserContextType = {

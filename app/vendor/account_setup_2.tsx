@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, ScrollView, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from "expo-router";
-import { FontAwesome } from '@expo/vector-icons';
-import Profile from '../../assets/icon/profile.svg';
+import { useUser } from '@/context/UserProvider';
 import Camera from '../../assets/icon/camera.svg';
 import TitleTag from '@/components/Title';
-
+import { TruncatedText } from '@/components/TitleCase';
 import ENDPOINTS from '@/constants/Endpoint';
 import { patchRequest } from '@/api/RequestHandler';
 import Toast from 'react-native-toast-message';
@@ -14,6 +13,7 @@ import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 
 export default function AccountSetup2(){
+    const { user } = useUser();
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -98,7 +98,7 @@ export default function AccountSetup2(){
           autoHide: true,
         });
         await Delay(3000)
-        router.push({
+        router.replace({
           pathname: '/vendor/account_setup_3',
         }); 
         
@@ -152,7 +152,7 @@ export default function AccountSetup2(){
                   style={{fontFamily: 'Inter-Bold'}}
                   className='text-[12px] text-gray-800'
                   >
-                    Mr. Moe’s Kitchen
+                    {TruncatedText(user?.store_name || "No name", 20) }
                   </Text>
                   <Text
                   style={{fontFamily: 'Inter-Bold'}}
@@ -164,13 +164,13 @@ export default function AccountSetup2(){
                   style={{fontFamily: 'Inter-SemiBold'}}
                   className='text-[10px] text-gray-800 mt-2'
                   >
-                    Creativeomotayo@gmail.com
+                    {user?.email || "No email"}
                   </Text>
                   <Text
                   style={{fontFamily: 'Inter-SemiBold'}}
                   className='text-[10px] text-custom-green -mt-1'
                   >
-                    +234 906 3287 855
+                    {user?.phone_number || "No number"}
                   </Text>
                 </View>
               </View>

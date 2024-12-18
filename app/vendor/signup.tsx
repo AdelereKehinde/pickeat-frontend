@@ -242,6 +242,7 @@ export default function SignUp(){
 
               <TouchableOpacity
               onPress={handleRegistration}
+              // onPress={()=>{router.push("/vendor/account_setup_3")}}
               className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
               >
                 {loading && (

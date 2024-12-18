@@ -41,11 +41,11 @@ export default function Index(){
                     <Link 
                     href="/vendor/welcome"
                     style={{fontFamily: 'Inter-Medium'}}
-                    className={`rounded-2xl bg-gray-100 p-4 text-custom-green text-center`}>
+                    className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
                         Vendor
                     </Link>
                     
-                    <Link 
+                    {/* <Link 
                     href="/get_started"
                     style={{fontFamily: 'Inter-Medium'}}
                     className={`rounded-2xl bg-gray-100 p-4 text-custom-green text-center`}>
@@ -57,7 +57,7 @@ export default function Index(){
                     style={{fontFamily: 'Inter-Medium'}}
                     className={`rounded-2xl bg-gray-100 p-4 text-custom-green text-center`}>
                         Admin
-                    </Link>
+                    </Link> */}
                 </View>
             </View>
             

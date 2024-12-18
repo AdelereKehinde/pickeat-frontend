@@ -29,6 +29,7 @@ const ENDPOINTS = {
         'signup': `${VENDOR_BASE}signup`,
         'verify': `${VENDOR_BASE}`,
         'onboard': `${VENDOR_BASE}profile/create`,
+        'availability': `${VENDOR_BASE}profile/availability`,
         'forget-password': `${VENDOR_BASE}password/forget`,
         'validate-password-reset': `${VENDOR_BASE}password/validate-otp`,
         'reset-password': `${VENDOR_BASE}password/reset`,
