@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Link } from "expo-router";
@@ -12,6 +12,7 @@ import CustomToast from '@/components/ToastConfig';
 
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
+import { getRequest } from '@/api/RequestHandler';
 
 export default function EnterCode(){
     const {email, id} = useGlobalSearchParams()
@@ -26,12 +27,16 @@ export default function EnterCode(){
     const [error, setError] = useState(''); // Error state 
 
     const handleSubmit = async () => {
+        
       try {
         if(!loading){
           setLoading(true)
-          const res = await axios.get(`${ENDPOINTS['buyer']['verify']}verify/${id}/${code.join('')}`);
+          type DataResponse = { token:string; refresh: string};
+          type ApiResponse = { status: string; message: string; data:DataResponse };
+          const res = await getRequest<ApiResponse>(`${ENDPOINTS['buyer']['verify']}verify/${id}/${code.join('')}`, false);
+        //   alert(JSON.stringify(res))
           setLoading(false)
-          setData(res.data); // Display or use response data as needed
+        //   setData(res.data); // Display or use response data as needed
 
           Toast.show({
             type: 'success',
@@ -40,8 +45,8 @@ export default function EnterCode(){
             visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
           });
-          await AsyncStorage.setItem('token', res.data['data']['token']);
-          await AsyncStorage.setItem('refresh', res.data['data']['refresh']);
+          await AsyncStorage.setItem('token', res.data.token);
+          await AsyncStorage.setItem('refresh', res.data.refresh);
 
           await Delay(2000)
 
@@ -52,14 +57,15 @@ export default function EnterCode(){
 
       } catch (error:any) {
         setLoading(false)
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.response.data['message'],
+          text2: error.data?.status?.message || "Unknown Error",
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.response.data['message']); // Set error message
+        setError(error.data?.status?.message || "Unknown Error"); // Set error message
       }
     };
 
@@ -126,9 +132,7 @@ export default function EnterCode(){
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
             <TitleTag withprevious={true} title='Enter code' withbell={false}/>
-
-            <Toast config={toastConfig} />
-
+            <ScrollView className='w-full'>
             <View className='w-full'>
                 <View className="flex-row justify-center mt-36 space-x-3">
                     {code.map((digit, index) => (
@@ -157,7 +161,7 @@ export default function EnterCode(){
 
                 <TouchableOpacity
                 onPress={handleSubmit}
-                className={`text-center ${(codeComplete || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-80 flex items-center justify-around`}
+                className={`text-center ${(codeComplete)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[90%] self-center mt-80 flex items-center justify-around`}
                 >
                     {loading && (
                     <View className='absolute w-full top-4'>
@@ -175,7 +179,8 @@ export default function EnterCode(){
                 </TouchableOpacity>
 
             </View>
-            
+            </ScrollView>
+            <Toast config={toastConfig} />
         </View>
     )
 }

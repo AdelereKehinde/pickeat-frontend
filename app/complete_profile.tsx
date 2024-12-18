@@ -10,7 +10,7 @@ import Delay from '@/constants/Delay';
 import TitleTag from '@/components/Title';
 import CharField from '@/components/CharField';
 import PhoneNumber from '@/components/NumberField';
-import { postRequest } from '@/api/RequestHandler';
+import { postRequest, patchRequest } from '@/api/RequestHandler';
 
 
 export default function CompleteProfile(){
@@ -38,7 +38,7 @@ export default function CompleteProfile(){
           if(!loading && ValidateFormContent()){
             //Activate the Activity indication
             setLoading(true)
-            const res = await postRequest(ENDPOINTS['buyer']['user-data'], {
+            const res = await patchRequest(ENDPOINTS['buyer']['user-data'], {
               first_name: firstName,
               last_name: lastName,
               phone_number: phoneNumber
@@ -59,6 +59,7 @@ export default function CompleteProfile(){
   
         } catch (error:any) {
             setLoading(false)
+            // alert(JSON.stringify(error))
             Toast.show({
               type: 'error',
               text1: "An error occured",
@@ -96,7 +97,7 @@ export default function CompleteProfile(){
                 
                 <TouchableOpacity
                 onPress={handleSubmit}
-                className={`text-center ${(ValidateFormContent() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-72 flex items-center justify-around`}
+                className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-72 flex items-center justify-around`}
                 >
                     {loading && (
                     <View className='absolute w-full top-4'>

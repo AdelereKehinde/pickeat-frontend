@@ -118,16 +118,17 @@ export default function CompleteProfile2(){
   
             await Delay(1000)
             router.push({
-              pathname: '/dashboard',
+              pathname: '/login',
             }); 
           }
   
         } catch (error:any) {
-          setLoading(false)
+            // alert(JSON.stringify(error))
+            setLoading(false)
             Toast.show({
                 type: 'error',
                 text1: "An error occured",
-                text2: error.response?.data?.message || "Unknown Error",
+                text2: error.data?.message || "Unknown Error",
                 visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
                 autoHide: true,
             });
@@ -264,7 +265,7 @@ export default function CompleteProfile2(){
 
                 <TouchableOpacity
                 onPress={handleSubmit}
-                className={`text-center ${(ValidateFormContent() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-[50px] mb-8 flex items-center justify-around`}
+                className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-[50px] mb-8 flex items-center justify-around`}
                 >
                     {loading && (
                     <View className='absolute w-full top-4'>

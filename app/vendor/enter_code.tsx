@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Link } from "expo-router";
@@ -130,15 +130,14 @@ export default function VendorEnterCode(){
         <View className=' bg-white w-full h-full flex items-center'>
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
 
-            <Toast config={toastConfig} />
-
-            <View className='mt-5'>
+            <ScrollView className='w-full'>
+            <View className='mt-5 mx-auto'>
               <Logo width={120} height={120} />
             </View>
 
             <Text
             style={{fontFamily: 'Inter-Black'}}
-            className='text-custom-green '
+            className='text-custom-green mx-auto'
             >
               PickEAT PickIT
             </Text>
@@ -220,7 +219,8 @@ export default function VendorEnterCode(){
                 </TouchableOpacity>
 
             </View>
-            
+            </ScrollView>
+            <Toast config={toastConfig} />
         </View>
     )
 }

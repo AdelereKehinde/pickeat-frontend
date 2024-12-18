@@ -1,6 +1,7 @@
-import { View, TextInput, Animated, Text,TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import { View, TextInput, Animated, Text,TouchableOpacity, StyleSheet } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
+import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type OptionType = {
     label: string;
@@ -79,12 +80,17 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
         
         {/* Dropdown list */}
         {open && (
-            <View style={styles.shadow_box} className="absolute w-full top-10 z-50 border border-gray-300 rounded-md bg-white mt-2">
-                <View>
+            <GestureHandlerRootView style={styles.shadow_box} 
+            className="absolute w-full top-10 z-50 border border-gray-300 rounded-md bg-white mt-2"
+            >
                     <ScrollView
                     nestedScrollEnabled={false} 
                     showsVerticalScrollIndicator={true} 
-                    className='max-h-44'>
+                    // style={{ maxHeight: 200 }} 
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    keyboardShouldPersistTaps="handled"
+                    className='max-h-44'
+                    >
                         {options.map((item, index) => (
                             <TouchableOpacity
                                 key={index}
@@ -100,8 +106,7 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
-                </View>
-            </View>
+            </GestureHandlerRootView>
         )}
         </View>
     );

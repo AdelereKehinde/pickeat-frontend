@@ -45,7 +45,7 @@ export default function Registration(){
           }, false);
           setLoading(false)
           setData(res); // Display or use response data as needed
-          alert(JSON.stringify(res))
+          // alert(JSON.stringify(res))
           Toast.show({
             type: 'success',
             text1: "Otp Sent",
@@ -63,7 +63,7 @@ export default function Registration(){
 
       } catch (error:any) {
         setLoading(false)
-        alert(JSON.stringify(error))
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
