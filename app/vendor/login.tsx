@@ -57,17 +57,17 @@ export default function VendorLogin(){
             store_name: res.data.store_name
           })
           setData(res); // Display or use response data as needed
-
+          // alert(JSON.stringify(res))
           Toast.show({
             type: 'success',
             text1: "Welcome back",
             visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
-          });
+          }); 
 
           await Delay(3000)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? '/vendor/account_setup_2' : res.data.set_availability? '/vendor/account_setup_3' : '/vendor/(tabs)/home': '/vendor/account_setup_1',
+            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? '/vendor/(tabs)/home' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
           }); 
         }
 

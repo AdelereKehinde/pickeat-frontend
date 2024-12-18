@@ -1,4 +1,4 @@
-import { View, TextInput, Animated, Text,TouchableOpacity, StyleSheet } from 'react-native';
+import { View, TextInput, Animated, Text,TouchableOpacity, StyleSheet, } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -80,16 +80,34 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
         
         {/* Dropdown list */}
         {open && (
-            <GestureHandlerRootView style={styles.shadow_box} 
-            className="absolute w-full top-10 z-50 border border-gray-300 rounded-md bg-white mt-2"
+            <GestureHandlerRootView
+            className=' w-full'
+            style={{
+                flex: 0,
+                // marginTop: 50, // Adjust this to "pull" it into view
+                zIndex: 1, // Ensure it overlays the main content
+                backgroundColor: 'white',
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 10,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 5, // For Android shadow
+              }}
+            >
+            <View 
+            // style={styles.shadow_box} 
+            className=""
             >
                     <ScrollView
                     nestedScrollEnabled={false} 
                     showsVerticalScrollIndicator={true} 
-                    // style={{ maxHeight: 200 }} 
-                    contentContainerStyle={{ flexGrow: 1 }}
+                    style={{ maxHeight: 100 }} 
+                    // contentContainerStyle={{ flexGrow: 1 }}
                     keyboardShouldPersistTaps="handled"
-                    className='max-h-44'
+                    className=''
                     >
                         {options.map((item, index) => (
                             <TouchableOpacity
@@ -106,6 +124,7 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
+            </View>
             </GestureHandlerRootView>
         )}
         </View>

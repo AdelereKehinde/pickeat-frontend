@@ -136,7 +136,7 @@ export default function AccountSetup3(){
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
             <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             
-            <ScrollView className='w-full'>
+            <View className='w-full grow'>
               <View className='bg-custom-green p-2'>
                 <View className='space-y-1'>
                   <View className='bg-white'>
@@ -196,7 +196,7 @@ export default function AccountSetup3(){
                 
               </View>
 
-              <View className='flex flex-row mt-4 -z-10'>
+              <View className='flex flex-row mt-2 -z-10'>
                 <Pressable
                 onPress={()=>{setData(prevState => ({...prevState, terms: !openState.terms,})); setOpenState(prevState => ({...prevState, terms: !openState.terms}));}}
                 className=''
@@ -218,7 +218,7 @@ export default function AccountSetup3(){
                 </Pressable>
             </View>
 
-              <View className='w-[90%] mx-auto mt-36'>
+              <View className='w-[90%] mx-auto mt-auto mb-10'>
                 <TouchableOpacity
                 onPress={handleRequest}
                 className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-full self-center mt-5 flex items-center justify-around`}
@@ -236,7 +236,7 @@ export default function AccountSetup3(){
                   )}
                 </TouchableOpacity>
               </View>
-            </ScrollView>
+            </View>
             <Toast config={toastConfig} />
         </View>
     )
