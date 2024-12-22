@@ -32,7 +32,8 @@ export default function Dashboard(){
     type SellerResponseResult = { id: string; store_id: number; avatar: string; full_name: string; email: string; phone_number: string; email_verified: boolean}[];
     type sellerResponse = { count: string; next: string; previous: string; results: SellerResponseResult;};
 
-    type kitchenResponseResult = { id: string; avatar: string; business_name: string; is_favourite: boolean}[];
+    type ReviewData = { total_reviews: string; average_rating: string;};
+    type kitchenResponseResult = { id: string; avatar: string; business_name: string; review: ReviewData; is_favourite: boolean}[];
     type kitchenResponse = { count: string; next: string; previous: string; results: kitchenResponseResult;};
 
     const [meals, setMeals] = useState<MealArray>([]);
@@ -419,7 +420,7 @@ export default function Dashboard(){
                             </View>
                         }
                         {kitchens.map((item) => (
-                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
+                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating={item.review.average_rating} fee='2.34' />
                         ))}
                     </View>
                 </ScrollView>   

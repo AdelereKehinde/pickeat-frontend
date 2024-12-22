@@ -50,7 +50,7 @@ function Home(){
                     setLoading(false)
                 } catch (error) {
                     setLoading(false) 
-                    alert(error);
+                    // alert(error);
                 } 
             };
         
