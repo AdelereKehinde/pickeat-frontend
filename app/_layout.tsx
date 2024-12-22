@@ -53,6 +53,8 @@ export default function RootLayout() {
         <Stack.Screen name="payment" options={{headerShown: false}} />
         <Stack.Screen name="payment_confirmation" options={{headerShown: false}} />
         <Stack.Screen name="profile_page" options={{headerShown: false}} />
+        <Stack.Screen name="notification" options={{headerShown: false}} />
+        <Stack.Screen name="kitchen_profile" options={{headerShown: false}} />
 
         {/* VENDOR */}
         <Stack.Screen name="vendor/(tabs)" options={{ headerShown: false }} />  

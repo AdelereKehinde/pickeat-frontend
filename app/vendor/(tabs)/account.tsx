@@ -16,6 +16,7 @@ import Review from '../../../assets/icon/reviews.svg'
 import Earnings from '../../../assets/icon/earnings.svg'
 import Logout from '../../../assets/icon/log_out.svg'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function Account(){
     const { user } = useUser();

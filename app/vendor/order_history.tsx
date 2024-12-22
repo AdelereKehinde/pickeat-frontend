@@ -8,6 +8,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function OrderHistory(){    
     const [loading, setLoading] = useState(false);
@@ -17,16 +18,20 @@ export default function OrderHistory(){
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [orders, setOrders] = useState<ListData>([]);
-    const [nextUrl, setNextUrl] = useState('')
+   
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 6; // Items per page
 
     useEffect(() => {
             const fetchMeals = async () => {
                 try {
                 setLoading(true)
-                const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}`, true);
+                setOrders([])
+                const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
                 // alert(JSON.stringify(response))
                 setOrders(response.results)
-                setNextUrl(response.next)
+                setCount(response.count)
                 setLoading(false)
             } catch (error) {
                 setLoading(false)
@@ -35,7 +40,7 @@ export default function OrderHistory(){
         };
         
         fetchMeals(); 
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
 
     return (
         <SafeAreaView>
@@ -65,9 +70,9 @@ export default function OrderHistory(){
                                 </Text>
                             </View>
                         )}
-                        {(orders.length === 0 && loading) && 
+                        {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 4 }).map((_, index) => (
+                                {Array.from({ length: 6 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -98,6 +103,7 @@ export default function OrderHistory(){
                                 /> 
                             </View>
                         ))}
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     </ScrollView>
                 </View>
             </View>

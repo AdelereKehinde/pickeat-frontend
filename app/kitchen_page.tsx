@@ -10,25 +10,38 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function KitchenPage(){
     type kitchenResponseResult = { id: string; avatar: string; business_name: string; is_favourite: boolean}[];
-    type kitchenResponse = { count: string; next: string; previous: string; results: kitchenResponseResult;};
+    type kitchenResponse = { count: number; next: string; previous: string; results: kitchenResponseResult;};
 
     const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
+
+    const [loading, setLoading] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 6; // Items per page
+
+    const fetchCategories = async () => {
+        try {
+            setKitchens([])
+            setLoading(true)
+            const response = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=${pageSize}&page=${currentPage}`, true);
+            setCount(response.count)
+            setLoading(false)
+            // alert(JSON.stringify(response.results))
+            setKitchens(response.results)
+        } catch (error) {
+            setLoading(false)
+            // alert(error); 
+        }
+    };
+
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await getRequest<kitchenResponse>(ENDPOINTS['vendor']['store-list'], true);
-                // alert(JSON.stringify(response.results))
-                setKitchens(response.results)
-            } catch (error) {
-                alert(error); 
-            }
-        };
-    
         fetchCategories();
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
 
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
@@ -133,9 +146,9 @@ export default function KitchenPage(){
                 </View>
 
                 <ScrollView className='w-full p-1 pb-5 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
-                {(kitchens.length === 0) && 
+                {(loading) && 
                     <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                        {Array.from({ length: 7 }).map((_, index) => (
+                        {Array.from({ length: 6 }).map((_, index) => (
                             <View key={index} className='mt-5 border-b border-gray-300'>
                                 <ContentLoader
                                 width="100%"
@@ -158,6 +171,7 @@ export default function KitchenPage(){
                         <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
                     </View>
                 ))}
+                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                 </ScrollView>
             </View>
         </SafeAreaView>

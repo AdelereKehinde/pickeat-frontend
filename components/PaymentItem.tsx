@@ -130,7 +130,7 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id,
                         style={{fontFamily: 'Inter-SemiBold'}}
                         className=' text-[12px] text-custom-green mt-4'
                         >
-                            ${price * quantity}
+                            ₦{price * quantity}
                         </Text>
                     </View>
 

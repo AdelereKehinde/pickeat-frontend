@@ -13,27 +13,32 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function Earnings(){
     type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
-    type EarningResponse = { amount_in_wallet: string; pending_payout:  string; results: ListData; next: string; previous: string;};
+    type EarningResponse = { amount_in_wallet: string; pending_payout:  string; count: number; results: ListData; next: string; previous: string;};
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
     const [data, setData] = useState<ApiResponse>()
     const [showAmount, setShowAmount] = useState(false)
     const [loading, setLoading] = useState(false); // Loading state
 
     const [transactions, setTransactions] = useState<ListData>([]);
-    const [nextUrl, setNextUrl] = useState('')
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 5; // Items per page
 
     useEffect(() => {
             const fetchMeals = async () => {
                 try {
                 setLoading(true)
-                const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-transactions']}`, true);
+                setTransactions([])
+                const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
                 // alert(JSON.stringify(response))
                 setData(response)
                 setTransactions(response.data.results)
-                setNextUrl(response.data.next)
+                setCount(response.data.count)
                 setLoading(false)
             } catch (error) {
                 setLoading(false) 
@@ -42,7 +47,7 @@ export default function Earnings(){
         };
         
         fetchMeals(); 
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
 
     const HandleDownload = () =>{
         if(transactions.length !== 0){
@@ -108,7 +113,7 @@ export default function Earnings(){
                     <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
                         <View className='flex flex-row space-x-2'>
                             <Text
-                            className={`'text-custom-green text-[13px]`}
+                            className={`'text-custom-green text-[13px] ml-4`}
                             style={{fontFamily: 'Inter-Medium'}}
                             >
                                 Transactions
@@ -138,9 +143,9 @@ export default function Earnings(){
                                 </Text>
                             </View>
                         )}
-                        {(transactions.length === 0 && loading) && 
+                        {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 4 }).map((_, index) => (
+                                {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -178,6 +183,8 @@ export default function Earnings(){
                             <MoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
                         ))}
                     </ScrollView>
+
+                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     
                     <View className='w-[90%] mx-auto mt-auto mb-10'>
                     <TouchableOpacity

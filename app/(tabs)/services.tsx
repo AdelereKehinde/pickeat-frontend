@@ -12,6 +12,7 @@ import Empty from '../../assets/icon/empy_transaction.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function Services(){
     const [filterIndex, setFilterIndex] = useState(1);
@@ -27,7 +28,10 @@ export default function Services(){
 
     const [parentorders, setParentOrders] = useState<ListData>([]);
     const [orders, setOrders] = useState<ListData>([]);
-    const [nextUrl, setNextUrl] = useState('')
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 6; // Items per page
 
     const Filter = (index: number) =>{
         setFilterIndex(index)
@@ -54,27 +58,34 @@ export default function Services(){
 
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
+    const [paginationLoad, setPaginationLoad] = useState(false);
+    const fetchMeals = async () => {
+        try {
+            setLoading(true)
+            setOrders([])
+            if (ranOnce){
+                setPaginationLoad(true)
+            }
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            setParentOrders(response.results)
+            setCount(response.count)
+            if(!ranOnce || paginationLoad){
+                setOrders(response.results)
+                setRanOnce(true)
+            }
+            // alert(JSON.stringify(res))
+            setPaginationLoad(false)
+            setLoading(false)
+        } catch (error) {
+            alert(error);
+        }
+    };
+    
     useEffect(() => {
         if (isFocused){
-            const fetchMeals = async () => {
-                try {
-                    setLoading(true)
-                    const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}`, true);
-                    setParentOrders(response.results)
-                    if(!ranOnce){
-                        setOrders(response.results)
-                        setRanOnce(true)
-                    }
-                    setNextUrl(response.next)
-                    setLoading(false)
-                } catch (error) {
-                    alert(error);
-                }
-            };
-        
             fetchMeals(); 
         }
-    }, [isFocused]); // Empty dependency array ensures this runs once
+    }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
 
 
     return (
@@ -141,13 +152,13 @@ export default function Services(){
 
                 <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
                     
-                    <ScrollView className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
-                        {((!loading || (parentorders.length !== 0)) && orders.length === 0 ) && (
+                    <ScrollView className='w-full mt-4  space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {(!paginationLoad && (((parentorders.length !== 0)) && orders.length === 0 )) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
                         )}
-                        {(parentorders.length === 0 && loading) && 
+                        {((parentorders.length === 0 && loading) || paginationLoad) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 4 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
@@ -181,6 +192,7 @@ export default function Services(){
                                 /> 
                             </View>
                         ))}
+                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

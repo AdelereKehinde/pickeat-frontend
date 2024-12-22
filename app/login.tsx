@@ -70,7 +70,7 @@ export default function Login(){
 
       } catch (error:any) {
         setLoading(false)
-        alert(JSON.stringify(error))
+        // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",

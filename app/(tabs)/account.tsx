@@ -163,8 +163,8 @@ export default function Account(){
                             </Pressable>
                         </View>
 
-                        <Pressable
-                        onPress={()=>{()=>{router.replace('/login')}}}
+                        <TouchableOpacity
+                        onPress={()=>{router.push('/login')}}
                         className={`text-center bg-custom-green rounded-xl p-4 w-[90%] self-center mt-7 text-white flex flex-row items-center`}
                         >
                             <Text
@@ -176,7 +176,7 @@ export default function Account(){
                             <View className='absolute right-5'>
                                 <Logout />
                             </View>
-                    </Pressable>
+                    </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>

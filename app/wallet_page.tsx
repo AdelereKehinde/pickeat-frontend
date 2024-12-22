@@ -13,6 +13,7 @@ import TitleCase from '@/components/TitleCase';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function WalletPage(){
     const toastConfig = {
@@ -21,7 +22,8 @@ export default function WalletPage(){
       };
     type CardsResponse = { id: string; card_number: string; card_name: string; expiry: string; cvv: string;}[];
     type TransactionResponse = { id: number; bank_name: string; total_amount: string; date: string; status: string}[];
-    type WalletResponse = { amount_in_wallet: string; cards: CardsResponse; transactions: TransactionResponse;};
+    type TransactionResponse1 = { count: number; next: string; previous: string; date: string; results: TransactionResponse};
+    type WalletResponse = { amount_in_wallet: string; cards: CardsResponse; transactions: TransactionResponse1;};
     type ApiResponse = { status: string; message: string; data: WalletResponse;};
 
     const [cards, setCards] = useState<CardsResponse>([]);
@@ -32,22 +34,30 @@ export default function WalletPage(){
     const [isFocused, setIsFocus] = useState('');
     const [amountToFund, setAmountToFund] = useState('');
     const [fundLoading, setFundLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await getRequest<ApiResponse>(ENDPOINTS['payment']['wallet-dashboard'], true);
-                setCards(response.data.cards) 
-                setTransactions(response.data.transactions)
-                setAmount(response.data.amount_in_wallet)
-                setLoading(false)
-            } catch (error) {
-                alert(error); 
-            }
-        };
     
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 6; // Items per page
+
+    const fetchCategories = async () => {
+        try {
+            setLoading(true)
+            setTransactions([])
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['wallet-dashboard']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response))
+            setCards(response.data.cards) 
+            setCount(response.data.transactions.count)
+            setTransactions(response.data.transactions.results)
+            setAmount(response.data.amount_in_wallet)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            // alert(error); 
+        }
+    };
+    useEffect(() => {    
         fetchCategories();
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
 
 
     const handleFunding = async () => {
@@ -269,7 +279,7 @@ export default function WalletPage(){
                     </View>
                 }
 
-                {(transactions.length == 0) && (
+                {(transactions.length == 0 && !loading) && (
                     <View className='flex items-center'>
                         <Empty/>
                     </View>
@@ -313,7 +323,7 @@ export default function WalletPage(){
                         </View>
                     </View>   
                 ))}
-
+                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                 </ScrollView>
                 <Toast config={toastConfig} />
             </View>

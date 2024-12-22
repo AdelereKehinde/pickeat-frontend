@@ -6,13 +6,14 @@ import Product from '@/components/Product';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
-
+import Empty from '../assets/icon/empy_transaction.svg';
 import Search from '../assets/icon/search.svg';
 import Filter from '../assets/icon/filter.svg';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function KitchenPageProduct(){
     const {kitchen_id} = useGlobalSearchParams()
@@ -24,22 +25,33 @@ export default function KitchenPageProduct(){
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
     type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
-    type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
+    type MealResponse = { count: number; next: string; previous: string; results: MealArray;};
+
+    const [loading, setLoading] = useState(false);
 
     const [kitchenMeal, setKitchenMeal] = useState<MealArray>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 5; // Items per page
+
+    const fetchMeals = async () => {
+        try {
+            setKitchenMeal([])
+            setLoading(true)
+            const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response.results))
+            setCount(response.count)
+            setKitchenMeal(response.results) 
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            // alert(error);
+        }
+    };
+
     useEffect(() => {
-        const fetchMeals = async () => {
-            try {
-                const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list`, true);
-                // alert(JSON.stringify(response.results))
-                setKitchenMeal(response.results) 
-            } catch (error) {
-                alert(error);
-            }
-        };
-    
         fetchMeals();
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
     
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
@@ -86,7 +98,12 @@ export default function KitchenPageProduct(){
                 </View>
 
                 <View className='w-full bg-gray-50 mb-40 pb-2 '>
-                    {(kitchenMeal.length === 0) && 
+                    {(!loading && kitchenMeal.length === 0) && (
+                        <View className='flex items-center'> 
+                            <Empty/>
+                        </View>
+                    )}
+                    {(loading) && 
                         <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <View key={index} className='mt-5 border-b border-gray-300'>
@@ -121,7 +138,8 @@ export default function KitchenPageProduct(){
                                 />
                             </View>
                         ))}
-                    </ScrollView>
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    </ScrollView>                    
                 </View>
                 <Toast config={toastConfig} />
             </View>

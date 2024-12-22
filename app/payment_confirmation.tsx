@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Link, router } from "expo-router";
+import { Link, router, useGlobalSearchParams } from "expo-router";
 import TitleTag from '@/components/Title';
 import CartItem from '@/components/CartItem';
 import { getRequest, postRequest } from '@/api/RequestHandler';
@@ -22,32 +22,49 @@ export default function PaymentConfirmationPage(){
         success: CustomToast,
         error: CustomToast,
     };
+
+    const {promo_code} = useGlobalSearchParams()
+
     const [loading, setLoading] = useState(Boolean);
     const [EPLoading, setEPLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     const [loadSignal, setLoadSignal] = useState(false)
     type ItemsArray = { id: number; category_name: string; meal_name: string; meal_id: number; quantity: number; store_name: string; thumbnail: string; discounted_price: number; deleted: boolean; discount: string; in_stock: boolean;}[];
-    type ListData = { pricing: {subtotal: number; service_charge: number; delivery_fee: number}; delivery_address: string; order_id: string; cart_items: ItemsArray; };
+    type ListData = { pricing: {subtotal: number; percentage_off: number; discounted_total: number; service_charge: number; delivery_fee: number}; valid_promo_code: boolean; delivery_address: string; order_id: string; cart_items: ItemsArray; };
     type MealResponse = { status: string; message: string; data: ListData;};
 
     const [cartItems, setCartItems] = useState<ItemsArray>([]);
     const [resData, setResData] = useState<ListData>();
     const [subTotal, setSubTotal] = useState(Number)
     const [deliveryFee, setDeliveryFee] = useState(Number)
+    const [percentageOff, setPercentageOff] = useState(Number)
+    const [discountedTotal, setDiscountedTotal] = useState(Number)
 
     useEffect(() => {
         const fetchMeals = async () => {
             try {
                 setLoading(true)
-                const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['checkout-summary']}`, true);
+                const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['checkout-summary']}?promo_code=${promo_code}`, true);
+                // alert(JSON.stringify(response))
+                if((promo_code != '') && !response.data.valid_promo_code){
+                    Toast.show({
+                        type: 'error',
+                        text1: "Invalid Promo Code",
+                        // text2: error.data?.message || 'Unknown Error',
+                        visibilityTime: 5000, // time in milliseconds (5000ms = 5 seconds)
+                        autoHide: true,
+                    });
+                }
                 setResData(response.data)
                 setCartItems(response.data.cart_items)
                 setSubTotal(response.data.pricing.subtotal)
                 setDeliveryFee(response.data.pricing.delivery_fee)
+                setPercentageOff(response.data.pricing.percentage_off)
+                setDiscountedTotal(response.data.pricing.discounted_total)
                 setLoading(false)
             } catch (error) {
                 setLoading(false)
-                alert(error);
+                // alert(error);
             }
         };
     
@@ -109,7 +126,7 @@ export default function PaymentConfirmationPage(){
             });
   
             await Delay(2000)
-            router.replace("/(tabs)/dashboard")
+            router.replace("/(tabs)/cart")
           }
   
         } catch (error:any) {
@@ -226,7 +243,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[13px] text-custom-green'
                         >
-                            ${item.discounted_price}
+                            ₦{item.discounted_price}
                         </Text> 
                     </View>
                 ))}
@@ -244,7 +261,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[11px] text-custom-green'
                         >
-                            ${resData?.pricing.service_charge}
+                            ₦{resData?.pricing.service_charge}
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -258,7 +275,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[11px] text-custom-green'
                         >
-                            ${deliveryFee}.00
+                            ₦{deliveryFee}.00
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -272,7 +289,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium-Italic'}}
                         className=' text-[11px] text-gray-500'
                         >
-                            -5% off
+                            {percentageOff}% off
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -286,7 +303,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[14px] text-custom-green'
                         >
-                            ${subTotal + deliveryFee}.00
+                            ₦{discountedTotal + deliveryFee}.00
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -304,7 +321,7 @@ export default function PaymentConfirmationPage(){
                         </Text>  
                         <TouchableOpacity>
                             <Text
-                            style={{fontFamily: 'Inter-Medium-Italic'}}
+                            style={{fontFamily: 'Inter-Medium-Italic'}} 
                             className=' text-[12px] text-custom-green'
                             >
                                 Change

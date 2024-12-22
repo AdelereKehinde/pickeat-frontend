@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { router, useGlobalSearchParams } from 'expo-router';
 import Rating from '../assets/icon/rating.svg';
 import Heart from '../assets/icon/heart.svg';
 import ActiveHeart from '../assets/icon/active_heart.svg';
@@ -45,13 +46,17 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
 
     return(
         <View className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
-            <View>    
-                <Image 
-                source={{uri: image}}
-                className=''
-                width={70}
-                height={55}
-                />
+            <View> 
+                <TouchableOpacity
+                onPress={()=>{router.push(`/kitchen_product?kitchen_id=${kitchen_id}`)}}
+                >
+                    <Image 
+                    source={{uri: image}}
+                    className=''
+                    width={70}
+                    height={55}
+                    />
+                </TouchableOpacity>   
             </View>
 
             <View className='flex justify-start ml-2'>

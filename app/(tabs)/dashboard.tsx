@@ -29,7 +29,7 @@ export default function Dashboard(){
     type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
 
-    type SellerResponseResult = { id: string; avatar: string; full_name: string; email: string; phone_number: string; email_verified: boolean}[];
+    type SellerResponseResult = { id: string; store_id: number; avatar: string; full_name: string; email: string; phone_number: string; email_verified: boolean}[];
     type sellerResponse = { count: string; next: string; previous: string; results: SellerResponseResult;};
 
     type kitchenResponseResult = { id: string; avatar: string; business_name: string; is_favourite: boolean}[];
@@ -45,20 +45,20 @@ export default function Dashboard(){
         if (isNavFocused){
             const fetchCategories = async () => {
                 try {
-                    const response = await getRequest<MealResponse>(ENDPOINTS['inventory']['meal-list'], true); // Authenticated
+                    const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?page_size=10&page=1`, true); // Authenticated
                     // alert(JSON.stringify(response.results))
                     setMeals(response.results) 
-                    const response2 = await getRequest<MealResponse>(ENDPOINTS['inventory']['special-offer-meal-list'], true);
+                    const response2 = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=10&page=1`, true);
                     // alert(JSON.stringify(response2.results))
                     setSpecialOffer(response2.results) 
-                    const response3 = await getRequest<sellerResponse>(ENDPOINTS['vendor']['list'], true);
+                    const response3 = await getRequest<sellerResponse>(`${ENDPOINTS['vendor']['list']}?page_size=10&page=1`, true);
                     // alert(JSON.stringify(response3.results))
                     setSellers(response3.results) 
-                    const response4 = await getRequest<kitchenResponse>(ENDPOINTS['vendor']['store-list'], true);
+                    const response4 = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=10&page=1`, true);
                     // alert(JSON.stringify(response4.results))
                     setKitchens(response4.results)
                 } catch (error) {
-                    alert(error); 
+                    // alert(error); 
                 }
             };
         
@@ -137,13 +137,18 @@ export default function Dashboard(){
                             
                         </View>
 
-                        <View className='flex flex-row space-x-2 rounded-2xl bg-gray-100 p-3'>
-                            <View className=' '>
-                                <Notification />
-                            </View>
-                            <View className=''>
-                                <Mail />
-                            </View>
+                        <View className='flex items-center justify-around rounded-2xl bg-gray-100 p-3'>
+                            <TouchableOpacity
+                            className='flex flex-row space-x-2 '
+                            onPress={()=>{router.push("/notification")}}
+                            >
+                                <View className=' '>
+                                    <Notification />
+                                </View>
+                                <View className=''>
+                                    <Mail />
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
 
@@ -356,19 +361,24 @@ export default function Dashboard(){
                                     <View
                                     key={item.id}
                                     className='flex items-center'
-                                    >
-                                        <View className='flex items-center rounded-full overflow-hidden '>
-                                            <Image 
-                                            source={{ uri: item.avatar}}
-                                            className='w-12 h-12'
-                                            />
-                                        </View>
-                                        <Text
-                                        style={{fontFamily: 'Inter-Regular'}}
-                                        className='text-[9px] mt-1'
+                                    >   
+                                        <TouchableOpacity
+                                        onPress={()=>{router.push(`/kitchen_profile?kitchen_id=${item.store_id}`)}}
+                                        className='flex items-center'
                                         >
-                                            {TruncatedText(item.full_name, 18)}
-                                        </Text>
+                                            <View className='flex items-center rounded-full overflow-hidden '>
+                                                <Image 
+                                                source={{ uri: item.avatar}}
+                                                className='w-12 h-12'
+                                                />
+                                            </View>
+                                            <Text
+                                            style={{fontFamily: 'Inter-Regular'}}
+                                            className='text-[9px] mt-1'
+                                            >
+                                                {TruncatedText(item.full_name, 18)}
+                                            </Text>
+                                        </TouchableOpacity>
                                     </View>
                                 )}
                                 keyExtractor={item => item.id}

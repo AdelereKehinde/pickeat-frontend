@@ -9,11 +9,13 @@ import RatingMeter from '@/components/Rating Meter';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function Reviews(){
     type RatingData = { total_reviews: number; average_rating: number; star_5_count: number; star_4_count: number; star_3_count: number; star_2_count: number; star_1_count: number;};
     type ReviewData = { id: number; name: string; avatar: string; rating: number; comment: string; date: string;}[];
-    type EarningResponse = {rating: RatingData; review: ReviewData};
+    type ReviewData1 = { count: number; next: string; previous: string; results: ReviewData;};
+    type EarningResponse = {rating: RatingData; review: ReviewData1};
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
     const [data, setData] = useState<ApiResponse>()
     const [loading, setLoading] = useState(false); // Loading state
@@ -28,15 +30,20 @@ export default function Reviews(){
     const [noOf2Star, setNoOf2Star] = useState(0);
     const [noOf1Star, setNoOf1Star] = useState(0);
     
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 5; // Items per page
 
     useEffect(() => {
         const fetchMeals = async () => {
             try {
                 setLoading(true)
-                const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['review']}`, true);
+                setReviewData([])
+                const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['review']}?page_size=${pageSize}&page=${currentPage}`, true);
                 // alert(JSON.stringify(response))
+                setCount(response.data.review.count)
                 setRatingData(response.data.rating)
-                setReviewData(response.data.review)
+                setReviewData(response.data.review.results)
                 setRating(response.data.rating.average_rating)
                 setNoOfReview(response.data.rating.total_reviews)
                 setNoOf5Star(response.data.rating.star_5_count)
@@ -48,12 +55,12 @@ export default function Reviews(){
                 setLoading(false)
             } catch (error) {
                 setLoading(false) 
-                alert(error);
+                // alert(JSON.stringify(error));
             } 
         };
     
     fetchMeals(); 
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
 
     const maxStars = 5; // Maximum stars
     // Create an array to represent each star
@@ -137,7 +144,7 @@ export default function Reviews(){
                         <RatingMeter star={1} rating={noOf1Star} total={noOfReview} />
                     </View>
 
-                    <View className='w-full space-y-5 mt-5 mb-10'>
+                    <View className='w-full space-y-7 mt-5 mb-10'>
                         {((!loading || (reviewData.length !== 0)) && reviewData.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -149,9 +156,9 @@ export default function Reviews(){
                                 </Text>
                             </View>
                         )}
-                        {(reviewData.length === 0 && loading) && 
+                        {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 3 }).map((_, index) => (
+                                {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -216,6 +223,7 @@ export default function Reviews(){
                             </View>                
                         ))}
                     </View>
+                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                 </ScrollView>
             </View>
         </SafeAreaView>

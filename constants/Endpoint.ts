@@ -22,7 +22,9 @@ const ENDPOINTS = {
         'validate-password-reset': `${BUYER_BASE}password/validate-otp`,
         'reset-password': `${BUYER_BASE}password/reset`,
         'add-remove-favourite-store': `${BUYER_BASE}store/`,
-        'information': `${BUYER_BASE}information`
+        'information': `${BUYER_BASE}information`,
+        'notification': `${BUYER_BASE}notification`,
+        'review': `${BUYER_BASE}review`,
     },
     'vendor': {
         'signin': `${VENDOR_BASE}signin`,
@@ -34,6 +36,7 @@ const ENDPOINTS = {
         'validate-password-reset': `${VENDOR_BASE}password/validate-otp`,
         'reset-password': `${VENDOR_BASE}password/reset`,
         'list': `${VENDOR_BASE}list`,
+        'profile': `${VENDOR_BASE}store`,
         'store-list': `${VENDOR_BASE}store/list`,
         'dashboard': `${VENDOR_BASE}dashboard`,
         'review': `${VENDOR_BASE}review`,

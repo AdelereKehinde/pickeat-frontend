@@ -132,7 +132,7 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                         style={{fontFamily: 'Inter-SemiBold'}}
                         className=' text-[12px] text-custom-green mt-2'
                         >
-                            ${price * quantity}
+                            ₦{price * quantity}
                         </Text>
                         {/* <Text className='text-[10px] text-gray-500'>
                             <Text

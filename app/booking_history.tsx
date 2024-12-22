@@ -10,6 +10,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Empty from '../assets/icon/empy_transaction.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
@@ -25,24 +26,29 @@ export default function BookingHistory(){
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [orders, serOrders] = useState<ListData>([]);
-    const [nextUrl, setNextUrl] = useState('')
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 6; // Items per page
+
+    const fetchMeals = async () => {
+        try {
+            setLoading(true)
+            serOrders([])
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response))
+            serOrders(response.results)
+            setCount(response.count)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            alert(error);
+        }
+    };
 
     useEffect(() => {
-        const fetchMeals = async () => {
-            try {
-                setLoading(true)
-                const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}`, true);
-                // alert(JSON.stringify(response))
-                serOrders(response.results)
-                setNextUrl(response.next)
-                setLoading(false)
-            } catch (error) {
-                alert(error);
-            }
-        };
-    
         fetchMeals(); 
-    }, []); // Empty dependency array ensures this runs once
+    }, [currentPage]); // Empty dependency array ensures this runs once
 
 
     return (
@@ -60,16 +66,16 @@ export default function BookingHistory(){
                     Booking History
                 </Text>
 
-                <View className='bg-white w-full my-3 mb-28 relative flex flex-row items-center justify-center'>
+                <View className='bg-white w-full my-3 mb-28 relative flex items-center'>
                     <ScrollView className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && orders.length === 0) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
                         )}
-                        {(orders.length === 0 && loading) && 
+                        {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 4 }).map((_, index) => (
+                                {Array.from({ length: 6 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -101,6 +107,7 @@ export default function BookingHistory(){
                                 /> 
                             </View>
                         ))}
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     </ScrollView>
                 </View>
             </View>

@@ -22,6 +22,7 @@ export default function PaymentPage(){
     const [loading, setLoading] = useState(Boolean);
     const [isFocused, setIsFocus] = useState(false);
     const [searchValue, setSearchValue] = useState('')
+    const [promoCode, setPromoCode] = useState('')
     const [loadSignal, setLoadSignal] = useState(false)
     type ItemsArray = { id: number; category_name: string; meal_name: string; meal_id: number; quantity: number; store_name: string; thumbnail: string; discounted_price: number; deleted: boolean; discount: string; in_stock: boolean;}[];
     type ListData = { pricing: {subtotal: number; delivery_fee: number}; cart_items: ItemsArray; };
@@ -149,8 +150,8 @@ export default function PaymentPage(){
                             autoFocus={false}
                             onFocus={()=>setIsFocus(true)}
                             onBlur={()=>setIsFocus(false)}
-                            onChangeText={setSearchValue}
-                            defaultValue={searchValue}
+                            onChangeText={setPromoCode}
+                            value={promoCode}
                             placeholder="Enter your promo code"
                             placeholderTextColor=""
                         />
@@ -241,7 +242,7 @@ export default function PaymentPage(){
                                 
                         </TouchableOpacity>
                         <TouchableOpacity
-                        onPress={()=>{!(cartItems.length === 0 || loading || loadSignal) && router.push('/payment_confirmation')}}
+                        onPress={()=>{!(cartItems.length === 0 || loading || loadSignal) && router.push(`/payment_confirmation?promo_code=${promoCode}`)}} 
                         className={`text-center bg-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl grow  p-4 self-center flex items-center justify-around`}
                         >
                             {(loadSignal) && (

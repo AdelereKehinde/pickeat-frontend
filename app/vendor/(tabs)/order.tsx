@@ -11,6 +11,7 @@ import Empty from '../../../assets/icon/Empty2.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Pagination from '@/components/Pagination';
 
 function Order(){
     const [loading, setLoading] = useState(false);
@@ -21,7 +22,10 @@ function Order(){
 
     const [parentorders, setParentOrders] = useState<ListData>([]);
     const [orders, setOrders] = useState<ListData>([]);
-    const [nextUrl, setNextUrl] = useState('')
+    
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 6; // Items per page
 
     const Filter = (index: string) =>{
         setFilter(index)
@@ -48,28 +52,27 @@ function Order(){
 
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
+    const fetchMeals = async () => {
+        try {
+            setLoading(true)
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response))
+            setParentOrders(response.results)
+            if(!ranOnce){
+                setOrders(response.results)
+                setRanOnce(true)
+            }
+            setCount(response.count)
+            setLoading(false)
+        } catch (error) {
+            alert(error);
+        } 
+    };
     useEffect(() => {
-        if (isFocused){
-            const fetchMeals = async () => {
-                try {
-                    setLoading(true)
-                    const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}`, true);
-                    // alert(JSON.stringify(response))
-                    setParentOrders(response.results)
-                    if(!ranOnce){
-                        setOrders(response.results)
-                        setRanOnce(true)
-                    }
-                    setNextUrl(response.next)
-                    setLoading(false)
-                } catch (error) {
-                    alert(error);
-                } 
-            };
-        
+        if (isFocused){        
             fetchMeals(); 
         }
-    }, [isFocused]); // Empty dependency array ensures this runs once
+    }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
     
     return (
         <SafeAreaView>
@@ -173,6 +176,7 @@ function Order(){
                                 <VendorOrder image={item.thumbnail} name={item.buyer_name} time={item.date} address={item.location} status={item.status}/>
                             </View>
                         ))}
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     </ScrollView>
                 </View>
             </View>
