@@ -138,7 +138,7 @@ export default function Dashboard(){
                             
                         </View>
 
-                        <View className='flex items-center justify-around rounded-2xl bg-gray-100 p-3'>
+                        <View className='flex flex-row space-x-2 items-center justify-around rounded-2xl bg-gray-100 p-3'>
                             <TouchableOpacity
                             className='flex flex-row space-x-2 '
                             onPress={()=>{router.push("/notification")}}
@@ -146,6 +146,11 @@ export default function Dashboard(){
                                 <View className=' '>
                                     <Notification />
                                 </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                            className='flex flex-row space-x-2 '
+                            onPress={()=>{router.push("/chat")}}
+                            >
                                 <View className=''>
                                     <Mail />
                                 </View>

@@ -10,6 +10,9 @@ const PAYMENT_BASE = `payment/`
 const ENDPOINTS = {
     'account': {
         'profession': `${ACOOUNT_BASE}professions`,
+        'chats': `${ACOOUNT_BASE}chats`,
+        'chats-create': `${ACOOUNT_BASE}chats/create`,
+        'send-message': `${ACOOUNT_BASE}chats/message/send`
     },
     'buyer': {
         'signin': `${BUYER_BASE}signin`,

@@ -1,54 +1,64 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { router } from 'expo-router';
 import { Text, View, Image, TouchableOpacity } from "react-native";
-import Rating from '../assets/icon/rating.svg';
-import Heart from '../assets/icon/heart.svg';
-import Time from '../assets/icon/time.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MessageRead from '../assets/icon/message_read.svg';
 
+type Messages = { id: number; chat: number; text: string; time: string; date: string;}
 interface Properties {
+    id: number;
     image:any,
     name: string,
     time: string,
     message: string,
+    messages: Messages[],
     unread: string | number,
   }
 
-const ChatListCard: React.FC<Properties> = ({image, name, message, time, unread}) =>{
+const ChatListCard: React.FC<Properties> = ({id, image, name, message, time, messages, unread}) =>{
+    const OpenChatPage = async() =>{
+        try {
+            await AsyncStorage.setItem((id + ""), JSON.stringify(messages));  // Save messages for chat
+            // alert(JSON.stringify(messages))
+            router.push(`/vendor/chat_page?chat_id=${id}&name=${name}&avatar=${image}`)
+
+          } catch (error) {
+            console.log('Error saving messages:', error);
+          }
+    }
     return(
         <View className='flex flex-row items-center py-3 border-b-1 border-gray-200 bg-white w-full border'>
             <TouchableOpacity
-            onPress={()=>{}}
-            className='flex flex-row w-full px-2'
+            onPress={OpenChatPage}
+            className='flex flex-row items-center justify-between w-full px-4 space-x-2'
             >
-                <View className='rounded-full overflow-hidden w-[50px] h-[50px]'>    
+                  
                     <Image 
-                    source={image}
-                    className=''
-                    width={100}
+                    source={{uri: image}}
+                    className='w-14 h-14 rounded-full'
                     />
-                </View>
 
-                <View className='flex justify-start ml-4 w-[45%]'>
+                <View className='w-[50%]'>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
                     className=' text-[12px] text-gray-800'
                     >
                         {name}
                     </Text>
-                    <View className='flex flex-row mt-2 items-center'>
+                    <View className='flex flex-row mt-2 items-center space-x-1'>
                         {(unread==0) && (
                             <MessageRead />
                         )}
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[11px] text-gray-400 ml-2'
+                        className=' text-[11px] text-gray-400'
                         >
                             {message}
                         </Text>
                     </View>
                 </View>
 
-                <View className='flex justify-start items-end ml-auto'>
+                <View className=''>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
                     className=' text-[11px] text-custom-green'

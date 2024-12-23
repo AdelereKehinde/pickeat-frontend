@@ -1,32 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal } from 'react-native';
-import Search from '../../../assets/icon/search.svg';
-import Empty from '../../../assets/icon/empty_chat.svg';
+import Search from '../assets/icon/search.svg';
 import ChatListCard from '@/components/ChatList';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router, useGlobalSearchParams } from 'expo-router';
+import Empty from '../assets/icon/empty_chat.svg';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
-import { useIsFocused } from '@react-navigation/native';
+import FullScreenLoader from '@/components/FullScreenLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChatList: React.FC = () => {
-    const [isFocused, setIsFocus] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const [chatFilter, setChatFilter] = useState('active');
+  const [isFocused, setIsFocus] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [chatFilter, setChatFilter] = useState('active');
 
     const [loading, setLoading] = useState(false);
     type Messages = { id: number; chat: number; text: string; time: string; date: string;};
     type ApiResponse = { id: number; avatar: string; name: string; unread: number; messages: Messages[]}[];
     const [chats, setChats] = useState<ApiResponse>([]);
-
-    const isFocusedd = useIsFocused();
     const fetchMeals = async () => {
         try {
-            setLoading(true)
+            try {
+                const storedMessages = await AsyncStorage.getItem('chat');
+                if (storedMessages) {
+                  setChats(JSON.parse(storedMessages));  // Set the cached messages
+                }else{
+                    setLoading(true)
+                }
+              } catch (error) {
+                console.log('Error retrieving messages:', error);
+              }
+
             const response = await getRequest<ApiResponse>(`${ENDPOINTS['account']['chats']}`, true);
+            await AsyncStorage.setItem('chat', JSON.stringify(response));  // Save messages for chat
+            
             // alert(JSON.stringify(response))
             setChats(response)
-            setLoading(false) 
+            setLoading(false)
         } catch (error) {
             setLoading(false)
             // alert(error);
@@ -35,12 +46,15 @@ const ChatList: React.FC = () => {
 
     useEffect(() => {
         fetchMeals();
-    }, [isFocusedd]); // Empty dependency array ensures this runs once
+    }, []); // Empty dependency array ensures this runs once
 
   return (
     <SafeAreaView>
-        <View className='bg-gray-100'>
+        <View className='bg-gray-100 h-full flex'>
             <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+            {loading && (
+                <FullScreenLoader />
+            )}
             <View className='w-full px-4 py-3 relative flex flex-row items-center justify-center bg-white'>
                 <View className='absolute left-6 z-10'>
                     <Search />
@@ -73,7 +87,7 @@ const ChatList: React.FC = () => {
                     className={`${(chatFilter == 'active')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
-                        Active Bookings
+                        All Messages
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -84,7 +98,7 @@ const ChatList: React.FC = () => {
                     className={`${(chatFilter == 'pending')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
-                        Pending Bookings
+                        Unread Messages
                     </Text>
                 </TouchableOpacity>
             </View>
@@ -99,7 +113,7 @@ const ChatList: React.FC = () => {
                     <View key={item.id} className='w-full'>
                         <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
                     </View>
-                ))}
+                ))} 
             </ScrollView>
         
         </View>

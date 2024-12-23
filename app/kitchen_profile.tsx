@@ -14,14 +14,14 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 
 function KitchenProfile(){
-    const {kitchen_id} = useGlobalSearchParams()
+    const {kitchen_id, name} = useGlobalSearchParams()
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
 
     type ReviewData = { total_reviews: number; average_rating: number;};
-    type ProfileResponse = {id: number; review: ReviewData; avatar: string; business_name: string; business_mail: string; business_number: string; description: ''; available_from: string; available_to: string; time_start: string; time_end: string; profession: string; profession_category: string; address: ""};
+    type ProfileResponse = {id: number; review: ReviewData; avatar: string; business_name: string; business_mail: string; business_number: string; description: ''; available_from: string; available_to: string; time_start: string; time_end: string; profession: string; profession_category: string; address: "", chat_id: ""};
     type ApiResponse = { status: string; message: string; data: ProfileResponse;};
 
     const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', ];
@@ -37,8 +37,9 @@ function KitchenProfile(){
     const fetchCategories = async () => {
         try {
             setLoading(true)
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['profile']}/${kitchen_id}`, false); 
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['profile']}/${kitchen_id}`, true); 
             setLoading(false) 
+            // alert(JSON.stringify(response))
             setNoOfReview(response.data.review.total_reviews)
             setRating(response.data.review.average_rating)
             setData(response.data)
@@ -263,7 +264,7 @@ function KitchenProfile(){
 
                     <View className='w-[90%] mx-auto'>
                         <TouchableOpacity
-                        onPress={()=>{router.push(`/kitchen_product?kitchen_id=${kitchen_id}`)}}
+                        onPress={()=>{router.push(`/vendor/chat_page?kitchen_id=${data?.id}&name=${data?.business_name}&avatar=${data?.avatar}&chat_id=${data?.chat_id}`)}}
                         className={`text-center bg-custom-green relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
                         >
                             <Text

@@ -55,6 +55,7 @@ export default function RootLayout() {
         <Stack.Screen name="profile_page" options={{headerShown: false}} />
         <Stack.Screen name="notification" options={{headerShown: false}} />
         <Stack.Screen name="kitchen_profile" options={{headerShown: false}} />
+        <Stack.Screen name="chat" options={{headerShown: false}} />
 
         {/* VENDOR */}
         <Stack.Screen name="vendor/(tabs)" options={{ headerShown: false }} />  
@@ -80,6 +81,7 @@ export default function RootLayout() {
         <Stack.Screen name="vendor/create_product" options={{headerShown: false}} />
         <Stack.Screen name="vendor/earnings" options={{headerShown: false}} />
         <Stack.Screen name="vendor/reviews" options={{headerShown: false}} />
+        <Stack.Screen name="vendor/chat_page" options={{headerShown: false}} />
       </Stack>
     </UserProvider>
   );
