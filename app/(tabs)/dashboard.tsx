@@ -117,7 +117,7 @@ export default function Dashboard(){
                             <View className=''>
                                 <Account />
                             </View>
-                            {(name)?
+                            {(user?.first_name)?
                                 <Text
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >

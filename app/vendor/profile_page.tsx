@@ -7,9 +7,9 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { getRequest, patchRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
-import RadioActive from '../assets/icon/radio_active.svg';
-import RadioInctive from '../assets/icon/radio_inactive.svg';
-import Location from '../assets/icon/location_highlight.svg';
+import RadioActive from '../../assets/icon/radio_active.svg';
+import RadioInctive from '../../assets/icon/radio_inactive.svg';
+import Location from '../../assets/icon/location_highlight.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,11 +22,11 @@ export default function ProfilePage(){
     const [loading, setLoading] = useState(false);
 
     type APIResponse = {
-        first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; };
+        first_name: string; full_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; };
 
     const [resData, setResData] = useState<APIResponse>({
         first_name: '',
-        last_name: '',
+        full_name: '',
         email: '',
         building_type: '',
         building_name: '',
@@ -45,7 +45,7 @@ export default function ProfilePage(){
     };
 
     const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('')
+    const [fullName, setFullName] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const [email, setEmail] = useState('');
     const [riderInstruction, setRiderInstruction] = useState('');
@@ -56,9 +56,9 @@ export default function ProfilePage(){
         const fetchInformation = async () => {
             try {
                 setLoading(true)
-                const response = await getRequest<APIResponse>(`${ENDPOINTS['buyer']['information']}`, true);
+                const response = await getRequest<APIResponse>(`${ENDPOINTS['vendor']['information']}`, true);
                 setFirstName(response.first_name)
-                setLastName(response.last_name)
+                setFullName(response.full_name)
                 setPhoneNumber(response.phone_number)
                 setRiderInstruction(response.rider_instruction)
                 setServiceOption(response.service_option)
@@ -80,14 +80,12 @@ export default function ProfilePage(){
         };
     
         fetchInformation(); 
-    }, []); // Empty dependency array ensures this runs once
+    }, []); 
 
     const validateInput = (field:string) =>{
         switch (field) {
-            case 'first_name':
-                return (firstName !== resData?.first_name)
-            case 'last_name':
-                return (lastName !== resData?.last_name)
+            case 'full_name':
+                return (fullName !== resData?.full_name)
             case 'phone_number':
                 return (phoneNumber !== resData?.phone_number)
             case 'service_option':
@@ -100,7 +98,7 @@ export default function ProfilePage(){
     }
 
     const validateInput2 = () =>{
-        if((resData?.service_option !== serviceOption) || (resData?.rider_instruction !== riderInstruction)){
+        if((resData?.rider_instruction !== riderInstruction)){
           return true;
         }
         return false;
@@ -112,14 +110,14 @@ export default function ProfilePage(){
             setLoading(true)
             type DataResponse = { message: string; token:string; refresh: string, name:string; };
             type ApiResponse = { status: string; message: string; data:DataResponse };
-            const res = await patchRequest<ApiResponse>(ENDPOINTS['buyer']['user-data'], {
+            const res = await patchRequest<ApiResponse>(ENDPOINTS['vendor']['user-data'], {
                 first_name: firstName,
-                last_name: lastName,
+                full_name: fullName,
                 phone_number: phoneNumber,
             }, true);
             
             updateKey('first_name', firstName)
-            updateKey('last_name', lastName)
+            updateKey('full_name', fullName)
             updateKey('phone_number', phoneNumber)
 
             setLoading(false)
@@ -150,12 +148,10 @@ export default function ProfilePage(){
             setLoading(true)
             type DataResponse = { message: string; token:string; refresh: string, name:string; };
             type ApiResponse = { status: string; message: string; data:DataResponse };
-            const res = await patchRequest<ApiResponse>(ENDPOINTS['buyer']['update-address'], {
-                service_option: serviceOption,
+            const res = await patchRequest<ApiResponse>(ENDPOINTS['vendor']['update-address'], {
                 rider_instruction: riderInstruction
             }, true);
             
-            updateKey('service_option', serviceOption)
             updateKey('rider_instruction', riderInstruction)
 
             setLoading(false)
@@ -196,27 +192,27 @@ export default function ProfilePage(){
                         Personal Information
                     </Text>
                     <View className='w-[90%] mx-auto space-y-3 mb-3'>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className='flex flex-row bg-blue-100 rounded-xl px-4 items-center space-x-3 py-2'>
                             <View className='grow'>
                                 <Text
-                                className='text-gray-400 text-[11px]'
+                                className='text-gray-500 text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    First Name
+                                    Full Name
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
                                     className={`w-full rounded-lg text-[11px] text-black`}
                                     autoFocus={false}
                                     readOnly={loading}
-                                    onChangeText={setFirstName}
-                                    defaultValue={firstName}
+                                    onChangeText={setFullName}
+                                    defaultValue={fullName}
                                     placeholderTextColor=""
                                 />
                             </View>
                             <TouchableOpacity
-                            className={` bg-custom-green ${(loading || resData?.first_name == firstName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
-                            onPress={()=>{handleUpdate('first_name')}}
+                            className={`bg-custom-green ${(loading || resData?.full_name == fullName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
+                            onPress={()=>{handleUpdate('full_name')}}
                             >
                                 <Text
                                 className='text-white text-[11px] self-start'
@@ -231,45 +227,10 @@ export default function ProfilePage(){
                                 )}
                             </TouchableOpacity>
                         </View>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className='flex flex-row bg-blue-100 rounded-xl px-4 items-center space-x-3 py-2'>
                             <View className='grow'>
                                 <Text
-                                className='text-gray-400 text-[11px]'
-                                style={{fontFamily: 'Inter-SemiBold'}}
-                                >
-                                    Last Name
-                                </Text>
-                                <TextInput
-                                    style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
-                                    autoFocus={false}
-                                    readOnly={loading}
-                                    onChangeText={setLastName}
-                                    defaultValue={lastName}
-                                    placeholderTextColor=""
-                                />
-                            </View>
-                            <TouchableOpacity
-                            className={`bg-custom-green ${(loading || resData?.last_name == lastName) && 'bg-gray-400'} px-4 py-[2px] rounded-lg flex items-center justify-around`}
-                            onPress={()=>{handleUpdate('last_name')}}
-                            >
-                                <Text
-                                className='text-white text-[11px] self-start'
-                                style={{fontFamily: 'Inter-SemiBold'}}
-                                >
-                                    Edit
-                                </Text>
-                                {loading && (
-                                    <View className='absolute w-full'>
-                                        <ActivityIndicator size="small" color="#fff" />
-                                    </View>
-                                )}
-                            </TouchableOpacity>
-                        </View>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
-                            <View className='grow'>
-                                <Text
-                                className='text-gray-400 text-[11px]'
+                                className='text-gray-500 text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Email
@@ -285,10 +246,10 @@ export default function ProfilePage(){
                                 />
                             </View>
                         </View>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className='flex flex-row bg-blue-100 rounded-xl px-4 items-center space-x-3 py-2'>
                             <View className='grow'>
                                 <Text
-                                className='text-gray-400 text-[11px]'
+                                className='text-gray-500 text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Phone Number
@@ -352,70 +313,6 @@ export default function ProfilePage(){
                             </View>
                         </View>
                     </View>
-                
-
-                    <Text
-                    className='text-[13px] self-start pl-5'
-                    style={{fontFamily: 'Inter-SemiBold'}}
-                    >
-                        Service Options
-                    </Text>
-                    <View className='px-3 w-[90%] mx-auto mb-3'>
-                        <TouchableOpacity
-                        onPress={()=>{setServiceOption(1)}}
-                        className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
-                        >
-                            <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 1) && 'border-gray-300'} p-1 rounded-full`}>
-                                {(serviceOption == 1)?
-                                    <RadioActive />
-                                    :
-                                    <RadioInctive width={6} height={6} />
-                                }
-                            </View>
-                            <Text
-                            className='text-[12px] self-start text-gray-500'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Hand it to me Directly
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                        onPress={()=>{setServiceOption(2)}}
-                        className={`flex flex-row items-center space-x-2 border-b border-gray-200 py-2`}
-                        >
-                            <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 2) && 'border-gray-300'} p-1 rounded-full `}>
-                                {(serviceOption == 2)?
-                                    <RadioActive />
-                                    :
-                                    <RadioInctive width={6} height={6} />
-                                }       
-                            </View>
-                            <Text
-                            className='text-[12px] self-start text-gray-500'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Hand to me or who’s available
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                        onPress={()=>{setServiceOption(3)}}
-                        className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
-                        >
-                            <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 3) && 'border-gray-300'} p-1 rounded-full`}>
-                                {(serviceOption == 3)?
-                                    <RadioActive />
-                                    :
-                                    <RadioInctive width={6} height={6} />
-                                }
-                            </View>
-                            <Text
-                            className='text-[12px] self-start text-gray-500'
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Leave it at my door
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
 
                     <Text
                     className='text-[13px] pl-5 mt-10'
@@ -441,7 +338,7 @@ export default function ProfilePage(){
                     <TouchableOpacity
                     // onPress={()=>{router.push("/enter_code")}}
                     onPress={handleUpdate2}
-                    className={`text-center ${(validateInput2() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-12 mb-10 flex items-center justify-around`}
+                    className={`text-center ${(validateInput2() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl mt-auto p-4 w-[90%] self-center mb-10 flex items-center justify-around`}
                     >
                     {loading && (
                         <View className='absolute w-full top-4'>
@@ -453,7 +350,7 @@ export default function ProfilePage(){
                         className='text-white'
                         style={{fontFamily: 'Inter-Regular'}}
                         >
-                            Update
+                            Save
                         </Text>
                                         
                     </TouchableOpacity>

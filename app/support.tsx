@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, Pressable, StyleSheet, ScrollView } from "react-native";
+import { Text, View, StatusBar, Pressable, StyleSheet, ScrollView ,Linking, TouchableOpacity } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import WhatsAPP from '../assets/icon/whatsapp.svg';
@@ -10,22 +10,49 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 function Support(){
 
     const [showPrompt, setShowPrompt] = useState(false)
+    const [error, setError] = useState('')
 
-    const [orderDetail, setOrderDetail] = useState({
-        order_time: '09:45am',
-        preparation_time: '09:47am',
-        assignation_time: '',
-        pickup_time: '',
-        delivery_time: '',
-    })
+    const phoneNumber = '2349012345678'; // Replace with the desired phone number
+    const message = 'Hello, I would like to make a complaint!'; // Replace with your message
 
+    const openWhatsApp = () => {
+        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        Linking.canOpenURL(url)
+          .then((supported) => {
+            if (supported) {
+              Linking.openURL(url);
+            } else {
+                setError('WhatsApp is not installed on your device.')
+            }
+        })
+          .catch((err) => {
+            setError('Error opening WhatsApp.')
+        });
+    };
+
+    const recipient = 'support@pickeatpickit.com'; // Replace with the recipient's email
+    const subject = 'Inquiry about your services'; // Replace with the subject
+    const body = ''; // Replace with the email body
+
+    const sendEmail = () => {
+        const url = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        Linking.canOpenURL(url)
+          .then((supported) => {
+            if (supported) {
+              Linking.openURL(url);
+            } else {
+                setError('No email client is installed on your device.')
+            }
+        })
+          .catch((err) => {
+            setError('Error opening email client app.')
+        });
+    };
     return (
         <SafeAreaView>
             <View className=' bg-gray-100 w-full h-full flex'>
                 <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-                {showPrompt && (
-                    <Prompt main_text='Thank you for choosing PickEat PickIt' sub_text='You’ve confirmed you’ve now collected your order' clickFunction={()=>{setShowPrompt(false)}} />
-                )}
+                
                 <View style={styles.shadow_box} className='bg-blue-100 w-full'>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
@@ -52,8 +79,17 @@ function Support(){
                             Chat with PickEat PickIt Customer care support
                         </Text>
 
-                        <Pressable 
-                        onPress={()=>{setShowPrompt(true)}}
+                        {error != '' && (
+                            <Text
+                            className='text-red-500 text-[12px] px-4 mt-2'
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                {error}
+                            </Text>
+                        )}  
+
+                        <TouchableOpacity 
+                        onPress={sendEmail}
                         className='flex flex-row items-center space-x-5 py-1 rounded-lg bg-gray-100 mt-4 border-b border-gray-300 px-4'>
                             <View>
                                 <Email />
@@ -72,10 +108,10 @@ function Support(){
                                     Support@pickeatpickit.com
                                 </Text>
                             </View>
-                        </Pressable>
+                        </TouchableOpacity>
 
-                        <Pressable 
-                        onPress={()=>{setShowPrompt(true)}}
+                        <TouchableOpacity 
+                        onPress={openWhatsApp}
                         className='flex flex-row items-center space-x-5 py-1 rounded-lg bg-gray-100 mt-4 border-b border-gray-300 px-4'>
                             <View>
                                 <WhatsAPP />
@@ -94,7 +130,7 @@ function Support(){
                                     +234 901 2345 678
                                 </Text>
                             </View>
-                        </Pressable>
+                        </TouchableOpacity>
 
                     </View>
                 </ScrollView>    

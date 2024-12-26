@@ -39,7 +39,7 @@ export default function Login(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; address: boolean };
+          type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; buyer_address:string; latitude:string; longitude:string; delivery_address: boolean };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signin'], {email: email,password: password}, false);
           
@@ -63,8 +63,8 @@ export default function Login(){
 
           await Delay(2000)
           router.replace({
-            pathname: (res.data.first_name == '')?'/complete_profile': (res.data.address)?'/dashboard':'/complete_profile_2',
-            params: { name: res.data.name},
+            pathname: (res.data.first_name == '')?'/complete_profile': (res.data.delivery_address)?'/dashboard': (res.data.buyer_address == '')? '/complete_profile_2' : `/set_delivery_address`,
+            params: { name: res.data.name, longitude: res.data.longitude, latitude: res.data.latitude, address: res.data.buyer_address},
           }); 
         }
 

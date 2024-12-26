@@ -24,7 +24,7 @@ const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setV
       {(name !== "") && (
         <Text
         style={{fontFamily: 'Inter-Medium'}}
-        className='absolute left-2 p-1 top-1 z-10 text-gray-400 text-[13px]'
+        className='absolute left-2 p-1 top-1 z-10 text-gray-400 text-[12px]'
         >
           {name}
         </Text>
@@ -33,7 +33,7 @@ const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setV
       {/* TextInput */}
       <TextInput
         style={{fontFamily: 'Inter-Regular'}}
-        className={`${isFocused? 'border-custom-green border bg-white': `${border && ('border border-gray-300 bg-gray-100')}`} rounded-md px-3 py-2 ${(name !== "") && ('pt-7')} text-[14px]`}
+        className={`${isFocused? 'border-custom-green border bg-white': `${border && ('border border-gray-300 bg-gray-100')}`} rounded-md px-3 py-2 ${(name !== "") && ('pt-7')} text-[13px]`}
         onFocus={()=>setIsFocus(true)}
         onBlur={()=>setIsFocus(false)}
         autoFocus={focus}

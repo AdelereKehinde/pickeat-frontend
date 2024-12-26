@@ -15,7 +15,7 @@ import Map from '../assets/icon/map.svg';
 import Delay from '@/constants/Delay';
 import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
-import { postRequest } from '@/api/RequestHandler';
+import { postRequest, patchRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CompleteProfile2(){
@@ -108,7 +108,7 @@ export default function CompleteProfile2(){
         try {
           if(!loading && ValidateFormContent()){
             setLoading(true)
-            const res = await postRequest(ENDPOINTS['buyer']['create-address'], selectedLocation, true);
+            const res = await patchRequest(ENDPOINTS['buyer']['buyer-address'], selectedLocation, true);
             setLoading(false)
             Toast.show({
               type: 'success',
@@ -118,9 +118,7 @@ export default function CompleteProfile2(){
             });
   
             await Delay(1000)
-            router.push({
-              pathname: '/login',
-            }); 
+            router.push(`/set_delivery_address?latitude=${selectedLocation.latitude}&longitude=${selectedLocation.longitude}&address=${selectedLocation.address}`)
           }
   
         } catch (error:any) {
@@ -268,7 +266,7 @@ export default function CompleteProfile2(){
 
                     <TouchableOpacity
                     onPress={handleSubmit}
-                    className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-[50px] mb-8 flex items-center justify-around`}
+                    className={`text-center ${(ValidateFormContent())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${(loading) && 'bg-custom-inactive-green'} relative rounded-xl p-4 w-[85%] self-center mt-auto mb-8 flex items-center justify-around`}
                     >
                         {loading && (
                         <View className='absolute w-full top-4'>

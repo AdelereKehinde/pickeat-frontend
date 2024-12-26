@@ -42,7 +42,7 @@ export default function VendorLogin(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean;};
+          type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {email: email,password: password}, true);
 
@@ -68,7 +68,7 @@ export default function VendorLogin(){
 
           await Delay(3000)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? '/vendor/(tabs)/home' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
+            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? '/vendor/(tabs)/home' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
           }); 
         }
 
