@@ -27,34 +27,12 @@ function Order(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
-    const Filter = (index: string) =>{
-        setFilter(index)
-        switch (index) {
-            case 'pending':
-                var newOrder = parentorders.filter((item)=>item.status.includes("pending"))
-                setOrders(newOrder)
-                break;
-            case 'completed':
-                var newOrder = parentorders.filter((item)=>item.status.includes("completed"))
-                setOrders(newOrder)
-                break;
-            case 'cancelled':
-                var newOrder = parentorders.filter((item)=>item.status.includes("cancelled"))
-                setOrders(newOrder)
-                break;
-            default:
-                alert('default')
-                var newOrder = parentorders.filter((item)=>item.status.includes("Pending"))
-                setOrders(newOrder)
-                break;
-        }
-    }
-
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
     const fetchMeals = async () => {
         try {
             setLoading(true)
+            setParentOrders([])
             const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
             setParentOrders(response.results)
@@ -91,7 +69,7 @@ function Order(){
                 
                 <View className='my-3 mt-3 flex flex-row w-full justify-around'>
                     <TouchableOpacity 
-                        onPress={()=>{Filter('pending')}}
+                        onPress={()=>{setFilter('pending')}}
                         className={`${(filter == 'pending')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >   
                         {(filter== 'pending') && (
@@ -106,7 +84,7 @@ function Order(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{Filter('completed')}}
+                        onPress={()=>{setFilter('completed')}}
                         className={`${(filter == 'completed')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
                         {(filter == 'completed') && (
@@ -121,7 +99,7 @@ function Order(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{Filter('cancelled')}}
+                        onPress={()=>{setFilter('cancelled')}}
                         className={`${(filter == 'cancelled')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
                         {(filter == 'cancelled') && (
@@ -138,7 +116,7 @@ function Order(){
 
                 <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
                     <ScrollView className='w-full p-1 mb-2 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
-                        {((!loading || (parentorders.length !== 0)) && orders.length === 0 ) && (
+                        {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
@@ -149,6 +127,7 @@ function Order(){
                                 </Text>
                             </View>
                         )}
+                        
                         {(parentorders.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 4 }).map((_, index) => (
@@ -171,7 +150,7 @@ function Order(){
                                 ))}
                             </View>
                         }
-                        {orders.map((item) => (
+                        {parentorders.filter((item)=>item.status.includes(filter)).map((item) => (
                             <View key={item.id}>
                                 <VendorOrder image={item.thumbnail} name={item.buyer_name} time={item.date} address={item.location} status={item.status}/>
                             </View>

@@ -13,11 +13,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ChatList: React.FC = () => {
   const [isFocused, setIsFocus] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [chatFilter, setChatFilter] = useState('active');
+  const [chatFilter, setChatFilter] = useState('all');
 
     const [loading, setLoading] = useState(false);
+    const [ranOnce, setRanOnce] = useState(false);
+
     type Messages = { id: number; chat: number; text: string; time: string; date: string;};
     type ApiResponse = { id: number; avatar: string; name: string; unread: number; messages: Messages[]}[];
+
     const [chats, setChats] = useState<ApiResponse>([]);
     const fetchMeals = async () => {
         try {
@@ -35,6 +38,8 @@ const ChatList: React.FC = () => {
             const response = await getRequest<ApiResponse>(`${ENDPOINTS['account']['chats']}`, true);
             await AsyncStorage.setItem('chat', JSON.stringify(response));  // Save messages for chat
             
+            setRanOnce(true)
+
             // alert(JSON.stringify(response))
             setChats(response)
             setLoading(false)
@@ -46,6 +51,11 @@ const ChatList: React.FC = () => {
 
     useEffect(() => {
         fetchMeals();
+        const intervalId = setInterval(() => {
+            fetchMeals();; // Fetch messages periodically
+          }, 30000); // Poll every 5 seconds
+      
+          return () => clearInterval(intervalId); // Clean up on unmount
     }, []); // Empty dependency array ensures this runs once
 
   return (
@@ -80,22 +90,22 @@ const ChatList: React.FC = () => {
 
             <View className='flex flex-row w-full bg-blue-100'>
                 <TouchableOpacity
-                onPress={()=>{setChatFilter('active')}}
-                className={`grow ${(chatFilter == 'active') && 'bg-custom-green'}`}
+                onPress={()=>{setChatFilter('all')}}
+                className={`grow ${(chatFilter == 'all') && 'bg-custom-green'}`}
                 >
                     <Text
-                    className={`${(chatFilter == 'active')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
+                    className={`${(chatFilter == 'all')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         All Messages
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                onPress={()=>{setChatFilter('pending')}}
-                className={`grow ${(chatFilter == 'pending') && 'bg-custom-green'}`}
+                onPress={()=>{setChatFilter('unread')}}
+                className={`grow ${(chatFilter == 'unread') && 'bg-custom-green'}`}
                 >
                     <Text
-                    className={`${(chatFilter == 'pending')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
+                    className={`${(chatFilter == 'unread')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Unread Messages
@@ -104,16 +114,36 @@ const ChatList: React.FC = () => {
             </View>
             
             <ScrollView className='w-full mb-80' contentContainerStyle={{ flexGrow: 1 }}>
-                {chats.length == 0 && (
-                    <View className='mx-auto'>
-                        <Empty />
-                    </View>
-                )}
-                {chats.map((item) => (
-                    <View key={item.id} className='w-full'>
-                        <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
-                    </View>
-                ))} 
+
+                {(chatFilter == 'unread')?
+                    chats.filter(item => item.unread > 0).length == 0 && (
+                        <View className='mx-auto'>
+                            <Empty />
+                        </View>
+                    )
+                :
+                    chats.length == 0 && (
+                        <View className='mx-auto'>
+                            <Empty />
+                        </View>
+                    )
+                }
+                
+                {(chatFilter == 'unread')?
+                    chats.filter(item => item.unread > 0).map((item) => (
+                        <View key={item.id} className='w-full'>
+                            <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
+                        </View>
+                    )) 
+                :
+                    chats.map((item) => (
+                        <View key={item.id} className='w-full'>
+                            <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
+                        </View>
+                    )) 
+                }
+
+                
             </ScrollView>
         
         </View>

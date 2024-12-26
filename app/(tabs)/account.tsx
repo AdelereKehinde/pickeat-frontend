@@ -100,7 +100,7 @@ export default function Account(){
                         </View>
                         <View className='w-full px-5 my-1'>
                             <Pressable
-                            onPress={()=>{alert('clicked')}}
+                            onPress={()=>{}}
                             className='flex flex-row w-full items-center'
                             >
                                 <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>
@@ -130,7 +130,7 @@ export default function Account(){
                                 </Text>
                             </Pressable>
                         </View>
-                        <View className='w-full px-5 my-1'>
+                        {/* <View className='w-full px-5 my-1'>
                             <Pressable
                             onPress={()=>{alert('clicked')}}
                             className='flex flex-row w-full items-center'
@@ -145,7 +145,7 @@ export default function Account(){
                                     FAQ
                                 </Text>
                             </Pressable>
-                        </View>
+                        </View> */}
                         <View className='w-full px-5 my-1'>
                             <Pressable
                             onPress={()=>{(router.push("/support"))}}

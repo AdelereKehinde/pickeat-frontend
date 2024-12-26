@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 
 export default function Services(){
-    const [filterIndex, setFilterIndex] = useState(1);
+    const [filter, setFilter] = useState('Pending');
     
     const toastConfig = {
         success: CustomToast,
@@ -33,36 +33,13 @@ export default function Services(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
-    const Filter = (index: number) =>{
-        setFilterIndex(index)
-        switch (index) {
-            case 1:
-                var newOrder = parentorders.filter((item)=>item.status.includes("Pending"))
-                setOrders(newOrder)
-                break;
-            case 2:
-                var newOrder = parentorders.filter((item)=>item.status.includes("Completed"))
-                setOrders(newOrder)
-                break;
-            case 3:
-                var newOrder = parentorders.filter((item)=>item.status.includes("Cancelled"))
-                setOrders(newOrder)
-                break;
-            default:
-                alert('default')
-                var newOrder = parentorders.filter((item)=>item.status.includes("Pending"))
-                setOrders(newOrder)
-                break;
-        }
-    }
-
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
     const [paginationLoad, setPaginationLoad] = useState(false);
     const fetchMeals = async () => {
         try {
             setLoading(true)
-            setOrders([])
+            setParentOrders([])
             if (ranOnce){
                 setPaginationLoad(true)
             }
@@ -105,14 +82,14 @@ export default function Services(){
 
                 <View className='my-3 mt-5 flex flex-row w-full justify-around'>
                     <TouchableOpacity 
-                        onPress={()=>{Filter(1) }}
-                        className={`${(filterIndex == 1)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('Pending') }}
+                        className={`${(filter == 'Pending')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >   
-                        {(filterIndex == 1) && (
+                        {(filter == 'Pending') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filter == 'Pending')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Pending
@@ -120,14 +97,14 @@ export default function Services(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{Filter(2)}}
-                        className={`${(filterIndex == 2)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('Cancelled')}}
+                        className={`${(filter == 'Cancelled')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filterIndex == 2) && (
+                        {(filter == 'Cancelled') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 2)? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
+                        className={`${(filter == 'Cancelled')? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Cancelled
@@ -135,14 +112,14 @@ export default function Services(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{Filter(3)}}
-                        className={`${(filterIndex == 3)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('Completed')}}
+                        className={`${(filter == 'Completed')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filterIndex == 3) && (
+                        {(filter == 'Completed') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 3)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filter == 'Completed')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Completed
@@ -153,7 +130,7 @@ export default function Services(){
                 <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
                     
                     <ScrollView className='w-full mt-4  space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!paginationLoad && (((parentorders.length !== 0)) && orders.length === 0 )) && (
+                        {(!paginationLoad && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
@@ -180,7 +157,7 @@ export default function Services(){
                                 ))}
                             </View>
                         }
-                        {orders.map((item) => (
+                        {parentorders.filter((item)=>item.status.includes(filter)).map((item) => (
                             <View key={item.id}> 
                                 <ServicesLayout 
                                 kitchen={item.store_name} 

@@ -80,6 +80,12 @@ const ChatPage: React.FC = () => {
     // alert(chatId)
     if (chatId != 0){
       loadMessages() 
+      const intervalId = setInterval(() => {
+        loadMessages();; // Fetch messages periodically
+      }, 30000); // Poll every 5 seconds
+  
+      return () => clearInterval(intervalId); // Clean up on unmount
+      
     }
   }, []); // Empty dependency array ensures this runs once
 
