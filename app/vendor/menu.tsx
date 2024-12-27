@@ -26,7 +26,7 @@ export default function Menu(){
             try {
                 setLoading(true)
                 const response = await getRequest<ApiResponse>(ENDPOINTS['inventory']['vendor-meal-list'], true); // Authenticated
-                // alert(JSON.stringify(response.results))
+                // alert(JSON.stringify(response.results)) 
                 setMeals(response.results) 
                 setLoading(false)
             } catch (error) {
@@ -63,7 +63,7 @@ export default function Menu(){
     };
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
-    const [filterIndex, setFilterIndex] = useState(1);
+    const [filterIndex, setFilterIndex] = useState('all');
     
     return (
         <SafeAreaView>
@@ -98,14 +98,14 @@ export default function Menu(){
 
                 <View className='my-3 mt-5 flex flex-row w-full justify-around'>
                     <TouchableOpacity 
-                        onPress={()=>{setFilterIndex(1)}}
-                        className={`${(filterIndex == 1)? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilterIndex('all')}}
+                        className={`${(filterIndex == 'all')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >   
-                        {(filterIndex == 1) && (
+                        {(filterIndex == 'all') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 1)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filterIndex == 'all')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             All
@@ -113,14 +113,14 @@ export default function Menu(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{setFilterIndex(2)}}
-                        className={`${(filterIndex == 2)? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilterIndex('dessert')}}
+                        className={`${(filterIndex == 'dessert')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filterIndex == 2) && (
+                        {(filterIndex == 'dessert') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 2)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filterIndex == 'dessert')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Desert
@@ -128,14 +128,14 @@ export default function Menu(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{setFilterIndex(3)}}
-                        className={`${(filterIndex == 3)? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilterIndex('breakfast')}}
+                        className={`${(filterIndex == 'breakfast')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filterIndex == 3) && (
+                        {(filterIndex == 'breakfast') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 3)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filterIndex == 'breakfast')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Breakfast
@@ -143,22 +143,22 @@ export default function Menu(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{setFilterIndex(4)}}
-                        className={`${(filterIndex == 4)? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilterIndex('lunch')}}
+                        className={`${(filterIndex == 'lunch')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filterIndex == 4) && (
+                        {(filterIndex == 'lunch') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filterIndex == 4)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filterIndex == 'lunch')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
-                            Add ons
+                            Lunch
                         </Text>
                     </TouchableOpacity>
                 </View>
 
-                <Text
+                {/* <Text
                 className={`text-[15px] self-start ml-3 mt-5`}
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
@@ -189,11 +189,20 @@ export default function Menu(){
                         // Add spacing between items with ItemSeparatorComponent
                         ItemSeparatorComponent={() => <View className='' />}
                     />
-                </View>
+                </View> */}
                 
-                <View className='w-full bg-gray-50 mb-40 pb-2 '>
+                <View className='w-full bg-gray-50 mt-3'>
                     <ScrollView className='w-full space-y-1 mb-56' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!loading && meals.length == 0) && (
+                        {(!loading && filterIndex == 'all' && meals.length == 0) && (
+                            <View className='flex items-center'>
+                                <TouchableOpacity
+                                onPress={()=>{router.push('/vendor/create_product')}}
+                                className=''>
+                                    <Empty />
+                                </TouchableOpacity>
+                            </View>
+                        )} 
+                        {(!loading && filterIndex !== 'all' && meals.filter((item)=>item.category[0].category_name == filterIndex).length == 0) && (
                             <View className='flex items-center'>
                                 <TouchableOpacity
                                 onPress={()=>{router.push('/vendor/create_product')}}
@@ -222,22 +231,77 @@ export default function Menu(){
                                 ))}
                             </View>
                         }
-                        {meals.map((item) => (
-                            <View key={item.id}>
-                                <VendorProductList 
-                                onRemove={handleRemoveItem}
-                                image={item.thumbnail} 
-                                id={item.id}
-                                category={TitleCase(item.category[0].category_name)}
-                                name={TitleCase(item.meal_name)} 
-                                price={item.price} 
-                                discount={item.discount} 
-                                discounted_price={item.discounted_price} 
-                                quantity_in_cart={item.cart_quantity}
-                                description={item.meal_description}
-                                />
-                            </View>
-                        ))}
+                        {(filterIndex == 'all')?
+                            (searchValue.trim() == '')?
+                                meals.map((item) => (
+                                    <View key={item.id}>
+                                        <VendorProductList 
+                                        onRemove={handleRemoveItem}
+                                        image={item.thumbnail} 
+                                        id={item.id}
+                                        category={TitleCase(item.category[0].category_name)}
+                                        name={TitleCase(item.meal_name)} 
+                                        price={item.price} 
+                                        discount={item.discount} 
+                                        discounted_price={item.discounted_price} 
+                                        quantity_in_cart={item.cart_quantity}
+                                        description={item.meal_description}
+                                        />
+                                    </View>
+                                ))
+                                :
+                                meals.filter((item)=>item.meal_name.includes(searchValue)).map((item) => (
+                                    <View key={item.id}>
+                                        <VendorProductList 
+                                        onRemove={handleRemoveItem}
+                                        image={item.thumbnail} 
+                                        id={item.id}
+                                        category={TitleCase(item.category[0].category_name)}
+                                        name={TitleCase(item.meal_name)} 
+                                        price={item.price} 
+                                        discount={item.discount} 
+                                        discounted_price={item.discounted_price} 
+                                        quantity_in_cart={item.cart_quantity}
+                                        description={item.meal_description}
+                                        />
+                                    </View>
+                                ))
+                            :
+                                (searchValue.trim() == '')?
+                                    meals.filter((item)=>item.category[0].category_name == filterIndex).map((item) => (
+                                        <View key={item.id}>
+                                            <VendorProductList 
+                                            onRemove={handleRemoveItem}
+                                            image={item.thumbnail} 
+                                            id={item.id}
+                                            category={TitleCase(item.category[0].category_name)}
+                                            name={TitleCase(item.meal_name)} 
+                                            price={item.price} 
+                                            discount={item.discount} 
+                                            discounted_price={item.discounted_price} 
+                                            quantity_in_cart={item.cart_quantity}
+                                            description={item.meal_description}
+                                            />
+                                        </View>
+                                    ))
+                                    :
+                                    meals.filter((item)=>item.meal_name.includes(searchValue)).filter((item)=>item.category[0].category_name == filterIndex).map((item) => (
+                                        <View key={item.id}>
+                                            <VendorProductList 
+                                            onRemove={handleRemoveItem}
+                                            image={item.thumbnail} 
+                                            id={item.id}
+                                            category={TitleCase(item.category[0].category_name)}
+                                            name={TitleCase(item.meal_name)} 
+                                            price={item.price} 
+                                            discount={item.discount} 
+                                            discounted_price={item.discounted_price} 
+                                            quantity_in_cart={item.cart_quantity}
+                                            description={item.meal_description}
+                                            />
+                                        </View>
+                                    ))
+                        }
                     </ScrollView>
                 </View>
             </View>

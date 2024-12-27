@@ -26,14 +26,14 @@ export default function Dashboard(){
 
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
-    type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type MealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
 
     type SellerResponseResult = { id: string; store_id: number; avatar: string; full_name: string; email: string; phone_number: string; email_verified: boolean}[];
     type sellerResponse = { count: string; next: string; previous: string; results: SellerResponseResult;};
 
     type ReviewData = { total_reviews: string; average_rating: string;};
-    type kitchenResponseResult = { id: string; avatar: string; business_name: string; review: ReviewData; is_favourite: boolean}[];
+    type kitchenResponseResult = { id: string; avatar: string; delivery_time: string; delivery_fee: string; business_name: string; review: ReviewData; is_favourite: boolean}[];
     type kitchenResponse = { count: string; next: string; previous: string; results: kitchenResponseResult;};
 
     const [meals, setMeals] = useState<MealArray>([]);
@@ -65,7 +65,7 @@ export default function Dashboard(){
         
             fetchCategories();
         }
-    }, []); // Empty dependency array ensures this runs once
+    }, [isNavFocused]); // Empty dependency array ensures this runs once
 
     const [isFocused, setIsFocus] = useState(false);
     const {width, height} = Dimensions.get('window')
@@ -316,7 +316,7 @@ export default function Dashboard(){
                                             <SpecialOffer 
                                             image={item.thumbnail}
                                             title={TruncatedText(item.vendor_store.business_name, 25)}
-                                            sub_title='$2.99 Delivery fee | 15-20 min'
+                                            sub_title={`₦${item.delivery_fee} Delivery fee | ${item.delivery_time}`}
                                             discount={item.discount}
                                             discount_in_price={item.discount}
                                             discounted_price={item.discounted_price}
@@ -425,7 +425,7 @@ export default function Dashboard(){
                             </View>
                         }
                         {kitchens.map((item) => (
-                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating={item.review.average_rating} fee='2.34' />
+                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time={item.delivery_time} rating={item.review.average_rating} fee={item.delivery_fee} />
                         ))}
                     </View>
                 </ScrollView>   

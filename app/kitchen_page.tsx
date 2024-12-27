@@ -13,22 +13,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 
 export default function KitchenPage(){
-    type kitchenResponseResult = { id: string; avatar: string; business_name: string; is_favourite: boolean}[];
+    type ReviewData = { total_reviews: string; average_rating: string;};
+    type kitchenResponseResult = { id: string; avatar: string; delivery_time: string; delivery_fee: string; business_name: string; review: ReviewData; is_favourite: boolean}[];
     type kitchenResponse = { count: number; next: string; previous: string; results: kitchenResponseResult;};
 
     const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
 
     const [loading, setLoading] = useState(false);
-
+    const [searchValue, setSearchValue] = useState('')
+    const [isFocused, setIsFocus] = useState(false);
+    const [filterIndex, setFilterIndex] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 7; // Items per page
 
     const fetchCategories = async () => {
         try {
             setKitchens([])
             setLoading(true)
-            const response = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=${pageSize}&page=${currentPage}&search=${searchValue}`, true);
             setCount(response.count)
             setLoading(false)
             // alert(JSON.stringify(response.results))
@@ -42,10 +45,6 @@ export default function KitchenPage(){
     useEffect(() => {
         fetchCategories();
     }, [currentPage]); // Empty dependency array ensures this runs once
-
-    const [searchValue, setSearchValue] = useState('')
-    const [isFocused, setIsFocus] = useState(false);
-    const [filterIndex, setFilterIndex] = useState(1);
     
     return (
         <SafeAreaView>
@@ -68,7 +67,7 @@ export default function KitchenPage(){
                         placeholder="Search for available home services"
                         placeholderTextColor=""
                     />
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                     onPress={()=>{}}
                     className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
                         <Text
@@ -80,10 +79,10 @@ export default function KitchenPage(){
                         <View className=''>
                             <Filter width={15} height={15} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
-                <View className='my-3 mt-5 flex flex-row w-full justify-around'>
+                {/* <View className='my-3 mt-5 flex flex-row w-full justify-around'>
                     <TouchableOpacity 
                         onPress={()=>{setFilterIndex(1)}}
                         className={`${(filterIndex == 1)? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
@@ -143,7 +142,7 @@ export default function KitchenPage(){
                             Desert
                         </Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
 
                 <ScrollView className='w-full p-1 pb-5 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                 {(loading) && 
@@ -168,7 +167,7 @@ export default function KitchenPage(){
                 }
                 {kitchens.map((item) => (
                     <View key={item.id}>
-                        <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time="12 - 20" rating='4.7' fee='2.34' />
+                        <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time={item.delivery_time} rating={item.review.average_rating} fee={item.delivery_fee} />
                     </View>
                 ))}
                 <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />

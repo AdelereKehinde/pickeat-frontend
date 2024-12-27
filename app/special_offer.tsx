@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 function SpecialOfferCard(){
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
-    type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type MealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
     const [specialOffer, setSpecialOffer] = useState<MealArray>([]);
     useEffect(() => {
@@ -68,7 +68,7 @@ function SpecialOfferCard(){
                                     <SpecialOffer 
                                         image={item.thumbnail}
                                         title={TruncatedText(item.vendor_store.business_name, 25)}
-                                        sub_title='$2.99 Delivery fee | 15-20 min'
+                                        sub_title={`₦${item.delivery_fee} Delivery fee | ${item.delivery_time}`}
                                         discount={item.discount}
                                         discount_in_price={item.discount}
                                         discounted_price={item.discounted_price}

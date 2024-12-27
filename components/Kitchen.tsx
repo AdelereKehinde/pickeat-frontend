@@ -113,7 +113,7 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
                 style={{fontFamily: 'Inter-Medium'}}
                 className='text-[10px] mt-1 text-gray-600'
                 >
-                    Delivery Fee - ${fee}
+                    Delivery Fee - ₦{fee}
                 </Text>
             </View>
         </View>
