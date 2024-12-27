@@ -9,7 +9,7 @@ interface Properties {
     date: string,
     price: string,
     order_id: string,
-    status: string
+    status: string,
   }
 
 const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, order_id, status}) =>{
@@ -49,11 +49,11 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                     style={{fontFamily: 'Inter-Bold'}}
                     className=' text-[15px] text-gray-700'
                     >
-                        ${price}
+                        ₦{price}
                     </Text>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className={`text-[10px] text-gray-700 ${status.includes('Pending') && 'text-custom-orange'} ${(status=='completed') && 'text-custom-green'} ${(status=='Cancelled') && 'text-red-600'} `}
+                    className={`text-[10px] text-gray-700 ${(status.includes('pending'))&& 'text-custom-orange'} ${(status=='completed' || status=='in progress') && 'text-custom-green'} ${(status=='cancelled') && 'text-red-600'} `}
                     >
                         {TitleCase(status)}
                     </Text>
@@ -68,9 +68,9 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                     {date}
                 </Text>
                 <View className='flex flex-row items-center'>
-                    {status.includes('Pending') && (
+                    {status.includes('in progress') && (
                         <TouchableOpacity
-                        onPress={()=>{(router.push("/track_order"))}}
+                        onPress={()=>{(router.push(`/track_order?tracking_id=${order_id}&kitchen=${kitchen}`))}}
                         >   
                             {}
                             <Text
@@ -81,7 +81,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                             </Text>
                         </TouchableOpacity>
                     )}
-                    {((status=='Completed') || (status=='Canceled')) && (
+                    {/* {((status=='completed') || (status=='cancelled')) && (
                         <TouchableOpacity
                         onPress={()=>{alert('Re Order now')}}
                         >   
@@ -93,7 +93,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                                 Re Order
                             </Text>
                         </TouchableOpacity>
-                    )}
+                    )} */}
                 </View>
             </View>
         </View>

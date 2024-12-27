@@ -34,7 +34,7 @@ const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
                 <View className="mr-5 w-6 h-6 flex items-end justify-around">
                 {withbell && (
                     <Pressable 
-                    onPress={()=>{router.back()}}
+                    onPress={()=>{router.push('/notification')}}
                     className="ml-5">
                         <Bell />
                     </Pressable>

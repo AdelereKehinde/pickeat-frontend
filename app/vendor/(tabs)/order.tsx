@@ -12,12 +12,18 @@ import ENDPOINTS from '@/constants/Endpoint';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
 
 function Order(){
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+    };
     const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState('pending');
     
-    type ListData = { id: number; buyer_name: string; location: string; thumbnail: string; status: string; items: string; date: string;}[];
+    type ListData = { id: number; buyer_name: string; location: string; thumbnail: string; tracking_id: string; status_history_status: string; status: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [parentorders, setParentOrders] = useState<ListData>([]);
@@ -32,15 +38,15 @@ function Order(){
     const fetchMeals = async () => {
         try {
             setLoading(true)
-            setParentOrders([])
-            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // setParentOrders([])
+            const response = await getRequest<ListData>(`${ENDPOINTS['cart']['vendor-orders']}?all=true&exclude_status=completed`, true);
             // alert(JSON.stringify(response))
-            setParentOrders(response.results)
+            setParentOrders(response)
             if(!ranOnce){
-                setOrders(response.results)
+                setOrders(response)
                 setRanOnce(true)
             }
-            setCount(response.count)
+            // setCount(response.count)
             setLoading(false)
         } catch (error) {
             alert(error);
@@ -52,6 +58,14 @@ function Order(){
         }
     }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
     
+    const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
+        // alert(status_history_status)
+        var newOrder = parentorders.map((item) =>
+            item.tracking_id === tracking_id ? { ...item, status: status, status_history_status: status_history_status } : item
+        );
+        setParentOrders(newOrder);  
+    }
+
     return (
         <SafeAreaView>
             <View className=' bg-white w-full h-full flex items-center'>
@@ -84,17 +98,17 @@ function Order(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{setFilter('completed')}}
-                        className={`${(filter == 'completed')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('in progress')}}
+                        className={`${(filter == 'in progress')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
                         {(filter == 'completed') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filter == 'completed')? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
+                        className={`${(filter == 'in progress')? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
-                            Completed
+                            Confirmed 
                         </Text>
                     </TouchableOpacity>
 
@@ -115,7 +129,7 @@ function Order(){
                 </View>
 
                 <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
-                    <ScrollView className='w-full p-1 mb-2 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView className='w-full p-1 mb-2 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -130,7 +144,7 @@ function Order(){
                         
                         {(parentorders.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 4 }).map((_, index) => (
+                                {Array.from({ length: 6 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -152,12 +166,13 @@ function Order(){
                         }
                         {parentorders.filter((item)=>item.status.includes(filter)).map((item) => (
                             <View key={item.id}>
-                                <VendorOrder image={item.thumbnail} name={item.buyer_name} time={item.date} address={item.location} status={item.status}/>
+                                <VendorOrder status_history_status={item.status_history_status} tracking_id={item.tracking_id} image={item.thumbnail} name={item.buyer_name} time={item.date} address={item.location} status={item.status} onUpdate={UpdateStatus}/>
                             </View>
                         ))}
-                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
                     </ScrollView>
                 </View>
+                <Toast config={toastConfig} />
             </View>
         </SafeAreaView>
     )

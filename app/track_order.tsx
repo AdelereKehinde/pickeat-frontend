@@ -1,15 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
-import { router } from 'expo-router'
+import { router, useGlobalSearchParams } from 'expo-router'
 import TitleTag from '@/components/Title';
 import DoubleCheck from '../assets/icon/double_check.svg';
 import RadioButton from '../assets/icon/radio-button.svg';
 import Prompt from '@/components/Prompt';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 function TrackOrder(){
+    const {tracking_id, kitchen} = useGlobalSearchParams()
 
     const [showPrompt, setShowPrompt] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [trackingId, setTrackingId] = useState(Array.isArray(tracking_id)? tracking_id[0] : tracking_id)
+    const [kitchenName, setKitchenName] = useState(Array.isArray(kitchen)? kitchen[0] : kitchen)
 
     const [orderDetail, setOrderDetail] = useState({
         order_time: '09:45am',
@@ -18,6 +25,32 @@ function TrackOrder(){
         pickup_time: '',
         delivery_time: '',
     })
+    const STATUS_HISTORY_STATUS = ['accepted', 'preparing', 'ready', 'shipped', 'cancelled', 'completed']
+
+    type ListData_ = {date: string; days_ago: string; status: string;}[];
+    type ListData = { status: string; data: ListData_};
+    const [status, setStatus] = useState<ListData>();
+    const [history, setHistory] = useState<ListData_>([]);
+
+    const fetchMeals = async () => {
+        try {
+            setLoading(true)
+            // setParentOrders([])
+            
+            const response = await getRequest<ListData>(`${ENDPOINTS['cart']['orders-history']}?tracking_id=${trackingId}`, true);
+            // alert(JSON.stringify(response))
+            setStatus(response) 
+            setHistory(response.data)
+            // setCount(response.count)
+            setLoading(false)
+        } catch (error) {
+            // alert(error);
+        }
+    };
+    
+    useEffect(() => {
+        fetchMeals(); 
+    }, []); // Empty dependency array ensures this runs once
 
     return (
         <SafeAreaView>
@@ -29,6 +62,10 @@ function TrackOrder(){
                 <View className='bg-white w-full'>
                     <TitleTag withprevious={true} title='Track order' withbell={false} />
                 </View>
+
+                {loading && (
+                    <FullScreenLoader />
+                )}
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
@@ -44,19 +81,23 @@ function TrackOrder(){
                             className='text-gray-500 text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                                {orderDetail.order_time}
+                                {(history.find((item) => item.status == "accepted") !== undefined)?
+                                    history.find((item) => item.status == "accepted")?.date
+                                    :
+                                    '---------' 
+                                }
                             </Text>
                             <View className='flex items-center space-y-1'>
                                 <DoubleCheck/>
-                                <View className={`w-[2px] h-8 ${(orderDetail.preparation_time === '')? 'bg-gray-200':'bg-custom-green'} `}>
+                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "accepted") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
                                 </View>
                             </View>
                             <Text
-                            className='text-gray-500 text-[12px]'
+                            className='text-gray-500 text-[12px]' 
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                                Mardiya Kitchen has recieved and {'\n'}confirmed your order
+                                {kitchenName} has recieved and {'\n'}confirmed your order
                             </Text>
                         </View>
 
@@ -65,11 +106,15 @@ function TrackOrder(){
                             className='text-gray-500 text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                            {(orderDetail.preparation_time === '')? '---------': orderDetail.preparation_time}
+                            {(history.find((item) => item.status == "preparing") !== undefined)?
+                                    history.find((item) => item.status == "preparing")?.date
+                                    :
+                                    '---------' 
+                                }
                             </Text>
                             <View className='flex items-center space-y-1'>
-                                {(orderDetail.preparation_time === '')? <RadioButton/>:<DoubleCheck/>}
-                                <View className={`w-[2px] h-8 ${(orderDetail.assignation_time === '')? 'bg-gray-200':'bg-custom-green'} `}>
+                                {(history.find((item) => item.status == "preparing") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "preparing") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
                                 </View>
                             </View>
@@ -77,7 +122,7 @@ function TrackOrder(){
                             className='text-gray-500 text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                                Mardiya Kitchen is preparing your order
+                                {kitchenName} is preparing your order
                             </Text>
                         </View>
 
@@ -86,11 +131,15 @@ function TrackOrder(){
                             className='text-gray-500 text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                                {(orderDetail.assignation_time === '')? '---------': orderDetail.assignation_time}
+                                {(history.find((item) => item.status == "ready") !== undefined)?
+                                    history.find((item) => item.status == "ready")?.date
+                                    :
+                                    '---------' 
+                                }
                             </Text>
                             <View className='flex items-center space-y-1'>
-                                {(orderDetail.assignation_time === '')? <RadioButton/>:<DoubleCheck/>}
-                                <View className={`w-[2px] h-8 ${(orderDetail.pickup_time === '')? 'bg-gray-200':'bg-custom-green'} `}>
+                                {(history.find((item) => item.status == "ready") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "ready") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
                                 </View>
                             </View>
@@ -107,11 +156,15 @@ function TrackOrder(){
                             className='text-gray-500 text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                            {(orderDetail.pickup_time === '')? '---------': orderDetail.pickup_time}
+                            {(history.find((item) => item.status == "shipped") !== undefined)?
+                                    history.find((item) => item.status == "shipped")?.date
+                                    :
+                                    '---------' 
+                                }
                             </Text>
                             <View className='flex items-center space-y-1'>
-                                {(orderDetail.pickup_time === '')? <RadioButton/>:<DoubleCheck/>}
-                                <View className={`w-[2px] h-8 ${(orderDetail.delivery_time === '')? 'bg-gray-200':'bg-custom-green'} `}>
+                                {(history.find((item) => item.status == "shipped") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "shipped") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
                                 </View>
                             </View>
@@ -128,10 +181,14 @@ function TrackOrder(){
                             className='text-gray-500 text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                                {(orderDetail.delivery_time === '')? '---------': orderDetail.delivery_time}
+                                {(history.find((item) => item.status == "completed") !== undefined)?
+                                    history.find((item) => item.status == "completed")?.date
+                                    :
+                                    '---------' 
+                                }
                             </Text>
                             <View className='flex items-center space-y-1'>
-                            {(orderDetail.delivery_time === '')? <RadioButton/>:<DoubleCheck/>}
+                            {(history.find((item) => item.status == "completed") === undefined)? <RadioButton/>:<DoubleCheck/>}
                             </View>
                             <Text
                             className='text-gray-500 text-[12px]'
@@ -167,9 +224,9 @@ function TrackOrder(){
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Order ID:
-                            </Text> BH76898
+                            </Text> {trackingId}
                         </Text>
-                        <TouchableOpacity 
+                        {/* <TouchableOpacity 
                         onPress={()=>{setShowPrompt(true)}}
                         className='flex flex-row items-center px-4 py-1 rounded-lg bg-gray-100 my-auto'>
                             <Text
@@ -178,7 +235,7 @@ function TrackOrder(){
                             >
                                 Accept Order
                             </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </ScrollView>
             </View>

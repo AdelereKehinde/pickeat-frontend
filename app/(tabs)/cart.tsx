@@ -128,6 +128,12 @@ export default function Cart(){
                     {(!loading && cartItems.length == 0) && (
                         <View className='flex items-center w-full'> 
                             <Empty/>
+                            <Text
+                            className='text-gray-700 text-[12px]'
+                            style={{fontFamily: 'Inter-Medium-Italic'}}
+                            >
+                            Add a meal to your cart from any store
+                        </Text>
                         </View>
                     )}
                     <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>

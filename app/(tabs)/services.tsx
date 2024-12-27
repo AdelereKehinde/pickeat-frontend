@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 
 export default function Services(){
-    const [filter, setFilter] = useState('Pending');
+    const [filter, setFilter] = useState('in progress');
     
     const toastConfig = {
         success: CustomToast,
@@ -23,7 +23,7 @@ export default function Services(){
     };
     const [loading, setLoading] = useState(false);
 
-    type ListData = { id: number; store_name: string; price: string; status: string; order_id: string; items: string; date: string;}[];
+    type ListData = { id: number; store_name: string; price: string; tracking_id: string; status_history_status: string; kitchen: string; status: string; order_id: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [parentorders, setParentOrders] = useState<ListData>([]);
@@ -39,22 +39,23 @@ export default function Services(){
     const fetchMeals = async () => {
         try {
             setLoading(true)
-            setParentOrders([])
+            // setParentOrders([])
             if (ranOnce){
-                setPaginationLoad(true)
+                // setPaginationLoad(true)
             }
-            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
-            setParentOrders(response.results)
-            setCount(response.count)
+            const response = await getRequest<ListData>(`${ENDPOINTS['cart']['buyer-orders']}?all=true`, true);
+            // alert(JSON.stringify(response))
+            setParentOrders(response) 
+            // setCount(response.count)
             if(!ranOnce || paginationLoad){
-                setOrders(response.results)
+                setOrders(response)
                 setRanOnce(true)
             }
             // alert(JSON.stringify(res))
-            setPaginationLoad(false)
+            // setPaginationLoad(false)
             setLoading(false)
         } catch (error) {
-            alert(error);
+            // alert(error);
         }
     };
     
@@ -82,29 +83,29 @@ export default function Services(){
 
                 <View className='my-3 mt-5 flex flex-row w-full justify-around'>
                     <TouchableOpacity 
-                        onPress={()=>{setFilter('Pending') }}
-                        className={`${(filter == 'Pending')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('in progress') }}
+                        className={`${(filter == 'in progress')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >   
-                        {(filter == 'Pending') && (
+                        {(filter == 'in progress') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filter == 'Pending')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filter == 'in progress')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
-                            Pending
+                            Accepted
                         </Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{setFilter('Cancelled')}}
-                        className={`${(filter == 'Cancelled')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('cancelled')}}
+                        className={`${(filter == 'cancelled')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filter == 'Cancelled') && (
+                        {(filter == 'cancelled') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filter == 'Cancelled')? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
+                        className={`${(filter == 'cancelled')? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Cancelled
@@ -112,14 +113,14 @@ export default function Services(){
                     </TouchableOpacity>
 
                     <TouchableOpacity 
-                        onPress={()=>{setFilter('Completed')}}
-                        className={`${(filter == 'Completed')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                        onPress={()=>{setFilter('completed')}}
+                        className={`${(filter == 'completed')? 'bg-custom-green': 'bg-gray-200'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
                     >
-                        {(filter == 'Completed') && (
+                        {(filter == 'completed') && (
                             <Check />
                         )}
                         <Text
-                        className={`${(filter == 'Completed')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                        className={`${(filter == 'completed')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             Completed
@@ -130,14 +131,14 @@ export default function Services(){
                 <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
                     
                     <ScrollView className='w-full mt-4  space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!paginationLoad && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
+                        {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
                         )}
-                        {((parentorders.length === 0 && loading) || paginationLoad) && 
+                        {((parentorders.length === 0 && loading)) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 4 }).map((_, index) => (
+                                {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -164,12 +165,12 @@ export default function Services(){
                                 price={item.price} 
                                 date={item.date}
                                 items={item.items}
-                                order_id={item.order_id}
+                                order_id={item.tracking_id}
                                 status={item.status}
                                 /> 
                             </View>
                         ))}
-                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

@@ -14,7 +14,7 @@ export default function OrderHistory(){
     const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState('pending');
     
-    type ListData = { id: number; buyer_name: string; price: string; location: string; thumbnail: string; status: string; items: string; date: string;}[];
+    type ListData = { id: number; buyer_name: string; price: string; status_history_status: string; tracking_id: string; location: string; thumbnail: string; status: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [orders, setOrders] = useState<ListData>([]);
@@ -42,6 +42,14 @@ export default function OrderHistory(){
         fetchMeals(); 
     }, [currentPage]); // Empty dependency array ensures this runs once
 
+    const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
+        // alert(status_history_status)
+        var newOrder = orders.map((item) =>
+            item.tracking_id === tracking_id ? { ...item, status: status, status_history_status: status_history_status } : item
+        );
+        setOrders(newOrder);  
+    }
+
     return (
         <SafeAreaView>
             <View className=' bg-white w-full h-full flex items-center'>
@@ -55,7 +63,7 @@ export default function OrderHistory(){
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
                     Order History
-                </Text>
+                </Text> 
 
                 <View className='bg-white w-full my-3 mb-24 border-t-4 border-gray-200 relative flex flex-row items-center justify-center'>
                     <ScrollView className='w-full mt-4 space-y-1 contentContainerStyle={{ flexGrow: 1 }}'>
@@ -99,11 +107,14 @@ export default function OrderHistory(){
                                 kitchen={item.buyer_name} 
                                 price={item.price}
                                 date={item.date}
+                                status_history_status={item.status_history_status}
                                 status={item.status}
+                                tracking_id={item.tracking_id}
+                                onUpdate={UpdateStatus}
                                 /> 
                             </View>
                         ))}
-                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page)}} />
                     </ScrollView>
                 </View>
             </View>

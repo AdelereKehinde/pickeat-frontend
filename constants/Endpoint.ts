@@ -69,6 +69,7 @@ const ENDPOINTS = {
         'checkout-summary': `${CART_BASE}checkout/summary`,
         'buyer-orders': `${CART_BASE}buyer/orders`,
         'vendor-orders': `${CART_BASE}vendor/orders`,
+        'orders-history': `${CART_BASE}order_history`,
     },
     'payment': {
         'buyer-create': `${PAYMENT_BASE}buyer/card/create`,

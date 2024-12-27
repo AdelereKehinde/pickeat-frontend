@@ -47,7 +47,7 @@ function Notification(){
             <View className=' bg-gray-50 w-full h-full flex'>
                 <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
                 <View className='bg-gray-50 w-full'>
-                    <TitleTag withprevious={true} title='Notification' withbell={true} />
+                    <TitleTag withprevious={true} title='Notification' withbell={false} />
                 </View>
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }} className='px-3'>

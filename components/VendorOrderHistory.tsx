@@ -1,17 +1,59 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router } from 'expo-router'
 import TitleCase from './TitleCase';
+import { postRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
 
 interface Properties {
     kitchen:any,
     image:any,
     date: string,
     price: string,
-    status: string
+    status: string,
+    status_history_status: string,
+    tracking_id: string,
+    onUpdate: (tracking_id: string, status: string, status_history_status: string) => void
   }
 
-const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, status}) =>{
+const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, status, tracking_id, status_history_status, onUpdate}) =>{
+    const [loading, setLoading] = useState(false); // Loading state
+
+    const OrderStatus = async (status_:string) => {
+        try {
+        if(!loading){
+            setLoading(true)
+            // alert(status)
+            const res = await postRequest(`${ENDPOINTS['cart']['orders-history']}`, {status: status_, tracking_id: tracking_id}, true);
+
+            if (['accepted', 'preparing', 'ready', 'shipped'].includes(status_)){
+                onUpdate(tracking_id, 'in progress', status_)
+            }
+
+            // alert(status_)
+            Toast.show({
+                type: 'success',
+                text1: 'Status Updated',
+                visibilityTime: 3000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+            setLoading(false)
+        }
+
+        } catch (error:any) {
+            setLoading(false)
+            // alert(JSON.stringify(error))
+            Toast.show({
+                type: 'error',
+                text1: "An error occured",
+                text2: error.data?.message || 'Unknown Error',
+                visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+        }
+    };
     return(
         <View className='flex flex-row items-center justify-between border-b border-gray-300 w-full py-3 px-6'>
             <View className=''>    
@@ -41,7 +83,7 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                     <View className='ml-auto flex items-end'>
                         {(status=='completed') && (
                             <TouchableOpacity
-                            onPress={()=>{(router.push("/track_order"))}}
+                            onPress={()=>{(router.push("/vendor/reviews"))}}
                             >   
                                 {}
                                 <Text
@@ -54,7 +96,8 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                         )}
                         {((status=='pending')) && (
                             <TouchableOpacity
-                            onPress={()=>{alert('Re Order now')}}
+                            className='flex items-center'
+                            onPress={()=>{OrderStatus('accepted')}}
                             >   
                                 {}
                                 <Text
@@ -63,6 +106,11 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                                 >
                                     Accept
                                 </Text>
+                                {(loading) && (
+                                    <View className='absolute w-full top-[4px] '>
+                                        <ActivityIndicator size="small" color="#374151" />
+                                    </View>
+                                )}
                             </TouchableOpacity>
                         )}
                     </View>
@@ -78,7 +126,7 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                     <View className='flex flex-row items-center'>
                         <Text
                         style={{fontFamily: 'Inter-Bold'}}
-                        className={`text-[10px] text-gray-700 ${(status=='pending') && 'text-custom-orange'} ${(status=='completed') && 'text-custom-green'} ${(status=='cancelled') && 'text-red-600'} `}
+                        className={`text-[10px] text-gray-700 ${(status=='in progress') && 'text-custom-orange'} ${(status=='completed' || 'pending') && 'text-custom-green'} ${(status=='cancelled') && 'text-red-600'} `}
                         >
                             {TitleCase(status)}
                         </Text>

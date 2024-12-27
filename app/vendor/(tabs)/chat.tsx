@@ -61,7 +61,7 @@ const ChatList: React.FC = () => {
                     onFocus={()=>setIsFocus(true)}
                     onBlur={()=>setIsFocus(false)}
                     onChangeText={setSearchValue}
-                    defaultValue={searchValue}
+                    value={searchValue}
                     placeholder="Search Messages"
                     placeholderTextColor=""
                 />
@@ -125,17 +125,31 @@ const ChatList: React.FC = () => {
                 )}
 
                 {(chatFilter == 'unread')?
-                    chats.filter(item => item.unread > 0).map((item) => (
-                        <View key={item.id} className='w-full'>
-                            <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
-                        </View>
-                    ))
+                    (searchValue.trim() == '')?
+                        chats.filter(item => item.unread > 0).map((item) => (
+                            <View key={item.id} className='w-full'>
+                                <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
+                            </View>
+                        ))
+                    :   
+                        chats.filter((item)=>item.name.includes(searchValue)).filter(item => item.unread > 0).map((item) => (
+                            <View key={item.id} className='w-full'>
+                                <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
+                            </View>
+                        ))
                 :
-                    chats.map((item) => (
-                        <View key={item.id} className='w-full'>
-                            <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
-                        </View>
-                    ))
+                    (searchValue.trim() == '')?
+                        chats.map((item) => (
+                            <View key={item.id} className='w-full'>
+                                <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
+                            </View>
+                        ))
+                    :   
+                        chats.filter((item)=>item.name.includes(searchValue)).map((item) => (
+                            <View key={item.id} className='w-full'>
+                                <ChatListCard id={item.id} image={item.avatar} name={item.name} time={item.messages[item.messages.length - 1].time} message={item.messages[item.messages.length - 1].text} messages={item.messages} unread={item.unread}/>
+                            </View>
+                        ))
                 }
             </ScrollView>
         
