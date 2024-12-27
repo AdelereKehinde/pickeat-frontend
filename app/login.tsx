@@ -45,6 +45,7 @@ export default function Login(){
           
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
+          await AsyncStorage.setItem('service', 'buyer');
           setLoading(false)
           setUser({
             email: res.data.email,

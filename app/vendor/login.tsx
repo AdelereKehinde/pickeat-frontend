@@ -48,6 +48,7 @@ export default function VendorLogin(){
 
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
+          await AsyncStorage.setItem('service', 'vendor');
           setLoading(false)
           setUser({
             email: res.data.email,

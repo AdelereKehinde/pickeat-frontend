@@ -51,7 +51,7 @@ export default function Cart(){
                     setTotalPrice(response.data.total_price)
                     setLoading(false)
                 } catch (error) {
-                    alert(error);
+                    // alert(error);
                 }
             }
             fetchMeals();

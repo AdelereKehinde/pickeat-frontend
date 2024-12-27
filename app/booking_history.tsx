@@ -42,7 +42,7 @@ export default function BookingHistory(){
             setLoading(false)
         } catch (error) {
             setLoading(false)
-            alert(error);
+            // alert(error);
         }
     };
 
