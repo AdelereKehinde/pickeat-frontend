@@ -76,6 +76,7 @@ const ENDPOINTS = {
         'wallet-dashboard': `${PAYMENT_BASE}buyer/wallet/dashboard`,
         'fund-wallet': `${PAYMENT_BASE}buyer/wallet/fund`,
         'pay': `${PAYMENT_BASE}buyer/pay`,
+        'initialize': `${PAYMENT_BASE}initialize`,
         'vendor-transactions': `${PAYMENT_BASE}transaction/vendor`,
     },
 }

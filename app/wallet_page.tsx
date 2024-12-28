@@ -14,6 +14,8 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { WebView } from 'react-native-webview';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function WalletPage(){
     const toastConfig = {
@@ -23,7 +25,7 @@ export default function WalletPage(){
     type CardsResponse = { id: string; card_number: string; card_name: string; expiry: string; cvv: string;}[];
     type TransactionResponse = { id: number; bank_name: string; total_amount: string; date: string; status: string}[];
     type TransactionResponse1 = { count: number; next: string; previous: string; date: string; results: TransactionResponse};
-    type WalletResponse = { amount_in_wallet: string; cards: CardsResponse; transactions: TransactionResponse1;};
+    type WalletResponse = {email: string; amount_in_wallet: string; cards: CardsResponse; transactions: TransactionResponse1;};
     type ApiResponse = { status: string; message: string; data: WalletResponse;};
 
     const [cards, setCards] = useState<CardsResponse>([]);
@@ -39,6 +41,7 @@ export default function WalletPage(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
+    const isFocusedd = useIsFocused();
     const fetchCategories = async () => {
         try {
             setLoading(true)
@@ -57,25 +60,26 @@ export default function WalletPage(){
     };
     useEffect(() => {    
         fetchCategories();
-    }, [currentPage]); // Empty dependency array ensures this runs once
+    }, [currentPage, isFocusedd]); // Empty dependency array ensures this runs once
 
 
     const handleFunding = async () => {
         try {
           if(!fundLoading && (parseInt(amountToFund) > 100)){
             setFundLoading(true)
-            type DataResponse = { message: string; token:string; refresh: string };
+            type DataResponse = { authorization_url: string; access_code:string; reference: string };
             type ApiResponse = { status: string; message: string; data:DataResponse };
-            const res = await postRequest<ApiResponse>(ENDPOINTS['payment']['fund-wallet'], {amount:amountToFund}, true);
+            const res = await postRequest<ApiResponse>(ENDPOINTS['payment']['initialize'], {amount:amountToFund}, true);
             setFundLoading(false)
-            setAmount(`${parseInt(amount) + parseInt(amountToFund)}`)
+            // setAmount(`${parseInt(amount) + parseInt(amountToFund)}`)
             setAmountToFund('')
-            Toast.show({
-              type: 'success',
-              text1: "Wallet Funding Successful",
-              visibilityTime: 6000, // time in milliseconds (5000ms = 5 seconds)
-              autoHide: true,
-            });
+            router.push(`/paystack_webview?url=${res.data.authorization_url}`)
+            // Toast.show({
+            //   type: 'success',
+            //   text1: "Wallet Funding Successful",
+            //   visibilityTime: 6000, // time in milliseconds (5000ms = 5 seconds)
+            //   autoHide: true,
+            // });
           }
   
         } catch (error:any) {

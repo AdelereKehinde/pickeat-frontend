@@ -57,6 +57,7 @@ export default function RootLayout() {
         <Stack.Screen name="kitchen_profile" options={{headerShown: false}} />
         <Stack.Screen name="chat" options={{headerShown: false}} />
         <Stack.Screen name="set_delivery_address" options={{headerShown: false}} />
+        <Stack.Screen name="paystack_webview" options={{headerShown: false}} />
 
         {/* VENDOR */}
         <Stack.Screen name="vendor/(tabs)" options={{ headerShown: false }} />  
