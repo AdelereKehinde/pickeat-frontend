@@ -176,7 +176,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[13px] text-gray-700'
                             >
-                                ${subTotal}.00
+                                ₦{subTotal}.00
                             </Text>  
                         </View>
                         <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -190,7 +190,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[13px] text-gray-700'
                             >
-                                -$5.58
+                                -₦0.00
                             </Text>  
                         </View>
                         <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -204,7 +204,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[13px] text-gray-700'
                             >
-                                ${deliveryFee}.00
+                                ₦{deliveryFee}.00
                             </Text>  
                         </View>
                         <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -218,7 +218,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[14px] text-custom-green'
                             >
-                                ${subTotal + deliveryFee}.00
+                                ₦{subTotal + deliveryFee}.00
                             </Text>  
                         </View>
                     </View>

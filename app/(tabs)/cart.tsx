@@ -37,13 +37,14 @@ export default function Cart(){
         if(isFocused){
             const fetchMeals = async () => {
                 try {
+                    setLoading(true)
                     if(ranOnce){
                         setLoading(true)
                     }else{
                         setRanOnce(true)
                         setLoading(true)
                     }
-                    setLoading(true)
+                    // alert(loading)
                     const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['list']}`, true);
                     // alert(JSON.stringify(response.data))
                     setResData(response.data)
@@ -124,19 +125,18 @@ export default function Cart(){
                     <TitleTag withprevious={false} title='Cart' withbell={true} />
                 </View>
 
-                <View className='bg-white w-full relative flex flex-row justify-center mt-3 h-[550px]'>
-                    {(!loading && cartItems.length == 0) && (
-                        <View className='flex items-center w-full'> 
-                            <Empty/>
-                            <Text
-                            className='text-gray-700 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium-Italic'}}
-                            >
-                            Add a meal to your cart from any store
-                        </Text>
-                        </View>
-                    )}
                     <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {(!loading && cartItems.length == 0) && (
+                            <View className='flex items-center w-full'> 
+                                <Empty/>
+                                <Text
+                                className='text-gray-700 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium-Italic'}}
+                                >
+                                Add a meal to your cart from any store
+                            </Text>
+                            </View>
+                        )}
                         {(cartItems.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 4 }).map((_, index) => (
@@ -177,8 +177,7 @@ export default function Cart(){
                             </View>
                         ))}
                     </ScrollView>
-                </View>
-                <View className='flex flex-row items-center px-5 w-full mt-2'>
+                <View className='flex flex-row items-center px-5 w-full my-5'>
                     <View className=''>
                         <Text
                             className='text-gray-500'
@@ -195,7 +194,7 @@ export default function Cart(){
                         </View>
                     <TouchableOpacity
                     onPress={handleCheckout}
-                    className={`text-center bg-custom-green ${(cartItems.length == 0 || (loading && !ranOnce) || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
+                    className={`text-center bg-custom-green ${(loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
                     >
                         <Text
                         className='text-white'
@@ -203,9 +202,9 @@ export default function Cart(){
                         >
                         Checkout
                         </Text>
-                        {(loadSignal) && (
+                        {(loading || loadSignal) && (
                             <View className='absolute w-full top-4'>
-                                <ActivityIndicator size="small" color="#000000" />
+                                <ActivityIndicator size="small" color="#4b5563" />
                             </View>
                         )}
                     </TouchableOpacity>
