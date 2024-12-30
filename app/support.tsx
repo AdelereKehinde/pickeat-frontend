@@ -121,7 +121,7 @@ function Support(){
                                 className='text-gray-500 text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    Chat CraftConn Support on Whatsapp
+                                    Chat PickItPickEat Support on Whatsapp
                                 </Text>
                                 <Text
                                 className='text-custom-green text-[11px]'

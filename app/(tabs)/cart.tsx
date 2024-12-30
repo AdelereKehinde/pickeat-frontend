@@ -178,7 +178,7 @@ export default function Cart(){
                         ))}
                     </ScrollView>
                 </View>
-                <View className='flex flex-row items-center px-5 w-full'>
+                <View className='flex flex-row items-center px-5 w-full mt-2'>
                     <View className=''>
                         <Text
                             className='text-gray-500'
@@ -190,7 +190,7 @@ export default function Cart(){
                             className='text-custom-green text-[16px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                            ${totalPrice}
+                            ₦{totalPrice}
                         </Text>
                         </View>
                     <TouchableOpacity

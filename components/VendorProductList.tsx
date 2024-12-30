@@ -81,7 +81,7 @@ const VendorProductList: React.FC<Properties> = ({image, id, name, price, catego
                 style={{fontFamily: 'Inter-SemiBold'}}
                 className=' text-[11px] -mt-1 text-gray-700 '
                 >
-                    ${discounted_price}
+                    ₦{discounted_price}
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Medium-Italic'}}

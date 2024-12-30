@@ -82,7 +82,7 @@ const OrderTransaction: React.FC<Properties> = ({receiver, amount, commission, t
                     className='text-[11px] text-gray-800'
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
-                        -#{amount}
+                        ₦{amount}
                     </Text>
                     <Text
                     className='text-[10px] text-gray-500'

@@ -28,7 +28,7 @@ const SpecialOffer: React.FC<Properties> = ({image, title, sub_title, discount, 
                 style={{fontFamily: 'Inter-Medium'}} 
                 className={`rounded-l-full px-2 py-1 text-[9px] ${(parseInt(discount)>15)? 'bg-custom-green text-white': 'bg-custom-tan'}`}
                 >
-                Spend ${discounted_price}, Save ${discount_in_price}
+                Spend ₦{discounted_price}, Save ₦{discount_in_price}
                 </Text>
             </View>
             <View className='w-full'>

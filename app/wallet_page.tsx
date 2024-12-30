@@ -124,7 +124,7 @@ export default function WalletPage(){
                         className={`text-[22px] text-custom-green`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            {amount}
+                            ₦{amount}
                         </Text>
                     }
 
@@ -308,7 +308,7 @@ export default function WalletPage(){
                             className={`text-gray-700 text-[12px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                ${item.total_amount}
+                                ₦{item.total_amount}
                             </Text>
                         </View>
                         <View className='flex flex-row items-center w-full justify-between mt-2'>
