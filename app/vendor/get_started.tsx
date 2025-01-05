@@ -5,8 +5,14 @@ import { FontAwesome } from '@expo/vector-icons';
 import GetStart from '../../assets/icon/get_started.svg';
 import Skip from '@/components/Skip';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function GetStarted(){
+    const completeOnboarding = async () => {
+      // Set a flag to indicate the user has completed onboarding
+      await AsyncStorage.setItem('sellerHasVisitedOnboarding', 'true');
+      router.replace('/vendor/signup');
+    };
     return (
       <SafeAreaView>
         <View 
@@ -38,7 +44,7 @@ export default function GetStarted(){
 
               <View className='w-[90%] mx-auto mb-10 mt-3'>
                 <TouchableOpacity
-                onPress={()=>{router.push('/vendor/signup')}}
+                onPress={completeOnboarding}
                 className={`text-center bg-custom-green relative rounded-xl p-4 w-full self-center mt-5 flex items-center justify-around`}
                 >
                   <Text

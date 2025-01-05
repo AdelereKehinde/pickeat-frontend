@@ -20,14 +20,14 @@ export default function Earnings(){
     type EarningResponse = { amount_in_wallet: string; pending_payout:  string; count: number; results: ListData; next: string; previous: string;};
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
     const [data, setData] = useState<ApiResponse>()
-    const [showAmount, setShowAmount] = useState(false)
+    const [showAmount, setShowAmount] = useState(true)
     const [loading, setLoading] = useState(false); // Loading state
 
     const [transactions, setTransactions] = useState<ListData>([]);
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 5; // Items per page
+    const pageSize = 6; // Items per page
 
     useEffect(() => {
             const fetchMeals = async () => {
@@ -85,7 +85,7 @@ export default function Earnings(){
                             >
                                 {showAmount? data?.data.amount_in_wallet:'****'}
                             </Text>
-                            <View className='flex flex-row px-2 rounded-2xl items-center bg-gray-100 space-x-1 ml-10'>
+                            <View className='flex flex-row px-2 rounded-2xl items-center bg-gray-100 space-x-1 ml-auto'>
                                 <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
                                 className=''
                                 >
@@ -145,21 +145,21 @@ export default function Earnings(){
                         )}
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 5 }).map((_, index) => (
+                                {Array.from({ length: 6 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
-                                        height={100}
+                                        height={50}
                                         backgroundColor="#f3f3f3"
                                         foregroundColor="#ecebeb"
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                            <Rect x="230" y="10" rx="5" ry="5" width="90" height="10" />
+                                            <Rect x="230" y="30" rx="5" ry="5" width="90" height="15" />
+                                            <Rect x="20" y="5" rx="5" ry="5" width="80" height="10" />
+                                            {/* <Rect x="20" y="20" rx="5" ry="5" width="120" height="10" /> */}
+                                            <Rect x="20" y="35" rx="5" ry="5" width="150" height="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}

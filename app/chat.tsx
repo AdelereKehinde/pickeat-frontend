@@ -11,9 +11,9 @@ import FullScreenLoader from '@/components/FullScreenLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChatList: React.FC = () => {
-  const [isFocused, setIsFocus] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [chatFilter, setChatFilter] = useState('all');
+    const [isFocused, setIsFocus] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
+    const [chatFilter, setChatFilter] = useState('all');
 
     const [loading, setLoading] = useState(false);
     const [ranOnce, setRanOnce] = useState(false);

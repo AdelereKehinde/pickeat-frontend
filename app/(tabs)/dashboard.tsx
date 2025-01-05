@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, ActivityIndicator, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable, Keyboard } from "react-native";
+import { Text, View, StatusBar, ActivityIndicator,StyleSheet, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable, Keyboard } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
@@ -18,6 +18,7 @@ import { TruncatedText } from '@/components/TitleCase';
 import { useIsFocused } from '@react-navigation/native';
 import useDebounce from '@/components/Debounce';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FoodDisplay from '@/components/FoodList';
 
 export default function Dashboard(){
     const {name} = useGlobalSearchParams()
@@ -73,6 +74,7 @@ export default function Dashboard(){
     const [loading, setLoading] = useState(false);
     const [searchResults, setSearchResults] = useState<MealArray>([])
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
     const searchMeals = async (query: string) => {
         setLoading(true);
         try {
@@ -88,7 +90,7 @@ export default function Dashboard(){
       };
     
     // Create a debounced version of fetchMeals with 500ms delay
-    const debouncedSearch = useDebounce(searchMeals, 2000);
+    const debouncedSearch = useDebounce(searchMeals, 1000);
 
     const handleSearch = (query: string) => {
         setSearchValue(query);
@@ -117,7 +119,7 @@ export default function Dashboard(){
                             <View className=''>
                                 <Account />
                             </View>
-                            {(user?.first_name)?
+                            {(user?.first_name)? 
                                 <Text
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
@@ -180,7 +182,7 @@ export default function Dashboard(){
                         )}
                         {(searchValue.length  > 0 && dropdownVisible) && (
                             <TouchableOpacity onPress={handleCancel} className="ml-2 absolute top-3 right-7">
-                                <Text className="text-custom-green">Cancel</Text>
+                                <Text style={{fontFamily: 'Inter-Regular'}}  className="text-custom-green text-[12px]">Cancel</Text>
                             </TouchableOpacity>
                         )}
                         {/* <TouchableOpacity 
@@ -199,7 +201,7 @@ export default function Dashboard(){
                     </View>
                         
                     {/* Dropdown Scrollable List */}
-                    {dropdownVisible && (
+                    {/* {dropdownVisible && (
                         <View
                         className="absolute top-44 bg-gray-100 w-full shadow-md max-h-52 border border-gray-200 z-40 mt-2"
                         >
@@ -228,12 +230,16 @@ export default function Dashboard(){
                     )}
 
                     {/* No results found text */}
-                    {searchResults.length === 0 && searchValue !== '' && (
+                    {/* {searchResults.length === 0 && searchValue !== '' && (
                         <Text style={{fontFamily: 'Inter-Regular'}} className="text-center text-gray-500">No products found</Text>
-                    )}
+                    )}  */}
+
+                    {/* <View style={styles.shadow_box} className="absolute top-36 left-0 right-0 z-10 p-2 bg-white mx-4 rounded-md">
+                        <FoodDisplay foodItems={searchResults.map(item => ({id: parseInt(item.id), name: item.meal_name, image: item.thumbnail}))} />
+                    </View> */}
 
                     <View className="mt-3 px-3 h-40">
-                        {(meals.length === 0) && 
+                        {(meals.length === 0 || loading) && 
                         <View className='flex flex-row space-x-2 w-screen p-2 overflow-hidden'>
                             {Array.from({ length: 3 }).map((_, index) => (
                                 <View key={index}>
@@ -251,29 +257,39 @@ export default function Dashboard(){
                             ))}
                         </View>
                         }
-                        <FlatList
-                            className=''
-                            data={meals}
-                            renderItem={({ item }) => (
-                                <View className=' flex items-center'>
-                                    <Image
-                                        source={{uri: item.thumbnail}}
-                                        className="w-28 h-28 rounded-md" // Set desired width and height
-                                    />
-                                    <Text
-                                    style={{fontFamily: 'Inter-Regular'}} 
-                                    className='text-[11px] text-gray-700 font-medium mt-1'
-                                    >
-                                        {TruncatedText(item.meal_name, 13)}
-                                    </Text>
-                                </View>
-                            )}
-                            keyExtractor={item => item.id}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            // Add spacing between items with ItemSeparatorComponent
-                            ItemSeparatorComponent={() => <View className='w-3' />}
-                        />
+                        
+                        {!loading && (
+                            <FlatList
+                                className=''
+                                data={ (dropdownVisible)? searchResults : meals}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity
+                                    onPress={()=>{router.push(`/confirm_order?meal_id=${item.id}`)}}
+                                    className=' flex items-center'>
+                                        <Image
+                                            source={{uri: item.thumbnail}}
+                                            className="w-28 h-28 rounded-md" // Set desired width and height
+                                        />
+                                        <Text
+                                        style={{fontFamily: 'Inter-Regular'}} 
+                                        className='text-[11px] text-gray-700 font-medium mt-1'
+                                        >
+                                            {TruncatedText(item.meal_name, 13)}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )}
+                                keyExtractor={item => item.id}
+                                horizontal
+                                showsHorizontalScrollIndicator={false}
+                                // Add spacing between items with ItemSeparatorComponent
+                                ItemSeparatorComponent={() => <View className='w-3' />}
+                                ListEmptyComponent={
+                                    <View className=' flex justify-around items-center ml-5'>
+                                        <Text className='text-gray-500' style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
+                                    </View>
+                                }
+                            />
+                        )}
                     </View>
 
                     <View className=''>
@@ -433,3 +449,15 @@ export default function Dashboard(){
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    shadow_box: {
+      // iOS shadow properties
+      shadowColor: '#1212126a',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 5,
+      // Android shadow property
+      elevation: 200,
+    },
+  });

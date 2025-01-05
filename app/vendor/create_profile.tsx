@@ -7,6 +7,7 @@ import Skip from '@/components/Skip';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CreateProfile(){
+  
     return (
       <SafeAreaView>
         <View 

@@ -46,7 +46,6 @@ export default function SignUp(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          setLoading(true)
           type DataResponse = { id: string; };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           var request_body = {

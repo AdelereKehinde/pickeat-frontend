@@ -112,7 +112,7 @@ export default function AccountSetup3(){
             });
             await Delay(3000)
             router.replace({
-                pathname: '/vendor/(tabs)/home',
+                pathname: '/vendor/set_store_address',
             }); 
         
         } catch (error: any) {

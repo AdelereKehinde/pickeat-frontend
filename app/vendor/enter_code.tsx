@@ -157,7 +157,7 @@ export default function VendorEnterCode(){
                     style={{fontFamily: 'Inter-Medium'}}
                     className={`pl-3 text-[11px] w-full text-gray-500`}
                     >
-                        To continue, kindly enter the pin sent to your email address
+                        To continue, kindly enter the pin sent to your {'\n'}email address
                     </Text>
                 </View>
                 
