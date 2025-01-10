@@ -14,6 +14,8 @@ import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Device from "expo-device";
+
 
 export default function VendorLogin(){
     const { setUser } = useUser();
@@ -22,6 +24,10 @@ export default function VendorLogin(){
       success: CustomToast,
       error: CustomToast,
     };
+
+    const deviceName = Device.modelName; // e.g., "iPhone 12"
+    const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
+
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
@@ -44,7 +50,12 @@ export default function VendorLogin(){
           setLoading(true)
           type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
-          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {email: email,password: password}, true);
+          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {
+            email: email,
+            password: password,
+            device_name: deviceName,
+            device_type: deviceType,
+          }, true);
 
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);

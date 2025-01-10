@@ -42,8 +42,12 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
             type ApiResponse = { status: string; message: string; data:DataResponse };
             const res = await postRequest<ApiResponse>(`${ENDPOINTS['cart']['add']}?meal=${meal_id}`, {quantity: increase? (quantity+1): (quantity-1)}, true);
             // alert(JSON.stringify(res))
-            setQuantity(increase? (quantity+1): (quantity-1))
-            onUpdate(cart_id, increase? (quantity+1): (quantity-1))
+            var new_quantity = increase? (quantity+1): (quantity-1)
+            setQuantity(new_quantity)
+            onUpdate(cart_id, new_quantity)
+            if (new_quantity == 0) {
+                onRemove(cart_id)
+            }
             Toast.show({
                 type: 'success',
                 text1: res.message,
@@ -69,7 +73,7 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
             }
       };
 
-      const RemoveFromCart = async () => {
+    const RemoveFromCart = async () => {
         try {
           if(!loading && !parentLoadSignal){
             setLoading(true)
@@ -101,8 +105,8 @@ const CartItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, ki
                 autoHide: true,
             });
             setError(error.data?.message || 'Unknown Error'); // Set error message
-            }
-      };
+        }
+    };
 
     return(
         <View className='flex items-center justify-between border-b border-gray-300 w-full h-28 py-3 px-6'>

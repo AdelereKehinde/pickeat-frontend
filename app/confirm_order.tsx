@@ -16,6 +16,9 @@ import Slider from '@react-native-community/slider';
 import CustomSlider from '@/components/CustomSlider';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import Prompt from '@/components/Prompt';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 
 export default function ConfirmOrder(){
     const toastConfig = {
@@ -25,24 +28,43 @@ export default function ConfirmOrder(){
 
     const [loading, setLoading] = useState(false); // Loading state
     const [getLoading, setGetLoading] = useState(true); // Loading state
-    const {meal_id} = useGlobalSearchParams()
+    const [showPrompt, setShowPrompt] = useState(false); // Loading state
+    const [orderID, setOrderID] = useState(''); // Loading state
+    const [estimatedTime, setEstimatedTime] = useState(''); // Loading state
+    const {meal_id, quantity} = useGlobalSearchParams()
     const [mealId, setMealId] = useState(Array.isArray(meal_id) ? ( meal_id[0]? parseInt(meal_id[0]): 0) : (meal_id? parseInt(meal_id) : 0) )
+    const [mealQuantity, setMealQuantity] = useState(Array.isArray(quantity) ? ( quantity[0]? parseInt(quantity[0]): 0) : (quantity? parseInt(quantity) : 0) )
 
-    type ItemsType = { id: number; meal_name: string; quantity: number; amount: string; removable: boolean}
+    type ItemsType = { id: number; meal_name: string; quantity: number; amount: number; removable: boolean}
 
     type VendorStore = { id: string;  avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
-    type MealArray = { id: number; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string};
+    type MealArray = { id: number; thumbnail: string; delivery_time: string; delivery_fee: number; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: number; discount: number;  discounted_price: number; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string};
     type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
 
     type ReviewData = { total_reviews: string; average_rating: string;};
     type kitchenResponseResult = { id: string; avatar: string; delivery_time: string; delivery_fee: string; business_name: string; review: ReviewData; is_favourite: boolean};
 
-    type ApiResponse = {status: string; message: string; data: {store: kitchenResponseResult; meal: MealArray; meals: MealArray[]}}
+    type ApiResponse = {
+        status: string; 
+        message: string; 
+        data: {
+            store: kitchenResponseResult; 
+            meal: MealArray; 
+            meals: MealArray[]; 
+            pricing_data: {
+                service_charge: number; 
+                delivery_fee: number
+            };
+            delivery_address: string;
+        }
+    }
 
     const [kitchen, setKitchen] = useState<kitchenResponseResult>();
     const [meal, setMeal] = useState<MealArray>();
     const [meals, setMeals] = useState<MealArray[]>([]);
+    const [pricingData, setPricingData] = useState({service_charge: 0.00, delivery_fee: 0.00});
+    const [deliveryAddress, setDeliveryAddress] = useState("");
 
     const [items, setItems] = useState<ItemsType[]>([])
     const [instruction, setInstruction] = useState(''); 
@@ -80,22 +102,27 @@ export default function ConfirmOrder(){
             setItems(newItems); 
         }
     }
+
+    const CalculateItemPrice = items.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
+    
     useEffect(() => {
         const fetchCategories = async () => {
             try {
                 // setGetLoading(true)
                 const response = await getRequest<ApiResponse>(`${ENDPOINTS['cart']['buyer-confirm-order']}?meal_id=${mealId}`, true); // Authenticated
-                // alert(JSON.stringify(response))
+                // alert(JSON.stringify(response.data.pricing_data))
                 setKitchen(response.data.store)
                 setMeal(response.data.meal)
                 setMeals(response.data.meals)
+                setPricingData(response.data.pricing_data)
+                setDeliveryAddress(response.data.delivery_address)
 
-                handleSetItems({id: response.data.meal.id, meal_name: response.data.meal.meal_name, quantity: 1, amount: response.data.meal.discounted_price, removable: false})
+                handleSetItems({id: response.data.meal.id, meal_name: response.data.meal.meal_name, quantity: (mealQuantity!=0? mealQuantity : 1), amount: response.data.meal.discounted_price, removable: false})
 
                 setGetLoading(false)
             } catch (error) {
                 setGetLoading(false)
-                alert(JSON.stringify(error)); 
+                // alert(JSON.stringify(error)); 
             }
         };
         
@@ -176,7 +203,7 @@ export default function ConfirmOrder(){
           if(!loading && validateInput()){
             setLoading(true)
             combineDateTime()
-            type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; buyer_address:string; latitude:string; longitude:string; delivery_address: boolean };
+            type DataResponse = { order_id: string; delivery_time:string;};
             type ApiResponse = { status: string; message: string; data:DataResponse };
             const res = await postRequest<ApiResponse>(`${ENDPOINTS['cart']['buyer-confirm-order']}`, {
                 meals: items,
@@ -184,20 +211,28 @@ export default function ConfirmOrder(){
                 schedule_time: djangoDateTime,
             }, true);
             setLoading(false)
+
+            setEstimatedTime(res.data.delivery_time)
+            setOrderID(res.data.order_id)
+            setShowPrompt(true)
           }
   
         } catch (error:any) {
           setLoading(false)
-          // alert(JSON.stringify(error))
+        //   alert(JSON.stringify(error))
           Toast.show({
             type: 'error',
             text1: "An error occured",
-            text2: error.data?.data?.message || 'Unknown Error',
+            text2: error.data?.message || 'Unknown Error',
             visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
           })
         }
     };
+
+    const OnPromptClick = () => {
+        router.back()
+    }
 
     return (
         <SafeAreaView>
@@ -210,10 +245,27 @@ export default function ConfirmOrder(){
                 {getLoading && (
                     <FullScreenLoader />
                 )}
+
+                {showPrompt && 
+                    <Prompt main_text='' sub_text='' order_id={orderID} estimated_time={estimatedTime} clickFunction={OnPromptClick}/>
+                }
+
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }} className=''>
                     <View className='px-4 mt-4'>
                         <View className='flex flex-row'>
                             <View>
+                                {getLoading && 
+                                    <View className='border-b border-gray-200 pb-2'>
+                                        <ContentLoader
+                                        width="80"
+                                        height={80}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            <Rect x="0" y="" rx="5" ry="5" width="75" height="75" />
+                                        </ContentLoader>
+                                    </View> 
+                                }
                                 <Image
                                 source={{uri: kitchen?.avatar}}
                                 className='w-20 h-20 rounded-md'
@@ -253,7 +305,7 @@ export default function ConfirmOrder(){
                                 Spicy
                             </Text>
 
-                            <View className='w-full border'>
+                            <View className='w-full'>
                                 {/* <Slider
                                     style={{ width: '100%', height: 20}}
                                     minimumValue={0}
@@ -371,6 +423,23 @@ export default function ConfirmOrder(){
                     </View>
 
                     <View className='border-gray-200 border-t border-b py-4 mt-5 w-[90%] mx-auto space-y-4'>
+                        {getLoading && 
+                            <View className='border-b border-gray-200 pb-2'>
+                                <ContentLoader
+                                width="100%"
+                                height={51}
+                                backgroundColor="#f3f3f3"
+                                foregroundColor="#ecebeb"
+                                >
+                                    {/* <Rect x="10" y="10" rx="5" ry="5" width="130" height="15" />
+                                    <Rect x="10" y="40" rx="5" ry="5" width="100" height="15" /> */}
+                                    <Rect x="0" y="15" rx="5" ry="5" width="60" height="15" />
+                                    <Rect x="150" y="5" rx="5" ry="5" width="30" height="30" />
+                                    <Rect x="210" y="5" rx="5" ry="5" width="30" height="30" />
+                                    <Rect x="270" y="15" rx="5" ry="5" width="40" height="15" />
+                                </ContentLoader>
+                            </View> 
+                        }
                         {items.map((item) => (
                             <View key={item.id} className='flex flex-row justify-between items-center'>
                                 <Text
@@ -425,7 +494,7 @@ export default function ConfirmOrder(){
                                     style={{fontFamily: 'Inter-SemiBold'}} 
                                     className='text-[13px] ml-4 text-gray-800'
                                     >
-                                        ₦{parseFloat(item.amount) * item.quantity}
+                                        ₦{item.amount * item.quantity}
                                     </Text>
                                 </View>
                             </View>
@@ -445,6 +514,75 @@ export default function ConfirmOrder(){
                         placeholderTextColor="#228B22"
                         />
                     </View>
+
+
+                    <View className='space-y-2 mt-4'>
+                        <View className='flex flex-row items-center justify-between w-full px-5'>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-[11px] text-gray-400'
+                            >
+                                Service Charges:
+                            </Text>  
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-[11px] text-custom-green'
+                            >
+                                ₦{pricingData?.service_charge}
+                            </Text>  
+                        </View>
+                        <View className='flex flex-row items-center justify-between w-full px-5'>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-[11px] text-gray-400'
+                            >
+                                Delivery Charges:
+                            </Text>  
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-[11px] text-custom-green'
+                            >
+                                ₦{pricingData?.delivery_fee}
+                            </Text>  
+                        </View>
+                        <View className='flex flex-row items-center justify-between w-full px-5'>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-[14px] text-gray-800' 
+                            >
+                                Total
+                            </Text>  
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-[14px] text-custom-green'
+                            >
+                                ₦{RoundToDecimalPlace((pricingData.delivery_fee + pricingData.service_charge + CalculateItemPrice), 2)}
+                            </Text>  
+                        </View>
+                        <View className='flex flex-row items-center justify-between w-full px-5'>
+                            <Text
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            className=' text-[12px] text-gray-400' 
+                            >
+                                DELIVER TO {"\n"}
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className=' text-[10px] text-gray-800'
+                                >
+                                    {TruncatedText(deliveryAddress || '', 40) }
+                                </Text> 
+                            </Text>  
+                            <TouchableOpacity>
+                                <Text
+                                style={{fontFamily: 'Inter-Medium-Italic'}} 
+                                className=' text-[12px] text-custom-green'
+                                >
+                                    Change
+                                </Text>  
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
                     
                     <View className=' w-[90%] mx-auto mt-10 flex flex-row justify-between items-center'>
                         <Text

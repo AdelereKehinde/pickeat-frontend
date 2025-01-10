@@ -14,13 +14,14 @@ import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 
 export default function Cart(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     type ItemsArray = { id: number; category_name: string; meal_name: string; meal_id: number; quantity: number; store_name: string; thumbnail: string; discounted_price: number; deleted: boolean; discount: string; in_stock: boolean;}[];
     type ListData = { total_price: number; cart_items: ItemsArray; };
@@ -93,29 +94,27 @@ export default function Cart(){
     }
 
     const UpdateTotalPrice = (id: number, quantity: number) => {
-        // alert(id)
-        var newCart = cartItems.map((item) =>
-            item.id === id ? { ...item, quantity: quantity } : item
-          );
-        setCartItems(newCart); 
-        let TotalPrice = 0
-        newCart.forEach((item) => {
-            TotalPrice += item.discounted_price * item.quantity;
-        });
-        setTotalPrice(TotalPrice)
+        // alert(quantity)
+        setCartItems((prevItems) =>
+            prevItems.map((item) =>
+              item.id === id ? { ...item, quantity: quantity } : item
+            )
+        );
     }
+
+    // Calculate total price
+    const CalcTotalPrice = cartItems.reduce(
+        (sum, item) => sum + item.discounted_price * item.quantity,
+        0
+    );
 
     const handleRemoveItem = (itemId: number) => { 
         // alert(itemId)
         var newCart = cartItems.filter((item)=>item.id != itemId)
-        let TotalPrice = 0
-        newCart.forEach((item) => {
-            TotalPrice += item.discounted_price * item.quantity;
-        });
-        setTotalPrice(TotalPrice)
         setCartItems(newCart); 
     };
     
+    // const CalculateItemPrice = cartItems.reduce((sum, item) => sum + (item.quantity * item.discounted_price), 0);
     
     return (
         <SafeAreaView>
@@ -189,7 +188,7 @@ export default function Cart(){
                             className='text-custom-green text-[16px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                            ₦{totalPrice}
+                            ₦{CalcTotalPrice.toFixed(2)}
                         </Text>
                         </View>
                     <TouchableOpacity

@@ -27,7 +27,7 @@ export default function KitchenPageProduct(){
     type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type MealResponse = { count: number; next: string; previous: string; results: MealArray;};
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [kitchenMeal, setKitchenMeal] = useState<MealArray>([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -82,7 +82,7 @@ export default function KitchenPageProduct(){
                         placeholder="Search for available home services"
                         placeholderTextColor=""
                     />
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                     onPress={()=>{}}
                     className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
                         <Text
@@ -94,7 +94,7 @@ export default function KitchenPageProduct(){
                         <View className=''>
                             <Filter width={15} height={15} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
                 <View className='w-full bg-gray-50 mb-40 pb-2 '>

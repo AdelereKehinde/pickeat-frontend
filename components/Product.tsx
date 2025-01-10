@@ -85,7 +85,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                 style={{fontFamily: 'Inter-SemiBold'}}
                 className=' text-[11px] -mt-1 text-gray-700'
                 >
-                    <Text className='line-through'>${price}</Text> | ${discounted_price}
+                    <Text className='line-through'>₦{price}</Text> | ₦{discounted_price}
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Medium-Italic'}}
@@ -142,7 +142,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
 
                 <View className=''>
                     <TouchableOpacity
-                    onPress={()=>{router.push('/confirm_order')}}
+                    onPress={()=>{router.push(`/confirm_order?meal_id=${meal_id}&quantity=${quantity}`)}}
                     >
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}

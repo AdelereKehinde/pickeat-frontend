@@ -10,6 +10,7 @@ import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Device from "expo-device";
 
 export default function Registration(){
     const toastConfig = {
@@ -22,6 +23,8 @@ export default function Registration(){
     const [showPassword, setShowPassword] = useState(false)
     const [showPassword2, setShowPassword2] = useState(false)
 
+    const deviceName = Device.modelName; // e.g., "iPhone 12"
+    const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
     const validateInput = () =>{
       if(email.includes(".com") && (password.length>5) && (password2.length>5) && (password.trim() == password2.trim())){
         return true;
@@ -42,6 +45,8 @@ export default function Registration(){
             email: email,
             password: password,
             password2: password2,
+            device_name: deviceName,
+            device_type: deviceType,
           }, false);
           setLoading(false)
           setData(res); // Display or use response data as needed

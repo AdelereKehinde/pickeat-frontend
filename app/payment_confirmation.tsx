@@ -16,6 +16,7 @@ import { TruncatedText } from '@/components/TitleCase';
 import Delay from '@/constants/Delay';
 import Empty from '../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 
 export default function PaymentConfirmationPage(){
     const toastConfig = {
@@ -25,7 +26,7 @@ export default function PaymentConfirmationPage(){
 
     const {promo_code} = useGlobalSearchParams()
 
-    const [loading, setLoading] = useState(Boolean);
+    const [loading, setLoading] = useState(true);
     const [EPLoading, setEPLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     const [loadSignal, setLoadSignal] = useState(false)
@@ -38,6 +39,7 @@ export default function PaymentConfirmationPage(){
     const [subTotal, setSubTotal] = useState(Number)
     const [deliveryFee, setDeliveryFee] = useState(Number)
     const [percentageOff, setPercentageOff] = useState(Number)
+    const [serviceCharge, setServiceCharge] = useState(0)
     const [discountedTotal, setDiscountedTotal] = useState(Number)
 
     useEffect(() => {
@@ -61,6 +63,7 @@ export default function PaymentConfirmationPage(){
                 setDeliveryFee(response.data.pricing.delivery_fee)
                 setPercentageOff(response.data.pricing.percentage_off)
                 setDiscountedTotal(response.data.pricing.discounted_total)
+                setServiceCharge(response.data.pricing.service_charge)
                 setLoading(false)
             } catch (error) {
                 setLoading(false)
@@ -81,32 +84,23 @@ export default function PaymentConfirmationPage(){
     }
 
     const handleRemoveItem = (itemId: number) => {
-        // alert(itemId)
         var newCart = cartItems.filter((item)=>item.id != itemId)
-        let TotalPrice = 0
-        newCart.forEach((item) => {
-            TotalPrice += item.discounted_price * item.quantity;
-        });
-        setSubTotal(TotalPrice)
-        setCartItems(newCart);
+        setCartItems(newCart); 
     };
 
     const UpdateTotalPrice = (id: number, quantity: number) => {
-        // alert(id)
-        if(quantity == 0){
-            handleRemoveItem(id)
-        }else{
-            var newCart = cartItems.map((item) =>
-                item.id === id ? { ...item, quantity: quantity } : item
-              );
-            setCartItems(newCart); 
-            let TotalPrice = 0
-            newCart.forEach((item) => {
-                TotalPrice += item.discounted_price * item.quantity;
-            });
-            setSubTotal(TotalPrice)
-        }
+        setCartItems((prevItems) =>
+            prevItems.map((item) =>
+              item.id === id ? { ...item, quantity: quantity } : item
+            )
+        );
     }
+
+    // Calculate total price
+    const CalcSubTotal = cartItems.reduce(
+        (sum, item) => sum + item.discounted_price * item.quantity,
+        0
+    );
     
     const handlePayment = async () => {
         try {
@@ -261,7 +255,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[11px] text-custom-green'
                         >
-                            ₦{resData?.pricing.service_charge}
+                            ₦{serviceCharge}
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -275,9 +269,9 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[11px] text-custom-green'
                         >
-                            ₦{deliveryFee}.00
+                            ₦{deliveryFee}
                         </Text>  
-                    </View>
+                    </View> 
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
@@ -303,7 +297,7 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[14px] text-custom-green'
                         >
-                            ₦{discountedTotal + deliveryFee}.00
+                            ₦{RoundToDecimalPlace((discountedTotal + deliveryFee  + serviceCharge), 2)}
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -380,8 +374,8 @@ export default function PaymentConfirmationPage(){
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-            <Toast config={toastConfig} />
             </View>
+            <Toast config={toastConfig} />
         </SafeAreaView>
     )
 }

@@ -15,12 +15,17 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Device from "expo-device";
 
 export default function SignUp(){
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
     };
+
+    const deviceName = Device.modelName; // e.g., "iPhone 12"
+    const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
+
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
     const [fullName, setFullName] = useState('');
@@ -54,6 +59,8 @@ export default function SignUp(){
             phone_number: phoneNumber,
             password: password,
             password2: password2,
+            device_name: deviceName,
+            device_type: deviceType,
           }
           const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signup'], request_body, false);
           setLoading(false)

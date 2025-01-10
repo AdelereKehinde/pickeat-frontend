@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
 import KitchenCard from '@/components/Kitchen';

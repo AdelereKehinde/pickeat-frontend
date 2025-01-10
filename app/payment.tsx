@@ -13,13 +13,14 @@ import PaymentItem from '@/components/PaymentItem';
 import ChevronRight from '../assets/icon/chevron_right.svg';
 import PromoCode from '../assets/icon/promo_code.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 
 export default function PaymentPage(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
-    const [loading, setLoading] = useState(Boolean);
+    const [loading, setLoading] = useState(true);
     const [isFocused, setIsFocus] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     const [promoCode, setPromoCode] = useState('')
@@ -36,11 +37,13 @@ export default function PaymentPage(){
     useEffect(() => {
         const fetchMeals = async () => {
             try {
+                setLoading(true)
                 const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['checkout-summary']}`, true);
                 setResData(response.data)
                 setCartItems(response.data.cart_items)
                 setSubTotal(response.data.pricing.subtotal)
                 setDeliveryFee(response.data.pricing.delivery_fee)
+                setLoading(false)
             } catch (error) {
                 alert(error);
             }
@@ -59,26 +62,22 @@ export default function PaymentPage(){
     }
 
     const UpdateTotalPrice = (id: number, quantity: number) => {
-        // alert(id)
-        var newCart = cartItems.map((item) =>
-            item.id === id ? { ...item, quantity: quantity } : item
-          );
-        setCartItems(newCart); 
-        let TotalPrice = 0
-        newCart.forEach((item) => {
-            TotalPrice += item.discounted_price * item.quantity;
-        });
-        setSubTotal(TotalPrice)
+        setCartItems((prevItems) =>
+            prevItems.map((item) =>
+              item.id === id ? { ...item, quantity: quantity } : item
+            )
+        );
     }
+
+    // Calculate total price
+    const CalcSubTotal = cartItems.reduce(
+        (sum, item) => sum + item.discounted_price * item.quantity,
+        0
+    );
 
     const handleRemoveItem = (itemId: number) => {
         var newCart = cartItems.filter((item)=>item.id != itemId)
-        let TotalPrice = 0
-        newCart.forEach((item) => {
-            TotalPrice += item.discounted_price * item.quantity;
-        });
-        setSubTotal(TotalPrice)
-        setCartItems(newCart);
+        setCartItems(newCart); 
     };
     
     
@@ -176,7 +175,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[13px] text-gray-700'
                             >
-                                ₦{subTotal}.00
+                                ₦{CalcSubTotal.toFixed(2)}
                             </Text>  
                         </View>
                         <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -204,7 +203,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[13px] text-gray-700'
                             >
-                                ₦{deliveryFee}.00
+                                ₦{deliveryFee}
                             </Text>  
                         </View>
                         <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -218,7 +217,7 @@ export default function PaymentPage(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className=' text-[14px] text-custom-green'
                             >
-                                ₦{subTotal + deliveryFee}.00
+                                ₦{RoundToDecimalPlace((CalcSubTotal + deliveryFee), 2)}
                             </Text>  
                         </View>
                     </View>

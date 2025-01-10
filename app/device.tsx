@@ -3,25 +3,36 @@ import { Text, View, StatusBar, Pressable, StyleSheet, ScrollView } from "react-
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import FullScreenLoader from '@/components/FullScreenLoader';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+
 
 function Device(){
-
     const [showPrompt, setShowPrompt] = useState(false)
+    const [loading, setLoading] = useState(true)
 
-    const [devices, setDevices] = useState([
-        {   
-            id: 1,
-            name: 'iPhone XS Max',
-            now: true,
-            last_seen: ''
-        },
-        {
-            id: 2,
-            name: 'Samsung S20',
-            now: false,
-            last_seen: 'Yesterday , 5:20pm'
-        },
-    ])
+    type devicesType = { id: number; device_name: string; device_type: string; last_active: string; ip_address: string; now: boolean};
+    const [devices, setDevices] = useState<devicesType[]>([])
+
+    useEffect(() => {
+        const fetchMeals = async () => {
+            try {
+                setLoading(true)
+                setDevices([])
+                const response = await getRequest<devicesType[]>(`${ENDPOINTS['account']['list-devices']}`, true);
+                // alert(JSON.stringify(response))
+                setLoading(false)
+                setDevices(response)
+            } catch (error) {
+                setLoading(false) 
+                // alert(JSON.stringify(error));
+            } 
+        };
+    
+    fetchMeals(); 
+    }, []); // Empty dependency array ensures this runs once
 
     return (
         <SafeAreaView>
@@ -30,6 +41,9 @@ function Device(){
                 <View className='bg-blue-100 w-full'>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
+                {loading && (
+                    <FullScreenLoader />
+                )}
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
                     className='text-custom-green text-[16px] p-4 bg-white'
@@ -43,6 +57,26 @@ function Device(){
                     style={styles.shadow_box}
                     className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
                     >
+                        {loading && 
+                            <View className='flex space-y-2 px-2 overflow-hidden'>
+                                {Array.from({ length: 2 }).map((_, index) => (
+                                    <View key={index} className='border-b border-gray-200 pb-2'>
+                                        <ContentLoader
+                                        width="90%"
+                                        height={50}
+                                        backgroundColor="#f3f3f3"
+                                        foregroundColor="#ecebeb"
+                                        >
+                                            {/* <Rect x="10" y="10" rx="5" ry="5" width="130" height="15" />
+                                            <Rect x="10" y="40" rx="5" ry="5" width="100" height="15" /> */}
+                                            <Rect x="0" y="10" rx="5" ry="5" width="60" height="15" />
+                                            <Rect x="0" y="35" rx="5" ry="5" width="90" height="15" />
+                                        </ContentLoader>
+                                    </View> 
+                                ))}
+                            </View>
+                        }
+
                         {devices.map((item) => (
                             <View 
                             key={item.id}
@@ -51,13 +85,13 @@ function Device(){
                                 className={` ${item.now? 'text-custom-green': 'text-gray-500'} text-[11px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    {item.name}
+                                    {item.device_name}
                                 </Text>
                                 <Text
                                 className='text-gray-500 text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    Last seen - {(item.now)? <Text className='text-custom-green'>NOW</Text> : <Text>{item.last_seen}</Text> }
+                                    Last seen - {(item.now)? <Text className='text-custom-green'>NOW</Text> : <Text>{item.last_active}</Text> }
                                 </Text>
                             </View>
                         ))}

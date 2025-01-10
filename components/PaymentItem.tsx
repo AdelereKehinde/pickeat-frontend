@@ -23,7 +23,7 @@ interface Properties {
     onLoading: (value: boolean) => void
   }
 
-const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id, kitchen, image, cart_id, date, price, items,parentLoadSignal, onRemove, onUpdate, onLoading}) =>{
+const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart, meal_id, kitchen, image, cart_id, date, price, items, parentLoadSignal, onRemove, onUpdate, onLoading}) =>{
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -42,11 +42,11 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart,meal_id,
             type ApiResponse = { status: string; message: string; data:DataResponse };
             const res = await postRequest<ApiResponse>(`${ENDPOINTS['cart']['add']}?meal=${meal_id}`, {quantity: increase? (quantity+1): (quantity-1)}, true);
             // alert(JSON.stringify(res))
-            setQuantity(increase? (quantity+1): (quantity-1))
-            if(quantity==0){
+            var new_quantity = increase? (quantity+1): (quantity-1)
+            setQuantity(new_quantity)
+            onUpdate(cart_id, new_quantity)
+            if(new_quantity==0){
                 onRemove(cart_id)
-            }else{
-                onUpdate(cart_id, increase? (quantity+1): (quantity-1))
             }
             Toast.show({
                 type: 'success',

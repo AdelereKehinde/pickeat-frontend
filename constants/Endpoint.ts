@@ -12,7 +12,8 @@ const ENDPOINTS = {
         'profession': `${ACOOUNT_BASE}professions`,
         'chats': `${ACOOUNT_BASE}chats`,
         'chats-create': `${ACOOUNT_BASE}chats/create`,
-        'send-message': `${ACOOUNT_BASE}chats/message/send`
+        'send-message': `${ACOOUNT_BASE}chats/message/send`,
+        'list-devices': `${ACOOUNT_BASE}devices/list`,
     },
     'buyer': {
         'signin': `${BUYER_BASE}signin`,
