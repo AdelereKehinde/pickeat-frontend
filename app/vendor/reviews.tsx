@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,StatusBar, ScrollView, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
+import { Text, View, TouchableOpacity,StatusBar, ScrollView, RefreshControl, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import TitleTag from '@/components/Title';
@@ -34,33 +34,42 @@ export default function Reviews(){
     const [count, setCount] = useState(1);
     const pageSize = 5; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
+    const fetchMeals = async () => {
+        try {
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['review']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response))
+            setCount(response.data.review.count)
+            setRatingData(response.data.rating)
+            setReviewData(response.data.review.results)
+            setRating(response.data.rating.average_rating)
+            setNoOfReview(response.data.rating.total_reviews)
+            setNoOf5Star(response.data.rating.star_5_count)
+            setNoOf4Star(response.data.rating.star_4_count)
+            setNoOf3Star(response.data.rating.star_3_count)
+            setNoOf2Star(response.data.rating.star_2_count)
+            setNoOf1Star(response.data.rating.star_1_count)
+            setData(response)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false) 
+            // alert(JSON.stringify(error));
+        } 
+    };
     useEffect(() => {
-        const fetchMeals = async () => {
-            try {
-                setLoading(true)
-                setReviewData([])
-                const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['review']}?page_size=${pageSize}&page=${currentPage}`, true);
-                // alert(JSON.stringify(response))
-                setCount(response.data.review.count)
-                setRatingData(response.data.rating)
-                setReviewData(response.data.review.results)
-                setRating(response.data.rating.average_rating)
-                setNoOfReview(response.data.rating.total_reviews)
-                setNoOf5Star(response.data.rating.star_5_count)
-                setNoOf4Star(response.data.rating.star_4_count)
-                setNoOf3Star(response.data.rating.star_3_count)
-                setNoOf2Star(response.data.rating.star_2_count)
-                setNoOf1Star(response.data.rating.star_1_count)
-                setData(response)
-                setLoading(false)
-            } catch (error) {
-                setLoading(false) 
-                // alert(JSON.stringify(error));
-            } 
-        };
-    
-    fetchMeals(); 
+        setLoading(true)
+        setReviewData([])
+        fetchMeals(); 
     }, [currentPage]); // Empty dependency array ensures this runs once
+
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
 
     const maxStars = 5; // Maximum stars
     // Create an array to represent each star
@@ -95,7 +104,11 @@ export default function Reviews(){
                     <TitleTag withprevious={false} title='Reviews' withbell={false} />
                 </View>
 
-                <ScrollView className='w-full px-2' contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className='w-full px-2' contentContainerStyle={{ flexGrow: 1 }}>
                     <View 
                     style={styles.shadow_box}
                     className='w-full p-4 rounded-lg shadow-2xl'

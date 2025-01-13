@@ -135,7 +135,13 @@ export default function PaymentConfirmationPage(){
             autoHide: true,
           });
         }
-      };
+    };
+
+    const CalcTotal = () => {
+        var total = cartItems.reduce((sum, item) => sum + item.discounted_price * item.quantity, 0);
+        total = total + serviceCharge + deliveryFee
+        return (total - (total * percentageOff / 100))
+    }
     
     return (
         <SafeAreaView>
@@ -297,9 +303,9 @@ export default function PaymentConfirmationPage(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[14px] text-custom-green'
                         >
-                            ₦{RoundToDecimalPlace((discountedTotal + deliveryFee  + serviceCharge), 2)}
+                            ₦{RoundToDecimalPlace(CalcTotal(), 2)}
                         </Text>  
-                    </View>
+                    </View> 
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-SemiBold'}}

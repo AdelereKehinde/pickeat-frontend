@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { Text, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import KitchenCard from '@/components/Kitchen';
@@ -20,7 +20,7 @@ function Order(){
         success: CustomToast,
         error: CustomToast,
     };
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     
     type ListData = { id: number; buyer_name: string; location: string; thumbnail: string; tracking_id: string; status_history_status: string; status: string; items: string; date: string;}[];
@@ -35,9 +35,9 @@ function Order(){
 
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
-            setLoading(true)
             // setParentOrders([])
             const response = await getRequest<ListData>(`${ENDPOINTS['cart']['vendor-orders']}?all=true&exclude_status=completed`, true);
             // alert(JSON.stringify(response))
@@ -53,11 +53,21 @@ function Order(){
         } 
     };
     useEffect(() => {
-        if (isFocused){        
+        if (isFocused){  
+            setLoading(true)      
             fetchMeals(); 
         }
     }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
     
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
+
     const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
         // alert(status_history_status)
         var newOrder = parentorders.map((item) =>
@@ -129,7 +139,11 @@ function Order(){
                 </View>
 
                 <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
-                    <ScrollView className='w-full p-1 mb-2 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView 
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    className='w-full p-1 mb-2 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>

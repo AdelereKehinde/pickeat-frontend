@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, Image } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, Image, RefreshControl } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import VendorProductList from '@/components/VendorProductList';
@@ -14,27 +14,28 @@ import ENDPOINTS from '@/constants/Endpoint';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Menu(){
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     type CategoryArray = { id: string; category_name: string;}[];
     type MealArray = { id: number; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type ApiResponse = { count: string; next: string; previous: string; results: MealArray;};
     
     const [meals, setMeals] = useState<MealArray>([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await getRequest<ApiResponse>(ENDPOINTS['inventory']['vendor-meal-list'], true); // Authenticated
+            // alert(JSON.stringify(response.results)) 
+            setMeals(response.results) 
+            setLoading(false)
+        } catch (error) {
+            // alert(JSON.stringify(error));
+            setLoading(false)
+        }
+    };
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                setLoading(true)
-                const response = await getRequest<ApiResponse>(ENDPOINTS['inventory']['vendor-meal-list'], true); // Authenticated
-                // alert(JSON.stringify(response.results)) 
-                setMeals(response.results) 
-                setLoading(false)
-            } catch (error) {
-                // alert(JSON.stringify(error));
-                setLoading(false)
-            }
-        };
-    
+        setLoading(true)
         fetchCategories();
       }, []); // Empty dependency array ensures this runs once
     
@@ -44,26 +45,17 @@ export default function Menu(){
         setMeals(newMeals); 
     };
 
-    const Details = {
-        kitchen: {
-            name: 'Mardiya Kitchen',
-            description: 'Rice and chicken Both fried and Jollof',
-            delivery_condition: 'This Kitchen provides both Delivery and self pickup options. By default Delivery has been selected (change)',
-        },
-        products: [
-            { id: '1', source: require('../../assets/images/image1.jpg'), name:'Green chile stew' },
-            { id: '2', source: require('../../assets/images/image2.jpg'), name:'Chicago - style pizza'},
-            { id: '3', source: require('../../assets/images/image3.jpg'), name:'Key lime pie' },
-            { id: '4', source: require('../../assets/images/image1.jpg'), name:'Cobb salad' },
-            { id: '5', source: require('../../assets/images/image1.jpg'), name:'Green chile stew' },
-            { id: '6', source: require('../../assets/images/image2.jpg'), name:'Fried plantain'},
-            { id: '7', source: require('../../assets/images/image3.jpg'), name:'Key lime pie' },
-            { id: '8', source: require('../../assets/images/image1.jpg'), name:'Cobb salad' },
-        ]
-    };
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState('all');
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchCategories()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
     
     return (
         <SafeAreaView>
@@ -192,7 +184,11 @@ export default function Menu(){
                 </View> */}
                 
                 <View className='w-full bg-gray-50 mt-3'>
-                    <ScrollView className='w-full space-y-1 mb-56' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView 
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    className='w-full space-y-1 mb-56' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && filterIndex == 'all' && meals.length == 0) && (
                             <View className='flex items-center'>
                                 <TouchableOpacity

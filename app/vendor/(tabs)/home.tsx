@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TouchableOpacity, Image } from "react-native";
+import { Text, View, StatusBar, ScrollView, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import { FontAwesome } from '@expo/vector-icons';
@@ -30,33 +30,42 @@ function Home(){
     const [noOf1Star, setNoOf1Star] = useState(0);
     
     const isFocused = useIsFocused();
+    const [refreshing, setRefreshing] = useState(false);
+    const fetchMeals = async () => {
+        try {
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['dashboard']}`, true);
+            // alert(JSON.stringify(response))
+            setPopularOrder(response.data.popular_order)
+            setRatingData(response.data.rating)
+            setRating(response.data.rating.average_rating)
+            setNoOfReview(response.data.rating.total_reviews)
+            setNoOf5Star(response.data.rating.star_5_count)
+            setNoOf4Star(response.data.rating.star_4_count)
+            setNoOf3Star(response.data.rating.star_3_count)
+            setNoOf2Star(response.data.rating.star_2_count)
+            setNoOf1Star(response.data.rating.star_1_count)
+            setData(response)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false) 
+            // alert(error);
+        } 
+    };
     useEffect(() => {
         if(isFocused){
-            const fetchMeals = async () => {
-                try {
-                    setLoading(true)
-                    const response = await getRequest<ApiResponse>(`${ENDPOINTS['vendor']['dashboard']}`, true);
-                    // alert(JSON.stringify(response))
-                    setPopularOrder(response.data.popular_order)
-                    setRatingData(response.data.rating)
-                    setRating(response.data.rating.average_rating)
-                    setNoOfReview(response.data.rating.total_reviews)
-                    setNoOf5Star(response.data.rating.star_5_count)
-                    setNoOf4Star(response.data.rating.star_4_count)
-                    setNoOf3Star(response.data.rating.star_3_count)
-                    setNoOf2Star(response.data.rating.star_2_count)
-                    setNoOf1Star(response.data.rating.star_1_count)
-                    setData(response)
-                    setLoading(false)
-                } catch (error) {
-                    setLoading(false) 
-                    // alert(error);
-                } 
-            };
-        
+            setLoading(true)
             fetchMeals(); 
         }
     }, [isFocused]); // Empty dependency array ensures this runs once
+
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
 
     const maxStars = 5; // Maximum stars
 
@@ -78,7 +87,11 @@ function Home(){
                 <View className='bg-blue-100 w-full'>
                     <TitleTag withprevious={false} title='My Dashboard' withbell={true} />
                 </View> 
-                <ScrollView className='w-full flex' contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className='w-full flex' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
                     className='text-[16px] self-start pl-5 mt-5'
                     style={{fontFamily: 'Inter-SemiBold'}}

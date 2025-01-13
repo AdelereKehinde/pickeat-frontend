@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal } from 'react-native';
+import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal, RefreshControl } from 'react-native';
 import Search from '../assets/icon/search.svg';
 import ChatListCard from '@/components/ChatList';
 import { SafeAreaView } from 'react-native-safe-area-context';

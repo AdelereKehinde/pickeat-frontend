@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import ServicesLayout from '@/components/Services';
@@ -36,6 +36,7 @@ export default function Services(){
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
     const [paginationLoad, setPaginationLoad] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
             setLoading(true)
@@ -57,6 +58,17 @@ export default function Services(){
         } catch (error) {
             // alert(error);
         }
+    };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        // setTransactions([])
+        const response = await getRequest<ListData>(`${ENDPOINTS['cart']['buyer-orders']}?all=true`, true);
+            // alert(JSON.stringify(response))
+        setParentOrders(response)
+    
+        setRefreshing(false); // Stop the refreshing animation
     };
     
     useEffect(() => {
@@ -130,7 +142,11 @@ export default function Services(){
 
                 <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
                     
-                    <ScrollView className='w-full mt-4  space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView 
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    className='w-full mt-4  space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>

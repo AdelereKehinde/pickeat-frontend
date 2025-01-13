@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TouchableOpacity, Image } from "react-native";
+import { Text, View, StatusBar, ScrollView, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,10 +23,9 @@ function Notification(){
     const [count, setCount] = useState(1);
     const pageSize = 10; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
     const fetchCategories = async () => {
         try {
-            setNotifications([])
-            setLoading(true)
             const response = await getRequest<ApiResponse>(`${ENDPOINTS['buyer']['notification']}?page_size=${pageSize}&page=${currentPage}`, true);
             setCount(response.data.total_count)
             setLoading(false) 
@@ -39,8 +38,19 @@ function Notification(){
     };
 
     useEffect(() => {
+        setNotifications([])
+        setLoading(true)
         fetchCategories();
     }, [currentPage]); // Empty dependency array ensures this runs once
+
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchCategories()
+    
+        setRefreshing(false); // Stop the refreshing animation
+    };
 
     return (
         <SafeAreaView>
@@ -50,7 +60,11 @@ function Notification(){
                     <TitleTag withprevious={true} title='Notification' withbell={false} />
                 </View>
 
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }} className='px-3'>
+                <ScrollView 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                contentContainerStyle={{ flexGrow: 1 }} className='px-3'>
                     {(!loading && notifications.length === 0) && (
                         <View className='flex items-center'> 
                             <Empty/>

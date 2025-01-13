@@ -26,7 +26,7 @@ function KitchenProfile(){
 
     const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday', ];
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [rating, setRating] = useState(0);
     const [noOfReview, setNoOfReview] = useState(0);
 

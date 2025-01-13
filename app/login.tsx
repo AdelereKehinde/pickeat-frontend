@@ -13,6 +13,7 @@ import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DeviceUUID from '@/constants/DeviceID';
 
 export default function Login(){
     const {next} = useGlobalSearchParams()
@@ -39,6 +40,7 @@ export default function Login(){
     const handleLogin = async () => {
       const deviceName = Device.modelName; // e.g., "iPhone 12"
       const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
+      // const deviceId = DeviceUUID()
 
       try {
         if(!loading && validateInput()){
@@ -50,6 +52,7 @@ export default function Login(){
             password: password,
             device_name: deviceName,
             device_type: deviceType,
+            // device_id: deviceId,
           }, false);
           
           await AsyncStorage.setItem('token', res.data.token);

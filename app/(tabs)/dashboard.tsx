@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, ActivityIndicator,StyleSheet, TextInput, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable, Keyboard } from "react-native";
+import { Text, View, StatusBar, ActivityIndicator,StyleSheet, TextInput, RefreshControl, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable, Keyboard } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
@@ -43,27 +43,28 @@ export default function Dashboard(){
     const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
 
     const isNavFocused = useIsFocused();
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchCategories = async () => {
+        try {
+            const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?page_size=10&page=1`, true); // Authenticated
+            // alert(JSON.stringify(response.results))
+            setMeals(response.results) 
+            const response2 = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=10&page=1`, true);
+            // alert(JSON.stringify(response2.results))
+            setSpecialOffer(response2.results) 
+            const response3 = await getRequest<sellerResponse>(`${ENDPOINTS['vendor']['list']}?page_size=10&page=1`, true);
+            // alert(JSON.stringify(response3.results))
+            setSellers(response3.results) 
+            const response4 = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=10&page=1`, true);
+            // alert(JSON.stringify(response4.results))
+            setKitchens(response4.results)
+        } catch (error) {
+            // alert(error); 
+        }
+    };
     useEffect(() => {
         if (isNavFocused){
-            const fetchCategories = async () => {
-                try {
-                    const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?page_size=10&page=1`, true); // Authenticated
-                    // alert(JSON.stringify(response.results))
-                    setMeals(response.results) 
-                    const response2 = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=10&page=1`, true);
-                    // alert(JSON.stringify(response2.results))
-                    setSpecialOffer(response2.results) 
-                    const response3 = await getRequest<sellerResponse>(`${ENDPOINTS['vendor']['list']}?page_size=10&page=1`, true);
-                    // alert(JSON.stringify(response3.results))
-                    setSellers(response3.results) 
-                    const response4 = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=10&page=1`, true);
-                    // alert(JSON.stringify(response4.results))
-                    setKitchens(response4.results)
-                } catch (error) {
-                    // alert(error); 
-                }
-            };
-        
             fetchCategories();
         }
     }, [isNavFocused]); // Empty dependency array ensures this runs once
@@ -87,7 +88,17 @@ export default function Dashboard(){
         } finally {
           setLoading(false);
         }
-      };
+    };
+
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchCategories()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
+    
     
     // Create a debounced version of fetchMeals with 500ms delay
     const debouncedSearch = useDebounce(searchMeals, 1000);
@@ -113,7 +124,11 @@ export default function Dashboard(){
         <SafeAreaView>
             <View className=' bg-white w-full h-full flex items-center'>
                 <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <ScrollView className={`overflow-hidden`} contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className={`overflow-hidden mx-auto`} contentContainerStyle={{ flexGrow: 1 }}>
                     <View className='flex flex-row justify-between py-2 px-4 w-full`'>
                         <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
                             <View className=''>
@@ -240,7 +255,7 @@ export default function Dashboard(){
 
                     <View className="mt-3 px-3 h-40">
                         {(meals.length === 0 || loading) && 
-                        <View className='flex flex-row space-x-2 w-screen p-2 overflow-hidden'>
+                        <View className='flex flex-row space-x-2 w-screen overflow-hidden'>
                             {Array.from({ length: 3 }).map((_, index) => (
                                 <View key={index}>
                                     <ContentLoader
@@ -302,7 +317,7 @@ export default function Dashboard(){
                         </Link>
                         <View className={`h-[180px] p-3`}>
                             {(specialOffer.length === 0) && 
-                            <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
+                            <View className='flex flex-row space-x-2 w-screen overflow-hidden'>
                                 {Array.from({ length: 2 }).map((_, index) => (
                                     <View key={index} className='flex items-center'>
                                         <ContentLoader

@@ -62,7 +62,7 @@ export default function Cart(){
 
     const handleCheckout = async () => {
       try {
-        if(!loading && !loadSignal){
+        if(!loading && !loadSignal && cartItems.length > 0){
           setLoading(true)
           setLoadSignal(true)
           const res = await postRequest(ENDPOINTS['cart']['checkout'], {}, true);
@@ -193,7 +193,7 @@ export default function Cart(){
                         </View>
                     <TouchableOpacity
                     onPress={handleCheckout}
-                    className={`text-center bg-custom-green ${(loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
+                    className={`text-center bg-custom-green ${(loading || loadSignal || cartItems.length == 0) && 'bg-custom-inactive-green'} relative rounded-xl w-[60%] ml-auto p-4 self-center flex items-center justify-around`}
                     >
                         <Text
                         className='text-white'

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import Product from '@/components/Product';
@@ -34,10 +34,9 @@ export default function KitchenPageProduct(){
     const [count, setCount] = useState(1);
     const pageSize = 5; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
-            setKitchenMeal([])
-            setLoading(true)
             const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response.results))
             setCount(response.count)
@@ -50,6 +49,8 @@ export default function KitchenPageProduct(){
     };
 
     useEffect(() => {
+        setKitchenMeal([])
+        setLoading(true)
         fetchMeals();
     }, [currentPage]); // Empty dependency array ensures this runs once
     
@@ -57,7 +58,13 @@ export default function KitchenPageProduct(){
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
 
-
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+    
+        setRefreshing(false); // Stop the refreshing animation
+    };
     
     return (
         <SafeAreaView>
@@ -123,7 +130,12 @@ export default function KitchenPageProduct(){
                             ))}
                         </View>
                     }
-                    <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+
+                    <ScrollView 
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                         {kitchenMeal.map((item) => (
                             <View key={item.id}>
                                 <Product 

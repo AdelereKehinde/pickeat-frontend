@@ -56,6 +56,7 @@ const ChatPage: React.FC = () => {
     try {
     const response = await getRequest<any>(`${ENDPOINTS['account']['chats']}/${chatId}/message`, true);
     // alert(JSON.stringify(response))
+    await AsyncStorage.setItem((chatId + ""), JSON.stringify(response))
     setMessages(response)
     } catch (error) {
       // alert(error);
@@ -165,7 +166,7 @@ const ChatPage: React.FC = () => {
 
       <FlatList 
       data={messages}
-      className='py-3 px-4'
+      className='py-3 px-4 mb-3'
       renderItem={({item}) =>  (
         <RenderMessage id={item.id} sender={item.sender} text={item.text} time={item.time} date={item.date} /> 
       )}

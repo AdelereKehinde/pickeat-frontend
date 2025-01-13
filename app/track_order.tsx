@@ -14,7 +14,7 @@ function TrackOrder(){
     const {tracking_id, kitchen} = useGlobalSearchParams()
 
     const [showPrompt, setShowPrompt] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
     const [trackingId, setTrackingId] = useState(Array.isArray(tracking_id)? tracking_id[0] : tracking_id)
     const [kitchenName, setKitchenName] = useState(Array.isArray(kitchen)? kitchen[0] : kitchen)
 
@@ -57,7 +57,7 @@ function TrackOrder(){
             <View className=' bg-white w-full h-full flex'>
                 <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
                 {showPrompt && (
-                    <Prompt main_text='Thank you for choosing PickEat PickIt' sub_text='You’ve confirmed you’ve now collected your order' clickFunction={()=>{setShowPrompt(false)}} />
+                    <Prompt main_text='Thank you for choosing PickEat PickIt' sub_text='You’ve confirmed you’ve now collected your order' order_id='' estimated_time='' clickFunction={()=>{setShowPrompt(false)}} />
                 )}
                 <View className='bg-white w-full'>
                     <TitleTag withprevious={true} title='Track order' withbell={false} />

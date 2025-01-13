@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import ServicesLayout from '@/components/Services';
@@ -31,6 +31,7 @@ export default function BookingHistory(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
             setLoading(true)
@@ -50,6 +51,13 @@ export default function BookingHistory(){
         fetchMeals(); 
     }, [currentPage]); // Empty dependency array ensures this runs once
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+    
+        setRefreshing(false); // Stop the refreshing animation
+    };
 
     return (
         <SafeAreaView>
@@ -67,7 +75,11 @@ export default function BookingHistory(){
                 </Text>
 
                 <View className='bg-white w-full my-3 mb-28 relative flex items-center'>
-                    <ScrollView className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView 
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && orders.length === 0) && (
                             <View className='flex items-center'> 
                                 <Empty/>

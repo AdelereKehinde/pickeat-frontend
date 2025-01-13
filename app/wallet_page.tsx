@@ -41,6 +41,7 @@ export default function WalletPage(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
     const isFocusedd = useIsFocused();
     const fetchCategories = async () => {
         try {
@@ -93,7 +94,21 @@ export default function WalletPage(){
             autoHide: true,
           });
         }
-      };
+    };
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        // setTransactions([])
+        const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['wallet-dashboard']}?page_size=${pageSize}&page=${currentPage}`, true);
+        // alert(JSON.stringify(response))
+        setCards(response.data.cards) 
+        setCount(response.data.transactions.count)
+        setTransactions(response.data.transactions.results)
+        setAmount(response.data.amount_in_wallet)
+    
+        setRefreshing(false); // Stop the refreshing animation
+    };
     
     return (
         <SafeAreaView>
@@ -262,7 +277,11 @@ export default function WalletPage(){
                 >
                     Transaction History
                 </Text>
-                <ScrollView className='w-full p-1 mb-3 mt-5 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className='w-full p-1 mb-3 mt-5 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                 {loading && 
                     <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                         {Array.from({ length: 5 }).map((_, index) => (

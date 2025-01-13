@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import KitchenCard from '@/components/Kitchen';
@@ -27,10 +27,9 @@ export default function KitchenPage(){
     const [count, setCount] = useState(1);
     const pageSize = 7; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
     const fetchCategories = async () => {
         try {
-            setKitchens([])
-            setLoading(true)
             const response = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=${pageSize}&page=${currentPage}&search=${searchValue}`, true);
             setCount(response.count)
             setLoading(false)
@@ -43,9 +42,20 @@ export default function KitchenPage(){
     };
 
     useEffect(() => {
+        setKitchens([])
+        setLoading(true)
         fetchCategories();
     }, [currentPage]); // Empty dependency array ensures this runs once
     
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchCategories()
+    
+        setRefreshing(false); // Stop the refreshing animation
+    };
+
     return (
         <SafeAreaView>
             <View className=' bg-white w-full h-full flex items-center'>
@@ -144,7 +154,11 @@ export default function KitchenPage(){
                     </TouchableOpacity>
                 </View> */}
 
-                <ScrollView className='w-full p-1 pb-5 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className='w-full p-1 pb-5 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                 {(loading) && 
                     <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                         {Array.from({ length: 6 }).map((_, index) => (

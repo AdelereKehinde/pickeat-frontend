@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import VendorOrderHistory from '@/components/VendorOrderHistory';
@@ -23,24 +23,34 @@ export default function OrderHistory(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchMeals = async () => {
+        try {
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response))
+            setOrders(response.results)
+            setCount(response.count)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            alert(error);
+        } 
+    };
+
     useEffect(() => {
-            const fetchMeals = async () => {
-                try {
-                setLoading(true)
-                setOrders([])
-                const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
-                // alert(JSON.stringify(response))
-                setOrders(response.results)
-                setCount(response.count)
-                setLoading(false)
-            } catch (error) {
-                setLoading(false)
-                alert(error);
-            } 
-        };
-        
+        setLoading(true)
+        setOrders([])
         fetchMeals(); 
     }, [currentPage]); // Empty dependency array ensures this runs once
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
 
     const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
         // alert(status_history_status)
@@ -66,7 +76,11 @@ export default function OrderHistory(){
                 </Text> 
 
                 <View className='bg-white w-full my-3 mb-24 border-t-4 border-gray-200 relative flex flex-row items-center justify-center'>
-                    <ScrollView className='w-full mt-4 space-y-1 contentContainerStyle={{ flexGrow: 1 }}'>
+                    <ScrollView 
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    className='w-full mt-4 space-y-1 contentContainerStyle={{ flexGrow: 1 }}'>
                         {((!loading || (orders.length !== 0)) && orders.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>

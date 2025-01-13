@@ -100,7 +100,7 @@ const VendorOrder: React.FC<Properties> = ({image, name, address, time, status, 
                 </View>
             </View>
 
-            {(status_history_status == '') && (
+            {(status == 'pending') && (
                 <View className='ml-auto'>
                     <TouchableOpacity 
                     onPress={()=>{OrderStatus('cancelled')}}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,StatusBar, ScrollView, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
+import { Text, View, TouchableOpacity,StatusBar, ScrollView, RefreshControl, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Nigeria from '../../assets/icon/nigeria.svg';
@@ -21,7 +21,7 @@ export default function Earnings(){
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
     const [data, setData] = useState<ApiResponse>()
     const [showAmount, setShowAmount] = useState(true)
-    const [loading, setLoading] = useState(false); // Loading state
+    const [loading, setLoading] = useState(true); // Loading state
 
     const [transactions, setTransactions] = useState<ListData>([]);
     
@@ -29,25 +29,35 @@ export default function Earnings(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchMeals = async () => {
+        try {
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
+            // alert(JSON.stringify(response))
+            setData(response)
+            setTransactions(response.data.results)
+            setCount(response.data.count)
+            setLoading(false)
+        } catch (error) {
+            setLoading(false) 
+            alert(error);
+        } 
+    };
+
     useEffect(() => {
-            const fetchMeals = async () => {
-                try {
-                setLoading(true)
-                setTransactions([])
-                const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
-                // alert(JSON.stringify(response))
-                setData(response)
-                setTransactions(response.data.results)
-                setCount(response.data.count)
-                setLoading(false)
-            } catch (error) {
-                setLoading(false) 
-                alert(error);
-            } 
-        };
-        
+        setLoading(true)
+        setTransactions([])
         fetchMeals(); 
     }, [currentPage]); // Empty dependency array ensures this runs once
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+    
+        await fetchMeals()
+
+        setRefreshing(false); // Stop the refreshing animation
+    };
 
     const HandleDownload = () =>{
         if(transactions.length !== 0){
@@ -65,7 +75,11 @@ export default function Earnings(){
                     <TitleTag withprevious={false} title='Earnings and Payment' withbell={false} />
                 </View>
 
-                <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView 
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <View 
                     style={styles.shadow_box}
                     className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
@@ -131,7 +145,8 @@ export default function Earnings(){
                         </View>
                     </View>
 
-                    <ScrollView className='w-[98%] max-h-[50%] px-3 mt-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView 
+                    className='w-[98%] max-h-[50%] px-3 mt-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>
