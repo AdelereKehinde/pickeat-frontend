@@ -18,6 +18,7 @@ import Delay from '@/constants/Delay';
 import PhoneNumber from '@/components/NumberField';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreateProduct(){
     const {id} = useGlobalSearchParams()
@@ -68,9 +69,20 @@ export default function CreateProduct(){
               if(id){
                 setFetchLoading(true)
               }
-              const response = await getRequest<ApiCategoriesArray>(ENDPOINTS['inventory']['categories'], false); // Authenticated
-              // alert(JSON.stringify(response)) 
-              setCategoryOption(response)
+              
+              const storedData = await AsyncStorage.getItem('categories');
+              // If data exists, parse it and set it to state
+              if (storedData) {
+                // alert(storedData)
+                  const parsedData: ApiCategoriesArray = JSON.parse(storedData);
+                  setCategoryOption(parsedData);
+              }else{
+                const response = await getRequest<ApiCategoriesArray>(ENDPOINTS['inventory']['categories'], false); // Authenticated
+                // alert(JSON.stringify(response)) 
+                setCategoryOption(response)
+              }
+            
+
               if(id){
                 setFetchLoading(true)
                 const mealDetails = await getRequest<mealInfo>(`${ENDPOINTS['inventory']['meal']}${id}`, true);

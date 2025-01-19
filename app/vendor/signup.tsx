@@ -242,7 +242,7 @@ export default function SignUp(){
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500 mt-5'
               >
-                Already have an account? <Link href="/vendor/login" className='text-gray-800'>Sign in</Link> 
+                Already have an account? <Link href="/vendor/login" className='text-gray-800'>Sign In</Link> 
               </Text>
             
 

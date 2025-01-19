@@ -1,4 +1,4 @@
-import { View, TextInput, Animated, Text,TouchableOpacity, StyleSheet, } from 'react-native';
+import { View, TextInput, Animated, Text,TouchableOpacity, StyleSheet, Modal, FlatList, Pressable} from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -15,17 +15,21 @@ interface Properties {
   focus: boolean,
   options: OptionType[],
   setValue?: string,
+  active?: boolean,
   open: boolean,
   getValue: (value: string) => void
 }
 
-const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, setValue, open,  getValue}) => {
+const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, setValue, active=true, open,  getValue}) => {
     const [inputValue, setInputValue] = useState('');
     const [isFocused, setIsFocus] = useState(false);
 
-    const [isVisible, setIsVisible] = useState(open);
+    const [isVisible, setIsVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState(''); 
     useEffect(() => {
+        if(!active && setValue !== ''){
+            setInputValue(setValue+"")
+        }
         for(var i=0; i<options.length; i++){
             if(options[i].value == setValue){
                 setInputValue(options[i].label + "")
@@ -42,15 +46,16 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
     };
     return (
         <View className="">
-        {/* Animated Label */}
-        {(name !== "") && (
-            <Text
-            style={{fontFamily: 'Inter-Medium'}}
-            className='absolute left-2 p-1 top-0 -z-10 text-gray-400 text-[11px]'
-            >
-            {name}
-            </Text>
-        )}
+            {/* Animated Label */}
+            {(name !== "") && (
+                <Text
+                style={{fontFamily: 'Inter-Medium'}}
+                className='absolute left-2 p-1 top-0 -z-10 text-gray-400 text-[11px]'
+                >
+                {name}
+                </Text>
+            )}
+
             <View className='flex flex-row'>
                 
                 {/* TextInput */}
@@ -66,66 +71,53 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
                     placeholderTextColor="black"
                     readOnly={true}
                 />
-                <View 
-                    // onPress={() => setIsVisible(!isVisible)} 
+                {active && (
+                    <Pressable 
+                    onPress={() => setIsVisible(!isVisible)} 
                     className={`absolute right-4 ${(name=='')? 'inset-y-4': 'inset-y-5'}  text-gray-400 w-5 h-5`}
-                >   
-                    <FontAwesome 
-                    name={open ? 'chevron-up' : 'chevron-down'} 
-                    size={14} 
-                    color="#9ca3af" 
-                    />
-                </View>
+                    >   
+                        <FontAwesome 
+                        name={isVisible ? 'chevron-up' : 'chevron-down'} 
+                        size={14} 
+                        color="#9ca3af" 
+                        />
+                    </Pressable>
+                )}
             </View>
         
         {/* Dropdown list */}
-        {open && (
-            <GestureHandlerRootView
-            className=' w-full'
-            style={{
-                flex: 0,
-                // marginTop: 50, // Adjust this to "pull" it into view
-                zIndex: 1, // Ensure it overlays the main content
-                backgroundColor: 'white',
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 10,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 4,
-                elevation: 5, // For Android shadow
-              }}
+        {isVisible && (
+            <Modal
+            transparent={true}
+            visible={isVisible}
+            animationType="slide" // Slides up from the bottom
+            onRequestClose={()=>setIsVisible(false)}
             >
-            <View 
-            // style={styles.shadow_box} 
-            className=""
-            >
-                    <ScrollView
-                    nestedScrollEnabled={false} 
-                    showsVerticalScrollIndicator={true} 
-                    style={{ maxHeight: 100 }} 
-                    // contentContainerStyle={{ flexGrow: 1 }}
-                    keyboardShouldPersistTaps="handled"
-                    className=''
-                    >
-                        {options.map((item, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() => handleSelect(item.label, item.value)}
-                                className="p-3 border-b border-gray-100"
-                            >
-                                <Text 
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className="text-[12px] text-gray-600"
-                                >
-                                    {item.label}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-            </View>
-            </GestureHandlerRootView>
+                {/* Background Overlay */}
+                <TouchableOpacity
+                className="flex-1 bg-black/40"
+                onPress={()=>setIsVisible(false)}
+                />
+                {/* Modal Container */}
+                <View className="bg-white rounded-t-2xl p-4 max-h-[50%]">
+                    <FlatList
+                        data={options}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => (
+                        <TouchableOpacity
+                            className="p-4 border-b border-gray-200"
+                            onPress={() => {
+                                handleSelect(item.label, item.value);
+                            }}
+                        >
+                            <Text 
+                            style={{fontFamily: 'Inter-Regular'}} 
+                            className="text-lg text-gray-800 text-[15px]">{item.label}</Text>
+                        </TouchableOpacity>
+                        )}
+                    />
+                </View>
+            </Modal>
         )}
         </View>
     );

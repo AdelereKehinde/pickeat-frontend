@@ -12,11 +12,14 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import ENDPOINTS from '@/constants/Endpoint';
 import Map from '../assets/icon/map.svg';
+import LocationGray from '../assets/icon/location_gray.svg';
 import Delay from '@/constants/Delay';
 import * as Location from 'expo-location';
-import MapView, { Marker } from 'react-native-maps';
-import { postRequest, patchRequest } from '@/api/RequestHandler';
+import MapView, { Marker, LatLng, MapPressEvent, PoiClickEvent} from 'react-native-maps';
+import { postRequest, patchRequest, getRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FullScreenLoader from '@/components/FullScreenLoader';
+import OutOfBound from '@/components/OutOfBound';
 
 export default function CompleteProfile2(){
     const toastConfig = {
@@ -26,47 +29,87 @@ export default function CompleteProfile2(){
     const GOOGLE_KEY = 'AIzaSyAnDP2_hUGkwHutyCzT2G5zPne8YV9MPTA'
     const [showMap, setShowMap] = useState(false)
     const [loading, setLoading] = useState(false); // Loading state
+    const [getloading, setGetLoading] = useState(true); // Loading state
     const [isFocused, setIsFocus] = useState(false);
 
-    type Result = { place_id: string; description: string;}[];
+    type Result = { name: ''; latitude: 0; longitude: 0; place_id: ''; description: '';}[];
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState<Result>([]);
     const [selectedLocation, setSelectedLocation] = useState({latitude: 0, longitude: 0, address: ''});
     const [userLocation, setUserLocation] = useState({latitude:0, longitude:0, latitudeDelta: 0, longitudeDelta: 0});
 
+
+    // Handle user interaction with the map
+    const handleMapPress = async (event: MapPressEvent) => {
+        const { latitude, longitude }: LatLng = event.nativeEvent.coordinate;
+        
+        try {
+            const [addressObj] = await Location.reverseGeocodeAsync({ latitude, longitude });
+            const newAddress = `${addressObj.name || ''}, ${addressObj.street || ''}, ${addressObj.city || ''}`;
+        
+            setSelectedLocation({
+                latitude,
+                longitude,
+                address: newAddress,
+            });
+        } catch (error) {
+            console.error('Reverse geocoding failed:', error);
+            // Alert.alert('Error', 'Unable to fetch address for the selected location.');
+        }
+    };
+
+    const handlePoiClick = (event: PoiClickEvent) => {
+        const { coordinate, name } = event.nativeEvent;
+        setSelectedLocation({
+          latitude: coordinate.latitude,
+          longitude: coordinate.longitude,
+          address: name, // POI name as address
+        });
+    };
+
     useEffect(() => {
         (async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Permission Denied \nLocation permission is required to use this feature.');
-            return;
-        }
-    
-        const location = await Location.getCurrentPositionAsync({});
-        setUserLocation({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
-          });
+            setGetLoading(true)
+
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                alert('Permission Denied \nLocation permission is required to use this feature.');
+                return;
+            }
+        
+            // Get user's current location
+            const { coords } = await Location.getCurrentPositionAsync({});
+            const { latitude, longitude } = coords;
+            
+            const geocodedAddresses = await Location.reverseGeocodeAsync({
+                latitude,
+                longitude,
+            });
+
+            const address = geocodedAddresses[0]?.name + ", " + geocodedAddresses[0]?.city + ", " +geocodedAddresses[0]?.country;
+
+            setUserLocation({
+                latitude: latitude,
+                longitude: longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            });
+
+            setSelectedLocation({
+                latitude: latitude,
+                longitude: longitude,
+                address: address,
+            });
+
+            setGetLoading(false)
         })();
     }, []);
 
     // Fetch addresses from Google Places API
     const fetchAddresses = async (query: string) => {
-        const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json`,
-        {
-            params: {
-            input: query,
-            key: GOOGLE_KEY,
-            language: 'en',
-            components: 'country:ng'
-            },
-        }
-        );
-        // alert(JSON.stringify(response))
-        setResults(response.data.predictions);
+        const response = await getRequest<Result>(`${ENDPOINTS['account']['geocode']}?address=${query}`, true);
+        alert(JSON.stringify(response))
+        setResults(response);
     };
 
     // Handle search query changes
@@ -81,19 +124,19 @@ export default function CompleteProfile2(){
     };
 
     // Get detailed location information and update map
-    const handleSelectAddress = async (placeId: string, address: string) => {
-        const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/place/details/json`,
-        {
-            params: {
-            place_id: placeId,
-            key: GOOGLE_KEY,
-            },
-        }
-        );
+    const handleSelectAddress = async (placeId: string, address: string, longitude: number, latitude: number) => {
+        if (placeId === ''){
+            setSelectedLocation({ latitude: latitude, longitude: longitude, address: address });
 
-        const { lat, lng } = response.data.result.geometry.location;
-        setSelectedLocation({ latitude: lat, longitude: lng, address: address });
+        }else{
+            setGetLoading(true)
+            type LongLatType = { lat: number; lng: number;};
+            const response = await getRequest<LongLatType>(`${ENDPOINTS['account']['geocode']}?place_id=${placeId}`, true);
+
+            setSelectedLocation({ latitude: response.lat, longitude: response.lng, address: address })
+            setGetLoading(false)
+        }
+
         setSearchQuery(''); // Clear search query
         setResults([]); // Clear search results
     };
@@ -104,9 +147,36 @@ export default function CompleteProfile2(){
         }
         return false
     }
+
+    const [isInLagos, setIsInLagos] = useState<boolean>(true);
+    
+        // Define the bounding box for Lagos
+    const lagosBoundingBox = {
+        north: 6.8, // Northernmost point of Lagos
+        south: 6.4, // Southernmost point of Lagos
+        east: 3.6,  // Easternmost point of Lagos
+        west: 3.3,  // Westernmost point of Lagos
+    };
+    
+        // Check if the device is within the Lagos bounding box
+    const checkIfInLagos = (latitude: number, longitude: number) => {
+        if (
+            latitude >= lagosBoundingBox.south &&
+            latitude <= lagosBoundingBox.north &&
+            longitude >= lagosBoundingBox.west &&
+            longitude <= lagosBoundingBox.east
+        ) {
+            setIsInLagos(true);
+            return true;
+        } else {
+            setIsInLagos(false);
+            return false;
+        }
+    }
+
     const handleSubmit = async () => {
         try {
-          if(!loading && ValidateFormContent()){
+          if(!loading && ValidateFormContent() && checkIfInLagos(selectedLocation.latitude, selectedLocation.longitude)){
             setLoading(true)
             const res = await patchRequest(ENDPOINTS['buyer']['buyer-address'], selectedLocation, true);
             setLoading(false)
@@ -118,7 +188,7 @@ export default function CompleteProfile2(){
             });
   
             await Delay(1000)
-            router.push(`/set_delivery_address?latitude=${selectedLocation.latitude}&longitude=${selectedLocation.longitude}&address=${selectedLocation.address}`)
+            router.replace(`/set_delivery_address?latitude=${selectedLocation.latitude}&longitude=${selectedLocation.longitude}&address=${selectedLocation.address}`)
           }
   
         } catch (error:any) {
@@ -140,6 +210,11 @@ export default function CompleteProfile2(){
                 <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
                 <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
 
+                <OutOfBound open={!isInLagos} user='buyer' getValue={(value: boolean)=>{setIsInLagos(!value)}} />
+                {getloading && (
+                    <FullScreenLoader />
+                )}
+
                 <ScrollView
                 className='w-full'
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -157,7 +232,7 @@ export default function CompleteProfile2(){
                                 autoFocus={false}
                                 onFocus={()=>setIsFocus(true)}
                                 onBlur={()=>setIsFocus(false)}
-                                onChangeText={handleSearch}
+                                // onChangeText={handleSearch}
                                 value={searchQuery}
                                 placeholder="Enter a new address"
                                 placeholderTextColor=""
@@ -172,11 +247,11 @@ export default function CompleteProfile2(){
                                 <ScrollView
                                 className=" bg-white shadow-lg max-h-60 rounded-lg"
                                 >
-                                    {results.map((item) => (
+                                    {results.map((item, _) => (
                                         <TouchableOpacity
-                                        key={item.place_id}
+                                        key={_}
                                         className="px-4 py-2 border-b border-gray-200"
-                                        onPress={() => handleSelectAddress(item.place_id, item.description)}
+                                        onPress={() => handleSelectAddress(item.place_id, item.description, item.longitude, item.latitude)}
                                         >
                                             <Text className="text-gray-700">{item.description}</Text>
                                         </TouchableOpacity>                
@@ -187,19 +262,42 @@ export default function CompleteProfile2(){
                         )}
                     </View>
 
-                    <View className='flex flex-row items-center w-[90%] mx-auto px-5 my-4 border-b border-gray-400 py-2'>
+                    <View className='flex flex-row items-center w-[90%] mx-auto px-0 my-4 border-b border-gray-300 py-2'>
                         <View>
                             <Map />
                         </View>
                         <Pressable
                         onPress={()=>{setShowMap(!showMap)}}
-                        className='ml-4'
+                        className='ml-3'
                         >
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className='text-custom-green m-auto text-[12px]'
+                            className='text-custom-green m-auto text-[11px]'
                             >
-                                {showMap? 'Hide map':'Show map'}
+                                {showMap? 'Close map':' Choose from map'}
+                            </Text>
+                        </Pressable>
+                    </View>
+
+                    <View className='flex flex-row items-center w-[90%] mx-auto px-0 mb-2'>
+                        <View>
+                            <LocationGray />
+                        </View>
+                        <Pressable
+                        onPress={()=>{setShowMap(!showMap)}}
+                        className='ml-3'
+                        >
+                            <Text
+                            style={{fontFamily: 'Inter-Regular'}}
+                            className='text-gray-500 text-[10px]'
+                            >
+                                Current location
+                            </Text> 
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-gray-800 text-[12px]'
+                            >
+                                {selectedLocation.address}
                             </Text>
                         </Pressable>
                     </View>
@@ -212,57 +310,19 @@ export default function CompleteProfile2(){
 
                     {showMap && (
                         <MapView
-                            className="flex-1 border w-[90%] h-96 mx-auto mb-3"
-                            initialRegion={userLocation || {
-                            latitude: 37.7749, // Default to San Francisco if location not available
-                            longitude: -122.4194,
-                            latitudeDelta: 0.05,
-                            longitudeDelta: 0.05,
-                            }}
-                            region={
-                            selectedLocation
-                                ? {
-                                    ...selectedLocation,
-                                    latitudeDelta: 0.05,
-                                    longitudeDelta: 0.05,
-                                }
-                                : undefined
-                            }
+                        className="flex-1 border w-[90%] h-48 rounded-lg my-3 mx-auto"
+                        initialRegion={{
+                        latitude: 7.5226731,
+                        longitude: 5.2222632,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                        }}
+                        onPress={handleMapPress}
+                        onPoiClick={handlePoiClick}
                         >
-                            {/* User's Current Location Marker */}
-                            {userLocation && (
-                            <Marker coordinate={userLocation} title="Your Location" />
-                            )}
-
-                            {/* Selected Address Marker */}
-                            {selectedLocation && (
-                            <Marker coordinate={selectedLocation} title="Selected Location" />
-                            )}
+                            <Marker coordinate={{ latitude: selectedLocation.latitude, longitude: selectedLocation.longitude}} />
                         </MapView>
                     )}
-
-                    <View className='w-[90%] mx-auto my-2'>
-                        <Text
-                        className='text-[12px]'
-                        style={{fontFamily: 'Inter-Regular'}}
-                        >
-                            Address: {(selectedLocation.address == '')?
-                                <Text
-                                className='text-[12px] text-red-500'
-                                style={{fontFamily: 'Inter-Regular'}}
-                                >
-                                    {' '}Search and select your address
-                                </Text>
-                                :
-                                <Text
-                                className='text-[12px] text-custom-green'
-                                style={{fontFamily: 'Inter-Regular'}}
-                                >
-                                    {' '}{selectedLocation.address}
-                                </Text> 
-                            }
-                        </Text>  
-                    </View>
 
                     <TouchableOpacity
                     onPress={handleSubmit}

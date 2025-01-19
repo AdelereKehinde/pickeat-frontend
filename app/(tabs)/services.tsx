@@ -21,7 +21,7 @@ export default function Services(){
         success: CustomToast,
         error: CustomToast,
     };
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     type ListData = { id: number; store_name: string; price: string; tracking_id: string; status_history_status: string; kitchen: string; status: string; order_id: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};

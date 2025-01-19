@@ -4,12 +4,14 @@ import { Link, router } from "expo-router";
 import Checkbox from '../../assets/icon/checkbox.svg';
 import TitleTag from '@/components/Title';
 import CharFieldDropDown from '@/components/CharFieldDropdown';
+import CharField from '@/components/CharField';
 import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AccountSetup3(){
     const toastConfig = {
@@ -33,49 +35,33 @@ export default function AccountSetup3(){
     { label: "No, I'm not available", value: 'false' },
   ]
 
-  const time_start = [
-    { label: "05:00 am", value: '05:00 am' },
-    { label: "06:00 am", value: '06:00 am' },
-    { label: "07:00 am", value: '07:00 am' },
-    { label: "08:00 am", value: '08:00 am' },
-    { label: "09:00 am", value: '09:00 am' },
-    { label: "10:00 am", value: '10:00 am' },
-    { label: "11:00 am", value: '11:00 am' },
-    { label: "12:00 pm", value: '12:00 pm' },
-    { label: "01:00 pm", value: '01:00 pm' },
-    { label: "02:00 pm", value: '02:00 pm' },
-    { label: "03:00 pm", value: '03:00 pm' },
-    { label: "04:00 pm", value: '04:00 pm' },
-    { label: "05:00 pm", value: '05:00 pm' },
-    { label: "06:00 pm", value: '06:00 pm' },
-    { label: "07:00 pm", value: '07:00 pm' },
-    { label: "08:00 pm", value: '08:00 pm' },
-    { label: "09:00 pm", value: '09:00 pm' },
-    { label: "10:00 pm", value: '10:00 pm' },
-    { label: "11:00 pm", value: '11:00 pm' },
-  ]
+  const [showTime, setShowTime] = useState(['', false]);
+  const [time, setTime] = useState(new Date(0, 0, 1, 10, 0, 0));
 
-  const time_end = [
-    { label: "05:00 am", value: '05:00 am' },
-    { label: "06:00 am", value: '06:00 am' },
-    { label: "07:00 am", value: '07:00 am' },
-    { label: "08:00 am", value: '08:00 am' },
-    { label: "09:00 am", value: '09:00 am' },
-    { label: "10:00 am", value: '10:00 am' },
-    { label: "11:00 am", value: '11:00 am' },
-    { label: "12:00 pm", value: '12:00 pm' },
-    { label: "01:00 pm", value: '01:00 pm' },
-    { label: "02:00 pm", value: '02:00 pm' },
-    { label: "03:00 pm", value: '03:00 pm' },
-    { label: "04:00 pm", value: '04:00 pm' },
-    { label: "05:00 pm", value: '05:00 pm' },
-    { label: "06:00 pm", value: '06:00 pm' },
-    { label: "07:00 pm", value: '07:00 pm' },
-    { label: "08:00 pm", value: '08:00 pm' },
-    { label: "09:00 pm", value: '09:00 pm' },
-    { label: "10:00 pm", value: '10:00 pm' },
-    { label: "11:00 pm", value: '11:00 pm' },
-  ]
+  const onChangeTime = (event: any, selectedTime: any) => {
+    if (selectedTime) {
+        var timer = showTime[0]
+        setShowTime(['', false]);
+        setTime(selectedTime);
+        // alert(selectedTime)
+        // Format Time: '10:00am'
+        const hours = selectedTime.getHours();
+        const minutes = selectedTime.getMinutes();
+        const ampm = hours >= 12 ? 'pm' : 'am';
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+        if (timer == 'time_start'){
+          setData(prevState => ({...prevState, time_start: `${formattedHours}:${formattedMinutes} ${ampm}`,}));
+        // alert(`${formattedHours}:${formattedMinutes} ${ampm}`)
+        }
+        if (timer == 'time_end'){
+          setData(prevState => ({...prevState, time_end: `${formattedHours}:${formattedMinutes} ${ampm}`,}));
+        }
+    }
+    // alert(data.time_start)
+   // Close the picker
+  };
   
   const workers = [
     { label: '2 people', value: '2' },
@@ -110,7 +96,7 @@ export default function AccountSetup3(){
                 visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
                 autoHide: true,
             });
-            await Delay(3000)
+            // await Delay(3000)
             router.replace({
                 pathname: '/vendor/set_store_address',
             }); 
@@ -140,6 +126,16 @@ export default function AccountSetup3(){
             
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='w-full grow'>
+
+              {showTime[1] && (
+                <DateTimePicker
+                  value={time}
+                  mode="time" // Set mode to "time" for time picker
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'} // Use spinner for iOS, default for Android
+                  onChange={onChangeTime}
+                />
+              )}
+
               <View className='bg-custom-green p-2'>
                 <View className='space-y-1'>
                   <View className='bg-white'>
@@ -173,17 +169,17 @@ export default function AccountSetup3(){
                   <View className='bg-white mt-3 w-[49%] -z-40'>
                     <Pressable
                     className='w-full'
-                    onPress={()=>{setOpenState(prevState => ({...prevState, time_start: !openState.time_start}));}}
+                    onPress={()=>{setShowTime(['time_start', true]);}}
                     >
-                      <CharFieldDropDown options={time_start} open={openState.time_start}  placeholder="----------" focus={false} border={false} name='Time Start' getValue={(value: string)=>{setData(prevState => ({...prevState, time_start: value,})); setOpenState(prevState => ({...prevState, time_start: false}))}}/>
+                      <CharFieldDropDown options={[]} active={false} open={openState.time_start}  placeholder="----------" focus={false} border={false} name='Time Start' setValue={data.time_start} getValue={(value: string)=>{setData(prevState => ({...prevState, time_start: value,})); }}/>
                     </Pressable>
                   </View>
                   <View className='bg-white mt-3 w-[49%] -z-40'>
                     <Pressable
                     className='w-full'
-                    onPress={()=>{setOpenState(prevState => ({...prevState, time_end: !openState.time_end}));}}
+                    onPress={()=>{setShowTime(['time_end', true]);}}
                     >
-                      <CharFieldDropDown options={time_end} open={openState.time_end}  placeholder="----------" focus={false} border={false} name='Time End' getValue={(value: string)=>{setData(prevState => ({...prevState, time_end: value,})); setOpenState(prevState => ({...prevState, time_end: false}))}}/>
+                      <CharFieldDropDown options={[]} active={false} open={openState.time_end}  placeholder="----------" focus={false} border={false} name='Time End' setValue={data.time_end} getValue={(value: string)=>{setData(prevState => ({...prevState, time_end: value,})); }}/>
                     </Pressable>
                   </View>
                 </View>

@@ -14,8 +14,10 @@ const ENDPOINTS = {
         'chats-create': `${ACOOUNT_BASE}chats/create`,
         'send-message': `${ACOOUNT_BASE}chats/message/send`,
         'list-devices': `${ACOOUNT_BASE}devices/list`,
+        'geocode': `${ACOOUNT_BASE}geocode/search`,
+        'geocode-decode': `${ACOOUNT_BASE}geocode/decode`,
     },
-    'buyer': {
+    'buyer': { 
         'signin': `${BUYER_BASE}signin`,
         'signup': `${BUYER_BASE}signup`,
         'verify': `${BUYER_BASE}`,

@@ -19,6 +19,7 @@ import CustomToast from '@/components/ToastConfig';
 import Prompt from '@/components/Prompt';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ConfirmOrder(){
     const toastConfig = {
@@ -105,6 +106,7 @@ export default function ConfirmOrder(){
 
     const CalculateItemPrice = items.reduce((sum, item) => sum + (item.quantity * item.amount), 0);
     
+    const isFocused = useIsFocused();
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -116,7 +118,6 @@ export default function ConfirmOrder(){
                 setMeals(response.data.meals)
                 setPricingData(response.data.pricing_data)
                 setDeliveryAddress(response.data.delivery_address)
-
                 handleSetItems({id: response.data.meal.id, meal_name: response.data.meal.meal_name, quantity: (mealQuantity!=0? mealQuantity : 1), amount: response.data.meal.discounted_price, removable: false})
 
                 setGetLoading(false)
@@ -127,7 +128,7 @@ export default function ConfirmOrder(){
         };
         
         fetchCategories();
-    }, []); // Empty dependency array ensures this runs once
+    }, [isFocused]); // Empty dependency array ensures this runs once
 
 
     const [date, setDate] = useState(new Date());
@@ -572,7 +573,9 @@ export default function ConfirmOrder(){
                                     {TruncatedText(deliveryAddress || '', 40) }
                                 </Text> 
                             </Text>  
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={()=>{router.push('/set_delivery_address?update=1')}}
+                            >
                                 <Text
                                 style={{fontFamily: 'Inter-Medium-Italic'}} 
                                 className=' text-[12px] text-custom-green'

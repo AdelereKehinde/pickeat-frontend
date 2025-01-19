@@ -13,13 +13,15 @@ import Location from '../assets/icon/location_highlight.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FullScreenLoader from '@/components/FullScreenLoader';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ProfilePage(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     type APIResponse = {
         first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; };
@@ -52,6 +54,7 @@ export default function ProfilePage(){
     const [address, setAddress] = useState({building_type: '', building_name: '', floor: '', address: ''})
     const [serviceOption, setServiceOption] = useState(1);
 
+    const isFocused = useIsFocused();
     useEffect(() => {
         const fetchInformation = async () => {
             try {
@@ -80,7 +83,7 @@ export default function ProfilePage(){
         };
     
         fetchInformation(); 
-    }, []); // Empty dependency array ensures this runs once
+    }, [isFocused]); // Empty dependency array ensures this runs once
 
     const validateInput = (field:string) =>{
         switch (field) {
@@ -182,6 +185,9 @@ export default function ProfilePage(){
 
     return (
         <SafeAreaView>
+            {loading && 
+                <FullScreenLoader />
+            }
             <View className=' bg-white w-full h-full flex items-center'>
                 <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
                 <View className='bg-gray-100 w-full'>
@@ -323,8 +329,10 @@ export default function ProfilePage(){
                     </View>
                     
 
-                    <View className='bg-white w-full px-6 py2 my-5'>
-                        <View className='w-full flex flex-row space-x-3'>
+                    <TouchableOpacity 
+                    onPress={()=>{router.push("/set_delivery_address?update=1")}}
+                    className='bg-white w-full px-6 py2 my-5'>
+                        <View className='w-full flex flex-row space-x-3 items-center'>
                             <Location />
                             <View>
                                 <Text
@@ -351,7 +359,7 @@ export default function ProfilePage(){
                                 
                             </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 
 
                     <Text

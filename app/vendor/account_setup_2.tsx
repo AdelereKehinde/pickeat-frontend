@@ -98,7 +98,7 @@ export default function AccountSetup2(){
           visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        await Delay(3000)
+        // await Delay(3000)
         router.replace({
           pathname: '/vendor/account_setup_3',
         }); 

@@ -52,7 +52,7 @@ export default function EnterCode(){
           await Delay(2000)
 
           router.push({
-            pathname: '/complete_profile',
+            pathname: '/login',
           }); 
         }
 

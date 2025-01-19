@@ -45,7 +45,8 @@ export default function Login(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; buyer_address:string; latitude:string; longitude:string; delivery_address: boolean };
+          type CategoryArray = { id: string; category_name: string;}[];
+          type DataResponse = {meal_categories: CategoryArray; message: string; token:string; refresh: string, name:string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; buyer_address:string; latitude:string; longitude:string; delivery_address: boolean };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['buyer']['signin'], {
             email: email,
@@ -58,6 +59,8 @@ export default function Login(){
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
           await AsyncStorage.setItem('service', 'buyer');
+          await AsyncStorage.setItem('categories', JSON.stringify(res.data.meal_categories));
+          
           setLoading(false)
           setUser({
             email: res.data.email,
@@ -159,7 +162,7 @@ export default function Login(){
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500 mt-auto'
               >
-                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
+                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign Up</Link> 
               </Text>
 
             <View className='w-[90%] mx-auto mb-10'>

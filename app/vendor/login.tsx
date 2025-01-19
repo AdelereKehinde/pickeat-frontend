@@ -48,7 +48,8 @@ export default function VendorLogin(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = { onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
+          type CategoryArray = { id: string; category_name: string;}[];
+          type DataResponse = {meal_categories: CategoryArray;  onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {
             email: email,
@@ -60,6 +61,8 @@ export default function VendorLogin(){
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
           await AsyncStorage.setItem('service', 'vendor');
+          await AsyncStorage.setItem('categories', JSON.stringify(res.data.meal_categories));
+          
           setLoading(false)
           setUser({
             email: res.data.email,
@@ -192,7 +195,7 @@ export default function VendorLogin(){
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500  mt-auto'
               >
-                Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
+                Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign Up</Link> 
               </Text>
 
             <View className='w-[90%] mx-auto'>

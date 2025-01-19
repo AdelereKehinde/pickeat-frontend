@@ -16,6 +16,7 @@ import Delay from '@/constants/Delay';
 import { getRequest, postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 export default function AccountSetup1(){
     const { setUser } = useUser();
@@ -40,11 +41,13 @@ export default function AccountSetup1(){
       }
     const [profession_option, setProfessionOption] = useState<Item[]>([]);
     const [profession_category_option, setProfessionCategoryOption] = useState<Item1[]>([]);;
-
+    
+    const [fetchloading, setFetchLoading] = useState(true); // Loading state
 
     useEffect(() => {
         const fetchProfessions = async () => {
             try {
+                setFetchLoading(true)
                 type ApiCategories = { id: number; category_name: string;};
                 // Define the type for an array of ApiCategories objects
                 type ApiCategoriesArray = ApiCategories[];
@@ -55,8 +58,9 @@ export default function AccountSetup1(){
                 const response = await getRequest<ApiResponseArray>(ENDPOINTS['account']['profession'], false); // Authenticated
                 // alert(JSON.stringify(response))
                 setProfessionOption(response)
+                setFetchLoading(false)
             } catch (error) {
-                alert(error);
+                // alert(error);
             }
         };
     
@@ -116,7 +120,7 @@ export default function AccountSetup1(){
                     full_name: user?.full_name,
                     store_name: data.business_name
                   })
-                await Delay(3000)
+                // await Delay(3000)
                 router.replace({
                     pathname: '/vendor/account_setup_2',
                 }); 
@@ -144,6 +148,10 @@ export default function AccountSetup1(){
                 <StatusBar barStyle="light-content" backgroundColor="#228B22" />
 
                 <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
+
+                {fetchloading && (
+                    <FullScreenLoader />
+                )}
 
                 <ScrollView className='' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className=' w-[95%] mx-auto'>

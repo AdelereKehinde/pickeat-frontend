@@ -64,10 +64,10 @@ export default function Dashboard(){
         }
     };
     useEffect(() => {
-        if (isNavFocused){
+        // if (isNavFocused){
             fetchCategories();
-        }
-    }, [isNavFocused]); // Empty dependency array ensures this runs once
+        // }
+    }, []); // Empty dependency array ensures this runs once
 
     const [isFocused, setIsFocus] = useState(false);
     const {width, height} = Dimensions.get('window')

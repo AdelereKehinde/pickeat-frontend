@@ -12,18 +12,27 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Menu(){
     const [loading, setLoading] = useState(true);
-    type CategoryArray = { id: string; category_name: string;}[];
+    type CategoryArray = { id: number; category_name: string;}[];
     type MealArray = { id: number; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type ApiResponse = { count: string; next: string; previous: string; results: MealArray;};
     
     const [meals, setMeals] = useState<MealArray>([]);
+    const [categories, setCategories] = useState<CategoryArray>([{'id': 0, category_name: 'all'}]);
     const [refreshing, setRefreshing] = useState(false);
 
     const fetchCategories = async () => {
         try {
+            const storedData = await AsyncStorage.getItem('categories');
+            // If data exists, parse it and set it to state
+            if (storedData && categories.length == 1) {
+                const parsedData: CategoryArray = JSON.parse(storedData);
+                setCategories((prevCategories) => [...prevCategories, ...parsedData]);
+            }
             const response = await getRequest<ApiResponse>(ENDPOINTS['inventory']['vendor-meal-list'], true); // Authenticated
             // alert(JSON.stringify(response.results)) 
             setMeals(response.results) 
@@ -34,10 +43,11 @@ export default function Menu(){
         }
     };
 
+    const pageIsFocused = useIsFocused();
     useEffect(() => {
         setLoading(true)
         fetchCategories();
-      }, []); // Empty dependency array ensures this runs once
+      }, [pageIsFocused]); // Empty dependency array ensures this runs once
     
     const handleRemoveItem = (itemId: number) => { 
         // alert(itemId)
@@ -88,66 +98,32 @@ export default function Menu(){
                     />
                 </View>
 
-                <View className='my-3 mt-5 flex flex-row w-full justify-around'>
-                    <TouchableOpacity 
-                        onPress={()=>{setFilterIndex('all')}}
-                        className={`${(filterIndex == 'all')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filterIndex == 'all') && (
-                            <Check />
+                <View className='my-3 mt-5 flex flex-row w-full justify-around px-3'>
+                    {                
+                        <FlatList
+                        data={categories}
+                        keyExtractor={(item) => item.id + ''}
+                        horizontal={true}  // This makes the list scroll horizontally
+                        ItemSeparatorComponent={() => <View className='w-3' />}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity 
+                                onPress={()=>{setFilterIndex(item.category_name)}}
+                                className={`${(filterIndex == item.category_name)? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                            >   
+                                {(filterIndex == item.category_name) && (
+                                    <Check />
+                                )}
+                                <Text
+                                className={`${(filterIndex == item.category_name)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {item.category_name}
+                                </Text>
+                            </TouchableOpacity>
                         )}
-                        <Text
-                        className={`${(filterIndex == 'all')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            All
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilterIndex('dessert')}}
-                        className={`${(filterIndex == 'dessert')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filterIndex == 'dessert') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filterIndex == 'dessert')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Desert
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilterIndex('breakfast')}}
-                        className={`${(filterIndex == 'breakfast')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filterIndex == 'breakfast') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filterIndex == 'breakfast')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Breakfast
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilterIndex('lunch')}}
-                        className={`${(filterIndex == 'lunch')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filterIndex == 'lunch') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filterIndex == 'lunch')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Lunch
-                        </Text>
-                    </TouchableOpacity>
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                        />
+                    }
                 </View>
 
                 {/* <Text

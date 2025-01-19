@@ -161,7 +161,7 @@ export default function Registration(){
               style={{fontFamily: 'Inter-Medium'}}
               className='text-center text-[12px] text-gray-500'
               >
-                Already have an account? <Link href="/login" className='text-gray-800'>Signin</Link> 
+                Already have an account? <Link href="/login" className='text-gray-800'>Sign In</Link> 
               </Text>
             
 
