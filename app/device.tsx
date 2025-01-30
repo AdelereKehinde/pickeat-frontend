@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, Pressable, StyleSheet, ScrollView } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -7,11 +7,13 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 
 function Device(){
     const [showPrompt, setShowPrompt] = useState(false)
     const [loading, setLoading] = useState(true)
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     type devicesType = { id: number; device_name: string; device_type: string; last_active: string; ip_address: string; now: boolean};
     const [devices, setDevices] = useState<devicesType[]>([])
@@ -35,10 +37,10 @@ function Device(){
     }, []); // Empty dependency array ensures this runs once
 
     return (
-        <SafeAreaView>
-            <View className=' bg-gray-100 w-full h-full flex'>
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-                <View className='bg-blue-100 w-full'>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'}`}>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
                 {loading && (
@@ -46,7 +48,7 @@ function Device(){
                 )}
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
-                    className='text-custom-green text-[16px] p-4 bg-white'
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} text-custom-green text-[16px] p-4`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Device and Sessions
@@ -55,12 +57,12 @@ function Device(){
                     
                     <View 
                     style={styles.shadow_box}
-                    className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
                     >
                         {loading && 
                             <View className='flex space-y-2 px-2 overflow-hidden'>
                                 {Array.from({ length: 2 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-200 pb-2'>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-200'} border-b pb-2`}>
                                         <ContentLoader
                                         width="90%"
                                         height={50}
@@ -80,15 +82,15 @@ function Device(){
                         {devices.map((item) => (
                             <View 
                             key={item.id}
-                            className='flex  py-3 rounded-lg border-b border-gray-200'>
+                            className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-200'} flex  py-3 rounded-lg border-b`}>
                                 <Text
-                                className={` ${item.now? 'text-custom-green': 'text-gray-500'} text-[11px]`}
+                                className={` ${item.now? 'text-custom-green': (theme == 'dark')? 'text-gray-200' : ' text-gray-500'} text-[11px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     {item.device_name}
                                 </Text>
                                 <Text
-                                className='text-gray-500 text-[11px]'
+                                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Last seen - {(item.now)? <Text className='text-custom-green'>NOW</Text> : <Text>{item.last_active}</Text> }

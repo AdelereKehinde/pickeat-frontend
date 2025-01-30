@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -15,6 +15,7 @@ import { postRequest } from '@/api/RequestHandler';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function Cart(){
     const toastConfig = {
@@ -22,6 +23,8 @@ export default function Cart(){
         error: CustomToast,
     };
     const [loading, setLoading] = useState(true);
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     type ItemsArray = { id: number; category_name: string; meal_name: string; meal_id: number; quantity: number; store_name: string; thumbnail: string; discounted_price: number; deleted: boolean; discount: string; in_stock: boolean;}[];
     type ListData = { total_price: number; cart_items: ItemsArray; };
@@ -118,18 +121,18 @@ export default function Cart(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-gray-50 w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='Cart' withbell={true} />
                 </View>
 
-                    <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full space-y-1`} contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && cartItems.length == 0) && (
                             <View className='flex items-center w-full'> 
                                 <Empty/>
                                 <Text
-                                className='text-gray-700 text-[12px]'
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[12px]`}
                                 style={{fontFamily: 'Inter-Medium-Italic'}}
                                 >
                                 Add a meal to your cart from any store
@@ -179,7 +182,7 @@ export default function Cart(){
                 <View className='flex flex-row items-center px-5 w-full my-5'>
                     <View className=''>
                         <Text
-                            className='text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'}`}
                             style={{fontFamily: 'Inter-Medium'}}
                             >
                             Total: 
@@ -203,7 +206,7 @@ export default function Cart(){
                         </Text>
                         {(loading || loadSignal) && (
                             <View className='absolute w-full top-4'>
-                                <ActivityIndicator size="small" color="#4b5563" />
+                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                             </View>
                         )}
                     </TouchableOpacity>

@@ -7,8 +7,12 @@ import ServiceFill from '../../assets/icon/service_fill.svg';
 import ServiceOutline from '../../assets/icon/service_outline.svg';
 import AccountFill from '../../assets/icon/account_fill.svg';
 import AccountOutline from '../../assets/icon/account_outline.svg';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import { useContext } from 'react';
 
 export default function TabLayout() {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
   return (
     <Tabs
     screenOptions={{
@@ -18,7 +22,7 @@ export default function TabLayout() {
         paddingHorizontal: 20,
         paddingVertical: 2,
         height: 70,
-        backgroundColor: '#ffffff',
+        backgroundColor: (theme == 'dark')? '#1f2937' : '#ffffff',
       },
       tabBarLabelStyle: {
         fontSize: 11,

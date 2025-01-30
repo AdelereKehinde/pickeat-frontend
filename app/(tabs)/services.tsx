@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -13,9 +13,11 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function Services(){
     const [filter, setFilter] = useState('in progress');
+    const { theme, toggleTheme } = useContext(ThemeContext);
     
     const toastConfig = {
         success: CustomToast,
@@ -80,14 +82,14 @@ export default function Services(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='Bookings' withbell={true} />
                 </View>
                 
                 <Text
-                className='text-custom-green text-[18px] self-start pl-5 pt-5'
+                className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[18px] self-start pl-5 pt-5`}
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
                     My Bookings
@@ -140,7 +142,7 @@ export default function Services(){
                     </TouchableOpacity>
                 </View>
 
-                <View className='bg-white w-full my-3 mb-40 relative flex flex-row items-center justify-center'>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full my-3 mb-44 relative flex flex-row items-center justify-center`}>
                     
                     <ScrollView 
                     refreshControl={
@@ -155,7 +157,7 @@ export default function Services(){
                         {((parentorders.length === 0 && loading)) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                    <View key={index} className={` ${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}

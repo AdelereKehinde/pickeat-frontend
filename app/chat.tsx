@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal, RefreshControl } from 'react-native';
 import Search from '../assets/icon/search.svg';
 import ChatListCard from '@/components/ChatList';
@@ -9,11 +9,14 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 const ChatList: React.FC = () => {
     const [isFocused, setIsFocus] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [chatFilter, setChatFilter] = useState('all');
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     const [loading, setLoading] = useState(false);
     const [ranOnce, setRanOnce] = useState(false);
@@ -60,12 +63,12 @@ const ChatList: React.FC = () => {
 
   return (
     <SafeAreaView>
-        <View className='bg-gray-100 h-full flex'>
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+        <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} h-full flex`}>
+        <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
             {loading && (
                 <FullScreenLoader />
             )}
-            <View className='w-full px-4 py-3 relative flex flex-row items-center justify-center bg-white'>
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full px-4 py-3 relative flex flex-row items-center justify-center`}>
                 <View className='absolute left-6 z-10'>
                     <Search />
                 </View>

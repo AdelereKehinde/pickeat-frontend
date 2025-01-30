@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -16,12 +16,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { WebView } from 'react-native-webview';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function WalletPage(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
-      };
+    };
+    const { theme, toggleTheme } = useContext(ThemeContext);
     type CardsResponse = { id: string; card_number: string; card_name: string; expiry: string; cvv: string;}[];
     type TransactionResponse = { id: number; bank_name: string; total_amount: string; date: string; status: string}[];
     type TransactionResponse1 = { count: number; next: string; previous: string; date: string; results: TransactionResponse};
@@ -111,16 +113,16 @@ export default function WalletPage(){
     };
     
     return (
-        <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-100 w-full'>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}`}>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Payment' withbell={true} />
                 </View>
                 
-                <View className='w-[90%] p-2 bg-gray-100 my-3 rounded-md flex items-start'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] p-2 my-3 rounded-md flex items-start`}>
                     <Text
-                        className={`text-gray-700 text-[12px]`}
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px]`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Wallet
@@ -146,7 +148,7 @@ export default function WalletPage(){
                     <View className='self-end mt-2 flex flex-row items-center space-x-2'>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={`w-20 ${isFocused=='amount'? 'border-custom-green border': 'border-gray-400 border'} rounded-md px-4 text-[10px]`}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} w-20 ${isFocused=='amount'? 'border-custom-green border': 'border-gray-400 border'} rounded-md px-4 text-[10px]`}
                             autoFocus={false}
                             onFocus={()=>setIsFocus('amount')}
                             onBlur={()=>setIsFocus('')}
@@ -155,7 +157,7 @@ export default function WalletPage(){
                             placeholder="Amount"
                             maxLength={10}
                             keyboardType="number-pad"
-                            placeholderTextColor=""
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                         <TouchableOpacity
                         className={`rounded-md ${loading? 'bg-custom-inactive-green': 'bg-custom-green'} py-[7px] px-4 relative flex items-center`}
@@ -177,7 +179,7 @@ export default function WalletPage(){
                 </View>
                 
                 <Text
-                className={`text-black text-[12px] self-start ml-4`}
+                className={`${theme == 'dark'? 'text-gray-200' : ' text-black'} text-[12px] self-start ml-4`}
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
                     Stored Card
@@ -285,7 +287,7 @@ export default function WalletPage(){
                 {loading && 
                     <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                         {Array.from({ length: 5 }).map((_, index) => (
-                            <View key={index} className='border-t border-gray-300'>
+                            <View key={index} className={`${theme == 'dark'? 'border-gray-800' : ' border-gray-300'} border-t`}>
                                 <ContentLoader
                                 width="100%"
                                 height={60}
@@ -309,10 +311,10 @@ export default function WalletPage(){
                 )}
                 
                 {transactions.map((item) => (
-                    <View key={item.id} className='flex w-full py-2 px-4 border-y border-gray-200'>
+                    <View key={item.id} className={`${theme == 'dark'? 'border-gray-800' : ' border-gray-200'} flex w-full py-2 px-4 border-y`}>
                         <View className='flex flex-row items-center w-full justify-between'>
                             <Text
-                            className={`text-gray-700 text-[13px]`}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[13px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 {TitleCase(item.bank_name) + ' - '}
@@ -324,7 +326,7 @@ export default function WalletPage(){
                                 </Text>
                             </Text>
                             <Text
-                            className={`text-gray-700 text-[12px]`}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 ₦{item.total_amount}

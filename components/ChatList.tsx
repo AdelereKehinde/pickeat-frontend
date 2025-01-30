@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { router } from 'expo-router';
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MessageRead from '../assets/icon/message_read.svg';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 type Messages = { id: number; chat: number; text: string; time: string; date: string;}
 interface Properties {
@@ -16,6 +17,8 @@ interface Properties {
   }
 
 const ChatListCard: React.FC<Properties> = ({id, image, name, message, time, messages, unread}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     const OpenChatPage = async() =>{
         try {
             await AsyncStorage.setItem((id + ""), JSON.stringify(messages));  // Save messages for chat
@@ -27,7 +30,7 @@ const ChatListCard: React.FC<Properties> = ({id, image, name, message, time, mes
           }
     }
     return(
-        <View className='flex flex-row items-center py-3 border-b-1 border-gray-200 bg-white w-full border'>
+        <View className={`${theme == 'dark'? 'border-gray-800' : 'border-gray-200'} flex flex-row items-center py-3 border-b-1 w-full border-b`}>
             <TouchableOpacity
             onPress={OpenChatPage}
             className='flex flex-row items-center justify-between w-full px-4 space-x-2'
@@ -41,7 +44,7 @@ const ChatListCard: React.FC<Properties> = ({id, image, name, message, time, mes
                 <View className='w-[50%]'>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className=' text-[12px] text-gray-800'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[12px]`}
                     >
                         {name}
                     </Text>

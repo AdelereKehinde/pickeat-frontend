@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput, ScrollView  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -11,12 +11,15 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Device from "expo-device";
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function Registration(){
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
     };
+    const { theme, toggleTheme } = useContext(ThemeContext);
+    
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('');

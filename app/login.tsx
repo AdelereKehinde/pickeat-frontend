@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput, ScrollView  } from "react-native";
 import * as Device from "expo-device";
 import { Link, router, useGlobalSearchParams } from "expo-router";
@@ -14,10 +14,13 @@ import { postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DeviceUUID from '@/constants/DeviceID';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function Login(){
     const {next} = useGlobalSearchParams()
     const { setUser } = useUser();
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,

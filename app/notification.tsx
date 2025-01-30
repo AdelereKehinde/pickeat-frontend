@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -8,8 +8,11 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Pagination from '@/components/Pagination';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../assets/icon/empy_transaction.svg';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 function Notification(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     type NotificationResponse = { id: number; message: string; type: string; is_read: boolean; date: string; time: string; notification_from: string; amount: number; items: number; order_id: string; avatar: string}[];
     type NotificationResponse2 = { date: number; notifications: NotificationResponse;}[];
     type NotificationResponse1 = { total_count: number; current_page: number; total_pages: number; results: NotificationResponse2};
@@ -54,9 +57,9 @@ function Notification(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-gray-50 w-full h-full flex'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-50 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Notification' withbell={false} />
                 </View>
 
@@ -93,7 +96,7 @@ function Notification(){
                     {notifications.map((item, _) => (
                         <View className='' key={_}>
                             <Text
-                            className='text-gray-500 text-[11px] p-4 w-full bg-white'
+                            className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : 'bg-white text-gray-500'} text-[11px] p-4 w-full`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 {item.date}
@@ -110,19 +113,19 @@ function Notification(){
                                     <View className='flex flex-row'>
                                         <View className='w-[65%] flex justify-around'>
                                             <Text
-                                            className='text-gray-800 text-[10px] w-full'
+                                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[10px] w-full`}
                                             style={{fontFamily: 'Inter-Medium-Italic'}}
                                             >
                                                 From {sub_item.notification_from}
                                             </Text>
                                             <Text
-                                            className='text-gray-500 text-[11px] w-full'
+                                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px] w-full`}
                                             style={{fontFamily: 'Inter-Medium'}}
                                             >
                                                 {sub_item.message}
                                             </Text>
                                             <Text
-                                            className='text-gray-800 text-[11px] w-full'
+                                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px] w-full`}
                                             style={{fontFamily: 'Inter-Medium'}}
                                             >
                                                 <Text
@@ -136,13 +139,13 @@ function Notification(){
                                         </View>
                                         <View className='flex justify-between items-end grow'>
                                             <Text
-                                            className='text-gray-800 text-[11px] w-full'
+                                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px] w-full`}
                                             style={{fontFamily: 'Inter-Medium'}}
                                             >
                                                 {sub_item.time}
                                             </Text>
                                             <Text
-                                            className='text-custom-green text-[12px] w-full '
+                                            className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[12px] w-full`}
                                             style={{fontFamily: 'Inter-SemiBold'}}
                                             >
                                                 ₦{sub_item.amount}

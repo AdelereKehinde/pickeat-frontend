@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -11,10 +11,13 @@ import Empty from '../assets/icon/empy_transaction.svg';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
     const [filterIndex, setFilterIndex] = useState(1);
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
     
     const toastConfig = {
         success: CustomToast,
@@ -60,10 +63,10 @@ export default function BookingHistory(){
     };
 
     return (
-        <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-100 w-full'>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'}`}>
+            <View className={`${theme == 'dark'? 'text-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
                 
@@ -74,7 +77,7 @@ export default function BookingHistory(){
                     Booking History
                 </Text>
 
-                <View className='bg-white w-full my-3 mb-28 relative flex items-center'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full my-3 mb-28 relative flex items-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

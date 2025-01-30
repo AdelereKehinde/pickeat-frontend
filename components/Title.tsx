@@ -1,8 +1,10 @@
+import { useContext } from "react";
 import { Text, View, StatusBar, Pressable} from "react-native";
 import { Link } from "expo-router";
 import { router } from 'expo-router'
 import Back from '../assets/icon/back_arrow.svg';
 import Bell from '../assets/icon/bell.svg';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     title: string,
@@ -11,6 +13,8 @@ interface Properties {
   }
 
 const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     return (
         <View className="w-full">
             <View className="flex flex-row justify-between h-12 items-center">
@@ -25,7 +29,7 @@ const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
                 </View>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}} 
-                className="text-[14px] text-gray-700"
+                className={`${theme == 'dark'? 'text-white' : ' text-gray-700'} text-[14px] `}
                 >
                     {title}
                 </Text>

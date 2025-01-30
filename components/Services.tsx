@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import { router } from 'expo-router'
 import TitleCase from './TitleCase';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     kitchen:any,
@@ -13,13 +14,15 @@ interface Properties {
   }
 
 const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, order_id, status}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     return(
-        <View className='flex items-center justify-between border-b border-gray-300 w-full h-28 py-3 px-6'>
+        <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} flex items-center justify-between border-b w-full h-28 py-3 px-6`}>
             <View className='w-full flex flex-row'>
                 <View className=''>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className=' text-[14px] text-gray-700'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
                     >
                         {kitchen}
                     </Text>
@@ -47,7 +50,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                 <View className='ml-auto flex items-end'>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className=' text-[15px] text-gray-700'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[15px]`}
                     >
                         ₦{price}
                     </Text>
@@ -63,7 +66,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
             <View className='flex flex-row items-center w-full justify-between'>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}
-                className=' text-[10px] text-gray-500'
+                className={` ${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                 >
                     {date}
                 </Text>

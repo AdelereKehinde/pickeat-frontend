@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, Pressable, StyleSheet, ScrollView ,Linking, TouchableOpacity } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -6,8 +6,11 @@ import WhatsAPP from '../assets/icon/whatsapp.svg';
 import Email from '../assets/icon/email.svg';
 import Prompt from '@/components/Prompt';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+
 
 function Support(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     const [showPrompt, setShowPrompt] = useState(false)
     const [error, setError] = useState('')
@@ -49,17 +52,17 @@ function Support(){
         });
     };
     return (
-        <SafeAreaView>
-            <View className=' bg-gray-100 w-full h-full flex'>
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'}`}>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
                 
-                <View style={styles.shadow_box} className='bg-blue-100 w-full'>
+                <View style={styles.shadow_box} className={`${theme == 'dark'? 'text-gray-800' : ' bg-blue-100'} w-full`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
 
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
-                    className='text-custom-green text-[16px] p-4 bg-white'
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} text-custom-green text-[16px] p-4`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Support
@@ -90,7 +93,7 @@ function Support(){
 
                         <TouchableOpacity 
                         onPress={sendEmail}
-                        className='flex flex-row items-center space-x-5 py-1 rounded-lg bg-gray-100 mt-4 border-b border-gray-300 px-4'>
+                        className={`${theme == 'dark'? 'bg-gray-800 border-black' : ' bg-gray-100 border-gray-300'} flex flex-row items-center space-x-5 py-2 rounded-lg mt-4 border-b px-4`}>
                             <View>
                                 <Email />
                             </View>
@@ -112,7 +115,7 @@ function Support(){
 
                         <TouchableOpacity 
                         onPress={openWhatsApp}
-                        className='flex flex-row items-center space-x-5 py-1 rounded-lg bg-gray-100 mt-4 border-b border-gray-300 px-4'>
+                        className={`${theme == 'dark'? 'bg-gray-800 border-black' : ' bg-gray-100 border-gray-300'} flex flex-row items-center space-x-5 py-2 rounded-lg mt-4 border-b px-4`}>
                             <View>
                                 <WhatsAPP />
                             </View>

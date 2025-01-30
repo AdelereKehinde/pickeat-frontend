@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, ActivityIndicator,StyleSheet, TextInput, RefreshControl, TouchableOpacity, FlatList, Image, Dimensions, ScrollView, Pressable, Keyboard } from "react-native";
 import { Link } from "expo-router";
@@ -19,11 +19,15 @@ import { useIsFocused } from '@react-navigation/native';
 import useDebounce from '@/components/Debounce';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FoodDisplay from '@/components/FoodList';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+
 
 export default function Dashboard(){
     const {name} = useGlobalSearchParams()
     const { user } = useUser();
     const [searchValue, setSearchValue] = useState('')
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
@@ -47,16 +51,16 @@ export default function Dashboard(){
 
     const fetchCategories = async () => {
         try {
-            const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?page_size=10&page=1`, true); // Authenticated
+            const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?page_size=15&page=1`, true); // Authenticated
             // alert(JSON.stringify(response.results))
             setMeals(response.results) 
-            const response2 = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=10&page=1`, true);
+            const response2 = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=15&page=1`, true);
             // alert(JSON.stringify(response2.results))
             setSpecialOffer(response2.results) 
-            const response3 = await getRequest<sellerResponse>(`${ENDPOINTS['vendor']['list']}?page_size=10&page=1`, true);
+            const response3 = await getRequest<sellerResponse>(`${ENDPOINTS['vendor']['list']}?page_size=15&page=1`, true);
             // alert(JSON.stringify(response3.results))
             setSellers(response3.results) 
-            const response4 = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=10&page=1`, true);
+            const response4 = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=15&page=1`, true);
             // alert(JSON.stringify(response4.results))
             setKitchens(response4.results)
         } catch (error) {
@@ -122,20 +126,21 @@ export default function Dashboard(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
                 <ScrollView 
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
                 className={`overflow-hidden mx-auto`} contentContainerStyle={{ flexGrow: 1 }}>
                     <View className='flex flex-row justify-between py-2 px-4 w-full`'>
-                        <View className='flex flex-row items-center space-x-2 rounded-2xl bg-gray-100 p-3'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row items-center space-x-2 rounded-2xl p-3`}>
                             <View className=''>
                                 <Account />
                             </View>
                             {(user?.first_name)? 
                                 <Text
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-800'}`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Welcome, {user?.first_name}
@@ -146,7 +151,7 @@ export default function Dashboard(){
                                 >
                                     <Text
                                     style={{fontFamily: 'Inter-SemiBold'}}
-                                    className=''
+                                    className={`${theme == 'dark'? 'text-white' : ' text-gray-800'}`}
                                     >
                                     Please Login
                                     </Text>
@@ -155,7 +160,7 @@ export default function Dashboard(){
                             
                         </View>
 
-                        <View className='flex flex-row space-x-2 items-center justify-around rounded-2xl bg-gray-100 p-3'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row space-x-2 items-center justify-around rounded-2xl p-3`}>
                             <TouchableOpacity
                             className='flex flex-row space-x-2 '
                             onPress={()=>{router.push("/notification")}}
@@ -188,7 +193,7 @@ export default function Dashboard(){
                             onChangeText={handleSearch}
                             value={searchValue}
                             placeholder="Search for available foods"
-                            placeholderTextColor=""
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                         {(loading) && (
                             <View className='absolute top-3 right-10'>
@@ -197,7 +202,7 @@ export default function Dashboard(){
                         )}
                         {(searchValue.length  > 0 && dropdownVisible) && (
                             <TouchableOpacity onPress={handleCancel} className="ml-2 absolute top-3 right-7">
-                                <Text style={{fontFamily: 'Inter-Regular'}}  className="text-custom-green text-[12px]">Cancel</Text>
+                                <Text style={{fontFamily: 'Inter-Regular'}}  className={`${theme == 'dark'? 'text-gray-100' : ' text-custom-green'} text-[12px]`}>Cancel</Text>
                             </TouchableOpacity>
                         )}
                         {/* <TouchableOpacity 
@@ -287,7 +292,7 @@ export default function Dashboard(){
                                         />
                                         <Text
                                         style={{fontFamily: 'Inter-Regular'}} 
-                                        className='text-[11px] text-gray-700 font-medium mt-1'
+                                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[11px] font-medium mt-1`}
                                         >
                                             {TruncatedText(item.meal_name, 13)}
                                         </Text>
@@ -300,7 +305,7 @@ export default function Dashboard(){
                                 ItemSeparatorComponent={() => <View className='w-3' />}
                                 ListEmptyComponent={
                                     <View className=' flex justify-around items-center ml-5'>
-                                        <Text className='text-gray-500' style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
+                                        <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-500'}`} style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
                                     </View>
                                 }
                             />
@@ -311,7 +316,7 @@ export default function Dashboard(){
                         <Link
                         href="/special_offer"
                         style={{fontFamily: 'Inter-Medium'}}
-                        className='text-gray-500 text-[12px] px-3'
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
                         >
                             Special offers for you
                         </Link>
@@ -368,7 +373,7 @@ export default function Dashboard(){
                     <View className='mt-2'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className='text-gray-500 text-[12px] px-3'
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
                         >
                             Featured Sellers
                         </Text>
@@ -411,7 +416,7 @@ export default function Dashboard(){
                                             </View>
                                             <Text
                                             style={{fontFamily: 'Inter-Regular'}}
-                                            className='text-[9px] mt-1'
+                                            className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[9px] mt-1`}
                                             >
                                                 {TruncatedText(item.full_name, 18)}
                                             </Text>
@@ -431,7 +436,7 @@ export default function Dashboard(){
                         <Link
                         href="/kitchen_page"
                         style={{fontFamily: 'Inter-Medium'}}
-                        className='text-gray-500 text-[12px] px-3'
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
                         >
                             Kitchens near you
                         </Link>

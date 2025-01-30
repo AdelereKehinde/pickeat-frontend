@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -15,6 +15,7 @@ import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function ProfilePage(){
     const toastConfig = {
@@ -22,6 +23,8 @@ export default function ProfilePage(){
         error: CustomToast,
     };
     const [loading, setLoading] = useState(true);
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     type APIResponse = {
         first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; };
@@ -184,17 +187,17 @@ export default function ProfilePage(){
     };
 
     return (
-        <SafeAreaView>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}`}>
             {loading && 
                 <FullScreenLoader />
             }
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}' w-full h-full flex items-center'`}>
+            <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
 
-                <ScrollView className='w-full space-y-1'  contentContainerStyle={{ flexGrow: 1 }}>
+                <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full space-y-1`}  contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
                     className='text-custom-green text-[16px] self-start pl-5 mt-5'
                     style={{fontFamily: 'Inter-SemiBold'}}
@@ -202,7 +205,7 @@ export default function ProfilePage(){
                         Personal Information
                     </Text>
                     <View className='w-[90%] mx-auto space-y-3 mb-3'>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -212,7 +215,7 @@ export default function ProfilePage(){
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     readOnly={loading}
                                     onChangeText={setFirstName}
@@ -237,7 +240,7 @@ export default function ProfilePage(){
                                 )}
                             </TouchableOpacity>
                         </View>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -247,7 +250,7 @@ export default function ProfilePage(){
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     readOnly={loading}
                                     onChangeText={setLastName}
@@ -272,7 +275,7 @@ export default function ProfilePage(){
                                 )}
                             </TouchableOpacity>
                         </View>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -282,7 +285,7 @@ export default function ProfilePage(){
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     onChangeText={setEmail}
                                     defaultValue={email}
@@ -291,7 +294,7 @@ export default function ProfilePage(){
                                 />
                             </View>
                         </View>
-                        <View className='flex flex-row bg-gray-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -301,7 +304,7 @@ export default function ProfilePage(){
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     readOnly={loading}
                                     onChangeText={setPhoneNumber}
@@ -331,12 +334,12 @@ export default function ProfilePage(){
 
                     <TouchableOpacity 
                     onPress={()=>{router.push("/set_delivery_address?update=1")}}
-                    className='bg-white w-full px-6 py2 my-5'>
+                    className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} w-full px-6 py-2 my-5`}>
                         <View className='w-full flex flex-row space-x-3 items-center'>
                             <Location />
                             <View>
                                 <Text
-                                className='text-[11px] self-start'
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[11px] self-start`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     {address.address}
@@ -363,7 +366,7 @@ export default function ProfilePage(){
                 
 
                     <Text
-                    className='text-[13px] self-start pl-5'
+                    className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[13px] self-start pl-5`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Service Options
@@ -381,7 +384,7 @@ export default function ProfilePage(){
                                 }
                             </View>
                             <Text
-                            className='text-[12px] self-start text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] self-start`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Hand it to me Directly
@@ -399,7 +402,7 @@ export default function ProfilePage(){
                                 }       
                             </View>
                             <Text
-                            className='text-[12px] self-start text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] self-start`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Hand to me or who’s available
@@ -417,7 +420,7 @@ export default function ProfilePage(){
                                 }
                             </View>
                             <Text
-                            className='text-[12px] self-start text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] self-start`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Leave it at my door
@@ -426,15 +429,15 @@ export default function ProfilePage(){
                     </View>
 
                     <Text
-                    className='text-[13px] pl-5 mt-10'
+                    className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[13px] pl-5 mt-10`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Instruction for Rider
                     </Text>
-                    <View className='w-[90%] mx-auto bg-gray-100 px-4 py-1 rounded-xl'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] mx-auto px-4 py-1 rounded-xl`}>
                         <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full rounded-lg text-[11px] text-gray-500`}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-500'} w-full rounded-lg text-[11px] text-gray-500`}
                         autoFocus={false}
                         readOnly={loading}
                         multiline={true}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import Rating from '../assets/icon/rating.svg';
@@ -7,6 +7,7 @@ import ActiveHeart from '../assets/icon/active_heart.svg';
 import Time from '../assets/icon/time.svg';
 import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     image:any,
@@ -19,6 +20,8 @@ interface Properties {
   }
 
 const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, name, time, rating, fee}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     const [data, setData] = useState(null); // To store the API data
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
@@ -45,7 +48,7 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
       };
 
     return(
-        <View className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
+        <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} flex flex-row  items-center mx-3 py-2 border-b`}>
             <View> 
                 <TouchableOpacity
                 onPress={()=>{router.push(`/kitchen_product?kitchen_id=${kitchen_id}`)}}
@@ -62,7 +65,7 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
             <View className='flex justify-start ml-2'>
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
-                className=' text-[12px]'
+                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[12px]`}
                 >
                     {name}
                 </Text>
@@ -70,7 +73,7 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
                     <Time />
                     <Text
                     style={{fontFamily: 'Inter-Medium'}}
-                    className='text-gray-500 text-[11px] ml-1'
+                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[11px] ml-1`}
                     >
                         Arrival in {time}
                     </Text>
@@ -79,7 +82,7 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
 
             <View className='ml-auto'>
                 <View className='flex flex-row justify-between'>
-                    <View className='flex flex-row items-center space-x-2 py-[4px] px-3 rounded-xl bg-gray-200'>
+                    <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-200'} flex flex-row items-center space-x-2 py-[4px] px-3 rounded-xl`}>
                         <View className=''>
                             <Rating width={12} height={12} />
                         </View>
@@ -111,7 +114,7 @@ const KitchenCard: React.FC<Properties> = ({image, kitchen_id, is_favourite, nam
 
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}
-                className='text-[10px] mt-1 text-gray-600'
+                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-600'} text-[10px] mt-1`}
                 >
                     Delivery Fee - ₦{fee}
                 </Text>
