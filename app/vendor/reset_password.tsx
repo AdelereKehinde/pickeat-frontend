@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,ActivityIndicator, ScrollView, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -12,8 +12,10 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function ResetPassword(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const {token, id, service} = useGlobalSearchParams()
     const toastConfig = {
       success: CustomToast,
@@ -94,9 +96,9 @@ export default function ResetPassword(){
 
     return (
       <SafeAreaView>
-        <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full`} contentContainerStyle={{ flexGrow: 1 }}>
           <View 
-          className='w-full h-full bg-white flex items-center'
+          className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
           >
               <View className='mx-auto'>
                 <Logo width={120} height={120} />
@@ -112,13 +114,13 @@ export default function ResetPassword(){
               <View className=' self-start pl-5 mt-4'>
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
-                className='text-gray-800 text-[17px] '
+                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[17px]`}
                 >
                   Reset Passsword
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Regular'}}
-                className='text-gray-500 text-[11px] '
+                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                 >
                   To continue, kindly complete the following fields.
                 </Text>
@@ -134,14 +136,14 @@ export default function ResetPassword(){
                       </View>
                       <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                         onChangeText={setPassword}
                         onFocus={()=>{setFocus('password')}}
                         onBlur={()=>{setFocus('')}}
                         // maxLength={10}
                         // keyboardType="number-pad"
                         placeholder='Password'
-                        placeholderTextColor="black"
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         secureTextEntry={!showPassword}
                       />
                       <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
@@ -150,7 +152,7 @@ export default function ResetPassword(){
                         <FontAwesome
                           name={showPassword ? 'eye-slash' : 'eye'}
                           size={18}
-                          color="#4b5563"
+                          color={(theme == 'dark')? '#fff':'#4b5563'}
                           style={{ padding: 8 }}
                         />
                       </TouchableOpacity>
@@ -162,14 +164,14 @@ export default function ResetPassword(){
                       </View>
                       <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                         onFocus={()=>{setFocus('password2')}}
                         onBlur={()=>{setFocus('')}}
                         onChangeText={setPassword2}
                         // maxLength={10}
                         // keyboardType="number-pad"
                         placeholder='Retype Password'
-                        placeholderTextColor="black"
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         secureTextEntry={!showPassword2}
                       />
                       <TouchableOpacity onPress={() => setShowPassword2(!showPassword2)}
@@ -178,7 +180,7 @@ export default function ResetPassword(){
                         <FontAwesome
                           name={showPassword2 ? 'eye-slash' : 'eye'}
                           size={18}
-                          color="#4b5563"
+                          color={(theme == 'dark')? '#fff':'#4b5563'}
                           style={{ padding: 8 }}
                         />
                       </TouchableOpacity>

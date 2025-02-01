@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 import { Link } from "expo-router";
@@ -20,8 +20,10 @@ import { postRequest, patchRequest, getRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import OutOfBound from '@/components/OutOfBound';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function CompleteProfile2(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -206,9 +208,11 @@ export default function CompleteProfile2(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
+                    <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
+                </View>
 
                 <OutOfBound open={!isInLagos} user='buyer' getValue={(value: boolean)=>{setIsInLagos(!value)}} />
                 {getloading && (
@@ -228,14 +232,14 @@ export default function CompleteProfile2(){
                             </View>
                             <TextInput
                                 style={{fontFamily: 'Inter-Medium'}}
-                                className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[14px]`}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[14px]`}
                                 autoFocus={false}
                                 onFocus={()=>setIsFocus(true)}
                                 onBlur={()=>setIsFocus(false)}
                                 // onChangeText={handleSearch}
                                 value={searchQuery}
                                 placeholder="Enter a new address"
-                                placeholderTextColor=""
+                                placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                             />
                         </View>
                         {/* Search Results */}
@@ -262,7 +266,7 @@ export default function CompleteProfile2(){
                         )}
                     </View>
 
-                    <View className='flex flex-row items-center w-[90%] mx-auto px-0 my-4 border-b border-gray-300 py-2'>
+                    <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} flex flex-row items-center w-[90%] mx-auto px-0 my-4 border-b py-2`}>
                         <View>
                             <Map />
                         </View>
@@ -289,13 +293,13 @@ export default function CompleteProfile2(){
                         >
                             <Text
                             style={{fontFamily: 'Inter-Regular'}}
-                            className='text-gray-500 text-[10px]'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[10px]`}
                             >
                                 Current location
                             </Text> 
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className='text-gray-800 text-[12px]'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px]`}
                             >
                                 {selectedLocation.address}
                             </Text>

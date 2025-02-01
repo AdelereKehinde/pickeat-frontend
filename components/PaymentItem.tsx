@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { postRequest, deleteRequest } from '@/api/RequestHandler';
 import Toast from 'react-native-toast-message';
@@ -6,6 +6,7 @@ import CustomToast from '@/components/ToastConfig';
 import ENDPOINTS from '@/constants/Endpoint';
 import Remove from '../assets/icon/remove.svg';
 import { TruncatedText } from './TitleCase';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     image: any,
@@ -24,6 +25,7 @@ interface Properties {
   }
 
 const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart, meal_id, kitchen, image, cart_id, date, price, items, parentLoadSignal, onRemove, onUpdate, onLoading}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -109,7 +111,7 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart, meal_id
       };
 
     return(
-        <View className='flex items-center justify-between border-b border-gray-300 w-full h-28 py-3 px-6'>
+        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-300'} flex items-center justify-between border-b w-full h-28 py-3 px-6`}>
             <View className='w-full flex flex-row'>
                 <View className=''>    
                     <Image 
@@ -122,7 +124,7 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart, meal_id
                     <View className='flex grow'>
                         <Text
                         style={{fontFamily: 'Inter-Bold'}}
-                        className=' text-[14px] text-gray-700 mr-auto'
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px] mr-auto`}
                         >
                             {meal_name}
                         </Text>
@@ -137,49 +139,49 @@ const PaymentItem: React.FC<Properties> = ({meal_name, quantity_in_cart, meal_id
                     <View className='flex items-end justify-between mb-2'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[13px] text-gray-800'
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[13px]`}
                         >
                             X{quantity}
                         </Text>
                         <View className='flex flex-row justify-between mt-4'>
                             
                             <TouchableOpacity
-                            className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
+                            className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-7 h-7 rounded-md flex justify-around items-center`}
                             onPress={()=>{AddToCart(false)}}
                             >   
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
-                                className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
+                                className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[15px] ${loading && 'text-gray-300'}`}
                                 >
                                     -
                                 </Text>
                                 {(loading || parentLoadSignal) && (
                                 <View className='absolute w-full top-1'>
-                                    <ActivityIndicator size="small" color="#6b7280" />
+                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                 </View>
                                 )}
                             </TouchableOpacity>
                             <View className='w-7 h-7 mx-2 rounded-md flex justify-around items-center'>
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
-                                className=' text-[15px]'
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[15px]`}
                                 >
                                     {quantity}
                                 </Text>
                             </View>
                             <TouchableOpacity
-                            className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
+                            className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-7 h-7 rounded-md flex justify-around items-center`}
                             onPress={()=>{AddToCart(true)}}
                             >
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
-                                className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
+                                className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[15px] ${loading && 'text-gray-300'}`}
                                 >
                                     +
                                 </Text>
                                 {(loading || parentLoadSignal) && (
                                 <View className='absolute w-full top-1'>
-                                    <ActivityIndicator size="small" color="#6b7280" />
+                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                 </View>
                                 )}
                             </TouchableOpacity>

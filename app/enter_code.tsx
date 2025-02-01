@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,8 +14,10 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { getRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function EnterCode(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const {email, id} = useGlobalSearchParams()
     const toastConfig = {
         success: CustomToast,
@@ -131,9 +133,12 @@ export default function EnterCode(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <TitleTag withprevious={true} title='Enter code' withbell={false}/>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
+                    <TitleTag withprevious={true} title='Enter code' withbell={false}/>
+                </View>
+                
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     
                         <View className="flex-row justify-center mt-36 space-x-3">
@@ -141,7 +146,8 @@ export default function EnterCode(){
                                 <TextInput
                                 key={index}
                                 ref={inputRefs[index]}
-                                className={`w-12 h-12 text-center text-[18px] rounded-md bg-gray-100  ${(focusedIndex === index) && ('border border-custom-green')}`}
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'bg-gray-700 text-gray-100' : ' bg-gray-100 text-gray-900'} w-12 h-12 text-center text-[16px] rounded-md  ${(focusedIndex === index) && ('border border-custom-green')}`}
                                 value={digit}
                                 onFocus={() => handleFocus(index)} // Handle focus event
                                 onBlur={handleBlur} // Handle blur event
@@ -156,7 +162,7 @@ export default function EnterCode(){
 
                         <Text
                         style={{fontFamily: 'Inter-Regular'}}
-                        className='text-center text-[11px] text-gray-500 tracking-tighter mt-14'
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[11px] tracking-tighter mt-14`}
                         >
                             Enter the four digit code sent to {'\n'} {email}
                         </Text>

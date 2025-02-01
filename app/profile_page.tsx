@@ -445,7 +445,7 @@ export default function ProfilePage(){
                         onChangeText={setRiderInstruction}
                         defaultValue={riderInstruction}
                         placeholder='e.g enter the main street, its 1st door on the right'
-                        placeholderTextColor=""
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
 

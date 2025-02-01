@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, ActivityIndicator, TouchableOpacity, ScrollView } from "react-native";
 import Toast from 'react-native-toast-message';
@@ -12,8 +12,10 @@ import CharField from '@/components/CharField';
 import PhoneNumber from '@/components/NumberField';
 import { postRequest, patchRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function CompleteProfile(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -74,7 +76,7 @@ export default function CompleteProfile(){
 
     return (
         <SafeAreaView>
-          <View className=' bg-white w-full h-full flex items-center'>
+          <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
               <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
               <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
 

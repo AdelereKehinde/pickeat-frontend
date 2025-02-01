@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -14,8 +14,10 @@ import ChevronRight from '../assets/icon/chevron_right.svg';
 import PromoCode from '../assets/icon/promo_code.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function PaymentPage(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -83,14 +85,14 @@ export default function PaymentPage(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='border-b-4 border-gray-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-cente'`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
                     <TitleTag withprevious={true} title='Payment' withbell={false} />
                 </View>
                 
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className='bg-white w-full border-b-2 border-gray-200 mb-5 relative flex flex-row items-start justify-center h-80'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-200'} w-full border-b-2 mb-5 relative flex flex-row items-start justify-center h-80`}>
                         <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                             {(cartItems.length === 0) && 
                                 <View className='flex space-y-2 w-screen px-2 mt-2 overflow-hidden'>
@@ -135,11 +137,11 @@ export default function PaymentPage(){
 
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className=' text-[14px] text-gray-800 self-start ml-5'
+                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-800'} text-[14px] self-start ml-5`}
                     >
                         Payment Summary
                     </Text>         
-                    <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
+                    <View className={`w-full my-3 px-4 relative flex flex-row items-center justify-center`}>
                         <View className='absolute left-6 z-10'>
                             <PromoCode />
                         </View>
@@ -152,7 +154,7 @@ export default function PaymentPage(){
                             onChangeText={setPromoCode}
                             value={promoCode}
                             placeholder="Enter your promo code"
-                            placeholderTextColor=""
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                         <TouchableOpacity 
                         onPress={()=>{}}
@@ -167,13 +169,13 @@ export default function PaymentPage(){
                         <View className='flex flex-row items-center justify-between w-full px-5'>
                             <Text
                             style={{fontFamily: 'Inter-SemiBold'}}
-                            className=' text-[13px] text-gray-400'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[13px]`}
                             >
                                 Subtotal
                             </Text>  
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className=' text-[13px] text-gray-700'
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
                             >
                                 ₦{CalcSubTotal.toFixed(2)}
                             </Text>  
@@ -181,13 +183,13 @@ export default function PaymentPage(){
                         <View className='flex flex-row items-center justify-between w-full px-5'>
                             <Text
                             style={{fontFamily: 'Inter-SemiBold'}}
-                            className=' text-[13px] text-gray-400'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[13px]`}
                             >
                                 Coupon discount
                             </Text>  
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className=' text-[13px] text-gray-700'
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
                             >
                                 -₦0.00
                             </Text>  
@@ -195,13 +197,13 @@ export default function PaymentPage(){
                         <View className='flex flex-row items-center justify-between w-full px-5'>
                             <Text
                             style={{fontFamily: 'Inter-SemiBold'}}
-                            className=' text-[14px] text-gray-400'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[14px]`}
                             >
                                 Delivery fee
                             </Text>  
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className=' text-[13px] text-gray-700'
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
                             >
                                 ₦{deliveryFee}
                             </Text>  
@@ -209,7 +211,7 @@ export default function PaymentPage(){
                         <View className='flex flex-row items-center justify-between w-full px-5'>
                             <Text
                             style={{fontFamily: 'Inter-SemiBold'}}
-                            className=' text-[14px] text-gray-700'
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
                             >
                                 Total Amount
                             </Text>  
@@ -229,11 +231,11 @@ export default function PaymentPage(){
                         >
                             {(loadSignal) && (
                                 <View className='absolute w-full top-4'>
-                                    <ActivityIndicator size="small" color="#000000" />
+                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                 </View>
                             )}
                             <Text
-                            className={`${(cartItems.length === 0 || loading) && 'text-gray-400'}`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} ${(cartItems.length === 0 || loading) && 'text-gray-400'}`}
                             style={{fontFamily: 'Inter-Regular'}}
                             >
                             Add to cart
@@ -246,7 +248,7 @@ export default function PaymentPage(){
                         >
                             {(loadSignal) && (
                                 <View className='absolute w-full top-4'>
-                                    <ActivityIndicator size="small" color="#000000" />
+                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                 </View>
                             )}
                             <Text   

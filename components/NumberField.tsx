@@ -1,5 +1,6 @@
 import { View, TextInput, Animated, Text } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
   name: string,
@@ -13,6 +14,7 @@ interface Properties {
 const PhoneNumber: React.FC<Properties> = ({name, placeholder, border, focus, setValue, getValue}) => {
   const [inputValue, setInputValue] = useState(setValue);
   const [isFocused, setIsFocus] = useState(false);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   useEffect(() => {
     setInputValue(setValue)
@@ -33,7 +35,7 @@ const PhoneNumber: React.FC<Properties> = ({name, placeholder, border, focus, se
       {/* TextInput */}
       <TextInput
         style={{fontFamily: 'Inter-Regular'}}
-        className={`${isFocused? 'border-custom-green border bg-white': `${border && ('border border-gray-300 bg-gray-100')}`} rounded-md px-3 py-2 ${(name !== "") && ('pt-7')} text-[14px]`}
+        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-900'} ${isFocused? `border-custom-green border` : `${border && ('border border-gray-300 bg-gray-100')}`} rounded-md px-3 py-2 ${(name !== "") && ('pt-7')} text-[13px]`}
         onFocus={()=>setIsFocus(true)}
         onBlur={()=>setIsFocus(false)}
         autoFocus={focus}
@@ -43,7 +45,7 @@ const PhoneNumber: React.FC<Properties> = ({name, placeholder, border, focus, se
         value={inputValue}
         // defaultValue={inputValue}
         placeholder={placeholder}
-        placeholderTextColor="black"
+        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
       />
     </View>
   );

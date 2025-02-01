@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, Pressable } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -8,8 +8,11 @@ import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 function SpecialOfferCard(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
     type MealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
@@ -32,16 +35,16 @@ function SpecialOfferCard(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-white w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Special offer' withbell={false} />
                 </View>
                 
-                <View className='w-full pb-10'>
-                    <ScrollView className='w-full p-5 space-y-3' contentContainerStyle={{ flexGrow: 1 }}>
+                {/* <View className='w-full'> */}
+                    <ScrollView className='w-[100%] px-5 space-y-3 mb-4' contentContainerStyle={{ flexGrow: 1 }}>
                         {(specialOffer.length === 0) && 
-                            <View className='flex'>
+                            <View className='flex space-y-3'>
                                 {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className='flex items-center w-full'>
                                         <ContentLoader
@@ -78,7 +81,7 @@ function SpecialOfferCard(){
                             </View>    
                         ))}
                     </ScrollView>
-                </View>
+                {/* </View> */}
             </View>
         </SafeAreaView>
     )

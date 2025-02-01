@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -17,8 +17,10 @@ import Delay from '@/constants/Delay';
 import Empty from '../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function PaymentConfirmationPage(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -145,13 +147,13 @@ export default function PaymentConfirmationPage(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='border-b-4 border-gray-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
                     <TitleTag withprevious={true} title='Payment confirmation' withbell={false} />
                 </View>
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-                <View className='bg-white w-full mb-5 relative flex flex-row items-start justify-center'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mb-5 relative flex flex-row items-start justify-center`}>
                     <View className='w-full space-y-1'>
                         {(!loading && cartItems.length === 0) && (
                             <View className='flex items-center'> 
@@ -224,7 +226,7 @@ export default function PaymentConfirmationPage(){
                 {cartItems.map((item) => (
                     <View key={item.id} className='flex flex-row mt-5 justify-between items-center'>
                         <View
-                        className='w-8 h-6 rounded-md bg-gray-100 flex justify-around items-center'
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-8 h-6 rounded-md flex justify-around items-center`}
                         >
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
@@ -235,7 +237,7 @@ export default function PaymentConfirmationPage(){
                         </View>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`text-[13px] grow pl-4 text-gray-400`}
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-400'} text-[13px] grow pl-4`}
                         >
                             {item.meal_name}
                         </Text>
@@ -253,7 +255,7 @@ export default function PaymentConfirmationPage(){
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[11px] text-gray-400'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-400'} text-[11px]`}
                         >
                             Service Charges:
                         </Text>  
@@ -267,7 +269,7 @@ export default function PaymentConfirmationPage(){
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[11px] text-gray-400'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-400'} text-[11px]`}
                         >
                             Delivery Charges:
                         </Text>  
@@ -281,13 +283,13 @@ export default function PaymentConfirmationPage(){
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[11px] text-gray-800'
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px]`}
                         >
                             Promo Code 
                         </Text>  
                         <Text
                         style={{fontFamily: 'Inter-Medium-Italic'}}
-                        className=' text-[11px] text-gray-500'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px]`}
                         >
                             {percentageOff}% off
                         </Text>  
@@ -295,7 +297,7 @@ export default function PaymentConfirmationPage(){
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[14px] text-gray-800' 
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[14px]`}
                         >
                             Total
                         </Text>  
@@ -309,12 +311,12 @@ export default function PaymentConfirmationPage(){
                     <View className='flex flex-row items-center justify-between w-full px-5'>
                         <Text
                         style={{fontFamily: 'Inter-SemiBold'}}
-                        className=' text-[12px] text-gray-400' 
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-400'} text-[12px]`}
                         >
                             DELIVER TO {"\n"}
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className=' text-[10px] text-gray-800'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-800'} text-[10px]`}
                             >
                                 {TruncatedText(resData?.delivery_address || '', 40) }
                             </Text> 
@@ -333,7 +335,7 @@ export default function PaymentConfirmationPage(){
                 <View className='flex flex-row items-center justify-between w-full px-5 py-4 mt-5 border-t border-gray-200'>
                     <Text
                     style={{fontFamily: 'Inter-Medium'}}
-                    className=' text-[16px] text-gray-600' 
+                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[16px]`}
                     >
                         Payment method
                     </Text>  
@@ -358,7 +360,7 @@ export default function PaymentConfirmationPage(){
                         </Text>
                         {(loadSignal) && (
                             <View className='absolute w-full top-4'>
-                                <ActivityIndicator size="small" color="#6b7280" />
+                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                             </View>
                         )}
                     </TouchableOpacity>
@@ -374,7 +376,7 @@ export default function PaymentConfirmationPage(){
                         </Text>
                         {(loadSignal) && (
                             <View className='absolute w-full top-4'>
-                                <ActivityIndicator size="small" color="#6b7280" />
+                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                             </View>
                         )}
                     </TouchableOpacity>

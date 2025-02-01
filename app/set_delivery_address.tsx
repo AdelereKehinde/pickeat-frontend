@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, TextInput, Alert, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet, Pressable } from "react-native";
 import { Link } from "expo-router";
@@ -23,8 +23,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CharField from '@/components/CharField';
 import OutOfBound from '@/components/OutOfBound';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function SetDeliveryAddress(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -130,11 +132,12 @@ export default function SetDeliveryAddress(){
     }
   
     useEffect(() => {
-        getCurrentLocation();
+        // getCurrentLocation();
     }, []);
     
 
     const handleSubmit = async () => {
+        
         try {
             if(!loading && validateInput() && checkIfInLagos(location.latitude, location.longitude)){
                 if (updateAddress == 1){
@@ -199,9 +202,11 @@ export default function SetDeliveryAddress(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <TitleTag withprevious={true} title='Set delivery address' withbell={false}/>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
+                    <TitleTag withprevious={true} title='Set delivery address' withbell={false}/>
+                </View>
 
                 <OutOfBound open={!isInLagos} user='buyer' getValue={(value: boolean)=>{setIsInLagos(!value)}} />
                 {setUpLoading && 
@@ -228,7 +233,7 @@ export default function SetDeliveryAddress(){
                     </MapView>
                     <View className='w-[90%] mx-auto my-2'>
                         <Text
-                        className='text-[10px] text-gray-500 text-center'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[10px] text-center`}
                         style={{fontFamily: 'Inter-Regular'}}
                         >
                             Move the pin to your building entrance to help your courier find you faster
@@ -255,14 +260,14 @@ export default function SetDeliveryAddress(){
                             </View>
                             <Text
                             style={{fontFamily: 'Inter-Regular'}}
-                            className='text-gray-500 text-[10px]'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[10px]`}
                             >
                                 Selected location
                             </Text> 
                         </View>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className='text-gray-800 text-[12px] ml-1'
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px] ml-1`}
                         >
                             {location.address}
                         </Text>
@@ -271,13 +276,13 @@ export default function SetDeliveryAddress(){
                     </View>
                     
                     <View className='my-3 space-y-3 w-[90%] mx-auto'>
-                        <View className='bg-gray-100 rounded-lg'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-lg`}>
                           <CharField  placeholder="eg Office" focus={false} border={false} name='Building type' getValue={(value: string)=>setBuildingType(value)}/>
                         </View>
-                        <View className='bg-gray-100 rounded-lg'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-lg`}>
                           <CharField  placeholder="e.g 1208" focus={false} border={false} name='Apt / Suite / Floor' getValue={(value: string)=>setFloor(value)}/>
                         </View>
-                        <View className='bg-gray-100 rounded-lg'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-lg`}>
                           <CharField  placeholder="e.g Central Tower" focus={false} border={false} name='Business /  Building name' getValue={(value: string)=>setBuildingName(value)}/>
                         </View>
                     </View>
@@ -285,7 +290,7 @@ export default function SetDeliveryAddress(){
                     <View className='px-3 w-[90%] mx-auto mb-3 mt-4'>
                         <TouchableOpacity
                         onPress={()=>{setServiceOption(1)}}
-                        className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
+                        className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-200'} flex flex-row items-center space-x-2 border-b py-2`}
                         >
                             <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 1) && 'border-gray-300'} p-1 rounded-full`}>
                                 {(serviceOption == 1)?
@@ -295,7 +300,7 @@ export default function SetDeliveryAddress(){
                                 }
                             </View>
                             <Text
-                            className='text-[12px] self-start text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] self-start`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Hand it to me Directly
@@ -303,7 +308,7 @@ export default function SetDeliveryAddress(){
                         </TouchableOpacity>
                         <TouchableOpacity
                         onPress={()=>{setServiceOption(2)}}
-                        className={`flex flex-row items-center space-x-2 border-b border-gray-200 py-2`}
+                        className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-200'} flex flex-row items-center space-x-2 border-b py-2`}
                         >
                             <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 2) && 'border-gray-300'} p-1 rounded-full `}>
                                 {(serviceOption == 2)?
@@ -313,7 +318,7 @@ export default function SetDeliveryAddress(){
                                 }       
                             </View>
                             <Text
-                            className='text-[12px] self-start text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] self-start`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Hand to me or who’s available
@@ -321,7 +326,7 @@ export default function SetDeliveryAddress(){
                         </TouchableOpacity>
                         <TouchableOpacity
                         onPress={()=>{setServiceOption(3)}}
-                        className='flex flex-row items-center space-x-2 border-b border-gray-200 py-2'
+                        className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-200'} flex flex-row items-center space-x-2 border-b py-2`}
                         >
                             <View className={`flex items-center justify-around border border-custom-green ${(serviceOption !== 3) && 'border-gray-300'} p-1 rounded-full`}>
                                 {(serviceOption == 3)?
@@ -331,7 +336,7 @@ export default function SetDeliveryAddress(){
                                 }
                             </View>
                             <Text
-                            className='text-[12px] self-start text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] self-start`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Leave it at my door
@@ -340,15 +345,15 @@ export default function SetDeliveryAddress(){
                     </View>
 
                     <Text
-                    className='text-[13px] pl-5 mt-10'
+                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-900'} text-[12px] pl-5 mt-10`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Instruction for delivery person
                     </Text>
-                    <View className='w-[90%] mx-auto bg-gray-100 px-4 py-1 rounded-xl'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-gray-100'} w-[90%] mx-auto px-4 py-1 mt-1 rounded-xl`}>
                         <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full rounded-lg text-[11px] text-gray-500`}
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} w-full rounded-lg text-[11px]`}
                         autoFocus={false}
                         readOnly={loading}
                         multiline={true}
@@ -356,7 +361,7 @@ export default function SetDeliveryAddress(){
                         onChangeText={setRiderInstruction}
                         defaultValue={riderInstruction}
                         placeholder='Example: Please knock instead of using the doorbell'
-                        placeholderTextColor=""
+                        placeholderTextColor={(theme == 'dark')? '#6b7280':'#1f2937'}
                         />
                     </View>
 

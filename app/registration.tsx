@@ -86,7 +86,7 @@ export default function Registration(){
     return (
       <SafeAreaView>
         <View 
-        className='w-full h-full bg-white flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mx-auto'>
@@ -104,22 +104,22 @@ export default function Registration(){
                 <View className='grow space-y-5'>
                   <TextInput
                     style={{fontFamily: 'Inter-Medium'}}
-                    className={`bg-gray-100 rounded-xl p-3 text-[13px]`}
+                    className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : ' bg-gray-100 text-gray-700'} rounded-xl p-3 text-[13px]`}
                     onChangeText={setEmail}
                     // maxLength={10}
                     // keyboardType="number-pad"
                     placeholder='Email address'
-                    placeholderTextColor="black"
+                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                   />
                   <View className="w-full flex-row items-center relative rounded-lg">
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
-                      className={`bg-gray-100 rounded-xl p-3 text-[13px] w-full text-gray-600`}
+                      className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : ' bg-gray-100 text-gray-700'}  rounded-xl p-3 text-[13px] w-full`}
                       onChangeText={setPassword}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Password'
-                      placeholderTextColor="black"
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
@@ -128,7 +128,7 @@ export default function Registration(){
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
                         size={20}
-                        color="#4b5563"
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
                         style={{ padding: 8 }}
                       />
                     </TouchableOpacity>
@@ -137,12 +137,12 @@ export default function Registration(){
                   <View className="w-full flex-row items-center relative rounded-lg">
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
-                      className={`bg-gray-100 rounded-xl p-3 text-[13px] w-full`}
+                      className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : ' bg-gray-100 text-gray-700'} rounded-xl p-3 text-[13px] w-full`}
                       onChangeText={setPassword2}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Confirm Password'
-                      placeholderTextColor="black"
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       secureTextEntry={!showPassword2}
                     />
                     <TouchableOpacity onPress={() => setShowPassword2(!showPassword2)}
@@ -151,7 +151,7 @@ export default function Registration(){
                       <FontAwesome
                         name={showPassword2 ? 'eye-slash' : 'eye'}
                         size={20}
-                        color="#4b5563"
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
                         style={{ padding: 8 }}
                       />
                     </TouchableOpacity>
@@ -162,9 +162,9 @@ export default function Registration(){
             
               <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500'
+              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px]`}
               >
-                Already have an account? <Link href="/login" className='text-gray-800'>Sign In</Link> 
+                Already have an account? <Link href="/login" className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}`}>Sign In</Link> 
               </Text>
             
 

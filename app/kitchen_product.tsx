@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
@@ -14,9 +14,11 @@ import ENDPOINTS from '@/constants/Endpoint';
 import { TruncatedText } from '@/components/TitleCase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function KitchenPageProduct(){
     const {kitchen_id} = useGlobalSearchParams()
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -68,13 +70,13 @@ export default function KitchenPageProduct(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center mb-10'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-white w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center mb-10`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Kitchen' withbell={true} />
                 </View>
                 
-                <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full my-3 px-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
@@ -87,7 +89,7 @@ export default function KitchenPageProduct(){
                         onChangeText={setSearchValue}
                         defaultValue={searchValue}
                         placeholder="Search for available home services"
-                        placeholderTextColor=""
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
                     {/* <TouchableOpacity 
                     onPress={()=>{}}
@@ -104,7 +106,7 @@ export default function KitchenPageProduct(){
                     </TouchableOpacity> */}
                 </View>
 
-                <View className='w-full bg-gray-50 mb-40 pb-2 '>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full mb-40 pb-2 `}>
                     {(!loading && kitchenMeal.length === 0) && (
                         <View className='flex items-center'> 
                             <Empty/>

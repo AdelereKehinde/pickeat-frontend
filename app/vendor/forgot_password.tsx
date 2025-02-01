@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,ActivityIndicator, ScrollView, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -12,9 +12,11 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function ForgetPassword(){
     const {service,} = useGlobalSearchParams()
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     const toastConfig = {
       success: CustomToast,
@@ -89,7 +91,7 @@ export default function ForgetPassword(){
     return (
       <SafeAreaView>
         <View 
-        className='w-full h-full bg-white flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
           <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-5 mx-auto'>
@@ -108,13 +110,13 @@ export default function ForgetPassword(){
             >
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
-                className={`pl-3 text-[17px] w-full text-gray-800`}
+                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} pl-3 text-[17px] w-full`}
                 >
                     Confirm Pin
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}
-                className={`pl-3 text-[11px] w-full text-gray-500`}
+                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} pl-3 text-[11px] w-full`}
                 >
                     To continue, kindly enter your email address
                 </Text>
@@ -128,14 +130,14 @@ export default function ForgetPassword(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={` rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                             onChangeText={setEmail}
                             onFocus={()=>{setFocus('email')}}
                             onBlur={()=>{setFocus('')}}
                             // maxLength={10}
                             // keyboardType="number-pad"
                             placeholder='Email address'
-                            placeholderTextColor="black"
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
                 
@@ -165,9 +167,9 @@ export default function ForgetPassword(){
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500  mt-36'
+              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px] mt-36`}
               >
-                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign up</Link> 
+                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}`}>Sign up</Link> 
             </Text>
           </ScrollView>
           <Toast config={toastConfig} />

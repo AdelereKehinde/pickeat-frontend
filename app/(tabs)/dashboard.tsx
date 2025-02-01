@@ -186,7 +186,7 @@ export default function Dashboard(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[11px]`}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[11px]`}
                             autoFocus={false}
                             onFocus={()=>setIsFocus(true)}
                             onBlur={()=>setIsFocus(false)}
@@ -347,7 +347,8 @@ export default function Dashboard(){
                                 renderItem={({ item }) => (
                                     <View key={item.id} className='w-[250px] h-[150px]'>
                                         <Pressable
-                                        onPress={()=>{(router.push(`/kitchen_product?kitchen_id=${item.vendor_store.id}`))}}
+                                        // onPress={()=>{(router.push(`/kitchen_product?kitchen_id=${item.vendor_store.id}`))}}
+                                        onPress={()=>{router.push(`/confirm_order?meal_id=${item.id}`)}}
                                         >
                                             <SpecialOffer 
                                             image={item.thumbnail}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, TextInput, TouchableOpacity, FlatList, Image, ActivityIndicator, ScrollView, Platform } from "react-native";
 import TitleTag from '@/components/Title';
 import { router, useGlobalSearchParams } from 'expo-router'
@@ -20,8 +20,11 @@ import Prompt from '@/components/Prompt';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function ConfirmOrder(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -237,11 +240,11 @@ export default function ConfirmOrder(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-white w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Confirm order' withbell={false} />
-                </View>
+                </View> 
 
                 {getLoading && (
                     <FullScreenLoader />
@@ -276,13 +279,13 @@ export default function ConfirmOrder(){
                             <View className='ml-2'>
                                 <Text
                                 style={{fontFamily: 'Inter-SemiBold'}} 
-                                className='text-[13px] mt-1'
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[13px] mt-1`}
                                 >
                                     {kitchen?.business_name}  
                                 </Text>
                                 <Text
                                 style={{fontFamily: 'Inter-Regular'}} 
-                                className='text-[10px] text-gray-700 font-medium mt-1'
+                                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[10px] font-medium mt-1`}
                                 >
                                     {meal?.meal_name}
                                 </Text>
@@ -291,7 +294,7 @@ export default function ConfirmOrder(){
                     
                         <Text
                             style={{fontFamily: 'Inter-Regular'}} 
-                            className='text-[10px] text-gray-700 font-medium mt-3'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[10px] font-medium mt-3`}
                         >
                             This Kitchen provides both Delivery and self pickup options. By default Delivery has been selected (change)
                         </Text>
@@ -302,7 +305,7 @@ export default function ConfirmOrder(){
                         <View className='w-[50%] py-4'>
                             <Text
                             style={{fontFamily: 'Inter-Medium'}} 
-                            className="text-[13px] text-gray-500">
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[13px]`}>
                                 Spicy
                             </Text>
 
@@ -339,47 +342,47 @@ export default function ConfirmOrder(){
                             <View className='flex items-start space-y-3'>
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}} 
-                                className="text-[13px] text-gray-500">
+                                className={` ${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[13px]`}>
                                     Quantity
                                 </Text>
                                 <View className='flex flex-row justify-between items-center'>                     
                                     <TouchableOpacity
-                                    className='w-9 h-9 rounded-md bg-gray-100 flex justify-around items-center'
+                                    className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-9 h-9 rounded-md flex justify-around items-center`}
                                     onPress={()=>{UpdateItemQuantity(mealId, false)}}
                                     >   
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
-                                        className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
+                                        className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[15px] ${loading && 'text-gray-300'}`}
                                         >
                                             -
                                         </Text>
                                         {(loading) && (
                                             <View className='absolute w-full top-2'>
-                                                <ActivityIndicator size="small" color="#6b7280" />
+                                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                             </View>
                                         )}
                                     </TouchableOpacity>
                                     <View className='w-7 h-7 mx-2 rounded-md flex justify-around items-center'>
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
-                                        className=' text-[15px]'
+                                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[15px]`}
                                         >
                                             {items.find((item) => item.id === mealId)?.quantity}
                                         </Text>
                                     </View>
                                     <TouchableOpacity
-                                    className='w-9 h-9 rounded-md bg-gray-100 flex justify-around items-center'
+                                    className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-9 h-9 rounded-md flex justify-around items-center`}
                                     onPress={()=>{UpdateItemQuantity(mealId, true)}}
                                     >
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
-                                        className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
+                                        className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[15px] ${loading && 'text-gray-300'}`}
                                         >
                                         +
                                         </Text>
                                         {(loading) && (
                                             <View className='absolute w-full top-2'>
-                                                <ActivityIndicator size="small" color="#6b7280" />
+                                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                             </View>
                                         )}
                                     </TouchableOpacity>
@@ -390,7 +393,7 @@ export default function ConfirmOrder(){
 
                     <Text
                     style={{fontFamily: 'Inter-SemiBold'}} 
-                    className='text-[15px] mt-4 pl-8 w-full'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[15px] mt-4 pl-8 w-full`}
                     >
                     Add Ons
                     </Text>
@@ -409,7 +412,7 @@ export default function ConfirmOrder(){
                                     />
                                     <Text
                                     style={{fontFamily: 'Inter-Regular'}} 
-                                    className='text-[10px] text-gray-700 mt-1 text-center'
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[10px] mt-1 text-center`}
                                     >
                                         {TruncatedText(item.meal_name, 18)}
                                     </Text>
@@ -423,7 +426,7 @@ export default function ConfirmOrder(){
                         />
                     </View>
 
-                    <View className='border-gray-200 border-t border-b py-4 mt-5 w-[90%] mx-auto space-y-4'>
+                    <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-200'} border-t border-b py-4 mt-5 w-[90%] mx-auto space-y-4`}>
                         {getLoading && 
                             <View className='border-b border-gray-200 pb-2'>
                                 <ContentLoader
@@ -445,55 +448,55 @@ export default function ConfirmOrder(){
                             <View key={item.id} className='flex flex-row justify-between items-center'>
                                 <Text
                                 style={{fontFamily: 'Inter-SemiBold'}} 
-                                className='text-[13px] text-gray-800'
+                                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-800'} text-[13px] `}
                                 >
                                     {TruncatedText(item.meal_name, 16)}
                                 </Text>
                                 <View className='flex flex-row justify-between items-center'>                        
                                     <TouchableOpacity
-                                    className='w-9 h-9 rounded-md bg-gray-100 flex justify-around items-center'
+                                    className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-9 h-9 rounded-md flex justify-around items-center`}
                                     onPress={()=>{(item.quantity != 0) && UpdateItemQuantity(item.id, false)}}
                                     >   
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
-                                        className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
+                                        className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[15px] ${loading && 'text-gray-300'}`}
                                         >
                                             -
                                         </Text>
                                         {(loading) && (
                                             <View className='absolute w-full top-2'>
-                                                <ActivityIndicator size="small" color="#6b7280" />
+                                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                             </View>
                                         )}
                                     </TouchableOpacity>
                                     <View className='w-7 h-7 mx-2 rounded-md flex justify-around items-center'>
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
-                                        className=' text-[15px]'
+                                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[15px]`}
                                         >
                                             {item.quantity}
                                         </Text>
                                     </View>
                                     <TouchableOpacity
-                                    className='w-9 h-9 rounded-md bg-gray-100 flex justify-around items-center'
+                                    className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-9 h-9 rounded-md flex justify-around items-center`}
                                     onPress={()=>{UpdateItemQuantity(item.id, true)}}
                                     >
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
-                                        className={`text-[15px] text-custom-green ${loading && 'text-gray-300'}`}
+                                        className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[15px] ${loading && 'text-gray-300'}`}
                                         >
                                         +
                                         </Text>
                                         {(loading) && (
                                             <View className='absolute w-full top-2'>
-                                                <ActivityIndicator size="small" color="#6b7280" />
+                                                <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                             </View>
                                         )}
                                     </TouchableOpacity>
 
                                     <Text
                                     style={{fontFamily: 'Inter-SemiBold'}} 
-                                    className='text-[13px] ml-4 text-gray-800'
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[13px] ml-4`}
                                     >
                                         ₦{item.amount * item.quantity}
                                     </Text>
@@ -501,7 +504,7 @@ export default function ConfirmOrder(){
                             </View>
                         ))}
                     </View>
-                    <View className='w-[90%] mt-5 mx-auto bg-gray-100 px-4 py-1 rounded-xl'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] mt-5 mx-auto px-4 py-1 rounded-xl`}>
                         <TextInput
                         style={{fontFamily: 'Inter-Medium-Italic'}}
                         className={`w-full rounded-lg text-[11px] text-gray-500`}
@@ -512,7 +515,7 @@ export default function ConfirmOrder(){
                         onChangeText={setInstruction}
                         value={instruction}
                         placeholder='Write instruction for the kitchen such as allergies'
-                        placeholderTextColor="#228B22"
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#228B22'}
                         />
                     </View>
 
@@ -549,7 +552,7 @@ export default function ConfirmOrder(){
                         <View className='flex flex-row items-center justify-between w-full px-5'>
                             <Text
                             style={{fontFamily: 'Inter-Medium'}}
-                            className=' text-[14px] text-gray-800' 
+                            className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[14px]`}
                             >
                                 Total
                             </Text>  
@@ -568,7 +571,7 @@ export default function ConfirmOrder(){
                                 DELIVER TO {"\n"}
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
-                                className=' text-[10px] text-gray-800'
+                                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-800'} text-[10px]`}
                                 >
                                     {TruncatedText(deliveryAddress || '', 40) }
                                 </Text> 
@@ -590,7 +593,7 @@ export default function ConfirmOrder(){
                     <View className=' w-[90%] mx-auto mt-10 flex flex-row justify-between items-center'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}} 
-                        className='text-[14px] text-gray-700'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[14px]`}
                         >
                             Schedule send
                         </Text>
@@ -614,7 +617,7 @@ export default function ConfirmOrder(){
                         >
                             <Text
                             style={{fontFamily: 'Inter-Medium'}} 
-                            className='text-[14px] text-gray-800'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[14px]`}
                             >
                                 Date
                             </Text>
@@ -622,7 +625,7 @@ export default function ConfirmOrder(){
                                 <Calender  />
                                 <Text
                                 style={{fontFamily: 'Inter-Regular'}} 
-                                className='text-[12px] text-gray-500'
+                                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px]`}
                                 >
                                     {formattedDate || 'No date selected'}
                                 </Text>
@@ -642,7 +645,7 @@ export default function ConfirmOrder(){
                         className='px-6 border-l border-gray-500'>
                             <Text
                             style={{fontFamily: 'Inter-Medium'}} 
-                            className='text-[14px] text-gray-800'
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[14px]`}
                             >
                                 Time
                             </Text>
@@ -650,7 +653,7 @@ export default function ConfirmOrder(){
                                 <Time />
                                 <Text
                                 style={{fontFamily: 'Inter-Regular'}} 
-                                className='text-[12px] text-gray-500'
+                                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px]`}
                                 >
                                     {formattedTime || 'No time selected'}
                                 </Text>

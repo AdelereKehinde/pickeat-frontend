@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -14,8 +14,10 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function AddCard(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -83,15 +85,15 @@ export default function AddCard(){
     
     return (
       <SafeAreaView>
-        <View className=' bg-gray-100 w-full h-full flex items-center'>
-            <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-            <View className='bg-gray-100 w-full'>
+        <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}>
+          <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                 <TitleTag withprevious={true} title='' withbell={false} />
             </View>
             
             <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
               <Text
-              className='text-custom-green text-[15px] bg-white w-full text-left py-3 px-4'
+              className={`${theme == 'dark'? 'bg-gray-800 text-white' : ' bg-white text-custom-green'} text-custom-green text-[15px] w-full text-left py-3 px-4`}
               style={{fontFamily: 'Inter-SemiBold'}}
               >
                   Add Card
@@ -99,7 +101,7 @@ export default function AddCard(){
 
               <View className='w-full my-3 px-6 flex items-start justify-center mt-10'>
                   <Text
-                  className='text-custom-green text-[12px] text-left'
+                  className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px] text-left`}
                   style={{fontFamily: 'Inter-Medium'}}
                   >
                       Card number
@@ -120,7 +122,7 @@ export default function AddCard(){
               <View className='w-full my-3 px-6 flex flex-row space-x-2 justify-center'>
                   <View className='grow'>
                       <Text
-                      className='text-custom-green text-[12px] text-left'
+                      className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px] text-left`}
                       style={{fontFamily: 'Inter-Medium'}}
                       >
                           MM
@@ -141,7 +143,7 @@ export default function AddCard(){
                   </View>
                   <View className='grow'>
                       <Text
-                      className='text-custom-green text-[12px] text-left'
+                      className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px] text-left`}
                       style={{fontFamily: 'Inter-Medium'}}
                       >
                           YY
@@ -163,7 +165,7 @@ export default function AddCard(){
               </View>
               <View className='w-full my-3 px-6 flex items-start justify-center'>
                   <Text
-                  className='text-custom-green text-[12px] text-left'
+                  className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px] text-left`}
                   style={{fontFamily: 'Inter-Medium'}}
                   >
                       CVV
@@ -184,7 +186,7 @@ export default function AddCard(){
               </View>
               <View className='w-full my-3 px-6 flex items-start justify-center'>
                   <Text
-                  className='text-custom-green text-[12px] text-left'
+                  className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px] text-left`}
                   style={{fontFamily: 'Inter-Medium'}}
                   >
                       Name on card
@@ -209,7 +211,7 @@ export default function AddCard(){
                 >
                   {loading && (
                     <View className='absolute w-full top-4'>
-                      <ActivityIndicator size="small" color="#fff" />
+                      <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                     </View>
                   )}
               

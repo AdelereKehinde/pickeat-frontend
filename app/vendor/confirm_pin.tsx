@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Text, View, StatusBar, TextInput, TouchableOpacity, ActivityIndicator, ScrollView } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,9 +16,12 @@ import Email from '../../assets/icon/mail2.svg';
 import Logo from '../../assets/images/Logo.svg';
 import { getRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function ConfirmPin(){
     const {email, id, service} = useGlobalSearchParams()
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -141,9 +144,9 @@ export default function ConfirmPin(){
 
     return (
         <SafeAreaView>
-            <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                <View className=' bg-white w-full h-full flex items-center'>
-                    <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+            <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full`} contentContainerStyle={{ flexGrow: 1 }}>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                    <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
 
                     <View className='mt-5 mx-auto'>
                     <Logo width={120} height={120} />
@@ -161,13 +164,13 @@ export default function ConfirmPin(){
                     >
                         <Text
                         style={{fontFamily: 'Inter-Bold'}}
-                        className={`pl-3 text-[17px] w-full text-gray-800`}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} pl-3 text-[17px] w-full`}
                         >
                             Confirm Pin
                         </Text>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`pl-3 text-[11px] w-full text-gray-500`}
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} pl-3 text-[11px] w-full`}
                         >
                             To continue, kindly enter the pin sent to your mail address
                         </Text>
@@ -179,7 +182,7 @@ export default function ConfirmPin(){
                         </View>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`pl-3 text-[13px] w-full text-custom-green`}
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-custom-green'} pl-3 text-[13px] w-full`}
                         >
                             {email}
                         </Text>
@@ -191,7 +194,8 @@ export default function ConfirmPin(){
                                 <TextInput
                                 key={index}
                                 ref={inputRefs[index]}
-                                className={`w-12 h-12 text-center text-[18px] border-b-2  ${(focusedIndex === index)? (' border-custom-green'):('border-gray-700')}`}
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-900'} w-12 h-12 text-center text-[16px] border-b-2  ${(focusedIndex === index)? (' border-custom-green'):('border-gray-700')}`}
                                 value={digit}
                                 onFocus={() => handleFocus(index)} // Handle focus event
                                 onBlur={handleBlur} // Handle blur event
@@ -206,7 +210,7 @@ export default function ConfirmPin(){
 
                         <Text
                         style={{fontFamily: 'Inter-Regular'}}
-                        className='text-center text-[11px] text-gray-500 tracking-tighter mt-4'
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[11px] tracking-tighter mt-4`}
                         >
                             Enter the Four Digit code sent {'\n'}
                             to your email

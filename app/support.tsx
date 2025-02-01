@@ -70,7 +70,7 @@ function Support(){
 
                     <View className='mt-10'>
                         <Text
-                        className='text-gray-600 text-[13px] px-4'
+                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[13px] px-4`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
                             PickEat PickIt Support

@@ -104,7 +104,7 @@ export default function Login(){
     return (
       <SafeAreaView>
         <View 
-        className='w-full h-full bg-white flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-10 mx-auto'>
@@ -122,22 +122,22 @@ export default function Login(){
                 <View className='grow space-y-5'>
                   <TextInput
                     style={{fontFamily: 'Inter-Medium'}}
-                    className={`bg-gray-100 rounded-xl p-3 text-[13px]`}
+                    className={`${theme == 'dark'? 'bg-gray-800 text-gray-100' : ' bg-gray-100 text-gray-600'} rounded-xl p-3 text-[13px]`}
                     onChangeText={setEmail}
                     // maxLength={10}
                     // keyboardType="number-pad"
                     placeholder='Email address'
-                    placeholderTextColor="black"
+                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                   />
                   <View className="w-full flex-row items-center relative rounded-lg">
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
-                      className={`bg-gray-100 rounded-xl p-3 text-[13px] w-full text-gray-600`}
+                      className={`${theme == 'dark'? 'bg-gray-800 text-gray-100' : ' bg-gray-100 text-gray-600'} rounded-xl p-3 text-[13px] w-full`}
                       onChangeText={setPassword}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Password'
-                      placeholderTextColor="black"
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
@@ -146,7 +146,7 @@ export default function Login(){
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
                         size={20}
-                        color="#4b5563"
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
                         style={{ padding: 8 }}
                       />
                     </TouchableOpacity>
@@ -157,15 +157,15 @@ export default function Login(){
             <Link 
             href="/vendor/forgot_password?service=buyer" 
             style={{fontFamily: 'Inter-Medium'}} 
-            className='text-gray-500 text-[12px] ml-auto mr-5'>
+            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] ml-auto mr-5`}>
                Forget Password?
             </Link> 
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500 mt-auto'
+              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px] mt-auto`}
               >
-                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign Up</Link> 
+                Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'}`}>Sign Up</Link> 
               </Text>
 
             <View className='w-[90%] mx-auto mb-10'>

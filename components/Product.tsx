@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import { postRequest } from '@/api/RequestHandler';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import ENDPOINTS from '@/constants/Endpoint';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     image:any,
@@ -18,6 +19,7 @@ interface Properties {
   }
 
 const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, discounted_price, description, quantity_in_cart}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -60,7 +62,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
       };
 
     return(
-        <View className='flex flex-row items-center border-b border-gray-300 w-full p-4 h-28'>
+        <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} flex flex-row items-center border-b w-full p-4 h-28`}>
             <View className=''>    
                 <Image 
                 source={{uri: image}}
@@ -71,7 +73,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
             <View className='flex justify-start ml-2'>
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
-                className=' text-[12px] text-gray-700'
+                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[12px]`}
                 >
                     {name}
                 </Text>
@@ -83,7 +85,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}}
-                className=' text-[11px] -mt-1 text-gray-700'
+                className={`${theme == 'dark'? 'text-gray-500' : ' text-gray-700'} text-[11px] -mt-1`}
                 >
                     <Text className='line-through'>₦{price}</Text> | ₦{discounted_price}
                 </Text>
@@ -99,7 +101,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                 <View className='flex flex-row justify-between'>
                     
                     <TouchableOpacity
-                    className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
+                    className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-7 h-7 rounded-md flex justify-around items-center`}
                     onPress={()=>{AddToCart(false)}}
                     >   
                         {loading && (
@@ -109,7 +111,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                         )}
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`text-[15px] text-gray-700 ${loading && 'text-gray-300'}`}
+                        className={`${theme == 'dark'? 'text-white' : ' text-gray-700'} text-[15px] ${loading && 'text-gray-300'}`}
                         >
                             -
                         </Text>
@@ -117,13 +119,13 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                     <View className='w-7 h-7 rounded-md flex justify-around items-center'>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[15px]'
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}  text-[15px]'`}
                         >
                             {quantity}
                         </Text>
                     </View>
                     <TouchableOpacity
-                    className='w-7 h-7 rounded-md bg-gray-100 flex justify-around items-center'
+                    className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-7 h-7 rounded-md flex justify-around items-center`}
                     onPress={()=>{AddToCart(true)}}
                     >
                         {loading && (
@@ -133,7 +135,7 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                         )}
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`text-[15px] text-gray-700 ${loading && 'text-gray-300'}`}
+                        className={`${theme == 'dark'? 'text-white' : ' text-gray-700'} text-[15px] ${loading && 'text-gray-300'}`}
                         >
                             +
                         </Text>
