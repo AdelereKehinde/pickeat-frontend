@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, ScrollView, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput, Pressable} from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router, useGlobalSearchParams } from "expo-router";
@@ -19,8 +19,10 @@ import PhoneNumber from '@/components/NumberField';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function CreateProduct(){
+  const { theme, toggleTheme } = useContext(ThemeContext);
     const {id} = useGlobalSearchParams()
     const toastConfig = {
       success: CustomToast,
@@ -213,10 +215,10 @@ export default function CreateProduct(){
     return (
       <SafeAreaView>
         <View 
-        className='w-full h-full bg-gray-100 flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}
         >
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-            <View className='bg-white w-full'>
+            <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mb-4`}>
               <TitleTag withprevious={true} title='Menu' withbell={false}/>
             </View>
 
@@ -226,10 +228,10 @@ export default function CreateProduct(){
 
             <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
               <View className='px-4 w-full mt-4'>
-                <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center mt-4'>
+                <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 flex flex-row items-center mt-4`}>
                   <TouchableOpacity
                   onPress={pickImage}
-                  className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${thumbnail && 'border-2 border-custom-green'}`}>
+                  className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${thumbnail && 'border-2 border-custom-green'}`}>
                     {/* Image Preview */}
                     {id?
                       <Image 
@@ -245,7 +247,7 @@ export default function CreateProduct(){
                           <Camera/>
                           <Text
                           style={{fontFamily: 'Inter-SemiBold'}}
-                          className='text-[8px] text-gray-700 text-center -mt-2'
+                          className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[8px] text-center -mt-2`}
                           >
                             Upload{'\n'} Meal Photo
                           </Text>
@@ -273,7 +275,7 @@ export default function CreateProduct(){
                 </View>
 
                 <View
-                  className='w-full mt-3 flex flex-row items-center p-3 rounded-lg bg-blue-100'
+                  className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mt-3 flex flex-row items-center p-3 rounded-lg`}
                   >
                   <Notice/>
                   <Text
@@ -330,7 +332,7 @@ export default function CreateProduct(){
                   </View>
               </View>
 
-                <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 mt-4'>
+                <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 mt-4`}>
                   <Text
                   style={{fontFamily: 'Inter-SemiBold'}}
                   className='text-[12px] text-custom-green -mt-2 border-b border-custom-green'
@@ -344,7 +346,8 @@ export default function CreateProduct(){
                     numberOfLines={5}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     placeholder="Kindly Provide details below"
-                    className="text-[12px] rounded-lg text-start"
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[12px] rounded-lg text-start`}
+                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                   />
                 </View>
                 

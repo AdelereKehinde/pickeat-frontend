@@ -1,7 +1,8 @@
 import { View, TextInput, Animated, Text,TouchableOpacity, StyleSheet, Modal, FlatList, Pressable} from 'react-native';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
 import { ScrollView, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 type OptionType = {
     label: string;
@@ -21,6 +22,7 @@ interface Properties {
 }
 
 const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, options, focus, setValue, active=true, open,  getValue}) => {
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [inputValue, setInputValue] = useState('');
     const [isFocused, setIsFocus] = useState(false);
 
@@ -61,14 +63,14 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
                 {/* TextInput */}
                 <TextInput
                     style={{fontFamily: 'Inter-Regular'}}
-                    className={`w-full pr-9 ${isFocused? 'border-custom-green border bg-white': `${border && ('border border-gray-300 bg-gray-100')}`} text-black rounded-xl px-3 py-2 ${(name !== "") && ('pt-4')} text-[14px]`}
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-black'} w-full pr-9 ${isFocused? 'border-custom-green border': `${border && ('border border-gray-300')}`} rounded-xl px-3 py-2 ${(name !== "") && ('pt-4')} text-[14px]`}
                     onFocus={()=>setIsFocus(true)}
                     onBlur={()=>setIsFocus(false)}
                     autoFocus={focus}
                     onChangeText={getValue}
                     defaultValue={inputValue}
                     placeholder={placeholder}
-                    placeholderTextColor="black"
+                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     readOnly={true}
                 />
                 {active && (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -9,8 +9,10 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function OrderHistory(){    
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(false);
     const [filter, setFilter] = useState('pending');
     
@@ -62,9 +64,9 @@ export default function OrderHistory(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-                <View className='bg-blue-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
                 
@@ -75,7 +77,7 @@ export default function OrderHistory(){
                     Order History
                 </Text> 
 
-                <View className='bg-white w-full my-3 mb-24 border-t-4 border-gray-200 relative flex flex-row items-center justify-center'>
+                <View className={`${theme == 'dark'? 'bg-gray-800 border-gray-600' : ' bg-white border-gray-200'} w-full my-3 mb-24 border-t-4 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -85,7 +87,7 @@ export default function OrderHistory(){
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
-                                className={`text-[11px] text-gray-600`}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} text-[11px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     We’ll notify you when there’s an order
@@ -95,12 +97,12 @@ export default function OrderHistory(){
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 6 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} border-b `}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#3a3a3a':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}

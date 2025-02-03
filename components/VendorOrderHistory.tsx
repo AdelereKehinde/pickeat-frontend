@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { Text, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { router } from 'expo-router'
 import TitleCase from './TitleCase';
@@ -6,6 +6,7 @@ import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     kitchen:any,
@@ -19,6 +20,7 @@ interface Properties {
   }
 
 const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, status, tracking_id, status_history_status, onUpdate}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(false); // Loading state
 
     const OrderStatus = async (status_:string) => {
@@ -55,7 +57,7 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
         }
     };
     return(
-        <View className='flex flex-row items-center justify-between border-b border-gray-300 w-full py-3 px-6'>
+        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row items-center justify-between border-b w-full py-3 px-6`}>
             <View className=''>    
                 <Image 
                 source={{uri: image}}
@@ -69,13 +71,13 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                     <View className=''>
                         <Text
                         style={{fontFamily: 'Inter-Bold'}}
-                        className=' text-[12px] text-gray-700'
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[12px]`}
                         >
                             {kitchen}
                         </Text>
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
-                        className=' text-[10px] text-gray-500'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[10px]`}
                         >
                             {date}
                         </Text>
@@ -119,7 +121,7 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                 <View className='flex flex-row items-center grow justify-between'>
                     <Text
                     style={{fontFamily: 'Inter-Bold'}}
-                    className=' text-[10px] text-gray-700'
+                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[10px]`}
                     >
                         Amount: <Text className='text-[14px] text-custom-green'>N{price}</Text>
                     </Text>

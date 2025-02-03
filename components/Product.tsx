@@ -104,17 +104,17 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                     className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-7 h-7 rounded-md flex justify-around items-center`}
                     onPress={()=>{AddToCart(false)}}
                     >   
-                        {loading && (
-                        <View className='absolute w-full top-1'>
-                            <ActivityIndicator size="small" color="#000000" />
-                        </View>
-                        )}
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
                         className={`${theme == 'dark'? 'text-white' : ' text-gray-700'} text-[15px] ${loading && 'text-gray-300'}`}
                         >
                             -
                         </Text>
+                        {loading && (
+                        <View className='absolute w-full top-1'>
+                            <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
+                        </View>
+                        )}
                     </TouchableOpacity>
                     <View className='w-7 h-7 rounded-md flex justify-around items-center'>
                         <Text
@@ -128,17 +128,17 @@ const Product: React.FC<Properties> = ({image, meal_id, name, price, discount, d
                     className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-7 h-7 rounded-md flex justify-around items-center`}
                     onPress={()=>{AddToCart(true)}}
                     >
-                        {loading && (
-                        <View className='absolute w-full top-1'>
-                            <ActivityIndicator size="small" color="#000000" />
-                        </View>
-                        )}
                         <Text
                         style={{fontFamily: 'Inter-Medium'}}
                         className={`${theme == 'dark'? 'text-white' : ' text-gray-700'} text-[15px] ${loading && 'text-gray-300'}`}
                         >
                             +
                         </Text>
+                        {loading && (
+                        <View className='absolute w-full top-1'>
+                            <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
+                        </View>
+                        )}
                     </TouchableOpacity>
                 </View>
 

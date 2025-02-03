@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, ScrollView, TouchableOpacity,StatusBar,ActivityIndicator, StyleSheet, Platform, Alert, Image, TextInput  } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { Link, router } from "expo-router";
@@ -12,9 +12,11 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function AccountSetup2(){
     const { user } = useUser();
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -119,19 +121,19 @@ export default function AccountSetup2(){
     return (
       <SafeAreaView>
         <View 
-        className='w-full h-full bg-gray-100 flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}
         >
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-            <View className='bg-white w-full'>
+            <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
               <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             </View>
 
             <ScrollView className='px-4 w-full mt-4' contentContainerStyle={{ flexGrow: 1 }}>
 
-              <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center'>
+              <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 flex flex-row items-center`}>
               <TouchableOpacity
                 onPress={()=>pickImage('profile')}
-                className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${profilePhoto && 'border-2 border-custom-green'}`}>
+                className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${profilePhoto && 'border-2 border-custom-green'}`}>
                   {/* Image Preview */}
                   {profilePhoto?
                     <Image 
@@ -142,7 +144,7 @@ export default function AccountSetup2(){
                       <Camera/>
                       <Text
                       style={{fontFamily: 'Inter-SemiBold'}}
-                      className='text-[8px] text-gray-700 text-center -mt-2'
+                      className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[8px] text-center -mt-2`}
                       >
                         Upload{'\n'} Profile Photo
                       </Text>
@@ -177,10 +179,10 @@ export default function AccountSetup2(){
                 </View>
               </View>
 
-              <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 flex flex-row items-center mt-4'>
+              <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 flex flex-row items-center mt-4`}>
               <TouchableOpacity
                 onPress={()=>pickImage('document')}
-                className={`w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden ${document && 'border-2 border-custom-green'}`}>
+                className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${profilePhoto && 'border-2 border-custom-green'}`}>
                   {/* Image Preview */}
                   {document?
                     <Image 
@@ -191,7 +193,7 @@ export default function AccountSetup2(){
                       <Camera/>
                       <Text
                       style={{fontFamily: 'Inter-SemiBold'}}
-                      className='text-[8px] text-gray-700 text-center -mt-2'
+                      className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[8px] text-center -mt-2`}
                       >
                         Upload{'\n'} Document
                       </Text>
@@ -207,7 +209,7 @@ export default function AccountSetup2(){
                   </Text>
                   <Text
                   style={{fontFamily: 'Inter-Medium'}}
-                  className='text-[10px] text-gray-500 '
+                  className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                   >
                     1. CAC registration{'\n'}
                     2. TIN{'\n'}
@@ -217,7 +219,7 @@ export default function AccountSetup2(){
                 </View>
               </View>
 
-              <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 mt-4'>
+              <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 mt-4`}>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}}
                 className='text-[12px] text-custom-green -mt-2 border-b border-custom-green'
@@ -230,11 +232,12 @@ export default function AccountSetup2(){
                   numberOfLines={5}
                   style={{fontFamily: 'Inter-SemiBold'}}
                   placeholder="Kindly Provide details below"
-                  className="text-[12px] rounded-lg text-start"
+                  className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[12px] rounded-lg text-start`}
+                  placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                 />
               </View>
 
-              <View style={styles.shadow_box} className='bg-white w-full rounded-lg p-4 mt-4'>
+              <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 mt-4`}>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}}
                 className='text-[12px] text-custom-green -mt-2 border-b border-custom-green'
@@ -247,7 +250,8 @@ export default function AccountSetup2(){
                   numberOfLines={5}
                   style={{fontFamily: 'Inter-SemiBold'}}
                   placeholder="Please provide additional details if need be"
-                  className="text-[12px] rounded-lg text-start"
+                  className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[12px] rounded-lg text-start`}
+                  placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                 />
               </View>
 

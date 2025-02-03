@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal } from 'react-native';
 import Search from '../../../assets/icon/search.svg';
 import Empty from '../../../assets/icon/empty_chat.svg';
@@ -8,8 +8,10 @@ import { router, useGlobalSearchParams } from 'expo-router';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 const ChatList: React.FC = () => {
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [isFocused, setIsFocus] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [chatFilter, setChatFilter] = useState('all');
@@ -48,22 +50,22 @@ const ChatList: React.FC = () => {
 
   return (
     <SafeAreaView>
-        <View className='bg-gray-100'>
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-            <View className='w-full px-4 py-3 relative flex flex-row items-center justify-center bg-white'>
+        <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'}`}>
+            <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full px-4 py-3 relative flex flex-row items-center justify-center`}>
                 <View className='absolute left-6 z-10'>
                     <Search />
                 </View>
                 <TextInput
                     style={{fontFamily: 'Inter-Medium'}}
-                    className={`w-full ${isFocused && 'border-custom-green border'} bg-gray-300 rounded-xl px-3 pl-10 py-2 text-[12px]`}
+                    className={`${theme == 'dark'? 'bg-gray-700 text-gray-100' : ' bg-gray-300 text-gray-900'} w-full ${isFocused && 'border-custom-green border'} rounded-xl px-3 pl-10 py-2 text-[12px]`}
                     autoFocus={false}
                     onFocus={()=>setIsFocus(true)}
                     onBlur={()=>setIsFocus(false)}
                     onChangeText={setSearchValue}
                     value={searchValue}
                     placeholder="Search Messages"
-                    placeholderTextColor=""
+                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                 />
             </View>
             <Text
@@ -98,7 +100,7 @@ const ChatList: React.FC = () => {
                 </TouchableOpacity>
             </View>
             
-            <ScrollView className='w-full mb-80' contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className='w-full h-full' contentContainerStyle={{ flexGrow: 1 }}>
                 {(chatFilter == 'unread')?
                     (chats.filter(item => item.unread > 0).length == 0 && !loading) && (
                         <View className='mx-auto'>
@@ -116,7 +118,7 @@ const ChatList: React.FC = () => {
                 {(chats.length == 0 && loading &&  !ranOnce) && (
                     <View className='mx-auto mt-12'>
                         <Text
-                        className={`text-[12px] text-center p-3`}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[12px] text-center p-3`}
                         style={{fontFamily: 'Inter-Medium-Italic'}}
                         >
                             Loading messages...

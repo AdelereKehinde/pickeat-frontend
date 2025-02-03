@@ -41,7 +41,7 @@ export default function WalletPage(){
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const [refreshing, setRefreshing] = useState(false);
     const isFocusedd = useIsFocused();
@@ -119,8 +119,13 @@ export default function WalletPage(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Payment' withbell={true} />
                 </View>
+                <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                className='w-full p-1 mb-3 mt-5 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] p-2 my-3 rounded-md flex items-start`}>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] p-2 my-3 rounded-md mx-auto flex items-start`}>
                     <Text
                         className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px]`}
                         style={{fontFamily: 'Inter-SemiBold'}}
@@ -131,8 +136,8 @@ export default function WalletPage(){
                         <ContentLoader
                         width="100%"
                         height={30}
-                        backgroundColor="#fff"
-                        foregroundColor="#ecebeb"
+                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                         >
                             <Rect x="" y="0" rx="5" ry="5" width="100" height="30" fill="#fff" />
                         </ContentLoader>
@@ -192,8 +197,8 @@ export default function WalletPage(){
                                 <ContentLoader
                                 width="100%"
                                 height={150}
-                                backgroundColor="#f3f3f3"
-                                foregroundColor="#ecebeb"
+                                backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                 >
                                     <Rect x="5" y="0" rx="5" ry="5" width="97%" height="100%" />
                                     <Rect x="210" y="30" rx="5" ry="5" width="90" height="15" />
@@ -263,7 +268,7 @@ export default function WalletPage(){
 
                 <TouchableOpacity
                 onPress={()=>{router.replace('/add_card')}}
-                className={`text-center ${loading? 'bg-custom-inactive-green': 'bg-custom-green'} relative rounded-xl w-[70%] mt-1 p-4 flex items-center justify-around`}
+                className={`text-center ${loading? 'bg-custom-inactive-green': 'bg-custom-green'} mx-auto relative rounded-xl w-[70%] mt-1 p-4 flex items-center justify-around`}
                 >
                     <Text
                     className='text-white'
@@ -274,25 +279,21 @@ export default function WalletPage(){
                 </TouchableOpacity>
 
                 <Text
-                className={`text-custom-green text-[12px] mt-5`}
+                className={`text-custom-green text-[12px] mt-5 mx-auto`}
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
                     Transaction History
                 </Text>
-                <ScrollView
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-                className='w-full p-1 mb-3 mt-5 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                
                 {loading && 
                     <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {Array.from({ length: 10 }).map((_, index) => (
                             <View key={index} className={`${theme == 'dark'? 'border-gray-800' : ' border-gray-300'} border-t`}>
                                 <ContentLoader
                                 width="100%"
                                 height={60}
-                                backgroundColor="#f3f3f3"
-                                foregroundColor="#ecebeb"
+                                backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                 >
                                     <Rect x="10" y="10" rx="5" ry="5" width="130" height="15" />
                                     <Rect x="10" y="40" rx="5" ry="5" width="100" height="15" />

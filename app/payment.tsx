@@ -101,8 +101,8 @@ export default function PaymentPage(){
                                             <ContentLoader
                                             width="100%"
                                             height={100}
-                                            backgroundColor="#f3f3f3"
-                                            foregroundColor="#ecebeb"
+                                            backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                            foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                             >
                                                 <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
                                                 <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />

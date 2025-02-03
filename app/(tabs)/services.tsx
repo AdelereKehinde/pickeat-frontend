@@ -161,8 +161,8 @@ export default function Services(){
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}

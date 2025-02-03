@@ -1,5 +1,7 @@
 import React from "react";
+import { useContext } from "react";
 import { View, Text } from "react-native";
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 
 interface Properties {
@@ -10,10 +12,12 @@ interface Properties {
 
 const RatingMeter: React.FC<Properties> = ({ star, rating, total }) => {
     const percentage = (rating / total) * 100;
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     return (
         <View className="flex-row items-center mb-3">
             <Text 
-            className="text-right text-sm text-[12px]"
+            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-900'} text-right text-sm text-[12px]`}
             style={{fontFamily: 'Inter-Medium'}}>
                 {star} star{(star!==1) && 's'}
             </Text>

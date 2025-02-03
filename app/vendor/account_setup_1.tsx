@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,StatusBar,ActivityIndicator, ScrollView, Pressable, Alert, Image, TextInput  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -17,8 +17,10 @@ import { getRequest, postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function AccountSetup1(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const { setUser } = useUser();
     const { user } = useUser();
     const toastConfig = {
@@ -143,11 +145,13 @@ export default function AccountSetup1(){
     return (
         <SafeAreaView>
             <View 
-            className='w-full h-full bg-white flex items-center'
+            className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
             >
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
 
-                <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
+                    <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
+                </View> 
 
                 {fetchloading && (
                     <FullScreenLoader />
@@ -156,7 +160,7 @@ export default function AccountSetup1(){
                 <ScrollView className='' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className=' w-[95%] mx-auto'>
                         <View
-                        className='w-full mt-3 flex flex-row items-center p-3 rounded-lg bg-blue-100'
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mt-3 flex flex-row items-center p-3 rounded-lg`}
                         >
                             <Notice/>
                             <Text
@@ -210,7 +214,7 @@ export default function AccountSetup1(){
                         </View>
 
                         <View
-                        className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mt-3 flex flex-row items-center p-3 rounded-lg`}
                         >
                             <Notice/>
                             <Text
@@ -237,10 +241,10 @@ export default function AccountSetup1(){
                                 }
                                 <CharField  placeholder="Business mail*" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, business_email: value}))}/>
                             </View>
-                            <View className='py-3 border rounded-md border-gray-300 bg-gray-100 px-2'>
+                            <View className={`${theme == 'dark'? 'bg-transparent' : ' bg-gray-100'} py-3 border rounded-md border-gray-300 px-2`}>
                                 <Text
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className='text-[12px] ml-1 mt'
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[12px] ml-1 mt`}
                                 >
                                     Selected Country Region
                                     <Text
@@ -262,10 +266,10 @@ export default function AccountSetup1(){
                                 )
                             }
                             <View className='flex flex-row'>
-                                <View className='rounded-md w-12 bg-gray-100 h-12 flex items-center justify-around mr-2 border border-gray-300'>
+                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} rounded-md w-12 h-12 flex items-center justify-around mr-2 border border-gray-300'`}>
                                     <Text
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className='text-gray-600 text-[11px] text-center'
+                                    className={`${theme == 'dark'? 'text-white' : ' text-gray-600'} text-[11px] text-center`}
                                     >
                                         +234
                                     </Text>
@@ -277,7 +281,7 @@ export default function AccountSetup1(){
                         </View>
 
                         <View
-                        className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mt-3 flex flex-row items-center p-3 rounded-lg`}
                         >
                             <Notice/>
                             <Text
@@ -350,7 +354,7 @@ export default function AccountSetup1(){
 
 
                         <View
-                        className='w-full flex flex-row items-center p-3 mt-5 rounded-lg bg-blue-100'
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mt-3 flex flex-row items-center p-3 rounded-lg`}
                         >
                             <Notice/>
                             <Text
@@ -392,9 +396,9 @@ export default function AccountSetup1(){
                                 }
                                 <Text
                                 style={{fontFamily: 'Inter-Regular'}}
-                                className='text-center text-[11px] text-gray-500'
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-center text-[11px]`}
                                 >
-                                    I understand and agree with the <Link href="/registration" style={{fontFamily: 'Inter-SemiBold'}} className='text-gray-800'>Terms and Conditions</Link> 
+                                    I understand and agree with the <Link href="/registration" style={{fontFamily: 'Inter-SemiBold'}} className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}`}>Terms and Conditions</Link> 
                                 </Text>
                             </TouchableOpacity>
                         </View>

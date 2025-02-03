@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, TextInput, FlatList, TouchableOpacity, Text, Image, Modal, StyleSheet, StatusBar } from 'react-native';
 import EmojiSelector from 'react-native-emoji-selector';
 import { router, useGlobalSearchParams } from 'expo-router'
@@ -13,8 +13,10 @@ import GetCurrentDateTime from '@/components/CurrentDateTime';
 import { postRequest, getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 const ChatPage: React.FC = () => {
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const {kitchen_id, name, avatar, chat_id} = useGlobalSearchParams()
   const [messages, setMessages] = useState<any[]>([]);
   const [input, setInput] = useState<string>('');
@@ -133,9 +135,9 @@ const ChatPage: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-      <View className='bg-custom-green px-5 flex flex-row items-center py-2 space-x-3'>
+    <SafeAreaView className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'}`} style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+      <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-custom-green'} px-5 flex flex-row items-center py-2 space-x-3`}>
         <TouchableOpacity
         onPress={()=>{router.back()}}
         >
@@ -166,7 +168,7 @@ const ChatPage: React.FC = () => {
 
       <FlatList 
       data={messages}
-      className='py-3 px-4 mb-3'
+      className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} pb-2 pt-2 px-4 mb-3`}
       renderItem={({item}) =>  (
         <RenderMessage id={item.id} sender={item.sender} text={item.text} time={item.time} date={item.date} /> 
       )}
@@ -182,12 +184,14 @@ const ChatPage: React.FC = () => {
       >
         <View 
         style={styles.shadow_box}
-        className='bg-white flex flex-row items-center px-2 rounded-2xl w-[85%]'>
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} flex flex-row items-center px-2 rounded-2xl w-[85%]`}>
           <TextInput
             value={input}
             onChangeText={setInput}
             placeholder="write a message..."
             style={{fontFamily: 'Inter-Medium', flex: 1, padding: 10, marginHorizontal: 10 }}
+            className={`${theme == 'dark'? 'text-gray-100' : ' text-black'}`}
+            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
           />
           <TouchableOpacity onPress={() => setEmojiPickerVisible(true)}>
             <Ionicons name="happy-outline" size={30} color="gray" />

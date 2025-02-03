@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Image, TouchableOpacity, ActivityIndicator, Pressable } from "react-native";
 import Rating from '../assets/icon/rating.svg';
 import Heart from '../assets/icon/heart.svg';
@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     image:string,
@@ -22,6 +23,7 @@ interface Properties {
 
 
 const VendorOrder: React.FC<Properties> = ({image, name, address, time, status, tracking_id, status_history_status, onUpdate}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(false); // Loading state
     const STATUS_HISTORY_STATUS = ['', 'accepted', 'preparing', 'ready', 'shipped', 'cancelled', 'completed']
     const [STS, setSTS] = useState(status_history_status); // Loading state
@@ -63,7 +65,7 @@ const VendorOrder: React.FC<Properties> = ({image, name, address, time, status, 
     };
 
     return(
-        <View className='flex flex-row  items-center mx-3 py-2 border-b border-gray-300'>
+        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row  items-center mx-3 py-2 border-b`}>
             <View className=''>    
                 <Image 
                 source={{uri: image}}
@@ -76,7 +78,7 @@ const VendorOrder: React.FC<Properties> = ({image, name, address, time, status, 
             <View className='flex justify-start ml-2 w-[45%]'>
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
-                className=' text-[12px]'
+                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[12px]`}
                 >
                     {name}
                 </Text>
@@ -84,7 +86,7 @@ const VendorOrder: React.FC<Properties> = ({image, name, address, time, status, 
                     <Location />
                     <Text
                     style={{fontFamily: 'Inter-Medium'}}
-                    className='text-gray-500 text-[10px]'
+                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[10px]`}
                     >
                         {address}
                     </Text>

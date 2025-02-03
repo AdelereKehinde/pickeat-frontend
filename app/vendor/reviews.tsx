@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,StatusBar, ScrollView, RefreshControl, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -10,8 +10,20 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+
+function getInitials(name: string) {
+    // Split the name into an array of words
+    const words = name.split(' ');
+    
+    // Get the first letter of each word, and join them together in uppercase
+    const initials = words.map(word => word.charAt(0).toUpperCase()).join('');
+    
+    return initials;
+  }
 
 export default function Reviews(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     type RatingData = { total_reviews: number; average_rating: number; star_5_count: number; star_4_count: number; star_3_count: number; star_2_count: number; star_1_count: number;};
     type ReviewData = { id: number; name: string; avatar: string; rating: number; comment: string; date: string;}[];
     type ReviewData1 = { count: number; next: string; previous: string; results: ReviewData;};
@@ -97,10 +109,10 @@ export default function Reviews(){
     return (
         <SafeAreaView>
             <View 
-            className='w-full h-full bg-white flex items-center'
+            className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
             >
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-                <View className='w-full bg-gray-100'>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
                     <TitleTag withprevious={false} title='Reviews' withbell={false} />
                 </View>
 
@@ -114,14 +126,14 @@ export default function Reviews(){
                     className='w-full p-4 rounded-lg shadow-2xl'
                     >
                         <Text
-                        className='text-[16px] self-start mt-5'
+                        className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[16px] self-start mt-5`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
                             Reviews
                         </Text>
                         <View className='w-full mx-auto'>
                             <Text 
-                            className='text-[30px] text-gray-700'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[30px]`}
                             style={{fontFamily: 'Inter-Bold'}}>
                                 {rating.toFixed(1)}
                             </Text>
@@ -142,7 +154,7 @@ export default function Reviews(){
                                 ))}
                             </View>
                             <Text 
-                            className='text-[13px] text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[13px]`}
                             style={{fontFamily: 'Inter-Medium'}}>
                                 ({noOfReview} Reviews)
                             </Text>
@@ -162,7 +174,7 @@ export default function Reviews(){
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
-                                className={`text-[11px] text-gray-600`}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[11px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     You don't have a review yet
@@ -172,12 +184,12 @@ export default function Reviews(){
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
@@ -194,7 +206,7 @@ export default function Reviews(){
                         {reviewData.map((item, index) => (
                             <View key={index} className='w-full px-4'>
                                 <Text 
-                                className='text-[13px] text-gray-500'
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[13px]`}
                                 style={{fontFamily: 'Inter-Medium'}}>
                                     {item.date}
                                 </Text>
@@ -203,11 +215,11 @@ export default function Reviews(){
                                         <Text 
                                         className='text-[13px] text-custom-green'
                                         style={{fontFamily: 'Inter-Medium'}}>
-                                            AK
+                                            {getInitials(item.name)}
                                         </Text>
                                     </View>
                                     <Text 
-                                    className='text-[13px]'
+                                    className={`${theme == 'dark'? 'text-gray-200' : 'textbg-gray-900'} text-[13px]`}
                                     style={{fontFamily: 'Inter-Medium'}}>
                                         {item.name}
                                     </Text>
@@ -229,7 +241,7 @@ export default function Reviews(){
                                     ))}
                                 </View>
                                 <Text 
-                                className='text-[14px] text-gray-800 mt-2'
+                                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[14px] mt-2`}
                                 style={{fontFamily: 'Inter-Regular'}}>
                                     {item.comment}
                                 </Text>

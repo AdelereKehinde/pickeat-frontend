@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Pressable, TouchableOpacity } from "react-native";
 import ArrowUp from '../assets/icon/arrow_up.svg';
 import { TruncatedText } from './TitleCase';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     receiver: string,
@@ -36,6 +37,7 @@ interface Properties {
 
 
 const OrderTransaction: React.FC<Properties> = ({receiver, amount, commission, time, status, order_id, price, date, item}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [showPopup, setShowPopup] = useState(false)
     return(
         <View
@@ -48,21 +50,21 @@ const OrderTransaction: React.FC<Properties> = ({receiver, amount, commission, t
             )}
             <TouchableOpacity
             onPress={()=>{setShowPopup(!showPopup)}}
-            className='flex flex-row items-center space-x-1 my-2 bg-white p-2 rounded-lg w-full'
+            className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-1 my-2 p-2 rounded-lg w-full`}
             >
-                <View className='w-8 h-8 bg-blue-50 rounded-full flex items-center justify-around'>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-8 h-8 rounded-full flex items-center justify-around`}>
                     <ArrowUp />
                 </View>
                 <View className=''>
                     <Text
-                    className='text-[10px] text-gray-800'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[10px]`}
                     style={{fontFamily: 'Inter-Bold',}}
                     >
                         ORDER - {TruncatedText(order_id, 25)}
                     </Text>
                     <View className='flex flex-row space-x-1'>
                         <Text
-                        className='text-[9px] text-gray-500' 
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[9px]`}
                         style={{fontFamily: 'Inter-Regular'}} 
                         >
                             {time}
@@ -79,13 +81,13 @@ const OrderTransaction: React.FC<Properties> = ({receiver, amount, commission, t
                 </View>
                 <View className=' flex items-end grow'>
                     <Text
-                    className='text-[11px] text-gray-800'
+                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[11px]`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         ₦{amount}
                     </Text>
                     <Text
-                    className='text-[10px] text-gray-500'
+                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                     style={{fontFamily: 'Inter-Regular'}}
                     >
                         Commission - #{commission}

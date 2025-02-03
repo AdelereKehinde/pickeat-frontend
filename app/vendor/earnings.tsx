@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,StatusBar, ScrollView, RefreshControl, ActivityIndicator, Alert, Image, TextInput, StyleSheet  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -14,20 +14,106 @@ import Empty from '../../assets/icon/empy_transaction.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import FullScreenLoader from '@/components/FullScreenLoader';
+
+import * as Print from 'expo-print';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+
+// Function to create an HTML template for the transaction history
+type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
+
+const generatePDFTemplate = (data: ListData) => {
+    const transactionRows = data.map(
+      (transaction) => `
+        <tr>
+          <td>${transaction.order_id}</td>
+          <td>${transaction.date}</td>
+          <td>${transaction.bank_name}</td>
+          <td>${transaction.price}</td>
+          <td>${transaction.type}</td>
+          <td>${transaction.commision}</td>
+        </tr>
+      `
+    ).join('');
+
+    const htmlTemplate = `
+        <html>
+        <head>
+            <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            table { width: 100%; border-collapse: collapse; }
+            th, td { padding: 8px; text-align: left; border-bottom: 1px solid #ddd; }
+            th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            <h1>Transaction History</h1>
+            <table>
+            <thead>
+                <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Bank Name</th>
+                <th>Amount</th>
+                <th>Type</th>
+                <th>Commission</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${transactionRows}
+            </tbody>
+            </table>
+        </body>
+        </html>
+    `;
+    return htmlTemplate;
+};
+
+// Function to handle the PDF creation and sharing
+const downloadTransactionHistoryPDF = async (data: ListData) => {
+    const html = generatePDFTemplate(data);
+  
+    try {
+        // Generate PDF from HTML
+        const { uri } = await Print.printToFileAsync({ html });
+      
+        // Define the destination file path (within document directory)
+        const fileUri = FileSystem.documentDirectory + 'pickeat_transaction_history.pdf';
+
+        // Move the generated PDF to the document directory for download
+        await FileSystem.moveAsync({
+            from: uri,
+            to: fileUri,
+        });
+
+
+        // Optionally save the file to the file system and share
+        await Sharing.shareAsync(fileUri);
+
+    } catch (error) {
+      console.error('Error generating or sharing PDF:', error);
+    //   Alert.alert('Error', 'There was an issue generating the PDF.');
+    }
+};
+
 
 export default function Earnings(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
     type EarningResponse = { amount_in_wallet: string; pending_payout:  string; count: number; results: ListData; next: string; previous: string;};
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
     const [data, setData] = useState<ApiResponse>()
     const [showAmount, setShowAmount] = useState(true)
     const [loading, setLoading] = useState(true); // Loading state
+    const [downloadLoading, setDownloadLoading] = useState(false); // Loading state
 
     const [transactions, setTransactions] = useState<ListData>([]);
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -59,21 +145,27 @@ export default function Earnings(){
         setRefreshing(false); // Stop the refreshing animation
     };
 
-    const HandleDownload = () =>{
-        if(transactions.length !== 0){
-            alert('Dev Haywhy will work on it')
+    const handleDownload = async () => {
+        if (transactions.length !== 0) {
+            setDownloadLoading(true)
+            // alert(transactions)
+            await downloadTransactionHistoryPDF(transactions);
+            setDownloadLoading(false)
+            return;
         }
-    }
+    };
 
     return (
         <SafeAreaView>
             <View 
-            className='w-full h-full bg-gray-50 flex items-center'
+            className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}
             >
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-                <View className='w-full bg-white'>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={false} title='Earnings and Payment' withbell={false} />
                 </View>
+
+                {downloadLoading && <FullScreenLoader/>}
 
                 <ScrollView 
                 refreshControl={
@@ -82,7 +174,7 @@ export default function Earnings(){
                 className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <View 
                     style={styles.shadow_box}
-                    className='mt-10 bg-white m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl'
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
                     >
                         <Text
                         className={`text-[11px] text-custom-green`}
@@ -94,19 +186,19 @@ export default function Earnings(){
                         className='flex flex-row items-center py-3 rounded-lg'>
                             <Naira />
                             <Text
-                            className={`text-[20px] mx-4`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[20px] mx-4`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 {showAmount? data?.data.amount_in_wallet:'****'}
                             </Text>
-                            <View className='flex flex-row px-2 rounded-2xl items-center bg-gray-100 space-x-1 ml-auto'>
+                            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} flex flex-row px-2 rounded-2xl items-center space-x-1 ml-auto`}>
                                 <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
                                 className=''
                                 >
                                 <FontAwesome
                                     name={showAmount ? 'eye' : 'eye-slash'}
                                     size={18}
-                                    color="#4b5563"
+                                    color={(theme == 'dark')? '#fff':'#4b5563'}
                                 />
                                 </TouchableOpacity>
                                 <Nigeria />
@@ -115,7 +207,7 @@ export default function Earnings(){
 
                         <View>
                             <Text
-                            className={`text-[10px] text-gray-500`}
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Pending Payout - <Text className='text-custom-green'>N {showAmount? data?.data.pending_payout:'****'}</Text>
@@ -127,31 +219,31 @@ export default function Earnings(){
                     <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
                         <View className='flex flex-row space-x-2'>
                             <Text
-                            className={`'text-custom-green text-[13px] ml-4`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-custom-green'} text-[13px] ml-4`}
                             style={{fontFamily: 'Inter-Medium'}}
                             >
                                 Transactions
                             </Text>
                         </View>
                     
-                        <View className='flex flex-row items-center space-x-2'>
+                        {/* <View className='flex flex-row items-center space-x-2'>
                             <Text
-                            className='text-[11px] text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                             style={{fontFamily: 'Inter-Regular'}}
                             >
                                 21st May - 25th Aug
                             </Text>
                             <Calender />
-                        </View>
+                        </View> */}
                     </View>
 
                     <ScrollView 
-                    className='w-[98%] max-h-[50%] px-3 mt-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-[98%] px-3 mt-2 mb-8' contentContainerStyle={{ flexGrow: 1 }}>
                         {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
-                                className={`text-[11px] text-gray-600`}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[11px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     We’ll notify you when there’s a transaction
@@ -160,13 +252,13 @@ export default function Earnings(){
                         )}
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 6 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                {Array.from({ length: 10 }).map((_, index) => (
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
                                         height={50}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
@@ -201,9 +293,9 @@ export default function Earnings(){
 
                     <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     
-                    <View className='w-[90%] mx-auto mt-auto mb-10'>
+                    <View className='w-[90%] mx-auto mb-5'>
                     <TouchableOpacity
-                    onPress={HandleDownload}
+                    onPress={handleDownload}
                     className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
                     >
                         {loading && (

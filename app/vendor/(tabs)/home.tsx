@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TouchableOpacity, Image, RefreshControl } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -10,8 +10,11 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../../../assets/icon/empy_transaction.svg';
 import RatingMeter from '@/components/Rating Meter';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 function Home(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
+
     type PopularOrder = { id: number; thumbnail: string; meal_name: string; quantity: string;}[];
     type RatingData = { total_reviews: number; average_rating: number; star_5_count: number; star_4_count: number; star_3_count: number; star_2_count: number; star_1_count: number;};
     type EarningResponse = { orders: number; total_amount:  number; popular_order: PopularOrder; rating: RatingData;};
@@ -82,9 +85,9 @@ function Home(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-blue-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='My Dashboard' withbell={true} />
                 </View> 
                 <ScrollView 
@@ -93,16 +96,16 @@ function Home(){
                 }
                 className='w-full flex' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
-                    className='text-[16px] self-start pl-5 mt-5'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[16px] self-start pl-5 mt-5`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Insights
                     </Text>
                     
-                    <View className='my-3 mt-3 space-y-3 flex w-[90%] bg-blue-50 p-4 rounded-lg mx-auto'>
-                        <View className='flex flex-row justify-between items-center bg-white rounded-xl p-3'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-50'} my-3 mt-3 space-y-3 flex w-[90%] p-4 rounded-lg mx-auto`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} flex flex-row justify-between items-center rounded-xl p-3`}>
                             <Text
-                            className='text-[13px] text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[13px]`}
                             style={{fontFamily: 'Inter-Regular'}}
                             >
                                 Total Orders
@@ -114,9 +117,9 @@ function Home(){
                                 {data?.data.orders}
                             </Text>
                         </View>
-                        <View className='flex flex-row justify-between items-center bg-white rounded-xl p-3'>
+                        <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} flex flex-row justify-between items-center rounded-xl p-3`}>
                             <Text
-                            className='text-[13px] text-gray-500'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[13px]`}
                             style={{fontFamily: 'Inter-Regular'}}
                             >
                                 Total Amount
@@ -131,7 +134,7 @@ function Home(){
                     </View>
 
                     <Text
-                    className='text-[16px] self-start pl-5 mt-5'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[16px] self-start pl-5 mt-5`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Most Popular orders
@@ -142,7 +145,7 @@ function Home(){
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
-                                className={`text-[11px] text-gray-600`}
+                                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-600'} text-[11px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     You don't have an order yet
@@ -152,12 +155,12 @@ function Home(){
                         {(popularOrder.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen overflow-hidden'>
                                 {Array.from({ length: 3 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' bg-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
@@ -181,10 +184,10 @@ function Home(){
                                     height={55}
                                     />
                                 </View>
-                                <View className='grow border-b-2 border-gray-200'>
+                                <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-200'} grow border-b-2`}>
                                     <View className='flex flex-row justify-between items-center'>
                                         <Text
-                                        className='text-[13px] text-gray-700'
+                                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[13px]`}
                                         style={{fontFamily: 'Inter-SemiBold'}}
                                         >
                                             {item.meal_name}
@@ -197,7 +200,7 @@ function Home(){
                                         </Text>
                                     </View>
                                     <Text
-                                    className='text-[11px] text-gray-500'
+                                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                                     style={{fontFamily: 'Inter-Regular'}}
                                     >
                                         Most recent
@@ -208,14 +211,14 @@ function Home(){
                     </View>
 
                     <Text
-                    className='text-[16px] self-start pl-5 mt-5'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[16px] self-start pl-5 mt-5`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Reviews
                     </Text>
                     <View className='w-[90%] mx-auto px-4'>
                         <Text 
-                        className='text-[30px] text-gray-700'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[30px]`}
                         style={{fontFamily: 'Inter-Bold'}}>
                             {ratingData?.average_rating.toFixed(1)}
                         </Text>
@@ -236,7 +239,7 @@ function Home(){
                             ))}
                         </View>
                         <Text 
-                        className='text-[13px] text-gray-500'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[13px]`}
                         style={{fontFamily: 'Inter-Medium'}}>
                             ({noOfReview} Reviews)
                         </Text>

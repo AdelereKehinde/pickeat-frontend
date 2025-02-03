@@ -3,6 +3,7 @@ import { Text, View, StatusBar, Pressable} from "react-native";
 import { Link } from "expo-router";
 import { router } from 'expo-router'
 import Back from '../assets/icon/back_arrow.svg';
+import Arrow from '../assets/icon/arrow_left.svg';
 import Bell from '../assets/icon/bell.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
@@ -23,7 +24,11 @@ const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
                         <Pressable 
                         onPress={()=>{router.back()}}
                         className="">
+                            {(theme == 'dark')?
+                            <Arrow />
+                            :
                             <Back />
+                            }
                         </ Pressable>
                     )}
                 </View>

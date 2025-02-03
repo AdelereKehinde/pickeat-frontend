@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TouchableOpacity, TextInput, StyleSheet, Linking } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -12,9 +12,11 @@ import FullScreenLoader from '@/components/FullScreenLoader';
 import TitleCase from '@/components/TitleCase';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 function KitchenProfile(){
     const {kitchen_id, name} = useGlobalSearchParams()
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -142,9 +144,10 @@ function KitchenProfile(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='w-full bg-white'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex'`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title={data?.business_name || ''} withbell={true} />
                 </View>
                 
@@ -161,11 +164,11 @@ function KitchenProfile(){
                         </View>
                         <View
                         style={styles.shadow_box}
-                        className='w-[90%] mx-auto px-5 py-3 rounded-lg bg-white -mt-8 flex flex-row'
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto px-5 py-3 rounded-lg -mt-8 flex flex-row`}
                         >
                             <View>
                                 <Text
-                                className='text-[15px]'
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[15px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     {data?.business_name}                         
@@ -201,7 +204,7 @@ function KitchenProfile(){
                                 </View>
 
                                 <Text
-                                className='text-[10px]'
+                                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-900'} text-[10px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     {data?.address}             
@@ -211,7 +214,7 @@ function KitchenProfile(){
 
                             <View className='ml-auto flex items-end'>
                                 <Text
-                                className='text-[10px] text-gray-500'
+                                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     Allergies?                    
@@ -234,7 +237,7 @@ function KitchenProfile(){
                     <View className='flex items-center justify-around flex-row w-[80%] mx-auto mt-7 '>
                         <View className='grow border-r-2 border-gray-300 px-4'>
                             <Text
-                            className='text-[13px]'
+                            className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[13px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Category                  
@@ -248,7 +251,7 @@ function KitchenProfile(){
                         </View>
                         <View className='grow px-4'>
                             <Text
-                            className='text-[13px]'
+                            className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[13px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Profession                  
@@ -276,10 +279,10 @@ function KitchenProfile(){
                         </TouchableOpacity>
                     </View>
 
-                    <View style={styles.shadow_box} className='bg-white w-[90%] mx-auto rounded-lg p-4 mt-5 border border-gray-100'>
+                    <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800 border-gray-600' : ' bg-white border-gray-100'} w-[90%] mx-auto rounded-lg p-4 mt-5 border`}>
                         <Text
                         style={{fontFamily: 'Inter-SemiBold'}}
-                        className='text-[12px] text-custom-green -mt-2 border-b py-1 border-gray-200'
+                        className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-200'} text-[12px] text-custom-green -mt-2 border-b py-1 `}
                         >
                             Description
                         </Text>
@@ -326,10 +329,10 @@ function KitchenProfile(){
                         </View>
                     </View>
 
-                    <View style={styles.shadow_box} className='bg-white w-[90%] mx-auto rounded-lg p-4 mt-5 mb-16 border border-gray-100'>
+                    <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800 border-gray-600' : 'bg-white border-gray-100'} w-[90%] mx-auto rounded-lg p-4 mt-5 mb-16 border`}>
                         <Text
                         style={{fontFamily: 'Inter-SemiBold'}}
-                        className='text-[12px] text-custom-green -mt-2 border-b py-1 border-gray-200'
+                        className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-200'} text-[12px] text-custom-green -mt-2 border-b py-1`}
                         >
                             Review
                         </Text>
@@ -361,7 +364,8 @@ function KitchenProfile(){
                         numberOfLines={5}
                         style={{fontFamily: 'Inter-Medium'}}
                         placeholder="Write reviews about our service"
-                        className="text-[12px] rounded-lg text-start"
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[12px] rounded-lg text-start`}
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                         {error != '' && (
                             <Text

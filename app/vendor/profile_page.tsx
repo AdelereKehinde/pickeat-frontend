@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
@@ -15,12 +15,14 @@ import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function ProfilePage(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
 
     type APIResponse = {
@@ -185,9 +187,9 @@ export default function ProfilePage(){
             {loading && 
                 <FullScreenLoader />
             }
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-gray-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
 
@@ -199,22 +201,22 @@ export default function ProfilePage(){
                         Personal Information
                     </Text>
                     <View className='w-[90%] mx-auto space-y-3 mb-3'>
-                        <View className='flex flex-row bg-blue-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
-                                className='text-gray-500 text-[11px]'
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[11px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Full Name
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     readOnly={loading}
                                     onChangeText={setFullName}
                                     defaultValue={fullName}
-                                    placeholderTextColor=""
+                                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                                 />
                             </View>
                             <TouchableOpacity
@@ -234,41 +236,41 @@ export default function ProfilePage(){
                                 )}
                             </TouchableOpacity>
                         </View>
-                        <View className='flex flex-row bg-blue-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
-                                className='text-gray-500 text-[11px]'
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[11px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Email
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     onChangeText={setEmail}
                                     defaultValue={email}
                                     readOnly={true}
-                                    placeholderTextColor=""
+                                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                                 />
                             </View>
                         </View>
-                        <View className='flex flex-row bg-blue-100 rounded-xl px-4 items-center space-x-3 py-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
-                                className='text-gray-500 text-[11px]'
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[11px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Phone Number
                                 </Text>
                                 <TextInput
                                     style={{fontFamily: 'Inter-Medium'}}
-                                    className={`w-full rounded-lg text-[11px] text-black`}
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-black'} w-full rounded-lg text-[11px]`}
                                     autoFocus={false}
                                     readOnly={loading}
                                     onChangeText={setPhoneNumber}
                                     defaultValue={phoneNumber}
-                                    placeholderTextColor=""
+                                    placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                                 />
                             </View>
                             <TouchableOpacity
@@ -293,12 +295,12 @@ export default function ProfilePage(){
 
                     <TouchableOpacity 
                     onPress={()=>{router.push("/vendor/set_store_address?update=1")}}
-                    className='bg-white w-full px-6 py2 my-5'>
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full px-6 py-2 my-5`}>
                         <View className='w-full flex flex-row space-x-3 items-center'>
                             <Location />
                             <View>
                                 <Text
-                                className='text-[11px] self-start'
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-900'} text-[11px] self-start'`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     {address.address}
@@ -324,15 +326,15 @@ export default function ProfilePage(){
                     </TouchableOpacity>
 
                     <Text
-                    className='text-[13px] pl-5 mt-10'
+                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[13px] pl-5 mt-10`}
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Instruction for Rider
                     </Text>
-                    <View className='w-[90%] mx-auto bg-gray-100 px-4 py-1 rounded-xl'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] mx-auto px-4 py-1 rounded-xl`}>
                         <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full rounded-lg text-[11px] text-gray-500`}
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} w-full rounded-lg text-[11px]`}
                         autoFocus={false}
                         readOnly={loading}
                         multiline={true}
@@ -340,7 +342,7 @@ export default function ProfilePage(){
                         onChangeText={setRiderInstruction}
                         defaultValue={riderInstruction}
                         placeholder='e.g enter the main street, its 1st door on the right'
-                        placeholderTextColor=""
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
 

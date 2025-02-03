@@ -66,8 +66,8 @@ function Device(){
                                         <ContentLoader
                                         width="90%"
                                         height={50}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* <Rect x="10" y="10" rx="5" ry="5" width="130" height="15" />
                                             <Rect x="10" y="40" rx="5" ry="5" width="100" height="15" /> */}

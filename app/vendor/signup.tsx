@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, ScrollView, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput  } from "react-native";
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, View, ScrollView, TouchableOpacity,ActivityIndicator, StatusBar, Platform, Alert, Image, TextInput  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import Logo from '../../assets/images/Logo.svg';
@@ -16,12 +16,15 @@ import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Device from "expo-device";
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function SignUp(){
     const toastConfig = {
       success: CustomToast,
       error: CustomToast,
     };
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     const deviceName = Device.modelName; // e.g., "iPhone 12"
     const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
@@ -95,8 +98,9 @@ export default function SignUp(){
 
     return (
       <SafeAreaView>
+        <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
         <View 
-        className='w-full h-full bg-white flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}
         >
           <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mx-auto'>
@@ -113,13 +117,13 @@ export default function SignUp(){
             <View className=' self-start pl-5 mt-4'>
               <Text
               style={{fontFamily: 'Inter-Bold'}}
-              className='text-gray-800 text-[17px] '
+              className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[17px]`}
               >
                 Personal Info
               </Text>
               <Text
               style={{fontFamily: 'Inter-Regular'}}
-              className='text-gray-500 text-[11px] '
+              className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px]`}
               >
                 To continue, kindly complete the following fields.
               </Text>
@@ -134,14 +138,14 @@ export default function SignUp(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                             onChangeText={setFullName}
                             onFocus={()=>{setFocus('name')}}
                             onBlur={()=>{setFocus('')}}
                             // maxLength={10}
                             // keyboardType="number-pad"
                             placeholder='Full name'
-                            placeholderTextColor="black"
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
 
@@ -151,14 +155,14 @@ export default function SignUp(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={` rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                             onChangeText={setEmail}
                             onFocus={()=>{setFocus('email')}}
                             onBlur={()=>{setFocus('')}}
                             // maxLength={10}
                             // keyboardType="number-pad"
                             placeholder='Email address'
-                            placeholderTextColor="black"
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
 
@@ -168,14 +172,14 @@ export default function SignUp(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                             onChangeText={setPhoneNumber}
                             onFocus={()=>{setFocus('number')}}
                             onBlur={()=>{setFocus('')}}
                             maxLength={11}
                             keyboardType="number-pad"
                             placeholder='Phone number'
-                            placeholderTextColor="black"
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
                   
@@ -185,14 +189,14 @@ export default function SignUp(){
                     </View>
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
-                      className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                      className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                       onChangeText={setPassword}
                       onFocus={()=>{setFocus('password')}}
                       onBlur={()=>{setFocus('')}}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Password'
-                      placeholderTextColor="black"
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
@@ -213,14 +217,14 @@ export default function SignUp(){
                     </View>
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
-                      className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
+                      className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                       onFocus={()=>{setFocus('password2')}}
                       onBlur={()=>{setFocus('')}}
                       onChangeText={setPassword2}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Retype Password'
-                      placeholderTextColor="black"
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       secureTextEntry={!showPassword2}
                     />
                     <TouchableOpacity onPress={() => setShowPassword2(!showPassword2)}
@@ -240,9 +244,9 @@ export default function SignUp(){
             
               <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500 mt-5'
+              className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-center text-[12px] mt-5`}
               >
-                Already have an account? <Link href="/vendor/login" className='text-gray-800'>Sign In</Link> 
+                Already have an account? <Link href="/vendor/login" className={`${theme == 'dark'? 'text-white' : ' text-gray-800'}`}>Sign In</Link> 
               </Text>
             
 

@@ -266,8 +266,8 @@ export default function Dashboard(){
                                     <ContentLoader
                                         width={140}
                                         height={140}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             <Rect x="0" y="0" rx="5" ry="5" width="140" height="112" />
@@ -328,8 +328,8 @@ export default function Dashboard(){
                                         <ContentLoader
                                         width={250}
                                         height={150}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             <Rect x="0" y="0" rx="5" ry="5" width="250" height="150" />
@@ -386,8 +386,8 @@ export default function Dashboard(){
                                             <ContentLoader
                                             width={100}
                                             height={101}
-                                            backgroundColor="#f3f3f3"
-                                            foregroundColor="#ecebeb"
+                                            backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                            foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                             >
                                                 {/* Add custom shapes for your skeleton */}
                                                 <Circle cx="50" cy="20" r="20" />
@@ -448,8 +448,8 @@ export default function Dashboard(){
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />

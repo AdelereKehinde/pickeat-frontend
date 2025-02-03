@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, TouchableWithoutFeedback, Platform, Alert, Image, TextInput, ScrollView  } from "react-native";
+import { Text, View, TouchableOpacity,ActivityIndicator, StatusBar, Platform, Alert, Image, TextInput, ScrollView  } from "react-native";
 import * as Device from "expo-device";
 import { Link, router, useGlobalSearchParams } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -103,6 +103,7 @@ export default function Login(){
 
     return (
       <SafeAreaView>
+        <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >

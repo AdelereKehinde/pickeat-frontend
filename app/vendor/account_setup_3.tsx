@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity,StatusBar, ActivityIndicator, Platform, Alert, Image, TextInput, Pressable, ScrollView  } from "react-native";
 import { Link, router } from "expo-router";
 import Checkbox from '../../assets/icon/checkbox.svg';
@@ -12,9 +12,11 @@ import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function AccountSetup3(){
-    const toastConfig = {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  const toastConfig = {
       success: CustomToast,
       error: CustomToast,
   };
@@ -119,12 +121,14 @@ export default function AccountSetup3(){
     return (
       <SafeAreaView>
         <View 
-        className='w-full h-full bg-white flex items-center px-4'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
-            <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-            <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
+            <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
+              <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
+            </View> 
             
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView className='px-4' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='w-full grow'>
 
               {showTime[1] && (
@@ -136,9 +140,9 @@ export default function AccountSetup3(){
                 />
               )}
 
-              <View className='bg-custom-green p-2'>
+              <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-custom-green'} p-2`}>
                 <View className='space-y-1'>
-                  <View className='bg-white'>
+                  <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}`}>
                     <Pressable
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_from: !openState.available_from}));}}
@@ -146,7 +150,7 @@ export default function AccountSetup3(){
                       <CharFieldDropDown options={dropdown} open={openState.available_from}  placeholder="----------" focus={false} border={false} name='From' getValue={(value: string)=>{setData(prevState => ({...prevState, available_from: value,})); setOpenState(prevState => ({...prevState, available_from: false}))}}/>
                     </Pressable>
                   </View>
-                  <View className='bg-white -z-20'>
+                  <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} -z-20`}>
                     <Pressable
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_to: !openState.available_to}));}}
@@ -156,7 +160,7 @@ export default function AccountSetup3(){
                   </View>
                 </View>
 
-                <View className='bg-white mt-3 -z-30'>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-3 -z-30`}>
                   <Pressable
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_on_holiday: !openState.available_on_holiday}));}}
@@ -166,7 +170,7 @@ export default function AccountSetup3(){
                 </View>
 
                 <View className='flex flex-row justify-between -mt-2'>
-                  <View className='bg-white mt-3 w-[49%] -z-40'>
+                  <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-3 w-[49%] -z-40`}>
                     <Pressable
                     className='w-full'
                     onPress={()=>{setShowTime(['time_start', true]);}}
@@ -174,7 +178,7 @@ export default function AccountSetup3(){
                       <CharFieldDropDown options={[]} active={false} open={openState.time_start}  placeholder="----------" focus={false} border={false} name='Time Start' setValue={data.time_start} getValue={(value: string)=>{setData(prevState => ({...prevState, time_start: value,})); }}/>
                     </Pressable>
                   </View>
-                  <View className='bg-white mt-3 w-[49%] -z-40'>
+                  <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-3 w-[49%] -z-40`}>
                     <Pressable
                     className='w-full'
                     onPress={()=>{setShowTime(['time_end', true]);}}
@@ -184,7 +188,7 @@ export default function AccountSetup3(){
                   </View>
                 </View>
 
-                <View className='bg-white mt-1 -z-50'>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-1 -z-50`}>
                   <Pressable
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, no_of_worker: !openState.no_of_worker}));}}
@@ -209,7 +213,7 @@ export default function AccountSetup3(){
                       }
                       <Text
                       style={{fontFamily: 'Inter-Regular'}}
-                      className='text-center text-[11px] text-gray-500'
+                      className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[11px]`}
                       >
                         I understand and agree with the <Text style={{fontFamily: 'Inter-SemiBold'}} className='text-custom-green'>Terms and Conditions</Text> 
                       </Text>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { Text, View, StatusBar, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
 import { router } from 'expo-router'
@@ -14,12 +14,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 function Order(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     
@@ -78,9 +80,9 @@ function Order(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="light-content" backgroundColor="#228B22" />
-                <View className='bg-blue-100 w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='Orders' withbell={false} />
                 </View>
 
@@ -138,17 +140,17 @@ function Order(){
                     </TouchableOpacity>
                 </View>
 
-                <View className='bg-white w-full my-3 mb-36 relative flex flex-row items-center justify-center'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full my-3 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full p-1 mb-2 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full p-1 mb-40 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
-                                className={`text-[11px] text-gray-600`}
+                                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-600'} text-[11px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     We’ll notify you when there’s an order
@@ -163,8 +165,8 @@ function Order(){
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}

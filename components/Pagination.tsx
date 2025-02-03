@@ -16,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, count, pageSize, o
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <View className="flex flex-row justify-center items-center flex-wrap space-x-2 my-4">
+    <View className="flex flex-row justify-center items-center flex-wrap space-x-2 space-y-2 my-4">
       {pages.map((page) => (
         <TouchableOpacity
           key={page}

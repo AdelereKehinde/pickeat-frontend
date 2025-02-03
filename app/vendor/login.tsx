@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, TouchableOpacity,ActivityIndicator, ScrollView, Platform, Alert, Image, TextInput  } from "react-native";
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, View, TouchableOpacity,ActivityIndicator, ScrollView, StatusBar, Alert, Image, TextInput  } from "react-native";
 import { Link, router } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,9 +15,11 @@ import { postRequest } from '@/api/RequestHandler';
 import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Device from "expo-device";
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 
 export default function VendorLogin(){
+  const { theme, toggleTheme } = useContext(ThemeContext);
     const { setUser } = useUser();
 
     const toastConfig = {
@@ -103,8 +105,9 @@ export default function VendorLogin(){
 
     return (
       <SafeAreaView>
+        <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
         <View 
-        className='w-full h-full bg-white flex items-center'
+        className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
           <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-5 mx-auto'>
@@ -123,13 +126,13 @@ export default function VendorLogin(){
             >
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
-                className={`pl-3 text-[17px] w-full text-gray-800`}
+                className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} pl-3 text-[17px] w-full`}
                 >
                     Login Information
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}
-                className={`pl-3 text-[11px] w-full text-gray-500`}
+                className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} pl-3 text-[11px] w-full`}
                 >
                     To continue, kindly provide the following details
                 </Text>
@@ -143,14 +146,14 @@ export default function VendorLogin(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={` rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                             onChangeText={setEmail}
                             onFocus={()=>{setFocus('email')}}
                             onBlur={()=>{setFocus('')}}
                             // maxLength={10}
                             // keyboardType="number-pad"
                             placeholder='Email address'
-                            placeholderTextColor="black"
+                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                     </View>
                 
@@ -160,14 +163,14 @@ export default function VendorLogin(){
                     </View>
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
-                      className={`rounded-xl p-3 py-2 pl-10 text-[13px] w-full text-gray-600`}
+                      className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
                       onChangeText={setPassword}
                       onFocus={()=>{setFocus('password')}}
                       onBlur={()=>{setFocus('')}}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Password'
-                      placeholderTextColor="black"
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
@@ -176,7 +179,7 @@ export default function VendorLogin(){
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
                         size={18}
-                        color="#4b5563"
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
                         style={{ padding: 8 }}
                       />
                     </TouchableOpacity>
@@ -187,15 +190,15 @@ export default function VendorLogin(){
             <Link 
             href="/vendor/forgot_password?service=vendor" 
             style={{fontFamily: 'Inter-Medium'}} 
-            className='text-gray-500 text-[12px] ml-auto mr-5 mb-10'>
+            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] ml-auto mr-5 mb-10`}>
                Forget Password?
             </Link> 
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className='text-center text-[12px] text-gray-500  mt-auto'
+              className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-center text-[12px] mt-auto`}
               >
-                Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className='text-gray-800'>Sign Up</Link> 
+                Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}`}>Sign Up</Link> 
               </Text>
 
             <View className='w-[90%] mx-auto'>

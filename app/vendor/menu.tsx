@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, FlatList, Image, RefreshControl } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
@@ -14,8 +14,10 @@ import ENDPOINTS from '@/constants/Endpoint';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function Menu(){
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
     type CategoryArray = { id: number; category_name: string;}[];
     type MealArray = { id: number; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
@@ -69,9 +71,9 @@ export default function Menu(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center mb-10'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-                <View className='bg-white w-full'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center mb-10`}>
+                <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Menu' withbell={false} />
                 </View>
 
@@ -81,20 +83,20 @@ export default function Menu(){
                     <Add />
                 </TouchableOpacity>
 
-                <View className='bg-white w-full my-3 px-4 relative flex flex-row items-center justify-center'>
+                <View className='w-full my-3 px-4 relative flex flex-row items-center justify-center'>
                     <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
                     <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
                         autoFocus={false}
                         onFocus={()=>setIsFocus(true)}
                         onBlur={()=>setIsFocus(false)}
                         onChangeText={setSearchValue}
                         defaultValue={searchValue}
                         placeholder="Search through your menu"
-                        placeholderTextColor=""
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
                 </View>
 
@@ -159,7 +161,7 @@ export default function Menu(){
                     />
                 </View> */}
                 
-                <View className='w-full bg-gray-50 mt-3'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-50'} w-full mt-3`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -183,15 +185,15 @@ export default function Menu(){
                                 </TouchableOpacity>
                             </View>
                         )} 
-                        {(loading) && 
+                        {(loading && (meals.length == 0)) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className='mt-5 border-b border-gray-300'>
+                                    <View key={index} className='mt-5 border-b border-gray-900'>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor="#f3f3f3"
-                                        foregroundColor="#ecebeb"
+                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
