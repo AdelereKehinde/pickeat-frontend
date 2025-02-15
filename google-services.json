@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "820809039571",
+    "project_id": "pickeat-23c31",
+    "storage_bucket": "pickeat-23c31.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820809039571:android:93ae86d3796807ec8ade26",
+        "android_client_info": {
+          "package_name": "pickeat.pickit.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvnCPAzA0uUAHB68dTG96bDey_JPPizUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
