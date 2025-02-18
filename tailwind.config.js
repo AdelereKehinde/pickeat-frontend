@@ -17,7 +17,8 @@ module.exports = {
         'custom-light-green': "#37f831",
         'custom-orange': "#FF9900CC",
         "custom-orange-2": "#FFAD62",
-        'custom-orange-3': "#FD6E06"
+        'custom-orange-3': "#FD6E06",
+        'custom-gray-1': '#F5F5F5',
       },
       borderColor: {
         'custom-green': '#228B22',
