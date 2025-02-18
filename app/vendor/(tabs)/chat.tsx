@@ -103,13 +103,13 @@ const ChatList: React.FC = () => {
             <ScrollView className='w-full h-full' contentContainerStyle={{ flexGrow: 1 }}>
                 {(chatFilter == 'unread')?
                     (chats.filter(item => item.unread > 0).length == 0 && !loading) && (
-                        <View className='mx-auto'>
+                        <View className='mx-auto mt-10'>
                             <Empty />
                         </View>
                     )
                 :
                     (chats.length == 0 && !loading) && (
-                        <View className='mx-auto'>
+                        <View className='mx-auto mt-10'>
                             <Empty />
                         </View>
                     )
