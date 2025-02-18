@@ -20,12 +20,12 @@ import useDebounce from '@/components/Debounce';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FoodDisplay from '@/components/FoodList';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import SearchMeal from '@/components/SearchMeal';
 
 
 export default function Dashboard(){
     const {name} = useGlobalSearchParams()
     const { user } = useUser();
-    const [searchValue, setSearchValue] = useState('')
 
     const { theme, toggleTheme } = useContext(ThemeContext);
 
@@ -77,23 +77,6 @@ export default function Dashboard(){
     const {width, height} = Dimensions.get('window')
 
     const [loading, setLoading] = useState(false);
-    const [searchResults, setSearchResults] = useState<MealArray>([])
-    const [dropdownVisible, setDropdownVisible] = useState(false);
-
-    const searchMeals = async (query: string) => {
-        setLoading(true);
-        try {
-          const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?search=${query}`, true);
-          setSearchResults(response.results); // Update results or set empty array
-        //   alert(JSON.stringify(response.results))
-          setDropdownVisible(query.length > 0 && searchResults.length > 0);
-        } catch (error) {
-          console.error('Error fetching search results:', error);
-        } finally {
-          setLoading(false);
-        }
-    };
-
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -102,32 +85,16 @@ export default function Dashboard(){
 
         setRefreshing(false); // Stop the refreshing animation
     };
-    
-    
-    // Create a debounced version of fetchMeals with 500ms delay
-    const debouncedSearch = useDebounce(searchMeals, 1000);
 
-    const handleSearch = (query: string) => {
-        setSearchValue(query);
-        if (query.trim() === '') {
-          setSearchResults([]); // Clear results if input is empty
-          setLoading(false);
-          return;
-        }
-        debouncedSearch(query); // Call debounced function
-    };
-
-    const handleCancel = () => {
-        setSearchValue(''); // Clear search query
-        setSearchResults([]); // Clear search results
-        setDropdownVisible(false); // Hide the dropdown
-        Keyboard.dismiss(); // Optionally dismiss the keyboard
-    };
+    const [openSearchModal, setOpenSearchModal] = useState(false); 
     
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+
+                <SearchMeal open={openSearchModal} getValue={(value: boolean)=>{setOpenSearchModal(value)}}/>
+
                 <ScrollView 
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -180,7 +147,9 @@ export default function Dashboard(){
                         </View>
                     </View>
 
-                    <View className='mt-5 w-full px-5 relative flex flex-row items-center justify-center'>
+                    <TouchableOpacity 
+                    onPress={()=>{setOpenSearchModal(!openSearchModal)}}
+                    className='mt-5 w-full px-5 relative flex flex-row items-center justify-center'>
                         <View className='absolute left-6 z-10'>
                             <Search />
                         </View>
@@ -188,14 +157,11 @@ export default function Dashboard(){
                             style={{fontFamily: 'Inter-Medium'}}
                             className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-10 py-2 text-[11px]`}
                             autoFocus={false}
-                            onFocus={()=>setIsFocus(true)}
-                            onBlur={()=>setIsFocus(false)}
-                            onChangeText={handleSearch}
-                            value={searchValue}
                             placeholder="Search for available foods"
                             placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                            readOnly={true}
                         />
-                        {(loading) && (
+                        {/* {(loading) && (
                             <View className='absolute top-3 right-10'>
                                 <ActivityIndicator size="small" color="#228B22" />
                             </View>
@@ -204,7 +170,7 @@ export default function Dashboard(){
                             <TouchableOpacity onPress={handleCancel} className="ml-2 absolute top-3 right-7">
                                 <Text style={{fontFamily: 'Inter-Regular'}}  className={`${theme == 'dark'? 'text-gray-100' : ' text-custom-green'} text-[12px]`}>Cancel</Text>
                             </TouchableOpacity>
-                        )}
+                        )} */}
                         {/* <TouchableOpacity 
                         onPress={()=>{}}
                         className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
@@ -218,7 +184,7 @@ export default function Dashboard(){
                                 <Filter width={15} height={15} />
                             </View>
                         </TouchableOpacity> */}
-                    </View>
+                    </TouchableOpacity>
                         
                     {/* Dropdown Scrollable List */}
                     {/* {dropdownVisible && (
@@ -259,7 +225,7 @@ export default function Dashboard(){
                     </View> */}
 
                     <View className="mt-3 px-3 h-40">
-                        {(meals.length === 0 || loading) && 
+                        {(meals.length === 0) && 
                         <View className='flex flex-row space-x-2 w-screen overflow-hidden'>
                             {Array.from({ length: 3 }).map((_, index) => (
                                 <View key={index}>
@@ -281,7 +247,7 @@ export default function Dashboard(){
                         {!loading && (
                             <FlatList
                                 className=''
-                                data={ (dropdownVisible)? searchResults : meals}
+                                data={meals}
                                 renderItem={({ item }) => (
                                     <TouchableOpacity
                                     onPress={()=>{router.push(`/confirm_order?meal_id=${item.id}`)}}
@@ -303,11 +269,11 @@ export default function Dashboard(){
                                 showsHorizontalScrollIndicator={false}
                                 // Add spacing between items with ItemSeparatorComponent
                                 ItemSeparatorComponent={() => <View className='w-3' />}
-                                ListEmptyComponent={
-                                    <View className=' flex justify-around items-center ml-5'>
-                                        <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-500'}`} style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
-                                    </View>
-                                }
+                                // ListEmptyComponent={
+                                //     <View className=' flex justify-around items-center ml-5'>
+                                //         <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-500'}`} style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
+                                //     </View>
+                                // }
                             />
                         )}
                     </View>
@@ -481,4 +447,4 @@ const styles = StyleSheet.create({
       // Android shadow property
       elevation: 200,
     },
-  });
+});

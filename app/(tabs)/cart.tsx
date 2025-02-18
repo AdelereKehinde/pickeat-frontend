@@ -129,10 +129,10 @@ export default function Cart(){
 
                     <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full space-y-1`} contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && cartItems.length == 0) && (
-                            <View className='flex items-center w-full'> 
+                            <View className='flex items-center w-full my-auto'> 
                                 <Empty/>
                                 <Text
-                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[12px]`}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[12px] mt-5`}
                                 style={{fontFamily: 'Inter-Medium-Italic'}}
                                 >
                                 Add a meal to your cart from any store

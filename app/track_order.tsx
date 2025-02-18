@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, ScrollView, TouchableOpacity } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router'
 import TitleTag from '@/components/Title';
@@ -9,9 +9,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 function TrackOrder(){
     const {tracking_id, kitchen} = useGlobalSearchParams()
+
+    const { theme, toggleTheme } = useContext(ThemeContext);
 
     const [showPrompt, setShowPrompt] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -54,12 +57,12 @@ function TrackOrder(){
 
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
                 {showPrompt && (
                     <Prompt main_text='Thank you for choosing PickEat PickIt' sub_text='You’ve confirmed you’ve now collected your order' order_id='' estimated_time='' clickFunction={()=>{setShowPrompt(false)}} />
                 )}
-                <View className='bg-white w-full'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Track order' withbell={false} />
                 </View>
 
@@ -220,7 +223,7 @@ function TrackOrder(){
                         style={{fontFamily: 'Inter-Medium'}}
                         >
                             <Text
-                            className='text-[13px] text-gray-800'
+                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-900'} text-[13px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Order ID:

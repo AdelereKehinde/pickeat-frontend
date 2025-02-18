@@ -147,7 +147,7 @@ export default function PaymentPage(){
                         </View>
                         <TextInput
                             style={{fontFamily: 'Inter-Medium'}}
-                            className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-9 py-2 text-[11px]`}
+                            className={`w-full ${isFocused? 'border-custom-green border text-gray-200': 'border-gray-400 border text-black'} rounded-lg px-3 pl-9 py-2 text-[11px]`}
                             autoFocus={false}
                             onFocus={()=>setIsFocus(true)}
                             onBlur={()=>setIsFocus(false)}

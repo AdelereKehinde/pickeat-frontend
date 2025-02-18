@@ -49,8 +49,8 @@ const SearchMeal: React.FC<Properties> = ({open,  getValue}) => {
 
     const handleSearch = (query: string) => {
         setSearchValue(query);
+        setSearchResults([]); // Clear results if input is empty
         if (query.trim() === '') {
-          setSearchResults([]); // Clear results if input is empty
           setLoading(false);
           return;
         }
@@ -174,7 +174,11 @@ const SearchMeal: React.FC<Properties> = ({open,  getValue}) => {
                         ItemSeparatorComponent={() => <View className='h-3' />}
                         ListEmptyComponent={
                             <View className=' flex justify-around items-center ml-5'>
-                                <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-500'}`} style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
+                                {loading?
+                                    <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-500'}`} style={{fontFamily: 'Inter-Medium-Italic'}}>Searching</Text>
+                                    :
+                                    <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-500'}`} style={{fontFamily: 'Inter-Medium-Italic'}}>No food items found</Text>
+                                }
                             </View>
                         }
                     />

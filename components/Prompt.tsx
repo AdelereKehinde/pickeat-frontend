@@ -1,7 +1,8 @@
 import { View, TextInput, Animated, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import Success from '../assets/icon/success.svg';
 import Done from '../assets/icon/done.svg';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
   main_text: string,
@@ -14,15 +15,16 @@ interface Properties {
 const Prompt: React.FC<Properties> = ({main_text, sub_text, order_id, estimated_time, clickFunction}) => {
   const [inputValue, setInputValue] = useState('');
   const [isFocused, setIsFocus] = useState(false);
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <View className="absolute mb-4 w-full h-full flex items-center justify-around bg-transparent z-10" style={{backgroundColor: '#1212122b'}}>
+    <View className="absolute mb-4 w-full h-full flex items-center justify-around  z-10" style={{backgroundColor: '#00000080'}}>
       <View 
       style={styles.shadow_box}
-      className='w-72 h-80 bg-white flex items-center justify-around px-2 py-6 rounded-3xl shadow-2xl'>
+      className={`${theme == 'dark'? 'bg-gray-700' : ' bg-white'} w-72 h-80 flex items-center justify-around px-2 py-6 rounded-3xl shadow-2xl`}>
         <Text
         style={{fontFamily: 'Inter-SemiBold'}}
-        className='p-1 z-10 text-[12px] text-center'
+        className={`${theme == 'dark'? 'text-white' : ' text-black'} p-1 z-10 text-[12px] text-center`}
         >
           {(main_text == '')? 'Your order was placed successfully' : main_text}
         </Text>
@@ -50,7 +52,7 @@ const Prompt: React.FC<Properties> = ({main_text, sub_text, order_id, estimated_
         {(estimated_time !== '') && 
           <Text
           style={{fontFamily: 'Inter-Medium'}}
-          className='p-1 z-10 text-gray-500 text-[12px] text-center'
+          className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} p-1 z-10 text-[12px] text-center`}
           >
             Your order should be delivered to you {estimated_time} from now.
           </Text>

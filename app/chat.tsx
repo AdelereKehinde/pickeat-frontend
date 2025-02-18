@@ -120,13 +120,13 @@ const ChatList: React.FC = () => {
 
                 {(chatFilter == 'unread')?
                     chats.filter(item => item.unread > 0).length == 0 && (
-                        <View className='mx-auto'>
+                        <View className='mx-auto my-auto'>
                             <Empty />
                         </View>
                     )
                 :
                     chats.length == 0 && (
-                        <View className='mx-auto'>
+                        <View className='mx-auto my-auto'>
                             <Empty />
                         </View>
                     )
