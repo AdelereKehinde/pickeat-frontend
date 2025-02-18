@@ -18,7 +18,7 @@ import * as Device from "expo-device";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 
-export default function VendorLogin(){
+export default function AdminLogin(){
   const { theme, toggleTheme } = useContext(ThemeContext);
     const { setUser } = useUser();
 
@@ -47,6 +47,9 @@ export default function VendorLogin(){
     const [error, setError] = useState(''); // Error state 
 
     const handleLogin = async () => {
+      router.push({
+        pathname: "/admin/(drawer)/home" as any,
+      });
       try {
         if(!loading && validateInput()){
           setLoading(true)
@@ -128,7 +131,7 @@ export default function VendorLogin(){
                 style={{fontFamily: 'Inter-Bold'}}
                 className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} pl-3 text-[17px] w-full`}
                 >
-                    Login Information hhi
+                    Login Information
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}

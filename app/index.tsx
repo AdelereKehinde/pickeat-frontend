@@ -15,14 +15,20 @@ export default function Index(){
 
     const [showSellerOnboarding, setShowSellerOnboarding] = useState(false)
     const [showBuyerOnboarding, setShowBuyerOnboarding] = useState(false);
+    const [showRiderOnboarding, setShowRiderOnboarding] = useState(false);
+    const [showAdminOnboarding, setShowAdminOnboarding] = useState(false);
 
     const isNavFocused = useIsFocused();
     useEffect(() => {
         const checkOnboarding = async () => {
           const sellerHasVisited = await AsyncStorage.getItem('sellerHasVisitedOnboarding');
           const buyerHasVisited = await AsyncStorage.getItem('buyerHasVisitedOnboarding');
+          const riderHasVisited = await AsyncStorage.getItem('riderHasVisitedOnboarding');
+          const adminHasVisited = await AsyncStorage.getItem('adminHasVisitedOnboarding');
           setShowSellerOnboarding(!sellerHasVisited); // Show onboarding if the key doesn't exist
           setShowBuyerOnboarding(!buyerHasVisited); // Show onboarding if the key doesn't exist
+          setShowRiderOnboarding(!riderHasVisited); // Show onboarding if the key doesn't exist
+          setShowAdminOnboarding(!adminHasVisited); // Show onboarding if the key doesn't exist
         };
         checkOnboarding();
     }, [isNavFocused]);
@@ -66,16 +72,16 @@ export default function Index(){
                         {/* <Link 
                         href="/get_started"
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-2xl bg-gray-100 p-4 text-custom-green text-center`}>
+                        className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
                             Rider
-                        </Link>
+                        </Link> */}
 
                         <Link 
-                        href="/get_started"
+                        href={"/admin/login" as any}
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-2xl bg-gray-100 p-4 text-custom-green text-center`}>
+                        className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
                             Admin
-                        </Link> */}
+                        </Link> 
                     </View>
                 </View>
                 

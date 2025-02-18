@@ -88,6 +88,13 @@ export default function RootLayout() {
           <Stack.Screen name="vendor/chat_page" options={{headerShown: false}} />
           <Stack.Screen name="vendor/set_store_address" options={{headerShown: false}} />
           <Stack.Screen name="vendor/profile_page" options={{headerShown: false}} />
+
+          {/* ADMIN */}
+          {/* <Stack.Screen name="admin/(tabs)" options={{ headerShown: false }} />   */}
+
+          <Stack.Screen name="admin/login" options={{headerShown: false}} />
+          <Stack.Screen name="admin/(drawer)" options={{headerShown: false}} />
+
         </Stack>
       </ThemeProvider>
     </UserProvider>
