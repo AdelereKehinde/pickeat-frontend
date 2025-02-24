@@ -9,6 +9,11 @@ import Bell from '../../../assets/icon/bell.svg';
 import AdminHome from './home'
 import AdminOrder from './order'
 import AdminUser from './users'
+import AdminTransaction from './transaction'
+import AdminReportAnalytics from './reports'
+import AdminPages from './pages'
+import AdminContent from './content'
+import AdminHelpSupport from './support'
 
 const Drawer = createDrawerNavigator();
 
@@ -40,7 +45,11 @@ export default function Layout() {
       <Drawer.Screen name="Dashboard" component={AdminHome} />
       <Drawer.Screen name="Order Management" component={AdminOrder} />
       <Drawer.Screen name="User management" component={AdminUser} />
-      {/* <Drawer.Screen name="Earning & Transactions" component={AdminUser} /> */}
+      <Drawer.Screen name="Earning & Transactions" component={AdminTransaction} />
+      <Drawer.Screen name="Reports & Analytics" component={AdminReportAnalytics} />
+      <Drawer.Screen name="Pages & Restriction" component={AdminPages} />
+      <Drawer.Screen name="Content management" component={AdminContent} />
+      <Drawer.Screen name="Help & Support" component={AdminHelpSupport} />
     </Drawer.Navigator>
     </GestureHandlerRootView>
   );
