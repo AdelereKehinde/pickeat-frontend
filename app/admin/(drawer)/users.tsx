@@ -54,7 +54,7 @@ function AdminUser(){
                     email: '2000',
                     phone: 'Abuja',
                     thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    type: 'Client',
+                    type: 'client',
                     status_history_status: 'completed',
                     status: 'completed',
                     items: 'string',
@@ -66,7 +66,7 @@ function AdminUser(){
                     email: '2000',
                     phone: 'Abuja',
                     thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    type: 'Vendor',
+                    type: 'vendor',
                     status_history_status: 'completed',
                     status: 'completed',
                     items: 'string22',
@@ -226,7 +226,7 @@ function AdminUser(){
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
                     className='w-full p-1 mb-40 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!loading && (filter==='all' ? parentUsers.length : parentUsers.filter((item)=>item.status.includes(filter)).length == 0)) && (
+                        {(!loading && (filter==='all' ? parentUsers.length : parentUsers.filter((item)=>item.type.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
@@ -260,7 +260,7 @@ function AdminUser(){
                                 ))}
                             </View>
                         }
-                        {parentUsers.filter((item)=>item.status.includes(filter)).map((item, index) => (
+                        {parentUsers.filter((item)=>item.type.includes(filter)).map((item, index) => (
                             <View key={item.id}>
                                 <View className='bg-white border-gray-300 flex flex-row items-center justify-between border-b w-full py-3 px-6'>
                                     <View className='flex flex-row justify-between items-center w-full'>
