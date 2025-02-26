@@ -5,7 +5,7 @@ import Back from '../assets/icon/back_arrow.svg';
 import Bell from '../assets/icon/bell.svg';
 
 interface Properties {
-    next:'/vendor/signup' | '/vendor/get_started' |'/vendors/orders',
+    next:'/vendor/signup' | '/vendor/get_started' |'/vendors/orders' | '/rider/signup',
   }
 
 const Skip: React.FC<Properties> = ({next})  =>{

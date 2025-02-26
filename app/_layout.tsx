@@ -95,6 +95,16 @@ export default function RootLayout() {
           <Stack.Screen name="admin/login" options={{headerShown: false}} />
           <Stack.Screen name="admin/(drawer)" options={{headerShown: false}} />
 
+
+          {/* RIDER */}
+          <Stack.Screen name="rider/(tabs)" options={{ headerShown: false }} />  
+          <Stack.Screen name="rider/welcome" options={{headerShown: false}} />
+          <Stack.Screen name="rider/welcome2" options={{headerShown: false}} />
+          <Stack.Screen name="rider/welcome3" options={{headerShown: false}} />
+          <Stack.Screen name="rider/login" options={{headerShown: false}} />
+          <Stack.Screen name="rider/signup" options={{headerShown: false}} />
+          <Stack.Screen name="rider/create_profile" options={{headerShown: false}} />
+
         </Stack>
       </ThemeProvider>
     </UserProvider>

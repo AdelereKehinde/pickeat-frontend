@@ -69,12 +69,12 @@ export default function Index(){
                             Vendor
                         </Link>
                         
-                        {/* <Link 
-                        href="/get_started"
+                        <Link 
+                        href={showRiderOnboarding? "/rider/welcome" : "/rider/login"}
                         style={{fontFamily: 'Inter-Medium'}}
                         className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
                             Rider
-                        </Link> */}
+                        </Link>
 
                         <Link 
                         href={"/admin/login" as any}
