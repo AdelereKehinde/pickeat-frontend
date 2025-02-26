@@ -7,6 +7,12 @@ import PieChart from 'react-native-pie-chart'
 import { Images } from '../../../constants';
 import { FontAwesome } from '@expo/vector-icons';
 import Nigeria from '../../../assets/icon/nigeria.svg';
+import Naira from '../../../assets/icon/naira.svg';
+import Clickboard from '../../../assets/icon/Clickboard.svg';
+import PendingApproval from '../../../assets/icon/pending-approval.svg';
+import PendingOrder from '../../../assets/icon/pending-order.svg';
+import CancelledOrder from '../../../assets/icon/cancelled-order.svg';
+import ActiveOrder from '../../../assets/icon/active-order.svg';
 import Information from '../../../assets/icon/alert-circle.svg';
 import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
 
@@ -137,8 +143,8 @@ export default function AdminHome(){
                     <View className='bg-white rounded w-full p-2 mt-4'>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
-                          <View className='mr-[10px]'>
-                            <Image source={require("../../../assets/images/naira.png")}/>
+                          <View className='mr-[10px] my-auto'>
+                            <Naira />
                           </View>
                           <View>
                             <Text className='text-[#8D8D8D] text-[12px]'>Todays Earning</Text>
@@ -166,8 +172,8 @@ export default function AdminHome(){
                     <View className='bg-white rounded w-full p-2 mt-4'>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
-                          <View className='mr-[10px] mt-[15]'>
-                            <Image source={require("../../../assets/images/clickboard.png")}/>
+                          <View className='mr-[10px] my-auto'>
+                            <PendingApproval />
                           </View>
                           <View style={{borderLeftWidth: 2, borderLeftColor:'#787676', padding: 10}}>
                             <Text className='text-[#787676] text-[14px]' style={{fontFamily: 'Inter-SemiBold'}}>Pending approvals</Text>
@@ -236,8 +242,8 @@ export default function AdminHome(){
                     <View className='bg-white rounded w-full p-2 mt-4'>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
-                          <View className='mr-[10px] mt-[15]'>
-                            <Image source={require("../../../assets/images/mark.png")}/>
+                          <View className='mr-[10px] my-auto'>
+                            <ActiveOrder />
                           </View>
                           <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Active Orders</Text>
@@ -254,8 +260,8 @@ export default function AdminHome(){
                     <View className='bg-white rounded w-full p-2 mt-4'>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
-                          <View className='mr-[10px] mt-[15]'>
-                            <Image source={require("../../../assets/images/checkmark-circle.png")}/>
+                          <View className='mr-[10px] my-auto'>
+                            <Clickboard />
                           </View>
                           <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Completed Orders</Text>
@@ -272,8 +278,8 @@ export default function AdminHome(){
                     <View className='bg-white rounded w-full p-2 mt-4'>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
-                          <View className='mr-[10px] mt-[15]'>
-                            <Image source={require("../../../assets/images/copy.png")}/>
+                          <View className='mr-[10px] my-auto'>
+                            <PendingOrder />
                           </View>
                           <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#787676]'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Pending Orders</Text>
@@ -290,8 +296,8 @@ export default function AdminHome(){
                     <View className='bg-white rounded w-full p-2 mt-4'>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
-                          <View className='mr-[10px] mt-[15]'>
-                            <Image source={require("../../../assets/images/cancel.png")}/>
+                          <View className='mr-[10px] my-auto'>
+                            <CancelledOrder />
                           </View>
                           <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#787676]'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Canceled Orders</Text>
