@@ -47,7 +47,16 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Pickeat to use your location."
         }
-      ]
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Pickeat to access your camera",
+          "microphonePermission": "Allow Pickeat to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      "react-native-vision-camera"
     ],
     "experiments": {
       "typedRoutes": true

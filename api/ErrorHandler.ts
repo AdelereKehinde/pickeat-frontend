@@ -25,14 +25,23 @@ export const handleError = async (error: any, loginUrl: string = '/vendor/login'
       // Clear the token
       await AsyncStorage.removeItem('authToken');
       const service = await getService();
-      const login_url = (service? 
-        service === 'buyer'? 
-          '/login' 
-          : 
-          '/vendor/login'
-        :
-        '/login' 
-      )
+      var login_url = '/login'
+      if (service){
+        switch (service) {
+          case 'buyer':
+            login_url = '/login'
+            break;
+          case 'seller':
+            login_url = '/vendor/login'
+            break;
+          case 'rider':
+            login_url = '/rider/login'
+            break;
+          default:
+            login_url = '/login'
+            break;
+        }
+      }
       // Redirect to login screen (if using navigation)
       router.push(login_url)
     }

@@ -72,6 +72,7 @@ export default function VendorLogin(){
             avatar: res.data.avatar,
             first_name: res.data.first_name,
             full_name: res.data.full_name,
+            last_name: "",
             store_name: res.data.store_name
           })
           setData(res); // Display or use response data as needed
@@ -128,7 +129,7 @@ export default function VendorLogin(){
                 style={{fontFamily: 'Inter-Bold'}}
                 className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} pl-3 text-[17px] w-full`}
                 >
-                    Login Information hhi
+                    Login Information
                 </Text>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}

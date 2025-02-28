@@ -14,14 +14,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
-export default function AccountSetup3(){
+export default function Availability(){
   const { theme, toggleTheme } = useContext(ThemeContext);
   const toastConfig = {
       success: CustomToast,
       error: CustomToast,
   };
-  const [openState, setOpenState] = useState({available_from:false, available_to:false, available_on_holiday: false, time_start: false, time_end: false, no_of_worker: false, terms: false})
-  const [data, setData] = useState({available_from:"", time_end:"", available_on_holiday: false, time_start: '', available_to: "", no_of_worker: 0, terms: false});
+  const [openState, setOpenState] = useState({available_from:false, available_to:false, available_on_holiday: false, time_start: false, time_end: false, terms: false})
+  const [data, setData] = useState({available_from:"", time_end:"", available_on_holiday: false, time_start: '', available_to: "", terms: false});
   const dropdown = [
     { label: 'Monday', value: 'monday' },
     { label: 'Tuesday', value: 'tuesday' },
@@ -77,7 +77,7 @@ export default function AccountSetup3(){
   ]
 
   const validateInput = () =>{
-    if((data.available_to !== '') && (data.available_on_holiday !== false) && (data.no_of_worker !== 0) && (data.available_from !== '') && (data.terms !== false) && (data.time_end !== '') && (data.time_start !== '')){
+    if((data.available_to !== '') && (data.available_on_holiday !== false) && (data.available_from !== '') && (data.terms !== false) && (data.time_end !== '') && (data.time_start !== '')){
       return true;
     }
     return false; 
@@ -90,17 +90,17 @@ export default function AccountSetup3(){
     if(!loading && validateInput()){
         try {
             setLoading(true)
-            const updatedProfile = await postRequest(ENDPOINTS['vendor']['availability'], data, true);
+            const updatedProfile = await postRequest(ENDPOINTS['rider']['availability'], data, true);
             setLoading(false)
             Toast.show({
                 type: 'success',
-                text1: "Profile Updated.",
+                text1: "Availability Updated.",
                 visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
                 autoHide: true,
             });
-            // await Delay(3000)
+            await Delay(1000)
             router.replace({
-                pathname: '/vendor/set_store_address',
+                pathname: '/rider/all_set',
             }); 
         
         } catch (error: any) {
@@ -124,8 +124,8 @@ export default function AccountSetup3(){
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
             <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
-            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
-              <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
+              <TitleTag withprevious={true} title='Set Availability' withbell={false}/>
             </View> 
             
             <ScrollView className='px-4' contentContainerStyle={{ flexGrow: 1 }}>
@@ -140,7 +140,7 @@ export default function AccountSetup3(){
                 />
               )}
 
-              <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-custom-green'} p-2`}>
+              <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-custom-green'} p-4`}>
                 <View className='space-y-1'>
                   <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}`}>
                     <Pressable
@@ -160,7 +160,7 @@ export default function AccountSetup3(){
                   </View>
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-3`}>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-5`}>
                   <Pressable
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_on_holiday: !openState.available_on_holiday}));}}
@@ -186,15 +186,6 @@ export default function AccountSetup3(){
                       <CharFieldDropDown options={[]} active={false} open={openState.time_end}  placeholder="----------" focus={false} border={false} name='Time End' setValue={data.time_end} getValue={(value: string)=>{setData(prevState => ({...prevState, time_end: value,})); }}/>
                     </Pressable>
                   </View>
-                </View>
-
-                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} mt-1`}>
-                  <Pressable
-                    className='w-full'
-                    onPress={()=>{setOpenState(prevState => ({...prevState, no_of_worker: !openState.no_of_worker}));}}
-                    >
-                    <CharFieldDropDown options={workers} open={openState.no_of_worker}  placeholder="----------" focus={false} border={false} name='Total Number of Workers' getValue={(value: string)=>{setData(prevState => ({...prevState, no_of_worker: parseInt(value),})); setOpenState(prevState => ({...prevState, no_of_worker: false}))}}/>
-                  </Pressable>
                 </View>
                 
               </View>

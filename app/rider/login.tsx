@@ -50,10 +50,23 @@ export default function RiderLogin(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type CategoryArray = { id: string; category_name: string;}[];
-          type DataResponse = {meal_categories: CategoryArray;  onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
+          type DataResponse = { 
+            message: string; 
+            token:string; 
+            refresh: string; 
+            email:string; 
+            avatar:string; 
+            first_name:string; 
+            last_name:string; 
+            phone_number:string; 
+            set_availability:boolean; 
+            set_identity: boolean; 
+            set_profile_1: boolean;
+            set_profile_2: boolean;
+            set_profile_3: boolean;
+          };
           type ApiResponse = { status: string; message: string; data:DataResponse };
-          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {
+          const res = await postRequest<ApiResponse>(ENDPOINTS['rider']['signin'], {
             email: email,
             password: password,
             device_name: deviceName,
@@ -62,8 +75,7 @@ export default function RiderLogin(){
 
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
-          await AsyncStorage.setItem('service', 'vendor');
-          await AsyncStorage.setItem('categories', JSON.stringify(res.data.meal_categories));
+          await AsyncStorage.setItem('service', 'rider');
           
           setLoading(false)
           setUser({
@@ -71,8 +83,9 @@ export default function RiderLogin(){
             phone_number:  res.data.phone_number,
             avatar: res.data.avatar,
             first_name: res.data.first_name,
-            full_name: res.data.full_name,
-            store_name: res.data.store_name
+            last_name: res.data.last_name,
+            full_name: "",
+            store_name: ""
           })
           setData(res); // Display or use response data as needed
           // alert(JSON.stringify(res))
@@ -85,7 +98,7 @@ export default function RiderLogin(){
 
           await Delay(3000)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? '/vendor/(tabs)/home' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
+            pathname: res.data.set_profile_1? res.data.set_identity? res.data.set_profile_2? res.data.set_profile_3? res.data.set_availability? '/rider/(tabs)/home' : '/rider/availability' : '/rider/create_profile_3' : '/rider/create_profile_2' : '/rider/identity_verification' : '/rider/create_profile'
           }); 
         }
 
@@ -174,7 +187,7 @@ export default function RiderLogin(){
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                    className='absolute inset-y-1 right-2 my-auto'
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}

@@ -9,10 +9,11 @@ interface Properties {
   border: boolean,
   focus: boolean,
   setValue?: string,
+  readonly?: boolean,
   getValue: (value: string) => void
 }
 
-const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setValue, getValue}) => {
+const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setValue, readonly, getValue}) => {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [inputValue, setInputValue] = useState(setValue);
   const [isFocused, setIsFocus] = useState(false);
@@ -42,6 +43,7 @@ const CharField: React.FC<Properties> = ({name, placeholder, border, focus, setV
         autoFocus={focus}
         onChangeText={getValue}
         defaultValue={inputValue}
+        readOnly={readonly? readonly:false}
         placeholder={placeholder}
         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
       />

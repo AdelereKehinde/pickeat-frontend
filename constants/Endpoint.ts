@@ -4,6 +4,7 @@ const BASE_URL = `https://pickeat-backend.onrender.com/api/v1/`
 const ACOOUNT_BASE = `account/`
 const BUYER_BASE = `buyer/`
 const VENDOR_BASE = `vendor/`
+const RIDER_BASE = `rider/`
 const INVENTORY_BASE = `inventory/`
 const CART_BASE = `cart/`
 const PAYMENT_BASE = `payment/`
@@ -53,6 +54,19 @@ const ENDPOINTS = {
         'update-address': `${VENDOR_BASE}address/update`,
         'information': `${VENDOR_BASE}information`,
     },
+    'rider': {
+        'signin': `${RIDER_BASE}signin`,
+        'signup': `${RIDER_BASE}signup`,
+        'verify': `${RIDER_BASE}`,
+        'onboard': `${RIDER_BASE}onboard`,
+        'onboard-2': `${RIDER_BASE}onboard-2`,
+        'identity': `${RIDER_BASE}identity`,
+        'bank-details': `${RIDER_BASE}bank-details`,
+        'availability': `${RIDER_BASE}availability`,
+        'user-data':`${RIDER_BASE}data`,
+        'relationship':`${RIDER_BASE}relationship`,
+        'vehicle-type':`${RIDER_BASE}vehicle-type`,
+    },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,
         'create-meal': `${INVENTORY_BASE}meal/create`,
@@ -80,6 +94,8 @@ const ENDPOINTS = {
         'wallet-dashboard': `${PAYMENT_BASE}buyer/wallet/dashboard`,
         'fund-wallet': `${PAYMENT_BASE}buyer/wallet/fund`,
         'pay': `${PAYMENT_BASE}buyer/pay`,
+        'banks': `${PAYMENT_BASE}banks`,
+        'account-validate': `${PAYMENT_BASE}account/validate`,
         'initialize': `${PAYMENT_BASE}initialize`,
         'vendor-transactions': `${PAYMENT_BASE}transaction/vendor`,
     },

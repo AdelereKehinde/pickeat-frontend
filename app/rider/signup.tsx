@@ -31,11 +31,12 @@ export default function RiderSignUp(){
     const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
 
     const [password, setPassword] = useState('')
+    const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
 
     const validateInput = () =>{
-      if(email.includes(".com") && (password.length>5)){
+      if(email.includes(".com") && (password.length>5) && (password.trim() == password2.trim())){
         return true;
       }
       return false;
@@ -46,61 +47,47 @@ export default function RiderSignUp(){
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
-    const handleLogin = async () => {
-        router.push('/rider/create_profile')
+    const handleRegistration = async () => {
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type CategoryArray = { id: string; category_name: string;}[];
-          type DataResponse = {meal_categories: CategoryArray;  onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
+          type DataResponse = { id: string; };
           type ApiResponse = { status: string; message: string; data:DataResponse };
-          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {
+          var request_body = {
             email: email,
             password: password,
+            password2: password2,
             device_name: deviceName,
             device_type: deviceType,
-          }, true);
-
-          await AsyncStorage.setItem('token', res.data.token);
-          await AsyncStorage.setItem('refresh', res.data.refresh);
-          await AsyncStorage.setItem('service', 'vendor');
-          await AsyncStorage.setItem('categories', JSON.stringify(res.data.meal_categories));
-          
+          }
+          const res = await postRequest<ApiResponse>(ENDPOINTS['rider']['signup'], request_body, false);
           setLoading(false)
-          setUser({
-            email: res.data.email,
-            phone_number:  res.data.phone_number,
-            avatar: res.data.avatar,
-            first_name: res.data.first_name,
-            full_name: res.data.full_name,
-            store_name: res.data.store_name
-          })
-          setData(res); // Display or use response data as needed
-          // alert(JSON.stringify(res))
+
           Toast.show({
             type: 'success',
-            text1: "Welcome back",
-            visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+            text1: "Otp Sent",
+            text2: res.message,
+            visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
-          }); 
-
+          });
           await Delay(3000)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? '/vendor/(tabs)/home' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
+            pathname: '/rider/verification_code',
+            params: { email: email.toLowerCase(), id: res.data.id},
           }); 
         }
 
       } catch (error:any) {
         setLoading(false)
-        // alert(JSON.stringify(error))
+        alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
           text1: "An error occured",
-          text2: error.data?.data?.message || 'Unknown Error',
+          text2: error.data?.data?.message || "Unknown Error",
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.data?.data?.message || 'Unknown Error'); // Set error message
+        setError(error.data?.data?.message || "Unknown Error"); // Set error message
       }
     };
 
@@ -139,26 +126,26 @@ export default function RiderSignUp(){
                 </Text>
             </View>
 
-            <View className='flex flex-row justify-around items-center w-full p-5 space-x-3 mt-5'>
+            <View className='flex flex-col justify-around items-center w-full p-5 space-x-3 mt-5'>
                 <View className='grow space-y-5'>
-                <View className={`w-full flex-row items-center relative border ${(focus=='email')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
-                        <View className='absolute left-2'>
-                          <Email />
-                        </View>
-                        <TextInput
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
-                            onChangeText={setEmail}
-                            onFocus={()=>{setFocus('email')}}
-                            onBlur={()=>{setFocus('')}}
-                            // maxLength={10}
-                            // keyboardType="number-pad"
-                            placeholder='Email address'
-                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
-                        />
+                  <View className={`w-full flex-row items-center relative border ${(focus=='email')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
+                    <View className='absolute left-2'>
+                      <Email />
                     </View>
+                    <TextInput
+                        style={{fontFamily: 'Inter-Medium'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
+                        onChangeText={setEmail}
+                        onFocus={()=>{setFocus('email')}}
+                        onBlur={()=>{setFocus('')}}
+                        // maxLength={10}
+                        // keyboardType="number-pad"
+                        placeholder='Email address'
+                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                      />
+                  </View>
                 
-                    <View className={`w-full flex-row items-center relative border ${(focus=='password')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
+                  <View className={`w-full flex-row items-center relative border ${(focus=='password')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
                     <View className='absolute left-2'>
                       <Locked />
                     </View>
@@ -175,7 +162,34 @@ export default function RiderSignUp(){
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                    className='absolute inset-y-1 right-2 my-auto'
+                    className='absolute right-2 my-auto'
+                    >
+                      <FontAwesome
+                        name={showPassword ? 'eye-slash' : 'eye'}
+                        size={18}
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
+                        style={{ padding: 8 }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View className={`w-full flex-row items-center relative border ${(focus=='password2')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
+                    <View className='absolute left-2'>
+                      <Locked />
+                    </View>
+                    <TextInput
+                      style={{fontFamily: 'Inter-Medium'}}
+                      className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
+                      onChangeText={setPassword2}
+                      onFocus={()=>{setFocus('password2')}}
+                      onBlur={()=>{setFocus('')}}
+                      // maxLength={10}
+                      // keyboardType="number-pad"
+                      placeholder='Confirm Password'
+                      placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                      secureTextEntry={!showPassword}
+                    />
+                    <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
@@ -186,7 +200,10 @@ export default function RiderSignUp(){
                     </TouchableOpacity>
                   </View>
                 </View>
-            </View> 
+
+                
+            </View>
+             
 
             {/* <Link 
             href="/vendor/forgot_password?service=vendor" 
@@ -204,7 +221,7 @@ export default function RiderSignUp(){
 
             <View className='w-[90%] mx-auto'>
               <TouchableOpacity
-              onPress={handleLogin}
+              onPress={handleRegistration}
               className={`text-center ${(validateInput())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 mb-10 flex items-center justify-around`}
               >
                 {loading && (

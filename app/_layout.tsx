@@ -103,7 +103,13 @@ export default function RootLayout() {
           <Stack.Screen name="rider/welcome3" options={{headerShown: false}} />
           <Stack.Screen name="rider/login" options={{headerShown: false}} />
           <Stack.Screen name="rider/signup" options={{headerShown: false}} />
+          <Stack.Screen name="rider/verification_code" options={{headerShown: false}} />
           <Stack.Screen name="rider/create_profile" options={{headerShown: false}} />
+          <Stack.Screen name="rider/create_profile_2" options={{headerShown: false}} />
+          <Stack.Screen name="rider/create_profile_3" options={{headerShown: false}} />
+          <Stack.Screen name="rider/identity_verification" options={{headerShown: false}} />
+          <Stack.Screen name="rider/availability" options={{headerShown: false}} />
+          <Stack.Screen name="rider/all_set" options={{headerShown: false}} />
 
         </Stack>
       </ThemeProvider>

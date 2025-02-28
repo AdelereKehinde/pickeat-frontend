@@ -70,6 +70,7 @@ export default function Login(){
             phone_number:  res.data.phone_number,
             avatar: res.data.avatar,
             first_name: res.data.first_name,
+            last_name: "",
             full_name: res.data.full_name,
             store_name: ''
           })

@@ -12,7 +12,7 @@ export default function RiderWelcome3(){
         // Set a flag to indicate the user has completed onboarding
         await AsyncStorage.setItem('riderHasVisitedOnboarding', 'true');
         router.replace('/rider/signup');
-      };
+    };
     return (
       <SafeAreaView>
         <View 

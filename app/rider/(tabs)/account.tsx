@@ -6,18 +6,47 @@ import { useUser } from '@/context/UserProvider';
 import TitleTag from '@/components/Title';
 import User from '../../../assets/icon/user.svg'
 import History from '../../../assets/icon/history.svg'
-import Wallet from '../../../assets/icon/wallet.svg'
+import Notification from '../../../assets/icon/notification-green-outline.svg'
 import Theme from '../../../assets/icon/theme.svg'
+import ToggleOn from '../../../assets/icon/toggle_on.svg'
+import ToggleOff from '../../../assets/icon/toggle_off.svg'
 import Device from '../../../assets/icon/device.svg'
 import Faq from '../../../assets/icon/faq.svg'
 import Support from '../../../assets/icon/support.svg'
+import Menu from '../../../assets/icon/menu.svg'
+import Review from '../../../assets/icon/reviews.svg'
+import Earnings from '../../../assets/icon/earnings.svg'
 import Logout from '../../../assets/icon/log_out.svg'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function Account(){
     const { user } = useUser();
     const { theme, toggleTheme } = useContext(ThemeContext);
+
+    const [showPushNotification, setShowPushNotification] = useState(false)
+    const isNavFocused = useIsFocused();
+    useEffect(() => {
+        const checkPushNotification = async () => {
+          const pushNoti = await AsyncStorage.getItem('pushNotification');
+          if (pushNoti){
+            setShowPushNotification(eval(pushNoti)); // Show onboarding if the key doesn't exist
+          }
+        };
+        checkPushNotification();
+    }, [isNavFocused]);
+
+    const TogglePushNotifi = async () => {
+        // Set a flag to indicate the user has completed onboarding
+        if (showPushNotification){
+            await AsyncStorage.setItem('pushNotification', 'false');
+        }else{
+            await AsyncStorage.setItem('pushNotification', 'true');
+        }
+        setShowPushNotification(!showPushNotification)
+    };
 
     return (
         <SafeAreaView>
@@ -33,10 +62,10 @@ export default function Account(){
                             />
                         </View>
                         <Text
-                        className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-2xl`}
+                        className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-xl`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            {user?.full_name}
+                            {user?.first_name} {user?.last_name}
                         </Text>
                         <Text
                         className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[13px]`}
@@ -52,10 +81,10 @@ export default function Account(){
                         </Text>
                     </View>
 
-                    <View className='w-full pt-3'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full pt-3`}>
                         <View className='w-full px-5 my-1'>
                             <Pressable
-                            onPress={()=>{(router.push("/profile_page"))}}
+                            onPress={()=>{(router.push("/vendor/profile_page"))}}
                             className='flex flex-row w-full items-center'
                             >
                                 <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
@@ -71,33 +100,17 @@ export default function Account(){
                         </View>
                         <View className='w-full px-5 my-1'>
                             <Pressable
-                            onPress={()=>{(router.push("/booking_history"))}}
+                            onPress={()=>{(router.push("/vendor/earnings"))}}
                             className='flex flex-row w-full items-center'
                             >
                                 <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
-                                    <History />
+                                    <Earnings />
                                 </View>
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}} 
                                 className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px] font-medium ml-5`}
                                 >
-                                    Booking History
-                                </Text>
-                            </Pressable>
-                        </View>
-                        <View className='w-full px-5 my-1'>
-                            <Pressable
-                            onPress={()=>{(router.push("/wallet_page"))}}
-                            className='flex flex-row w-full items-center'
-                            >
-                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
-                                    <Wallet />
-                                </View>
-                                <Text
-                                style={{fontFamily: 'Inter-Medium'}} 
-                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px] font-medium ml-5`}
-                                >
-                                    Wallet
+                                    Earnings and Payment
                                 </Text>
                             </Pressable>
                         </View>
@@ -119,6 +132,33 @@ export default function Account(){
                         </View>
                         <View className='w-full px-5 my-1'>
                             <Pressable
+                            onPress={()=>{}}
+                            className='flex flex-row w-full items-center'
+                            >
+                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
+                                    <Notification />
+                                </View>
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px] font-medium ml-5`}
+                                >
+                                    Push up notifications
+                                </Text>
+                                <TouchableOpacity
+                                onPress={TogglePushNotifi}
+                                className='ml-auto'
+                                >
+                                    {showPushNotification?
+                                    <ToggleOn width={40} />
+                                    :
+                                    <ToggleOff width={40} />
+                                    }
+                                    
+                                </TouchableOpacity>
+                            </Pressable>
+                        </View>
+                        <View className='w-full px-5 my-1'>
+                            <Pressable
                             onPress={()=>{(router.push("/device"))}}
                             className='flex flex-row w-full items-center'
                             >
@@ -133,22 +173,6 @@ export default function Account(){
                                 </Text>
                             </Pressable>
                         </View>
-                        {/* <View className='w-full px-5 my-1'>
-                            <Pressable
-                            onPress={()=>{alert('clicked')}}
-                            className='flex flex-row w-full items-center'
-                            >
-                                <View className='w-10 h-10 flex items-center justify-around rounded-full bg-gray-100'>
-                                    <Faq />
-                                </View>
-                                <Text
-                                style={{fontFamily: 'Inter-Medium'}} 
-                                className='text-[12px] text-gray-700 font-medium ml-5'
-                                >
-                                    FAQ
-                                </Text>
-                            </Pressable>
-                        </View> */}
                         <View className='w-full px-5 my-1'>
                             <Pressable
                             onPress={()=>{(router.push("/support"))}}
@@ -166,9 +190,9 @@ export default function Account(){
                             </Pressable>
                         </View>
 
-                        <TouchableOpacity
-                        onPress={()=>{router.push('/login')}}
-                        className={`text-center bg-custom-green rounded-xl p-4 w-[90%] self-center mt-7 text-white flex flex-row items-center`}
+                        <Pressable
+                        onPress={()=>{router.replace('/vendor/login')}}
+                        className={`mb-5 text-center bg-custom-green rounded-xl p-4 w-[90%] self-center mt-7 text-white flex flex-row items-center`}
                         >
                             <Text
                             style={{fontFamily: 'Inter-Medium'}} 
@@ -179,7 +203,7 @@ export default function Account(){
                             <View className='absolute right-5'>
                                 <Logout />
                             </View>
-                    </TouchableOpacity>
+                        </Pressable>
                     </View>
                 </ScrollView>
             </View>

@@ -1,12 +1,12 @@
 import { Tabs } from 'expo-router';
-import HomeFill from '../../../assets/icon/home_fill.svg';
-import HomeOutline from '../../../assets/icon/home_outline.svg';
-import CartFill from '../../../assets/icon/cart_fill.svg';
-import CartOutline from '../../../assets/icon/cart_outline.svg';
-import ServiceFill from '../../../assets/icon/service_fill.svg';
-import ServiceOutline from '../../../assets/icon/service_outline.svg';
-import AccountFill from '../../../assets/icon/account_fill.svg';
-import AccountOutline from '../../../assets/icon/account_outline.svg';
+import HomeFill from '../../../assets/icon/rider-home-fill.svg';
+import HomeOutline from '../../../assets/icon/rider-home-outline.svg';
+import OrderFill from '../../../assets/icon/rider-orders-fill.svg';
+import OrderOutline from '../../../assets/icon/rider-orders-outline.svg';
+import MapFill from '../../../assets/icon/rider-map-fill.svg';
+import MapOutline from '../../../assets/icon/rider-map-outline.svg';
+import AccountFill from '../../../assets/icon/rider-account-fill.svg';
+import AccountOutline from '../../../assets/icon/rider-account-outline.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { useContext } from 'react';
 
@@ -37,36 +37,36 @@ export default function TabLayout() {
     }} 
     >
       <Tabs.Screen 
-        name="dashboard" 
+        name="home" 
         options={{ 
           headerShown: false,
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
             focused 
-              ? <HomeFill width={34} height={34} />
-              : <HomeOutline width={34} height={34} />
+              ? <HomeFill width={25} height={25} />
+              : <HomeOutline width={25} height={25} />
           ), 
         }} 
       />
       <Tabs.Screen 
-        name="services"
+        name="orders"
         options={{ 
-          title: 'Services',
+          title: 'Orders',
           tabBarIcon: ({ color, focused }) => (
             focused 
-            ? <ServiceFill width={34} height={34} />
-            : <ServiceOutline width={34} height={34} />
+            ? <OrderFill width={25} height={25} />
+            : <OrderOutline width={25} height={25} />
           ), 
         }} 
       />
       <Tabs.Screen 
-        name="cart" 
+        name="map" 
         options={{ 
-          title: 'Cart',
+          title: 'Map',
           tabBarIcon: ({ color, focused }) => (
             focused 
-            ? <CartFill width={34} height={34} />
-            : <CartOutline width={34} height={34} />
+            ? <MapFill width={25} height={25} />
+            : <MapOutline width={25} height={25} />
           ), 
         }} 
       />
@@ -77,8 +77,8 @@ export default function TabLayout() {
           title: 'Account',
           tabBarIcon: ({ color, focused }) => (
             focused 
-            ? <AccountFill width={34} height={34} />
-            : <AccountOutline width={34} height={34} />
+            ? <AccountFill width={25} height={25} />
+            : <AccountOutline width={25} height={25} />
           ), 
         }} 
       />

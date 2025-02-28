@@ -27,84 +27,57 @@ export default function CreateProfile(){
         success: CustomToast,
         error: CustomToast,
     };
-    const [profession_category, setProfessionCategory] = useState('');    
-    const [openState, setOpenState] = useState({gender:false, vehicle_type:false,})
-    const [data, setData] = useState({gender:'', first_name:"", last_name: "", contact_mail: '', phone_number: "", vehicle_type: "", vehicle_brand: "", plate_number: ""});
-      
 
-    interface Item1 {
-        id: number;
-        category_name: string;
-      }
+    const [openState, setOpenState] = useState({gender:false, vehicle_type:false,})
+    const [data, setData] = useState({gender:'', first_name:"", last_name: "", contact_email: '', phone_number: "", vehicle_type: "", vehicle_brand: "", plate_number: ""});
+      
     interface Item {
         id: number;
         name: string;
-        categories: Item1[];
-      }
-    const [profession_option, setProfessionOption] = useState<Item[]>([]);
-    const [profession_category_option, setProfessionCategoryOption] = useState<Item1[]>([]);;
+    }
+    const [vehcleTypeOption, setVehicleTypeOption] = useState<Item[]>([]);
+    const genderOption = [
+        { label: 'Male', value: 'M' },
+        { label: 'Femal', value: 'F' },
+    ]
     
     const [fetchloading, setFetchLoading] = useState(true); // Loading state
 
-    // useEffect(() => {
-    //     const fetchProfessions = async () => {
-    //         try {
-    //             setFetchLoading(true)
-    //             type ApiCategories = { id: number; category_name: string;};
-    //             // Define the type for an array of ApiCategories objects
-    //             type ApiCategoriesArray = ApiCategories[];
-    //             type ApiResponse = { id: number; name: string; categories: ApiCategoriesArray};
-    //             // Define the type for an array of ApiResponse objects
-    //             type ApiResponseArray = ApiResponse[];
-
-    //             const response = await getRequest<ApiResponseArray>(ENDPOINTS['account']['profession'], false); // Authenticated
-    //             // alert(JSON.stringify(response))
-    //             setProfessionOption(response)
-    //             setFetchLoading(false)
-    //         } catch (error) {
-    //             // alert(error);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setFetchLoading(true)
+                type VehicleType = { id: number; name: string;};
+                const relationship_response = await getRequest<VehicleType[]>(ENDPOINTS['rider']["vehicle-type"], true); // Authenticated
+                // alert(JSON.stringify(relationship_response)) 
+                setVehicleTypeOption(relationship_response)
+                setFetchLoading(false)
+            } catch (error) {
+                // alert(error);
+            }
+        };
     
-    //     fetchProfessions();
-    // }, []); // Empty dependency array ensures this runs once
-
-    const loadCategory = (value: string) => { 
-        setData(prevState => ({...prevState, profession: parseInt(value),}));
-        setProfessionCategory('')
-        // alert(JSON.stringify(profession_option))
-        // alert(JSON.stringify(profession_option.find(item => (item.id === parseInt(value)))?.categories))
-        const oCategory = profession_option.find(item => (item.id == parseInt(value)))?.categories
-        setProfessionCategoryOption(oCategory || [])
-    }
+        fetchData();
+    }, []); // Empty dependency array ensures this runs once
 
     const validateInput = () =>{
-        if(data.contact_mail.includes(".com") && (data.first_name !== '') && (data.last_name !== '') && (data.gender !== "") && (data.vehicle_type !== "") && (data.vehicle_brand !== "") && (data.plate_number !== '') && (data.phone_number !== '')){
+        if(data.contact_email.includes(".com") && (data.first_name !== '') && (data.last_name !== '') && (data.gender !== "") && (data.vehicle_type !== "") && (data.vehicle_brand !== "") && (data.plate_number !== '') && (data.phone_number !== '')){
           return true;
         }
         return false; 
     }
-
-    const gender_option = [
-        { label: 'Male', value: 'M' },
-        { label: 'Femal', value: 'F' },
-    ]
-    const vehicle_type_options = [
-        { label: 'Truck', value: 'truck' },
-        { label: 'Car', value: 'car' },
-        { label: 'Bike', value: 'bike' },
-        { label: 'Tricycle', value: 'tricycle' },
-    ]
+    
 
       const [loading, setLoading] = useState(false); // Loading state
       const [error, setError] = useState(''); // Error state 
   
       const handleRequest = async () => {
+        
         if(!loading && validateInput()){
             try {
                 setLoading(true)
-                const updatedProfile = await postRequest(ENDPOINTS['vendor']['onboard'], data, true);
-                setLoading(false)
+                const updatedProfile = await postRequest(ENDPOINTS['rider']['onboard'], data, true);
+                setLoading(false) 
                 Toast.show({
                     type: 'success',
                     text1: "Profile Created.",
@@ -116,17 +89,18 @@ export default function CreateProfile(){
                     phone_number:  user?.phone_number,
                     avatar: user?.avatar,
                     first_name: user?.first_name,
+                    last_name: user?.last_name,
                     full_name: user?.full_name,
                     // store_name: data.business_name
                   })
-                // await Delay(3000)
+                await Delay(1000)
                 router.replace({
-                    pathname: '/vendor/account_setup_2',
-                }); 
+                    pathname: '/rider/identity_verification',
+                });  
             
             } catch (error: any) {
                 setLoading(false)
-                // alert(JSON.stringify(error))
+                alert(JSON.stringify(error))
                 Toast.show({
                     type: 'error',
                     text1: "An error occured",
@@ -150,9 +124,9 @@ export default function CreateProfile(){
                     <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
                 </View> 
 
-                {/* {fetchloading && (
+                {fetchloading && (
                     <FullScreenLoader />
-                )} */}
+                )}
 
                 <ScrollView className='' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className=' w-[95%] mx-auto'>
@@ -195,11 +169,11 @@ export default function CreateProfile(){
                                         </Text>
                                     )
                                 }
-                                <CharField  placeholder="Last Name*" focus={true} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, last_name: value}))}/>
+                                <CharField  placeholder="Last Name*" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, last_name: value}))}/>
                             </View>
                             <View>
                                 {
-                                    (data.contact_mail !== "" ) && (
+                                    (data.contact_email !== "" ) && (
                                         <Text
                                         style={{fontFamily: 'Inter-Medium'}}
                                         className='text-[12px] text-custom-green ml-1 mt'
@@ -208,7 +182,7 @@ export default function CreateProfile(){
                                         </Text>
                                     )
                                 }
-                                <CharField  placeholder="Contact mail*" focus={true} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, contact_mail: value}))}/>
+                                <CharField  placeholder="Contact mail*" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, contact_email: value}))}/>
                             </View>
                             <View>
                                 {
@@ -225,7 +199,7 @@ export default function CreateProfile(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, gender: !openState.gender}));}}
                                 >
-                                    <CharFieldDropDown options={gender_option} open={openState.gender}  placeholder="Gender" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, gender: value,})); setOpenState(prevState => ({...prevState, gender: false}))}}/>
+                                    <CharFieldDropDown options={genderOption} open={openState.gender}  placeholder="Gender" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, gender: value,})); setOpenState(prevState => ({...prevState, gender: false}))}}/>
                                 </Pressable>
                             </View> 
                             {
@@ -238,8 +212,8 @@ export default function CreateProfile(){
                                     </Text>
                                 )
                             }
-                            <View className='flex flex-row'>
-                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} rounded-md w-12 h-12 flex items-center justify-around mr-2 border border-gray-300'`}>
+                            <View className='flex flex-row items-center'>
+                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} rounded-md w-12 h-12 flex items-center justify-around mr-2 border border-gray-300`}>
                                     <Text
                                     style={{fontFamily: 'Inter-Medium'}}
                                     className={`${theme == 'dark'? 'text-white' : ' text-gray-600'} text-[11px] text-center`}
@@ -253,7 +227,6 @@ export default function CreateProfile(){
                             </View>
                         </View>
                         
-
 
                         <View
                         className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mt-3 flex flex-row items-center p-3 rounded-lg`}
@@ -285,7 +258,7 @@ export default function CreateProfile(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, vehicle_type: !openState.vehicle_type}));}}
                                 >
-                                    <CharFieldDropDown options={vehicle_type_options} open={openState.vehicle_type}  placeholder="Vehicle type" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, vehicle_type: value,})); setOpenState(prevState => ({...prevState, vehicle_type: false}))}}/>
+                                    <CharFieldDropDown options={vehcleTypeOption.map(item => ({label: item.name, value: item.id}))} open={openState.vehicle_type}  placeholder="Vehicle type" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, vehicle_type: value,})); setOpenState(prevState => ({...prevState, vehicle_type: false}))}}/>
                                 </Pressable>
                             </View> 
                                 
@@ -300,7 +273,7 @@ export default function CreateProfile(){
                                         </Text>
                                     )
                                 }
-                                <CharField  placeholder="Vehicle Brand" focus={true} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, vehicle_brand: value}))}/>
+                                <CharField  placeholder="Vehicle Brand" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, vehicle_brand: value}))}/>
                             </View>
 
                             <View>
@@ -314,7 +287,7 @@ export default function CreateProfile(){
                                         </Text>
                                     )
                                 }
-                                <CharField  placeholder="Plate Number" focus={true} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, plate_number: value}))}/>
+                                <CharField  placeholder="Plate Number" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, plate_number: value}))}/>
                             </View>
                         </View>
 

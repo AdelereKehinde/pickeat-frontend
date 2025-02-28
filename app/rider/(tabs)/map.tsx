@@ -17,7 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
-export default function Cart(){
+export default function Map(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,

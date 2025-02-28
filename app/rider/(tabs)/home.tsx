@@ -23,7 +23,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import SearchMeal from '@/components/SearchMeal';
 
 
-export default function Dashboard(){
+export default function Home(){
     const {name} = useGlobalSearchParams()
     const { user } = useUser();
 

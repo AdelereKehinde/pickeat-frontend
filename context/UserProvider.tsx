@@ -6,6 +6,7 @@ type User = {
   full_name?: string;
   phone_number?: string;
   first_name?: string;
+  last_name?: string;
   store_name?: string;
 };
 
