@@ -53,6 +53,7 @@ const ENDPOINTS = {
         'create-address': `${VENDOR_BASE}address/create`,
         'update-address': `${VENDOR_BASE}address/update`,
         'information': `${VENDOR_BASE}information`,
+        'notification': `${VENDOR_BASE}notification`,
     },
     'rider': {
         'signin': `${RIDER_BASE}signin`,
@@ -66,6 +67,9 @@ const ENDPOINTS = {
         'user-data':`${RIDER_BASE}data`,
         'relationship':`${RIDER_BASE}relationship`,
         'vehicle-type':`${RIDER_BASE}vehicle-type`,
+        'toggle-active-status': `${RIDER_BASE}active-status/toggle`,
+        'task':`${RIDER_BASE}task`,
+        'notification': `${RIDER_BASE}notification`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,
@@ -98,6 +102,7 @@ const ENDPOINTS = {
         'account-validate': `${PAYMENT_BASE}account/validate`,
         'initialize': `${PAYMENT_BASE}initialize`,
         'vendor-transactions': `${PAYMENT_BASE}transaction/vendor`,
+        'rider-transactions': `${PAYMENT_BASE}transaction/rider`,
     },
 }
 

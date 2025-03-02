@@ -81,7 +81,8 @@ export default function ProfilePage(){
                 setLoading(false) 
                 // alert(JSON.stringify(response))
             } catch (error) {
-                alert(error);
+                // alert(error);
+                setLoading(false) 
             }
         };
     

@@ -16,6 +16,7 @@ export default function RootLayout() {
     'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
     'Inter-Medium-Italic': require('../assets/fonts/Inter-MediumItalic.ttf'),
     'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
+    'Inter-SemiBold-Italic': require('../assets/fonts/Inter-SemiBoldItalic.ttf'),
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
   })
@@ -110,7 +111,9 @@ export default function RootLayout() {
           <Stack.Screen name="rider/identity_verification" options={{headerShown: false}} />
           <Stack.Screen name="rider/availability" options={{headerShown: false}} />
           <Stack.Screen name="rider/all_set" options={{headerShown: false}} />
-
+          <Stack.Screen name="rider/order_detail" options={{headerShown: false}} />
+          <Stack.Screen name="rider/earnings" options={{headerShown: false}} />
+          <Stack.Screen name="rider/profile_page" options={{headerShown: false}} />
         </Stack>
       </ThemeProvider>
     </UserProvider>

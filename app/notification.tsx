@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../assets/icon/empy_transaction.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Notification(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -26,10 +27,24 @@ function Notification(){
     const [count, setCount] = useState(1);
     const pageSize = 10; // Items per page
 
+    type SERVICES = 'buyer' | 'vendor' | 'rider';
     const [refreshing, setRefreshing] = useState(false);
+
+    const [service, setService] = useState<SERVICES>('buyer');
+    
+    const checkService = async () => {
+        const servi_ = await AsyncStorage.getItem('service');
+        if (servi_ && ['buyer', 'vendor', 'rider',].includes(servi_)) {
+            setService(servi_ as SERVICES); // Type assertion to SERVICES
+        }
+        // alert(servi_)
+    };
+
     const fetchCategories = async () => {
         try {
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS['buyer']['notification']}?page_size=${pageSize}&page=${currentPage}`, true);
+            
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS[service]['notification']}?page_size=${pageSize}&page=${currentPage}`, true);
+                   
             setCount(response.data.total_count)
             setLoading(false) 
             // alert(JSON.stringify(response))
@@ -42,6 +57,7 @@ function Notification(){
 
     useEffect(() => {
         setNotifications([])
+        checkService()
         setLoading(true)
         fetchCategories();
     }, [currentPage]); // Empty dependency array ensures this runs once

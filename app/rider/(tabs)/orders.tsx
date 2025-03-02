@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
+import { Text, View, StatusBar, ScrollView, FlatList, TouchableOpacity, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import TitleTag from '@/components/Title';
 import ServicesLayout from '@/components/Services';
@@ -25,20 +25,18 @@ export default function Orders(){
     };
     const [loading, setLoading] = useState(true);
 
-    type ListData = { id: number; buyer_name: string; location: string; thumbnail: string; tracking_id: string; status_history_status: string; status: string; items: string; date: string;}[];
+    type ListData = { id: number; kitchen_address: string; kitchen_thumbnail: string; time: string; kitchen_name: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
     
-    const [parentorders, setParentOrders] = useState<ListData>([]);
     const [orders, setOrders] = useState<ListData>([]);
     const [orderFilter, setOrderFilter] = useState('pending');
 
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
-    const [paginationLoad, setPaginationLoad] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
@@ -47,16 +45,11 @@ export default function Orders(){
             if (ranOnce){
                 // setPaginationLoad(true)
             }
-            const response = await getRequest<ListData>(`${ENDPOINTS['cart']['buyer-orders']}?all=true`, true);
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
-            setParentOrders(response) 
-            // setCount(response.count)
-            if(!ranOnce || paginationLoad){
-                setOrders(response)
-                setRanOnce(true)
-            }
+            setOrders(response.results) 
             // alert(JSON.stringify(res))
-            // setPaginationLoad(false)
+            setCount(response.count)
             setLoading(false)
         } catch (error) {
             // alert(error);
@@ -65,28 +58,24 @@ export default function Orders(){
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
         // setTransactions([])
-        const response = await getRequest<ListData>(`${ENDPOINTS['cart']['buyer-orders']}?all=true`, true);
-            // alert(JSON.stringify(response))
-        setParentOrders(response)
-    
+        const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}`, true);
+        setOrders(response.results)
         setRefreshing(false); // Stop the refreshing animation
     };
     
     useEffect(() => {
         if (isFocused){
-            // fetchMeals(); 
+            fetchMeals(); 
         }
     }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
 
-    const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
-        // alert(status_history_status)
-        var newOrder = parentorders.map((item) =>
-            item.tracking_id === tracking_id ? { ...item, status: status, status_history_status: status_history_status } : item
-        );
-        setParentOrders(newOrder);  
-    }
+    const filterKeys = [
+        {'name': "Pending Orders", 'id': 'pending'},
+        {'name': "Ongoing Orders", 'id': 'ongoing'},
+        {'name': "Completed Orders", 'id': 'completed'},
+        {'name': "Cancelled Orders", 'id': 'cancelled'},
+    ]
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
@@ -102,29 +91,27 @@ export default function Orders(){
                     My Orders
                 </Text>
 
-                <View className='flex flex-row w-full px-5'>
-                    <TouchableOpacity
-                    onPress={()=>{setOrderFilter('pending')}}
-                    className={`grow ${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-lg ${(orderFilter == 'pending') && 'bg-custom-green'}`}
-                    >
-                        <Text
-                        className={`${(orderFilter == 'pending')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Pending Orders
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                    onPress={()=>{setOrderFilter('ongoing')}}
-                    className={`grow ${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-lg ${(orderFilter == 'ongoing') && 'bg-custom-green'}`}
-                    >
-                        <Text
-                        className={`${(orderFilter == 'ongoing')? 'text-white':'text-gray-500'} text-[12px] text-center p-3`}
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Ongoing Orders
-                        </Text>
-                    </TouchableOpacity>
+                <View className='flex flex-row w-full px-2 space-x-2'>
+                    <FlatList
+                        data={filterKeys}
+                        keyExtractor={(item) => item.id + ''}
+                        horizontal={true}  // This makes the list scroll horizontally
+                        ItemSeparatorComponent={() => <View className='w-3' />}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity
+                            onPress={()=>{setOrderFilter(item.id)}}
+                            className={`bg-gray-100 rounded-lg ${(orderFilter == item.id) && 'bg-custom-green'}`}
+                            >
+                                <Text
+                                className={`${(orderFilter == item.id)? 'text-white':'text-gray-600'} text-[11px] text-center p-3`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    {item.name}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                        />
                 </View>
 
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full my-3 mb-44 relative flex flex-row items-center justify-center`}>
@@ -133,13 +120,13 @@ export default function Orders(){
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full mt-4  space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
-                        {/* {(!loading && (parentorders.filter((item)=>item.status.includes(orderFilter)).length == 0)) && (
+                    className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                        {(!loading && (orders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
                         )}
-                        {((parentorders.length === 0 && loading)) && 
+                        {((orders.length === 0 && loading)) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className={` ${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
@@ -158,22 +145,19 @@ export default function Orders(){
                                     </View> 
                                 ))}
                             </View>
-                        } */}
-                        {parentorders.filter((item)=>item.status.includes(orderFilter)).map((item) => (
+                        }
+                        {orders.map((item) => (
                             <View key={item.id}>
                                 <RiderOrder 
-                                status_history_status={item.status_history_status} 
-                                tracking_id={item.tracking_id} 
-                                image={item.thumbnail} 
-                                name={item.buyer_name} 
-                                time={item.date} 
-                                address={item.location} 
-                                status={item.status} 
-                                onUpdate={UpdateStatus}
+                                    task_id={item.id}
+                                    image={item.kitchen_thumbnail}
+                                    name={item.kitchen_name}
+                                    time={item.time}
+                                    address={item.kitchen_address}
                                 />
                             </View>
                         ))}
-                    {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
+                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

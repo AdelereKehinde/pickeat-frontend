@@ -84,7 +84,7 @@ export default function Account(){
                     <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full pt-3`}>
                         <View className='w-full px-5 my-1'>
                             <Pressable
-                            onPress={()=>{(router.push("/vendor/profile_page"))}}
+                            onPress={()=>{(router.push("/rider/profile_page"))}}
                             className='flex flex-row w-full items-center'
                             >
                                 <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
@@ -100,7 +100,7 @@ export default function Account(){
                         </View>
                         <View className='w-full px-5 my-1'>
                             <Pressable
-                            onPress={()=>{(router.push("/vendor/earnings"))}}
+                            onPress={()=>{(router.push("/rider/earnings"))}}
                             className='flex flex-row w-full items-center'
                             >
                                 <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>

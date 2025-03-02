@@ -64,6 +64,7 @@ export default function RiderLogin(){
             set_profile_1: boolean;
             set_profile_2: boolean;
             set_profile_3: boolean;
+            active_status: boolean;
           };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['rider']['signin'], {
@@ -76,6 +77,7 @@ export default function RiderLogin(){
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
           await AsyncStorage.setItem('service', 'rider');
+          await AsyncStorage.setItem('rider_active_status', `${res.data.active_status}`);
           
           setLoading(false)
           setUser({
