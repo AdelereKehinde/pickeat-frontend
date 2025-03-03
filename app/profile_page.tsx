@@ -206,7 +206,7 @@ export default function ProfilePage(){
                         Personal Information
                     </Text>
                     <View className='w-[90%] mx-auto space-y-3 mb-3'>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -241,7 +241,7 @@ export default function ProfilePage(){
                                 )}
                             </TouchableOpacity>
                         </View>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -276,7 +276,7 @@ export default function ProfilePage(){
                                 )}
                             </TouchableOpacity>
                         </View>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -295,7 +295,7 @@ export default function ProfilePage(){
                                 />
                             </View>
                         </View>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -435,7 +435,7 @@ export default function ProfilePage(){
                     >
                         Instruction for Rider
                     </Text>
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] mx-auto px-4 py-1 rounded-xl`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} w-[90%] mx-auto px-4 py-1 rounded-xl`}>
                         <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
                         className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-500'} w-full rounded-lg text-[11px] text-gray-500`}

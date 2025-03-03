@@ -186,43 +186,6 @@ export default function Dashboard(){
                         </TouchableOpacity> */}
                     </TouchableOpacity>
                         
-                    {/* Dropdown Scrollable List */}
-                    {/* {dropdownVisible && (
-                        <View
-                        className="absolute top-44 bg-gray-100 w-full shadow-md max-h-52 border border-gray-200 z-40 mt-2"
-                        >
-                            <ScrollView
-                            className='w-full'
-                            >
-                            {searchResults.map((meal) => (
-                                <TouchableOpacity
-                                key={meal.id}
-                                className="flex-row items-center px-4 py-2 border-b border-gray-300"
-                                onPress={handleCancel} // Close dropdown on meal select
-                                >
-                                <Image
-                                    source={{ uri: meal.thumbnail }}
-                                    className="w-10 h-10 rounded-md mr-3"
-                                />
-                                <Text
-                                style={{fontFamily: 'Inter-Regular'}}
-                                className="text-base font-medium text-[12px]">
-                                    {meal.meal_name}
-                                </Text>
-                                </TouchableOpacity>
-                            ))}
-                            </ScrollView>
-                        </View>
-                    )}
-
-                    {/* No results found text */}
-                    {/* {searchResults.length === 0 && searchValue !== '' && (
-                        <Text style={{fontFamily: 'Inter-Regular'}} className="text-center text-gray-500">No products found</Text>
-                    )}  */}
-
-                    {/* <View style={styles.shadow_box} className="absolute top-36 left-0 right-0 z-10 p-2 bg-white mx-4 rounded-md">
-                        <FoodDisplay foodItems={searchResults.map(item => ({id: parseInt(item.id), name: item.meal_name, image: item.thumbnail}))} />
-                    </View> */}
 
                     <View className="mt-3 px-3 h-40">
                         {(meals.length === 0) && 
@@ -278,14 +241,23 @@ export default function Dashboard(){
                         )}
                     </View>
 
-                    <View className=''>
-                        <Link
-                        href="/special_offer"
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
-                        >
-                            Special offers for you
-                        </Link>
+                    <View className='mt-3'>
+                        <View className='flex flex-row justify-between items-center'>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
+                            >
+                                Special offers for you
+                            </Text>
+
+                            <Link
+                            href="/special_offer"
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className={`text-custom-green text-[12px] px-3`}
+                            >
+                                view all
+                            </Link>
+                        </View>
                         <View className={`h-[180px] p-3`}>
                             {(specialOffer.length === 0) && 
                             <View className='flex flex-row space-x-2 w-screen overflow-hidden'>
@@ -399,14 +371,23 @@ export default function Dashboard(){
                         </View>
                     </View>
 
-                    <View className='mb-3 mt-5'>
-                        <Link
-                        href="/kitchen_page"
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
-                        >
-                            Kitchens near you
-                        </Link>
+                    <View className='mb-3 mt-8'>
+                        <View className='flex flex-row justify-between items-center'>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-500'} text-[12px] px-3`}
+                            >
+                               Kitchens near you
+                            </Text>
+
+                            <Link
+                            href="/kitchen_page"
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className={`text-custom-green text-[12px] px-3`}
+                            >
+                                view all
+                            </Link>
+                        </View>
                         {(kitchens.length === 0) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 3 }).map((_, index) => (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, Image, Modal, RefreshControl } from 'react-native';
+import { View, StatusBar, TextInput, ScrollView, TouchableOpacity, Text, ActivityIndicator, Modal, RefreshControl } from 'react-native';
 import Search from '../assets/icon/search.svg';
 import ChatListCard from '@/components/ChatList';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,6 +19,7 @@ const ChatList: React.FC = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     const [loading, setLoading] = useState(false);
+    const [backLoading, setBackLoading] = useState(false);
     const [ranOnce, setRanOnce] = useState(false);
 
     type Messages = { id: number; chat: number; text: string; time: string; date: string;};
@@ -27,6 +28,7 @@ const ChatList: React.FC = () => {
     const [chats, setChats] = useState<ApiResponse>([]);
     const fetchMeals = async () => {
         try {
+            setBackLoading(true)
             try {
                 const storedMessages = await AsyncStorage.getItem('chat');
                 if (storedMessages) {
@@ -46,6 +48,7 @@ const ChatList: React.FC = () => {
             // alert(JSON.stringify(response))
             setChats(response)
             setLoading(false)
+            setBackLoading(false)
         } catch (error) {
             setLoading(false)
             // alert(error);
@@ -84,12 +87,22 @@ const ChatList: React.FC = () => {
                     placeholderTextColor=""
                 />
             </View>
-            <Text
-            className='text-custom-green text-[16px] self-start pl-5 my-3'
-            style={{fontFamily: 'Inter-SemiBold'}}
+
+            <View
+            className='flex flex-row items-center w-full justify-between px-5 my-3 '
             >
-                Messages
-            </Text>
+                <Text
+                className='text-custom-green text-[16px] self-start'
+                style={{fontFamily: 'Inter-SemiBold'}}
+                >
+                    Messages
+                </Text>
+                {(loading || backLoading) && (
+                    <View className=''>
+                        <ActivityIndicator size="small" color= "#228b22" />
+                    </View>
+                )}
+            </View>
 
             <View className='flex flex-row w-full bg-blue-100'>
                 <TouchableOpacity

@@ -143,7 +143,7 @@ export default function Login(){
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                    className='absolute inset-y-2 right-2 my-auto'
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}

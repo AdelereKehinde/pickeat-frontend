@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, TouchableOpacity, Alert, Image, TextInput, StatusBar, Pressable  } from "react-native";
 import { Link } from "expo-router";
 import { FontAwesome } from '@expo/vector-icons';
@@ -7,10 +7,10 @@ import CustomSplashScreen from '@/components/SplashScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 export default function Index(){
-    const [isOpen, setIsOpen] = useState(false)
-    const [userHover, setUserHover] = useState(false)
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const [isAppReady, setAppReady] = useState(false);
 
     const [showSellerOnboarding, setShowSellerOnboarding] = useState(false)
@@ -39,9 +39,9 @@ export default function Index(){
     
     return (
         <SafeAreaView>
-            <View className=' bg-white w-full h-full flex items-center'>
-                <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
-
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
+                
                 <View className='flex w-full grow items-center justify-around'>
                     <View className='flex items-center'>
                         <Logo width={200} height={200} />
@@ -58,28 +58,28 @@ export default function Index(){
                         <Link 
                         href={showBuyerOnboarding? "/get_started" : "/login"}
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
+                        className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
                             User
                         </Link>
 
                         <Link 
                         href={showSellerOnboarding? "/vendor/welcome" : "/vendor/login"}
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
+                        className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
                             Vendor
                         </Link>
                         
                         <Link 
                         href={showRiderOnboarding? "/rider/welcome" : "/rider/login"}
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
+                        className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
                             Rider
                         </Link>
 
                         <Link 
                         href={"/admin/login" as any}
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`rounded-2xl bg-gray-100 p-4 border border-custom-green text-custom-green text-center`}>
+                        className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
                             Admin
                         </Link> 
                     </View>

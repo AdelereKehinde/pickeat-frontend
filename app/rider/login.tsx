@@ -19,7 +19,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 
 export default function RiderLogin(){
-  const { theme, toggleTheme } = useContext(ThemeContext);
+    const { theme, toggleTheme } = useContext(ThemeContext);
     const { setUser } = useUser();
 
     const toastConfig = {

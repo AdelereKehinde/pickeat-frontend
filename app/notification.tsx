@@ -10,6 +10,8 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Empty from '../assets/icon/empy_transaction.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BuyerNotifi from '@/components/BuyerNotifi';
+import VendorNotifi from '@/components/VendorNotifi';
 
 function Notification(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -37,13 +39,13 @@ function Notification(){
         if (servi_ && ['buyer', 'vendor', 'rider',].includes(servi_)) {
             setService(servi_ as SERVICES); // Type assertion to SERVICES
         }
-        // alert(servi_)
+        return servi_ as SERVICES
     };
 
     const fetchCategories = async () => {
         try {
-            
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS[service]['notification']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const servi_  = await checkService()
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS[servi_]['notification']}?page_size=${pageSize}&page=${currentPage}`, true);
                    
             setCount(response.data.total_count)
             setLoading(false) 
@@ -57,7 +59,6 @@ function Notification(){
 
     useEffect(() => {
         setNotifications([])
-        checkService()
         setLoading(true)
         fetchCategories();
     }, [currentPage]); // Empty dependency array ensures this runs once
@@ -92,7 +93,7 @@ function Notification(){
                     {(loading) && 
                         <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                             {Array.from({ length: 6 }).map((_, index) => (
-                                <View key={index} className='mt-5 border-b border-gray-300'>
+                                <View key={index} className='mt-3 border-b border-gray-300'>
                                     <ContentLoader
                                     width="100%"
                                     height={100}
@@ -117,58 +118,42 @@ function Notification(){
                             >
                                 {item.date}
                             </Text>
-                            {item.notifications.map((sub_item) => (
-                                <View
-                                key={sub_item.id}
-                                className='flex flex-row items-center justify-between space-x-3 py-3'
-                                >
-                                    <Image 
-                                        source={{uri: sub_item.avatar}}
-                                        className='w-12 h-12 rounded-full'
+                            {item.notifications.map((sub_item, inner_) => (
+                                (service == 'buyer')?
+                                    <BuyerNotifi 
+                                    key={inner_}
+                                    image={sub_item.avatar}
+                                    time={sub_item.time}
+                                    items={sub_item.items}
+                                    message={sub_item.message}
+                                    from={sub_item.notification_from}
+                                    order_id={sub_item.order_id}
+                                    amount={sub_item.amount}
                                     />
-                                    <View className='flex flex-row'>
-                                        <View className='w-[65%] flex justify-around'>
-                                            <Text
-                                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[10px] w-full`}
-                                            style={{fontFamily: 'Inter-Medium-Italic'}}
-                                            >
-                                                From {sub_item.notification_from}
-                                            </Text>
-                                            <Text
-                                            className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px] w-full`}
-                                            style={{fontFamily: 'Inter-Medium'}}
-                                            >
-                                                {sub_item.message}
-                                            </Text>
-                                            <Text
-                                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px] w-full`}
-                                            style={{fontFamily: 'Inter-Medium'}}
-                                            >
-                                                <Text
-                                                className='text-custom-green text-[11px] w-full'
-                                                style={{fontFamily: 'Inter-SemiBold'}}
-                                                >
-                                                    Order ID: {"\n"} 
-                                                </Text>
-                                                {sub_item.order_id} | {sub_item.items} item{(sub_item.items > 1) && 's'}
-                                            </Text>
-                                        </View>
-                                        <View className='flex justify-between items-end grow'>
-                                            <Text
-                                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px] w-full`}
-                                            style={{fontFamily: 'Inter-Medium'}}
-                                            >
-                                                {sub_item.time}
-                                            </Text>
-                                            <Text
-                                            className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[12px] w-full`}
-                                            style={{fontFamily: 'Inter-SemiBold'}}
-                                            >
-                                                ₦{sub_item.amount}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </View>
+                                    :
+                                    (service == 'vendor')?
+                                        <VendorNotifi 
+                                        key={inner_}
+                                        image={sub_item.avatar}
+                                        time={sub_item.time}
+                                        items={sub_item.items}
+                                        message={sub_item.message}
+                                        from={sub_item.notification_from}
+                                        order_id={sub_item.order_id}
+                                        amount={sub_item.amount}
+                                        />
+                                    :
+                                        <BuyerNotifi 
+                                        key={inner_}
+                                        image={sub_item.avatar}
+                                        time={sub_item.time}
+                                        items={sub_item.items}
+                                        message={sub_item.message}
+                                        from={sub_item.notification_from}
+                                        order_id={sub_item.order_id}
+                                        amount={sub_item.amount} 
+                                        />
+                                
                             ))}
                         </View>   
                     ))}

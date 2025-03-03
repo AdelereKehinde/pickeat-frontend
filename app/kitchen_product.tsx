@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, RefreshControl, FlatList } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
 import TitleTag from '@/components/Title';
 import Product from '@/components/Product';
@@ -15,6 +15,8 @@ import { TruncatedText } from '@/components/TitleCase';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Check from '../assets/icon/check.svg'
 
 export default function KitchenPageProduct(){
     const {kitchen_id} = useGlobalSearchParams()
@@ -25,7 +27,7 @@ export default function KitchenPageProduct(){
     };
 
     type VendorStore = { id: string; avatar: string; business_name: string;};
-    type CategoryArray = { id: string; category_name: string;}[];
+    type CategoryArray = { id: number; category_name: string;}[];
     type MealArray = { id: string; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type MealResponse = { count: number; next: string; previous: string; results: MealArray;};
 
@@ -34,11 +36,21 @@ export default function KitchenPageProduct(){
     const [kitchenMeal, setKitchenMeal] = useState<MealArray>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 5; // Items per page
+    const pageSize = 10; // Items per page
+
+    const [categories, setCategories] = useState<CategoryArray>([{'id': 0, category_name: 'all'}]);
+    const [filterIndex, setFilterIndex] = useState('all');
 
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
+            const storedData = await AsyncStorage.getItem('categories');
+            // If data exists, parse it and set it to state
+            if (storedData && categories.length == 1) {
+                const parsedData: CategoryArray = JSON.parse(storedData);
+                setCategories((prevCategories) => [...prevCategories, ...parsedData]);
+            }
+
             const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response.results))
             setCount(response.count)
@@ -58,13 +70,10 @@ export default function KitchenPageProduct(){
     
     const [searchValue, setSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
-    const [filterIndex, setFilterIndex] = useState(1);
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
         await fetchMeals()
-    
         setRefreshing(false); // Stop the refreshing animation
     };
     
@@ -106,7 +115,35 @@ export default function KitchenPageProduct(){
                     </TouchableOpacity> */}
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full mb-40 pb-2 `}>
+                <View className='my-3 flex flex-row w-full justify-around px-3'>
+                    {                
+                        <FlatList
+                        data={categories}
+                        keyExtractor={(item) => item.id + ''}
+                        horizontal={true}  // This makes the list scroll horizontally
+                        ItemSeparatorComponent={() => <View className='w-3' />}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity 
+                                onPress={()=>{setFilterIndex(item.category_name)}}
+                                className={`${(filterIndex == item.category_name)? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
+                            >   
+                                {(filterIndex == item.category_name) && (
+                                    <Check />
+                                )}
+                                <Text
+                                className={`${(filterIndex == item.category_name)? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {item.category_name}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                        />
+                    }
+                </View>
+
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full mb-52 pb-2 `}>
                     {(!loading && kitchenMeal.length === 0) && (
                         <View className='flex items-center'> 
                             <Empty/>

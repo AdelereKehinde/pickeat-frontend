@@ -23,12 +23,13 @@ export default function TabLayout() {
       },
       tabBarLabelStyle: {
         fontSize: 11,
-        marginBottom: 10,
-        marginTop: -5,
+        marginBottom: 5,
+        marginTop: 0,
         fontFamily: 'Inter-Medium',  // Use your custom font
       },
       tabBarIconStyle: {
-        marginBottom: -5,
+        marginBottom: 0,
+        marginTop: 5,
       }
     }} 
     >

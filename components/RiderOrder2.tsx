@@ -19,47 +19,23 @@ interface Properties {
   }
 
 
-const RiderOrder: React.FC<Properties> = ({image, name, address, time, order_id, task_id}) =>{
+const RiderOrder2: React.FC<Properties> = ({image, name, address, time, order_id, task_id}) =>{
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(false);
 
     return(
         <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row  items-center px-3 py-2 border-b`}>
-            <View className=''>    
-                <Image 
-                source={{uri: image}}
-                className='border rounded-lg'
-                width={55}
-                height={70}
-                />
-            </View>
-
             <View className='flex justify-start ml-2'>
                 <Text
                 style={{fontFamily: 'Inter-Bold'}}
                 className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[12px]`}
                 >
-                    {name}
+                    Order #{order_id}
                 </Text>
-                <View className='flex flex-row items-center'>
-                    <Location />
+                <View className='flex flex-row items-center mt-1'>
                     <Text
                     style={{fontFamily: 'Inter-Medium'}}
-                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[10px]`}
-                    >
-                        {address}
-                    </Text>
-                </View>
-                <View className='flex flex-row items-center mt-2'>
-                    <Text
-                    style={{fontFamily: 'Inter-SemiBold'}}
-                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-900'} text-[11px] ml-1'`}
-                    >
-                       Time:
-                    </Text>
-                    <Text
-                    style={{fontFamily: 'Inter-Medium'}}
-                    className='text-custom-green text-[11px] ml-1'
+                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                     >
                        {time}
                     </Text>
@@ -81,4 +57,4 @@ const RiderOrder: React.FC<Properties> = ({image, name, address, time, order_id,
     )
 }
 
-export default RiderOrder;
+export default RiderOrder2;

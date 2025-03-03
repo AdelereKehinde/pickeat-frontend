@@ -155,7 +155,7 @@ function Home(){
                         {(popularOrder.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen overflow-hidden'>
                                 {Array.from({ length: 3 }).map((_, index) => (
-                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' bg-gray-300'} border-b`}>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}

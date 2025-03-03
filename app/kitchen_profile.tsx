@@ -288,7 +288,7 @@ function KitchenProfile(){
                         </Text>
                         <Text
                         style={{fontFamily: 'Inter-Regular'}}
-                        className='text-[12px] text-gray-500 border-gray-200 my-8'
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[12px] border-gray-200 my-8`}
                         >
                             {data?.description}
                         </Text>
@@ -308,19 +308,19 @@ function KitchenProfile(){
                                 <View key={_} className='flex flex-row justify-between'>
                                     <Text
                                     style={{fontFamily: 'Inter-SemiBold'}}
-                                    className='text-[12px] text-gray-400'
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-400'} text-[12px]`}
                                     >
                                         {TitleCase(item)}
                                     </Text>
                                     <Text
                                     style={{fontFamily: 'Inter-SemiBold'}}
-                                    className='text-[12px] text-gray-400'
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-400'} text-[12px]`}
                                     >
                                         -
                                     </Text>
                                     <Text
                                     style={{fontFamily: 'Inter-SemiBold'}}
-                                    className='text-[12px] text-gray-400'
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-400'} text-[12px]`}
                                     >
                                         {data?.time_start} - {data?.time_end}
                                     </Text>
@@ -370,7 +370,7 @@ function KitchenProfile(){
                         {error != '' && (
                             <Text
                             style={{fontFamily: 'Inter-Regular'}}
-                            className='text-[12px] text-red-500'
+                            className='text-[12px] text-red-500 mb-1'
                             >
                                 {error}
                             </Text>

@@ -175,7 +175,7 @@ export default function VendorLogin(){
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                    className='absolute inset-y-1 right-2 my-auto'
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}

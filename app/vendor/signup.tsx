@@ -200,7 +200,7 @@ export default function SignUp(){
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                    className='absolute inset-y-1 right-2 my-auto'
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
@@ -228,7 +228,7 @@ export default function SignUp(){
                       secureTextEntry={!showPassword2}
                     />
                     <TouchableOpacity onPress={() => setShowPassword2(!showPassword2)}
-                    className='absolute inset-y-1 right-2 my-auto'
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword2 ? 'eye-slash' : 'eye'}

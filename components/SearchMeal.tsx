@@ -116,7 +116,7 @@ const SearchMeal: React.FC<Properties> = ({open,  getValue}) => {
                             placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                         />
                         {(loading) && (
-                            <View className='absolute top-3 right-10'>
+                            <View className='absolute top-3 right-8'>
                                 <ActivityIndicator size="small" color="#228B22" />
                             </View>
                         )}

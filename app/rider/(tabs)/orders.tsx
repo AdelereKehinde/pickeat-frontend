@@ -15,6 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import RiderOrder from '@/components/RiderOrder';
+import RiderOrder2 from '@/components/RiderOrder2';
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 export default function Orders(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -24,12 +26,14 @@ export default function Orders(){
         error: CustomToast,
     };
     const [loading, setLoading] = useState(true);
+    const [filterLoading, setFilterLoading] = useState(false);
 
-    type ListData = { id: number; kitchen_address: string; kitchen_thumbnail: string; time: string; kitchen_name: string;}[];
+    type ListData = { id: number; order_id: string; kitchen_address: string; kitchen_thumbnail: string; time: string; kitchen_name: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
     
     const [orders, setOrders] = useState<ListData>([]);
     const [orderFilter, setOrderFilter] = useState('pending');
+    const [displayType, setDisplayType] = useState(1);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
@@ -38,19 +42,27 @@ export default function Orders(){
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+
     const fetchMeals = async () => {
         try {
             setLoading(true)
             // setParentOrders([])
             if (ranOnce){
-                // setPaginationLoad(true)
+                setFilterLoading(true)
+            }else{
+                setRanOnce(true)
             }
-            const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}&status=${orderFilter}`, true);
             // alert(JSON.stringify(response))
+            if (['completed', 'cancelled'].includes(orderFilter)){
+                setDisplayType(2)
+            }else{
+                setDisplayType(1)
+            }
             setOrders(response.results) 
-            // alert(JSON.stringify(res))
             setCount(response.count)
             setLoading(false)
+            setFilterLoading(false)
         } catch (error) {
             // alert(error);
         }
@@ -59,22 +71,22 @@ export default function Orders(){
     const onRefresh = async () => {
         setRefreshing(true);
         // setTransactions([])
-        const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}`, true);
+        const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}&status=${orderFilter}`, true);
         setOrders(response.results)
         setRefreshing(false); // Stop the refreshing animation
     };
     
     useEffect(() => {
-        if (isFocused){
+        // if (isFocused){
             fetchMeals(); 
-        }
-    }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
+        // }
+    }, [currentPage, orderFilter]); // Empty dependency array ensures this runs once
 
     const filterKeys = [
         {'name': "Pending Orders", 'id': 'pending'},
-        {'name': "Ongoing Orders", 'id': 'ongoing'},
+        {'name': "Ongoing Orders", 'id': 'accepted'},
         {'name': "Completed Orders", 'id': 'completed'},
-        {'name': "Cancelled Orders", 'id': 'cancelled'},
+        {'name': "Cancelled Orders", 'id': 'rejected'},
     ]
     return (
         <SafeAreaView>
@@ -83,7 +95,11 @@ export default function Orders(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='Orders' withbell={true} />
                 </View>
-                
+
+                {filterLoading && (
+                    <FullScreenLoader />
+                )}
+
                 <Text
                 className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[18px] self-start pl-5 py-5`}
                 style={{fontFamily: 'Inter-SemiBold'}}
@@ -148,13 +164,26 @@ export default function Orders(){
                         }
                         {orders.map((item) => (
                             <View key={item.id}>
-                                <RiderOrder 
-                                    task_id={item.id}
-                                    image={item.kitchen_thumbnail}
-                                    name={item.kitchen_name}
-                                    time={item.time}
-                                    address={item.kitchen_address}
-                                />
+                                {(displayType == 1)?
+                                    <RiderOrder 
+                                        task_id={item.id}
+                                        order_id={item.order_id}
+                                        image={item.kitchen_thumbnail}
+                                        name={item.kitchen_name}
+                                        time={item.time}
+                                        address={item.kitchen_address}
+                                    />
+                                    :
+                                    <RiderOrder2 
+                                        task_id={item.id}
+                                        order_id={item.order_id}
+                                        image={item.kitchen_thumbnail}
+                                        name={item.kitchen_name}
+                                        time={item.time}
+                                        address={item.kitchen_address}
+                                    />
+                                }
+                                
                             </View>
                         ))}
                     <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
