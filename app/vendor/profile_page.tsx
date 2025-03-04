@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, ActivityIndicator, TouchableOpacity } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, ActivityIndicator, TouchableOpacity, Image, Platform, StyleSheet } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
 import ServicesLayout from '@/components/Services';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
-import { getRequest, patchRequest } from '@/api/RequestHandler';
+import { getRequest, patchRequest, postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import RadioActive from '../../assets/icon/radio_active.svg';
 import RadioInctive from '../../assets/icon/radio_inactive.svg';
@@ -16,8 +16,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import { TruncatedText } from '@/components/TitleCase';
+import { useUser } from '@/context/UserProvider';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function ProfilePage(){
+    const { setUser } = useUser();
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -26,13 +30,14 @@ export default function ProfilePage(){
     const [loading, setLoading] = useState(true);
 
     type APIResponse = {
-        first_name: string; full_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; 
+        first_name: string; full_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; avatar: string;
     };
 
     const [resData, setResData] = useState<APIResponse>({
         first_name: '',
         full_name: '',
         email: '',
+        avatar: 'https://res.cloudinary.com/ddl2pf4qh/image/upload/v1629388876/fintrak/FinProfile_no9nb1.png',
         building_type: '',
         building_name: '',
         floor: '',
@@ -52,6 +57,7 @@ export default function ProfilePage(){
     const [firstName, setFirstName] = useState('');
     const [fullName, setFullName] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
+    const [avatar, setAvatar] = useState('https://res.cloudinary.com/ddl2pf4qh/image/upload/v1629388876/fintrak/FinProfile_no9nb1.png');
     const [email, setEmail] = useState('');
     const [riderInstruction, setRiderInstruction] = useState('');
     const [address, setAddress] = useState({building_type: '', building_name: '', floor: '', address: ''})
@@ -69,6 +75,7 @@ export default function ProfilePage(){
                 setRiderInstruction(response.rider_instruction)
                 setServiceOption(response.service_option)
                 setEmail(response.email)
+                setAvatar(response.avatar)
 
                 setAddress({
                     building_type: response.building_type,
@@ -123,6 +130,16 @@ export default function ProfilePage(){
                 phone_number: phoneNumber,
             }, true);
             
+            setUser({
+                email: resData.email,
+                phone_number:  phoneNumber,
+                avatar: avatar,
+                first_name: "",
+                last_name: "",
+                full_name:fullName,
+                store_name: ""
+            })
+
             updateKey('first_name', firstName)
             updateKey('full_name', fullName)
             updateKey('phone_number', phoneNumber)
@@ -183,6 +200,79 @@ export default function ProfilePage(){
         }
     };
 
+    const pickImage = async (image: string) => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permissionResult.granted) {
+            alert('Permission to access camera roll is required!');
+            return;
+        }
+      
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [5, 5],
+            quality: 1,
+        });
+      
+        if (!result.canceled) {
+            setAvatar(result.assets[0].uri) 
+            try {
+                setLoading(true)
+                const formData = new FormData();
+                const file = {
+                    uri: result.assets[0].uri,
+                    name: 'avatar.jpg',
+                    type: 'image/jpeg',
+                };
+                if (Platform.OS === 'android') {
+                    formData.append('avatar', {
+                        uri: file.uri,
+                        name: file.name,
+                        type: file.type,
+                    } as any);  
+                } else {
+                    formData.append('avatar', file as any);
+                }
+
+                type ApiResponse = { avatar_url: string;};
+                const res = await postRequest<ApiResponse>(ENDPOINTS['account']['avatar'], formData, true, true);
+                
+                updateKey('avatar', res.avatar_url)
+                setAvatar(res.avatar_url)
+                    
+                setUser({
+                    email: resData.email,
+                    phone_number:  resData.phone_number,
+                    avatar: res.avatar_url,
+                    first_name: "",
+                    last_name: "",
+                    full_name: resData.full_name,
+                    store_name: ""
+                })
+
+                setLoading(false)
+                Toast.show({
+                    type: 'success',
+                    text1: "Avatar Updated",
+                    visibilityTime: 6000, // time in milliseconds (5000ms = 5 seconds)
+                    autoHide: true,
+                });
+            
+            } catch (error:any) {
+                setLoading(false)
+                setAvatar(resData.avatar)
+            //   alert(JSON.stringify(error))
+                Toast.show({
+                type: 'error',
+                text1: "Error updating avatar",
+                text2: error.data?.data?.message || 'Unknown Error',
+                visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+                });
+            }
+        };
+    }
+
     return (
         <SafeAreaView>
             {loading && 
@@ -195,6 +285,44 @@ export default function ProfilePage(){
                 </View>
 
                 <ScrollView className='w-full space-y-1'  contentContainerStyle={{ flexGrow: 1 }}>
+                    <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mx-auto mt-5 mb-4 rounded-lg p-4 w-[90%] flex flex-row items-center`}>
+                            <TouchableOpacity
+                            onPress={()=>pickImage('avatar')}
+                            className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${avatar && 'border-2 border-custom-green'}`}>
+                            {/* Image Preview */}
+                                                            
+                            <Image 
+                            source={{ uri: avatar }} 
+                            style={{ width: 100, height: 100}} />
+                                    
+                            </TouchableOpacity>
+                            <View  className='ml-4'>
+                                <Text
+                                style={{fontFamily: 'Inter-Bold'}}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px]`}
+                                >
+                                    {TruncatedText(resData.full_name || "No name", 20) }
+                                </Text>
+                                <Text
+                                style={{fontFamily: 'Inter-Bold'}}
+                                className='text-[12px] text-custom-green -mt-1'
+                                >
+                                    Resturant
+                                </Text>
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[10px] mt-2`}
+                                >
+                                    {TruncatedText(resData.email || "No email", 30) }
+                                </Text>
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className='text-[10px] text-custom-green -mt-1'
+                                >
+                                    {TruncatedText(resData.phone_number || "No number", 20) }
+                                </Text>
+                            </View>
+                        </View>
                     <Text
                     className='text-custom-green text-[16px] self-start pl-5 mt-5'
                     style={{fontFamily: 'Inter-SemiBold'}}
@@ -315,7 +443,7 @@ export default function ProfilePage(){
                                         Apt/House
                                     </Text>
                                     <Text
-                                    className='text-[11px] text-gray-500 self-start'
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px] self-start`}
                                     style={{fontFamily: 'Inter-Regular'}}
                                     >
                                         {address.building_name} {address.building_type} {address.floor}
@@ -372,3 +500,15 @@ export default function ProfilePage(){
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    shadow_box: {
+      // iOS shadow properties
+      shadowColor: '#1212126a',
+      shadowOffset: { width: 2, height: 2 },
+      shadowOpacity: 0.28,
+      shadowRadius: 5,
+      // Android shadow property
+      elevation: 100,
+    },
+  });

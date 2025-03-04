@@ -130,30 +130,17 @@ function Notification(){
                                     order_id={sub_item.order_id}
                                     amount={sub_item.amount}
                                     />
-                                    :
-                                    (service == 'vendor')?
-                                        <VendorNotifi 
-                                        key={inner_}
-                                        image={sub_item.avatar}
-                                        time={sub_item.time}
-                                        items={sub_item.items}
-                                        message={sub_item.message}
-                                        from={sub_item.notification_from}
-                                        order_id={sub_item.order_id}
-                                        amount={sub_item.amount}
-                                        />
-                                    :
-                                        <BuyerNotifi 
-                                        key={inner_}
-                                        image={sub_item.avatar}
-                                        time={sub_item.time}
-                                        items={sub_item.items}
-                                        message={sub_item.message}
-                                        from={sub_item.notification_from}
-                                        order_id={sub_item.order_id}
-                                        amount={sub_item.amount} 
-                                        />
-                                
+                                    : 
+                                    <VendorNotifi 
+                                    key={inner_}
+                                    image={sub_item.avatar}
+                                    time={sub_item.time}
+                                    items={sub_item.items}
+                                    message={sub_item.message}
+                                    from={sub_item.notification_from}
+                                    order_id={sub_item.order_id}
+                                    amount={sub_item.amount}
+                                    />    
                             ))}
                         </View>   
                     ))}

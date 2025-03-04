@@ -20,6 +20,9 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import TitleTag from '@/components/Title';
 import ToggleOn from '../../../assets/icon/toggle_on.svg'
 import ToggleOff from '../../../assets/icon/toggle_off.svg'
+import TodayOrder from '../../../assets/icon/todays-order.svg'
+import Caution from '../../../assets/icon/caution.svg'
+import ChevronNext from '../../../assets/icon/chevron-next.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -127,7 +130,7 @@ export default function Home(){
                             <Naira />
                             <View>
                                 <Text
-                                className={`text-[11px] ${theme == 'dark'? 'text-gray-500' : ' text-gray-400'} mx-4`}
+                                className={`text-[11px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     Total Earning
@@ -151,6 +154,85 @@ export default function Home(){
                                 </TouchableOpacity>
                                 <Nigeria />
                             </View>
+                        </View>
+                    </View>
+
+                    <View 
+                    style={styles.shadow_box}
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
+                    >
+                        <View
+                        className='flex flex-row items-center'
+                        >
+                            <TodayOrder />
+                            <Text
+                            className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Todays Orders
+                            </Text>
+                            <TouchableOpacity
+                            onPress={()=>{}}
+                            className='ml-auto'
+                            >
+                                <ChevronNext />
+                            </TouchableOpacity>
+                        </View>
+                        <View
+                        className='flex flex-row items-end ml-10 mt-2'
+                        >
+                            <Text
+                            className={`text-[35px] text-custom-green`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                4
+                            </Text>
+                            <Text
+                            className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} pb-2 ml-1`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                orders
+                            </Text>
+                        </View>
+                    </View>
+
+
+                    <View 
+                    style={styles.shadow_box}
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
+                    >
+                        <View
+                        className='flex flex-row items-center'
+                        >
+                            <Text
+                            className={`text-[13px] text-custom-green mx-2`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Distance
+                            </Text>
+                            <Caution />
+                            <TouchableOpacity
+                            onPress={()=>{}}
+                            className='ml-auto'
+                            >
+                                <ChevronNext />
+                            </TouchableOpacity>
+                        </View>
+                        <View
+                        className='flex flex-row items-end ml-2 mt-2'
+                        >
+                            <Text
+                            className={`text-[35px]  ${theme == 'dark'? 'text-gray-200' : ' text-gray-800'}`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                15.89
+                            </Text>
+                            <Text
+                            className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} pb-2 ml-1`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                KM
+                            </Text>
                         </View>
                     </View>
                 </ScrollView>   

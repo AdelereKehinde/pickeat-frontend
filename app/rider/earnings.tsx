@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import Nigeria from '../../assets/icon/nigeria.svg';
 import Naira from '../../assets/icon/naira.svg';
 import Calender from '../../assets/icon/calender.svg';
+import ChevronRight from '../../assets/icon/chevron_right.svg';
 import TitleTag from '@/components/Title';
 import MoneyTransaction from '@/components/MoneyTransaction';
 import OrderTransaction from '@/components/OrderTransaction';
@@ -162,7 +163,7 @@ export default function Earnings(){
             >
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
-                    <TitleTag withprevious={false} title='Earnings and Payment' withbell={false} />
+                    <TitleTag withprevious={true} title='Earnings and Payment' withbell={false} />
                 </View>
 
                 {downloadLoading && <FullScreenLoader/>}
@@ -215,6 +216,20 @@ export default function Earnings(){
                         </View>
                     </View>
 
+                    <TouchableOpacity
+                    onPress={()=>{router.push('/rider/payment_info')}}
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg flex flex-row justify-between`}
+                    >
+                        <Text
+                        style={{fontFamily: 'Inter-SemiBold'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
+                        >
+                            Update Payment Info
+                        </Text>
+
+                        <ChevronRight />
+                    </TouchableOpacity>
+
 
                     <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
                         <View className='flex flex-row space-x-2'>
@@ -252,7 +267,7 @@ export default function Earnings(){
                         )}
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 10 }).map((_, index) => (
+                                {Array.from({ length: 2 }).map((_, index) => (
                                     <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
@@ -290,28 +305,46 @@ export default function Earnings(){
                             <MoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
                         ))}
                     </ScrollView>
-
-                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    
+                    {(transactions.length != 0) &&
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    }
                     
                     <View className='w-[90%] mx-auto mb-5'>
-                    <TouchableOpacity
-                    onPress={handleDownload}
-                    className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
-                    >
-                        {loading && (
-                        <View className='absolute w-full top-4'>
-                            <ActivityIndicator size="small" color="#fff" />
-                        </View>
-                        )}
-                    
-                        <Text
-                        className='text-white'
-                        style={{fontFamily: 'Inter-Regular'}}
+                        <TouchableOpacity
+                        onPress={()=>{}}
+                        className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
                         >
-                        Download
-                        </Text>
-                            
-                    </TouchableOpacity>
+                            {loading && (
+                            <View className='absolute w-full top-4'>
+                                <ActivityIndicator size="small" color="#fff" />
+                            </View>
+                            )}
+                        
+                            <Text
+                            className='text-white'
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                            Request Withdrawal
+                            </Text>     
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={handleDownload}
+                        className={`text-center bg-blue-100 relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
+                        >
+                            {loading && (
+                            <View className='absolute w-full top-4'>
+                                <ActivityIndicator size="small" color="#fff" />
+                            </View>
+                            )}
+                        
+                            <Text
+                            className={'text-custom-green'}
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                            Download Report
+                            </Text>     
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>

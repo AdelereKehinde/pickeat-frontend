@@ -136,7 +136,7 @@ export default function IdentityVerification(){
             <ScrollView className='px-4 w-full mt-4' contentContainerStyle={{ flexGrow: 1 }}>
 
               <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full rounded-lg p-4 flex flex-row items-center`}>
-              <TouchableOpacity
+                <TouchableOpacity
                 onPress={()=>pickImage('license')}
                 className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-24 h-24 rounded-full flex items-center justify-center overflow-hidden ${driverLicense && 'border-2 border-custom-green'}`}>
                   {/* Image Preview */}

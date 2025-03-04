@@ -186,7 +186,9 @@ export default function Orders(){
                                 
                             </View>
                         ))}
-                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    {(orders.length != 0) && 
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    }
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

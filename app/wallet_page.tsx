@@ -349,7 +349,9 @@ export default function WalletPage(){
                         </View>
                     </View>   
                 ))}
-                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                {(transactions.length != 0) &&
+                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                }
                 </ScrollView>
                 <Toast config={toastConfig} />
             </View>

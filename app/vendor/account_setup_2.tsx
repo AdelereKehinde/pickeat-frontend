@@ -154,7 +154,7 @@ export default function AccountSetup2(){
                 <View  className='ml-4'>
                   <Text
                   style={{fontFamily: 'Inter-Bold'}}
-                  className='text-[12px] text-gray-800'
+                  className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[10px] mt-2`}
                   >
                     {TruncatedText(user?.store_name || "No name", 20) }
                   </Text>
@@ -166,7 +166,7 @@ export default function AccountSetup2(){
                   </Text>
                   <Text
                   style={{fontFamily: 'Inter-SemiBold'}}
-                  className='text-[10px] text-gray-800 mt-2'
+                  className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[10px] mt-2`}
                   >
                     {user?.email || "No email"}
                   </Text>

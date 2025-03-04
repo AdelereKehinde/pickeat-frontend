@@ -17,6 +17,10 @@ const ENDPOINTS = {
         'list-devices': `${ACOOUNT_BASE}devices/list`,
         'geocode': `${ACOOUNT_BASE}geocode/search`,
         'geocode-decode': `${ACOOUNT_BASE}geocode/decode`,
+        'avatar': `${ACOOUNT_BASE}avatar`,
+        'transaction-pin': `${ACOOUNT_BASE}transaction/pin`,
+        'forgot-transaction-pin': `${ACOOUNT_BASE}transaction/forget`,
+        'reset-transaction-pin': `${ACOOUNT_BASE}transaction/reset`,
     },
     'buyer': { 
         'signin': `${BUYER_BASE}signin`,
@@ -70,6 +74,8 @@ const ENDPOINTS = {
         'toggle-active-status': `${RIDER_BASE}active-status/toggle`,
         'task':`${RIDER_BASE}task`,
         'notification': `${RIDER_BASE}notification`,
+        'delete': `${RIDER_BASE}delete`,
+        'profile': `${RIDER_BASE}profile`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,

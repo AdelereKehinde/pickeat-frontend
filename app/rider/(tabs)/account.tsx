@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { Text, View, StatusBar, Pressable, Image, TouchableOpacity, ScrollView } from "react-native";
 import { router, useGlobalSearchParams } from 'expo-router';
+import { FontAwesome } from '@expo/vector-icons';
 import { Link } from "expo-router";
 import { useUser } from '@/context/UserProvider';
 import TitleTag from '@/components/Title';
@@ -52,9 +53,11 @@ export default function Account(){
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}>
                 <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
-                <TitleTag withprevious={false} title='Profile' withbell={false} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
+                    <TitleTag withprevious={false} title='Profile' withbell={false} />
+                </View>
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full py-4 relative flex items-center justify-center`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full py-5 relative flex items-center justify-center`}>
                         <View className='w-24 h-24 overflow-hidden rounded-full'>
                             <Image 
                             source={{uri: user?.avatar}}
@@ -159,6 +162,22 @@ export default function Account(){
                         </View>
                         <View className='w-full px-5 my-1'>
                             <Pressable
+                            onPress={()=>{(router.push("/rider/settings"))}}
+                            className='flex flex-row w-full items-center'
+                            >
+                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
+                                    <FontAwesome name="cogs" size={20} color="#228b22" />
+                                </View>
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px] font-medium ml-5`}
+                                >
+                                    Settings
+                                </Text>
+                            </Pressable>
+                        </View>
+                        <View className='w-full px-5 my-1'>
+                            <Pressable
                             onPress={()=>{(router.push("/device"))}}
                             className='flex flex-row w-full items-center'
                             >
@@ -191,7 +210,7 @@ export default function Account(){
                         </View>
 
                         <Pressable
-                        onPress={()=>{router.replace('/vendor/login')}}
+                        onPress={()=>{router.replace('/rider/login')}}
                         className={`mb-5 text-center bg-custom-green rounded-xl p-4 w-[90%] self-center mt-7 text-white flex flex-row items-center`}
                         >
                             <Text

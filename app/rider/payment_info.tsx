@@ -19,7 +19,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
-export default function CreateProfile3(){
+export default function PaymentInfo(){
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { setUser } = useUser();
     const { user } = useUser();
@@ -27,7 +27,15 @@ export default function CreateProfile3(){
         success: CustomToast,
         error: CustomToast,
     };
+
+    type ApiRes2 = { status: string; message: string; data: {
+        bank_name: string;
+        bank_code: string;
+        acc_number: string;
+        acc_name: string;
+    }};
     const [openState, setOpenState] = useState({bank_code:false})
+    const [resData, setResData] = useState<ApiRes2>();
     const [data, setData] = useState({bank_code:'', acc_number:"", acc_name: "", bank_name:""});
       
     interface Item {
@@ -45,8 +53,18 @@ export default function CreateProfile3(){
                 type BankList = { name: string; code: string;};
                 type ApiRes = { status: string; message: string; data: BankList[]};
                 const response = await getRequest<ApiRes>(ENDPOINTS['payment']['banks'], true); // Authenticated
-                // alert(JSON.stringify(response))
                 setBankList(response.data)
+
+                const response2 = await getRequest<ApiRes2>(ENDPOINTS['rider']['bank-details'], true); // Authenticated
+                setResData(response2)
+                setData({
+                    bank_code: '',
+                    acc_number: response2.data.acc_number,
+                    bank_name: response2.data.bank_name,
+                    acc_name: response2.data.acc_name
+                })
+                // alert(JSON.stringify(response2))
+                
                 setFetchLoading(false)
             } catch (error) {
                 // alert(error);
@@ -58,7 +76,10 @@ export default function CreateProfile3(){
 
     const validateInput = () =>{
         if((data.acc_name !== '') && (data.acc_number !== '') && (data.bank_code !== "") && (data.bank_name !== "")){
-          return true;
+            if ((data.bank_code !== resData?.data.bank_code) || (data.acc_number !== resData?.data.acc_number) || (data.bank_name !== resData?.data.bank_name)){
+                return true
+            }
+          return false;
         }
         return false; 
     }
@@ -117,10 +138,8 @@ export default function CreateProfile3(){
                     visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
                     autoHide: true,
                 });
-                // await Delay(3000)
-                router.replace({
-                    pathname: '/rider/availability',
-                }); 
+                await Delay(2000)
+                router.back()
             
             } catch (error: any) {
                 setLoading(false)
@@ -145,7 +164,7 @@ export default function CreateProfile3(){
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
 
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
-                    <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
+                    <TitleTag withprevious={true} title='Payment Info' withbell={false}/>
                 </View> 
 
                 {fetchloading && (
@@ -185,7 +204,7 @@ export default function CreateProfile3(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, gender: !openState.bank_code}));}}
                                 >
-                                    <CharFieldDropDown options={bankList.map(item => ({label: item.name, value: item.code}))} open={openState.bank_code}  placeholder="Bank" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, bank_code: value, bank_name: (bankList.find(item => item.code === value)?.name || '')})); setData(prevState => ({...prevState, acc_name: ''})); setOpenState(prevState => ({...prevState, bank_code: false}))}}/>
+                                    <CharFieldDropDown options={bankList.map(item => ({label: item.name, value: item.code}))} open={openState.bank_code}  placeholder="Bank" focus={false} border={true} name='' setValue={data.bank_name} getValue={(value: string)=>{setData(prevState => ({...prevState, bank_code: value, bank_name: (bankList.find(item => item.code === value)?.name || '')})); setData(prevState => ({...prevState, acc_name: ''})); setOpenState(prevState => ({...prevState, bank_code: false}))}}/>
                                 </Pressable>
                             </View> 
                         </View>
@@ -205,7 +224,7 @@ export default function CreateProfile3(){
                                     )
                                 }
                                 {/* <CharField  placeholder="Account Number" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, acc_number: value})); validateAccNumber(value)}}/> */}
-                                <PhoneNumber  placeholder="Account Number" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, acc_number: value})); validateAccNumber(value)}}/>
+                                <PhoneNumber  placeholder="Account Number" focus={false} border={true} name='' setValue={data.acc_number} getValue={(value: string)=>{setData(prevState => ({...prevState, acc_number: value})); validateAccNumber(value)}}/>
                             </View>
                             
                             <View>

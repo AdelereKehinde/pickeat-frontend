@@ -29,7 +29,7 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
     const [isVisible, setIsVisible] = useState(false);
     const [selectedOption, setSelectedOption] = useState(''); 
     useEffect(() => {
-        if(!active && setValue !== ''){
+        if(setValue !== ''){
             setInputValue(setValue+"")
         }
         for(var i=0; i<options.length; i++){
@@ -76,7 +76,7 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
                 {active && (
                     <Pressable 
                     onPress={() => setIsVisible(!isVisible)} 
-                    className={`absolute right-4 ${(name=='')? 'inset-y-4': 'inset-y-5'}  text-gray-400 w-5 h-5`}
+                    className={`absolute right-4 ${(name=='')? 'inset-y-3': 'inset-y-4'}  text-gray-400 w-5 h-5`}
                     >   
                         <FontAwesome 
                         name={isVisible ? 'chevron-up' : 'chevron-down'} 

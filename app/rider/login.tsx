@@ -65,6 +65,7 @@ export default function RiderLogin(){
             set_profile_2: boolean;
             set_profile_3: boolean;
             active_status: boolean;
+            set_pin: boolean;
           };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['rider']['signin'], {
@@ -96,11 +97,11 @@ export default function RiderLogin(){
             text1: "Welcome back",
             visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
-          }); 
+          });  
 
-          await Delay(3000)
+          await Delay(1500)
           router.push({
-            pathname: res.data.set_profile_1? res.data.set_identity? res.data.set_profile_2? res.data.set_profile_3? res.data.set_availability? '/rider/(tabs)/home' : '/rider/availability' : '/rider/create_profile_3' : '/rider/create_profile_2' : '/rider/identity_verification' : '/rider/create_profile'
+            pathname: res.data.set_profile_1? res.data.set_identity? res.data.set_profile_2? res.data.set_profile_3? res.data.set_availability? res.data.set_pin? '/rider/(tabs)/home' : '/rider/transaction_pin' : '/rider/availability' : '/rider/create_profile_3' : '/rider/create_profile_2' : '/rider/identity_verification' : '/rider/create_profile'
           }); 
         }
 

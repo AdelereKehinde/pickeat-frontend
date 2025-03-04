@@ -114,6 +114,11 @@ export default function RootLayout() {
           <Stack.Screen name="rider/order_detail" options={{headerShown: false}} />
           <Stack.Screen name="rider/earnings" options={{headerShown: false}} />
           <Stack.Screen name="rider/profile_page" options={{headerShown: false}} />
+          <Stack.Screen name="rider/settings" options={{headerShown: false}} />
+          <Stack.Screen name="rider/handbook" options={{headerShown: false}} />
+          <Stack.Screen name="rider/transaction_pin" options={{headerShown: false}} />
+          <Stack.Screen name="rider/reset_transaction_pin" options={{headerShown: false}} />
+          <Stack.Screen name="rider/payment_info" options={{headerShown: false}} />
         </Stack>
       </ThemeProvider>
     </UserProvider>
