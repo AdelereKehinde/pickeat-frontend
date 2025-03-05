@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { router } from 'expo-router'
 import MenuBar from '../../../assets/icon/menuBar.svg';
+import MenuBarDark from '../../../assets/icon/MenuBarDark.svg';
 import Bell from '../../../assets/icon/bell.svg';
+import BellDark from '../../../assets/icon/bell-dark.svg';
 import UserManagement from '../../../assets/icon/user-management.svg';
 import DashboardIcon from '../../../assets/icon/dashboard-icon.svg';
 import OrderManagement from '../../../assets/icon/order-management.svg';
 import EarningTransaction from '../../../assets/icon/earnings-transaction.svg';
 import Reports from '../../../assets/icon/reports.svg';
+import AccountInactive from '../../../assets/icon/account_fill_inactive.svg';
 import PagesRestriction from '../../../assets/icon/pages-restrictions.svg';
 import ContentManagement from '../../../assets/icon/content-management.svg';
 import HelpSupport from '../../../assets/icon/help-support.svg';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 import AdminHome from './home'
 import AdminOrder from './order'
@@ -22,35 +26,52 @@ import AdminReportAnalytics from './reports'
 import AdminPages from './pages'
 import AdminContent from './content'
 import AdminHelpSupport from './support'
+import Account from './account';
+
 
 const Drawer = createDrawerNavigator();
 
 export default function Layout() {
-  
+  const { theme, toggleTheme } = useContext(ThemeContext);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer.Navigator
-      screenOptions={({ navigation }) => ({
+        screenOptions={({ navigation }) => ({
             // headerTitle: 'Dashboard', // Title in the center
             headerTitleAlign: 'center',
             headerTitleStyle: {
-              fontSize: 16,
+              fontSize: 14,
               // fontWeight: 'bold',
               fontFamily: 'Inter-SemiBold',
-              color: '#1E1E1E', // Change title color
+              color: (theme == 'dark')? '#fff' : '#1E1E1E', // Change title color
+            },
+            headerStyle: {
+              backgroundColor: (theme == 'dark')?  '#1f2937' : '#fff', // Replace with your desired color
+            },
+            drawerStyle: {
+              backgroundColor: (theme == 'dark')? '#111827' : '#fff', // Set the background color of the drawer
             },
             headerLeft: () => (
               <TouchableOpacity 
               className='ml-4'
               onPress={() => navigation.toggleDrawer()}>
-                <MenuBar width={35} height={35} />
+                {(theme == 'dark')?
+                  <MenuBarDark width={35} height={35} />
+                  :
+                  <MenuBar width={35} height={35} />
+                }
               </TouchableOpacity>
             ),
             headerRight: () => (
               <TouchableOpacity 
               className='mr-4'
               onPress={()=>{router.push('/notification')}}>
-                <Bell />
+                {(theme == 'dark')?
+                  <BellDark />
+                  :
+                  <Bell />
+                }
               </TouchableOpacity>
             ),
           })}
@@ -63,9 +84,11 @@ export default function Layout() {
             <DashboardIcon width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
       <Drawer.Screen 
@@ -76,9 +99,11 @@ export default function Layout() {
             <OrderManagement width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
       <Drawer.Screen 
@@ -89,9 +114,11 @@ export default function Layout() {
             <UserManagement width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
       <Drawer.Screen 
@@ -99,12 +126,14 @@ export default function Layout() {
         component={AdminTransaction} 
         options={{
           drawerIcon: ({ focused, size }) => (
-            <EarningTransaction width={28} height={28} />
+            <EarningTransaction width={30} height={30} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
       <Drawer.Screen 
@@ -115,9 +144,11 @@ export default function Layout() {
             <Reports width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
       <Drawer.Screen 
@@ -128,12 +159,14 @@ export default function Layout() {
             <PagesRestriction width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
-      <Drawer.Screen 
+      {/* <Drawer.Screen 
         name="Content management" 
         component={AdminContent} 
         options={{
@@ -141,11 +174,13 @@ export default function Layout() {
             <ContentManagement width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
-      />
+      /> */}
       <Drawer.Screen 
         name="Help & Support" 
         component={AdminHelpSupport} 
@@ -154,9 +189,26 @@ export default function Layout() {
             <HelpSupport width={28} height={28} />
           ),
           drawerLabelStyle: {
-            fontSize: 14,
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
             fontFamily: 'Inter-Medium',  // Font for the drawer label
           },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
+        }} 
+      />
+      <Drawer.Screen 
+        name="Account" 
+        component={Account} 
+        options={{
+          drawerIcon: ({ focused, size }) => (
+            <AccountInactive width={28} height={28} />
+          ),
+          drawerLabelStyle: {
+            fontSize: 13,
+            color: (theme == 'dark')? "#e5e7eb" : "#111827",
+            fontFamily: 'Inter-Medium',  // Font for the drawer label
+          },
+          drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
     </Drawer.Navigator>

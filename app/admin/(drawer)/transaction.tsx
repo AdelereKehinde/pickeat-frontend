@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { Text, View, StatusBar, TextInput, ScrollView, TouchableOpacity, RefreshControl, StyleSheet } from "react-native";
+import { Text, View, StatusBar, TextInput, ScrollView, TouchableOpacity, RefreshControl, StyleSheet, FlatList } from "react-native";
 import { router } from 'expo-router'
 import Check from '../../../assets/icon/check.svg'
 import AdminOrderTransaction from '@/components/AdminOrderTransaction';
@@ -21,6 +21,7 @@ import Search from '../../../assets/icon/search.svg';
 import Filter from '../../../assets/icon/filter.svg';
 import { FontAwesome } from '@expo/vector-icons';
 import Calender from '../../../assets/icon/calender.svg';
+import TitleCase from '@/components/TitleCase';
 
 function AdminTransaction(){
     const toastConfig = {
@@ -34,7 +35,7 @@ function AdminTransaction(){
 
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('client');
+    const [filter, setFilter] = useState('all');
     const [isFocusedSearch, setIsFocusedSearch] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     const [showAmount, setShowAmount] = useState(true)
@@ -112,10 +113,17 @@ function AdminTransaction(){
         setRefreshing(false); // Stop the refreshing animation
     };
 
+    const Categories = [
+        {id: '1', name: 'all'},
+        {id: '2', name: 'pending'},
+        {id: '3', name: 'completed'},
+        {id: '4', name: 'cancelled'},
+    ]
+
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>      
-                <View className='bg-white w-full p-4 relative flex flex-row items-center justify-center'>
+                <View className={` w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
@@ -130,7 +138,7 @@ function AdminTransaction(){
                         placeholder="Search"
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                     onPress={()=>{}}
                     className='flex flex-row items-center absolute right-6 rounded-lg p-2 bg-gray-100'>
                         <Text
@@ -142,77 +150,41 @@ function AdminTransaction(){
                         <View className=''>
                             <Filter width={15} height={15} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
-                <View className='bg-white p-4 flex flex-row w-full justify-around'>
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('client')}}
-                        className={`${(filter == 'all')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'all') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'all')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
+                <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} p-4 flex flex-row w-full justify-around`}>
+                    <FlatList
+                    data={Categories} 
+                    keyExtractor={(item) => item.id}
+                    horizontal={true}  // This makes the list scroll horizontally
+                    ItemSeparatorComponent={() => <View className='w-3' />}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                        onPress={()=>{setFilter(item.name)}}
+                        className={`bg-gray-100 rounded-lg ${(filter == item.name) && 'bg-custom-green'} flex flex-row items-center px-4 py-2`}
                         >
-                            All
-                        </Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('client')}}
-                        className={`${(filter == 'client')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'client') && (
-                            <Check />
+                            {(filter== item.name) && (
+                                <Check />
+                            )}
+                            <Text
+                            className={`${(filter == item.name)? 'text-white':'text-gray-600'} ml-1 text-[12px] text-center`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {TitleCase(item.name)}
+                            </Text>
+                        </TouchableOpacity>
                         )}
-                        <Text
-                        className={`${(filter == 'client')? 'text-white pl-2': 'text-[#909090]'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Client
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('vendor')}}
-                        className={`${(filter == 'vendor')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'vendor') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'vendor')? 'text-white pl-2': 'text-[#909090]'} text-[11px] `}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Vendors 
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('rider')}}
-                        className={`${(filter == 'rider')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'rider') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'rider')? 'text-white pl-2': 'text-[#909090]'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Riders
-                        </Text>
-                    </TouchableOpacity>
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                    />
                 </View>
 
                 <ScrollView 
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
-                className='w-full bg-[#F2F2F2]' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className='bg-white'>
+                className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full`}contentContainerStyle={{ flexGrow: 1 }}>
+                    <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'}`}>
                         <View 
                         style={styles.shadow_box}
                         className={`${theme == 'dark'? 'bg-gray-800' : 'bg-[#F5F5F5]'} my-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
@@ -251,18 +223,23 @@ function AdminTransaction(){
                                 className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    Pending Payout - <Text className='text-custom-green'>N {showAmount? 'N 1,027.87':'****'}</Text>
+                                    Pending Payout - <Text className='text-custom-green'>N {showAmount? '1,027.87':'****'}</Text>
                                 </Text>
                             </View>
                         </View>
 
-                        <View className='bg-white rounded w-full p-2 mt-1'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
                             <View className='flex flex-row justify-between items-center w-full p-2'>
                                 <View className='flex flex-row justify-start'>
-                                    <Text className='text-[#000000] text-[14px] mr-1' style={{fontFamily: 'Inter-Bold'}}>
+                                    <Text 
+                                    className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-900'} text-[13px] mr-1`}
+                                    style={{fontFamily: 'Inter-SemiBold'}}>
                                         Payout Management 
                                     </Text>
-                                    <Text className='text-[#767676] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>(5)</Text>
+                                    <Text className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-700'} text-[13px]`}
+                                    style={{fontFamily: 'Inter-SemiBold'}}>
+                                        (5)
+                                    </Text>
                                 </View>
                                 <View className='px-2'>
                                     <TouchableOpacity>
@@ -272,7 +249,7 @@ function AdminTransaction(){
                             </View>
                         </View>
                     </View>
-                    <View className='flex flex-row items-center justify-between w-full px-4 mt-3 bg-[#F2F2F2]'>
+                    <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} flex flex-row items-center justify-between w-full px-4 py-3`}>
                         <View className='flex flex-row'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-100' : ' text-custom-green'} text-[18px]`}
@@ -282,7 +259,7 @@ function AdminTransaction(){
                             </Text>
                         </View>
                     
-                        <View className='flex flex-row items-center'>
+                        <View className='flex flex-row items-center space-x-1'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px]`}
                             style={{fontFamily: 'Inter-Regular'}}

@@ -37,6 +37,9 @@ export const handleError = async (error: any, loginUrl: string = '/vendor/login'
           case 'rider':
             login_url = '/rider/login'
             break;
+          case 'admin':
+            login_url = '/admin/login'
+            break;
           default:
             login_url = '/login'
             break;

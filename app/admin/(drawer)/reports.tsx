@@ -55,7 +55,7 @@ function AdminReportAnalytics(){
                       </View>
                     </View>
                     
-                    <View className='bg-white rounded w-full p-2 mt-2'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-2`}>
                         <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View>
                             <Text
@@ -94,11 +94,11 @@ function AdminReportAnalytics(){
                         </View>
                     </View>
 
-                    <View className='bg-white rounded w-full p-2 mt-2'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded mx-auto p-2 mt-2 w-[95%]`}>
                         <View className='flex flex-row justify-center mb-4'>
                             <Text
-                            className={`${theme == 'dark'? 'text-gray-100' : 'text-[#3D4857]'} text-[14px]`}
-                            style={{fontFamily: 'Inter'}}
+                            className={`${theme == 'dark'? 'text-gray-100' : 'text-[#3D4857]'} text-[13px]`}
+                            style={{fontFamily: 'Inter-Regular'}}
                             >
                                 Monthly user engagement report
                             </Text>
@@ -108,8 +108,16 @@ function AdminReportAnalytics(){
                                 <Image source={require("../../../assets/images/image22.jpg")} className='w-10 h-10 rounded-md'/>
                             </View>
                             <View className='ml-2'>
-                                <Text className='text-[#3D4857]'>Jacob Jones</Text>
-                                <Text className='text-[#8492A4]'>29 orders</Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`${theme == 'dark'? 'text-gray-300' : 'text-gray-500'} text-[13px]`}>
+                                    Jacob Jones
+                                </Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-500'} text-[12px]`}>
+                                    29 orders
+                                </Text>
                             </View>
                         </View>
                         <View className='flex flex-row justify-start my-2'>
@@ -117,17 +125,25 @@ function AdminReportAnalytics(){
                                 <Image source={require("../../../assets/images/image22.jpg")} className='w-10 h-10 rounded-md'/>
                             </View>
                             <View className='ml-2'>
-                                <Text className='text-[#3D4857]'>Jacob Jones</Text>
-                                <Text className='text-[#8492A4]'>29 orders</Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`${theme == 'dark'? 'text-gray-300' : 'text-gray-500'} text-[13px]`}>
+                                    Jacob Jones
+                                </Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-500'} text-[12px]`}>
+                                    29 orders
+                                </Text>
                             </View>
                         </View>
                     </View>
 
-                    <View className='bg-white rounded p-2 mt-4 mx-2'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded mx-auto p-2 mt-4 w-[95%]`}>
                         <View className='flex flex-row justify-center mb-4'>
                             <Text
-                            className={`${theme == 'dark'? 'text-gray-100' : 'text-[#3D4857]'} text-[14px]`}
-                            style={{fontFamily: 'Inter'}}
+                            className={`${theme == 'dark'? 'text-gray-100' : 'text-[#3D4857]'} text-[13px]`}
+                            style={{fontFamily: 'Inter-Regular'}}
                             >
                                 Order insight
                             </Text>
@@ -137,8 +153,16 @@ function AdminReportAnalytics(){
                                 <Image source={require("../../../assets/images/image22.jpg")} className='w-10 h-10 rounded-md'/>
                             </View>
                             <View className='ml-2'>
-                                <Text className='text-[#3D4857]'>Jacob Jones</Text>
-                                <Text className='text-[#228B22]' style={{fontFamily: 'Inter-Bold'}}>29 orders</Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-gray-300' : 'text-gray-500'} text-[13px]`}>
+                                    Most sells
+                                </Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`text-custom-green text-[13px]`}>
+                                    Fried rice
+                                </Text>
                             </View>
                         </View>
                         <View className='flex flex-row justify-start my-2'>
@@ -146,8 +170,33 @@ function AdminReportAnalytics(){
                                 <Image source={require("../../../assets/images/image22.jpg")} className='w-10 h-10 rounded-md'/>
                             </View>
                             <View className='ml-2'>
-                                <Text className='text-[#3D4857]'>Jacob Jones</Text>
-                                <Text className='text-[#228B22]' style={{fontFamily: 'Inter-Bold'}}>29 orders</Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-gray-300' : 'text-gray-500'} text-[13px]`}>
+                                    Popular orders
+                                </Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`text-custom-green text-[13px]`}>
+                                    Fried rice
+                                </Text>
+                            </View>
+                        </View>
+                        <View className='flex flex-row justify-start my-2'>
+                            <View>
+                                <Image source={require("../../../assets/images/image22.jpg")} className='w-10 h-10 rounded-md'/>
+                            </View>
+                            <View className='ml-2'>
+                                <Text 
+                                style={{fontFamily: 'Inter-Regular'}}
+                                className={`${theme == 'dark'? 'text-gray-300' : 'text-gray-500'} text-[13px]`}>
+                                    Peak orders hours
+                                </Text>
+                                <Text 
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`text-custom-green text-[13px]`}>
+                                    Fried rice
+                                </Text>
                             </View>
                         </View>
                     </View>

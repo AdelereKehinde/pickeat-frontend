@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { Text, View, StatusBar, TextInput, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
+import { Text, View, StatusBar, TextInput, ScrollView, TouchableOpacity, RefreshControl, FlatList } from "react-native";
 import { router } from 'expo-router'
 import Check from '../../../assets/icon/check.svg'
 import AdminOrderHistory from '@/components/AdminOrderHistory';
@@ -18,6 +18,7 @@ import AngleRight from '../../../assets/icon/angler.svg';
 import EllipseDot from '../../../assets/icon/ellipse-dot.svg';
 import Search from '../../../assets/icon/search.svg';
 import Filter from '../../../assets/icon/filter.svg';
+import TitleCase from '@/components/TitleCase';
 
 function AdminUser(){
     const toastConfig = {
@@ -26,7 +27,7 @@ function AdminUser(){
     };
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('client');
+    const [filter, setFilter] = useState('users');
     const [isFocusedSearch, setIsFocusedSearch] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     
@@ -54,7 +55,7 @@ function AdminUser(){
                     email: '2000',
                     phone: 'Abuja',
                     thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    type: 'client',
+                    type: 'users',
                     status_history_status: 'completed',
                     status: 'completed',
                     items: 'string',
@@ -66,7 +67,7 @@ function AdminUser(){
                     email: '2000',
                     phone: 'Abuja',
                     thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    type: 'vendor',
+                    type: 'vendors',
                     status_history_status: 'completed',
                     status: 'completed',
                     items: 'string22',
@@ -109,10 +110,17 @@ function AdminUser(){
         setParentUsers(newUser);  
     }
 
+    const Categories = [
+        {id: '1', name: 'users'},
+        {id: '2', name: 'vendors'},
+        {id: '3', name: 'riders'},
+        {id: '4', name: 'admin'},
+    ]
+
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : 'custom-gray-1'} w-full h-full flex items-center`}>      
-                <View className='bg-white w-full p-4 relative flex flex-row items-center justify-center'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>      
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
@@ -127,7 +135,7 @@ function AdminUser(){
                         placeholder="Search"
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
-                    <TouchableOpacity 
+                    {/* <TouchableOpacity 
                     onPress={()=>{}}
                     className='flex flex-row items-center absolute right-6 rounded-lg p-2 bg-gray-100'>
                         <Text
@@ -139,78 +147,48 @@ function AdminUser(){
                         <View className=''>
                             <Filter width={15} height={15} />
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
-                <View className='bg-white p-4 flex flex-row w-full justify-around'>
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('client')}}
-                        className={`${(filter == 'all')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'all') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'all')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} p-4 flex flex-row w-full justify-around`}>
+                    <FlatList
+                    data={Categories}
+                    keyExtractor={(item) => item.id}
+                    horizontal={true}  // This makes the list scroll horizontally
+                    ItemSeparatorComponent={() => <View className='w-3' />}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                        onPress={()=>{setFilter(item.name)}}
+                        className={`bg-gray-100 rounded-lg ${(filter == item.name) && 'bg-custom-green'} flex flex-row items-center px-4 py-2`}
                         >
-                            All users
-                        </Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('client')}}
-                        className={`${(filter == 'client')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'client') && (
-                            <Check />
+                            {(filter== item.name) && (
+                                <Check />
+                            )}
+                            <Text
+                            className={`${(filter == item.name)? 'text-white':'text-gray-600'} ml-1 text-[12px] text-center`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {TitleCase(item.name)}
+                            </Text>
+                        </TouchableOpacity>
                         )}
-                        <Text
-                        className={`${(filter == 'client')? 'text-white pl-2': 'text-[#909090]'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Client
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('vendor')}}
-                        className={`${(filter == 'vendor')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'vendor') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'vendor')? 'text-white pl-2': 'text-[#909090]'} text-[11px] `}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Vendors 
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('rider')}}
-                        className={`${(filter == 'rider')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'rider') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'rider')? 'text-white pl-2': 'text-[#909090]'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Riders
-                        </Text>
-                    </TouchableOpacity>
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                    />
                 </View>
 
-                <View className='bg-white rounded w-full p-2 mt-1'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' text-white'} rounded w-full p-2 mt-1`}>
                     <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
-                            <Text className='text-[#000000] text-[14px] mr-1' style={{fontFamily: 'Inter-Bold'}}>
+                            <Text 
+                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[13px] mr-1' `}
+                            style={{fontFamily: 'Inter-Medium'}}>
                                 Suspended account
                             </Text>
-                            <Text className='text-[#767676] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>(5)</Text>
+                            <Text 
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[13px] ml-1`}
+                            style={{fontFamily: 'Inter-Regular'}}>
+                                (5)
+                            </Text>
                         </View>
                         <View className='px-2'>
                             <TouchableOpacity>
@@ -220,12 +198,12 @@ function AdminUser(){
                     </View>
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mt-1 mb-4 relative flex flex-row items-center justify-center`}>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full mt-1 mb-4 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full p-1 mb-40 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full p-1 mb-44 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (filter==='all' ? parentUsers.length : parentUsers.filter((item)=>item.type.includes(filter)).length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -261,28 +239,23 @@ function AdminUser(){
                             </View>
                         }
                         {parentUsers.filter((item)=>item.type.includes(filter)).map((item, index) => (
-                            <View key={item.id}>
-                                <View className='bg-white border-gray-300 flex flex-row items-center justify-between border-b w-full py-3 px-6'>
-                                    <View className='flex flex-row justify-between items-center w-full'>
-                                        <View className='flex flex-row justify-start'>
+                                <View key={item.id} className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-300'} flex flex-row items-center border-b w-full py-3 px-6`}>
                                             <View>
-                                                <EllipseDot width={20} height={20} />
+                                                <EllipseDot width={15} height={15} />
                                             </View>
                                             <View className='ml-4'>
-                                                <Text className='text-[#767676] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
+                                                <Text className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>
                                                     {index + 1}.
                                                 </Text>
                                             </View>
                                             <View className='ml-1'>
-                                                <Text className='text-[#767676] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
+                                                <Text className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>
                                                     {item.name}
                                                 </Text>
                                             </View>
-                                        </View>
-                                        <View className='flex flex-row justify-start'>
-                                            <View>
-                                                <Text className='text-[#228B22] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
-                                                    {item.type}
+                                            <View className='ml-auto'>
+                                                <Text className='text-[#228B22] text-[13px]' style={{fontFamily: 'Inter-Bold'}}>
+                                                    {TitleCase(item.type)}
                                                 </Text>
                                             </View>
                                             <View className='ml-5'>
@@ -290,10 +263,7 @@ function AdminUser(){
                                                     <AngleRight width={20} height={20} />
                                                 </TouchableOpacity>
                                             </View>
-                                        </View>
                                     </View>
-                                </View>
-                            </View>
                         ))}
                         {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
                     </ScrollView>

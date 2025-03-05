@@ -5,9 +5,11 @@ import TitleTag from '@/components/Title';
 import WhatsAPP from '../assets/icon/whatsapp.svg';
 import Email from '../assets/icon/email.svg';
 import Prompt from '@/components/Prompt';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
-
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 function Support(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -18,8 +20,28 @@ function Support(){
     const phoneNumber = '2349012345678'; // Replace with the desired phone number
     const message = 'Hello, I would like to make a complaint!'; // Replace with your message
 
+    type ApiRes = { email: string; whatsapp: string;};
+    const [resData, setResData] = useState<ApiRes>();
+    const [fetchLoading, setFetchLoading] = useState(false)
+    useEffect(() => {
+        const fetchProfessions = async () => {
+            try {
+                setFetchLoading(true)
+                type ApiRes = { email: string; whatsapp: string;};
+                const response = await getRequest<ApiRes>(ENDPOINTS['account']['support'], true); // Authenticated
+                setResData(response)
+                
+                setFetchLoading(false)
+            } catch (error) {
+                // alert(error);
+            }
+        };
+    
+        fetchProfessions();
+    }, []); // Empty dependency array ensures this runs once
+
     const openWhatsApp = () => {
-        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        const url = `https://wa.me/234${resData?.whatsapp}?text=${encodeURIComponent(message)}`;
         Linking.canOpenURL(url)
           .then((supported) => {
             if (supported) {
@@ -38,7 +60,7 @@ function Support(){
     const body = ''; // Replace with the email body
 
     const sendEmail = () => {
-        const url = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        const url = `mailto:${resData?.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         Linking.canOpenURL(url)
           .then((supported) => {
             if (supported) {
@@ -59,7 +81,9 @@ function Support(){
                 <View style={styles.shadow_box} className={`${theme == 'dark'? 'text-gray-800' : ' bg-blue-100'} w-full`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
-
+                {fetchLoading && (
+                    <FullScreenLoader />
+                )}
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
                     className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} text-custom-green text-[16px] p-4`}
@@ -108,7 +132,7 @@ function Support(){
                                 className='text-custom-green text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    Support@pickeatpickit.com
+                                    {resData?.email}
                                 </Text>
                             </View>
                         </TouchableOpacity>
@@ -130,7 +154,7 @@ function Support(){
                                 className='text-custom-green text-[11px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    +234 901 2345 678
+                                    +234 {resData?.whatsapp}
                                 </Text>
                             </View>
                         </TouchableOpacity>

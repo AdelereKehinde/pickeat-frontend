@@ -126,7 +126,7 @@ export default function PaymentInfo(){
         }
     }
 
-      const handleRequest = async () => {
+    const handleRequest = async () => {
         if(!loading && validateInput()){
             try {
                 setLoading(true)

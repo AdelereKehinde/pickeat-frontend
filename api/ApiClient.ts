@@ -11,10 +11,10 @@ export const getAuthToken = async (): Promise<string | null> => {
 };
 
 const apiClient = axios.create({
-  baseURL: 'https://8162-102-89-69-244.ngrok-free.app/api/v1/',
+  baseURL: 'https://5ad5-105-114-16-6.ngrok-free.app/api/v1/',
   // baseURL: 'https://pickeat-backend.onrender.com/api/v1/',
   // timeout: 10000,
-  // headers: { 
+  // headers: {  
   //   'Content-Type': 'multipart/form-data',
   // },
 });

@@ -47,16 +47,12 @@ export default function AdminLogin(){
     const [error, setError] = useState(''); // Error state 
 
     const handleLogin = async () => {
-      router.push({
-        pathname: "/admin/(drawer)/home" as any,
-      });
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type CategoryArray = { id: string; category_name: string;}[];
-          type DataResponse = {meal_categories: CategoryArray;  onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
+          type DataResponse = {message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; last_name:string; phone_number:string; is_superadmin: boolean;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
-          const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {
+          const res = await postRequest<ApiResponse>(ENDPOINTS['admin']['signin'], {
             email: email,
             password: password,
             device_name: deviceName,
@@ -65,8 +61,8 @@ export default function AdminLogin(){
 
           await AsyncStorage.setItem('token', res.data.token);
           await AsyncStorage.setItem('refresh', res.data.refresh);
-          await AsyncStorage.setItem('service', 'vendor');
-          await AsyncStorage.setItem('categories', JSON.stringify(res.data.meal_categories));
+          await AsyncStorage.setItem('service', 'admin');
+          await AsyncStorage.setItem('is_superadmin', `${res.data.is_superadmin}`);
           
           setLoading(false)
           setUser({
@@ -74,8 +70,7 @@ export default function AdminLogin(){
             phone_number:  res.data.phone_number,
             avatar: res.data.avatar,
             first_name: res.data.first_name,
-            full_name: res.data.full_name,
-            store_name: res.data.store_name
+            last_name: res.data.last_name,
           })
           setData(res); // Display or use response data as needed
           // alert(JSON.stringify(res))
@@ -86,9 +81,9 @@ export default function AdminLogin(){
             autoHide: true,
           }); 
 
-          await Delay(3000)
+          await Delay(1500)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? '/vendor/(tabs)/home' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
+            pathname: '/admin/(drawer)/home'
           }); 
         }
 
@@ -97,8 +92,8 @@ export default function AdminLogin(){
         // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
-          text1: "An error occured",
-          text2: error.data?.data?.message || 'Unknown Error',
+          text1: error.data?.data?.message || "An error occured",
+          // text2: error.data?.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
@@ -177,7 +172,7 @@ export default function AdminLogin(){
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                    className='absolute inset-y-1 right-2 my-auto'
+                    className='absolute right-2 my-auto'
                     >
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
@@ -190,21 +185,21 @@ export default function AdminLogin(){
                 </View>
             </View> 
 
-            <Link 
+            {/* <Link 
             href="/vendor/forgot_password?service=vendor" 
             style={{fontFamily: 'Inter-Medium'}} 
             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px] ml-auto mr-5 mb-10`}>
                Forget Password?
-            </Link> 
+            </Link>  */}
 
-            <Text
+            {/* <Text
               style={{fontFamily: 'Inter-Medium'}}
               className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-center text-[12px] mt-auto`}
               >
                 Don't have an account? <Link href="/vendor/signup" style={{fontFamily: 'Inter-Bold'}} className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}`}>Sign Up</Link> 
-              </Text>
+              </Text> */}
 
-            <View className='w-[90%] mx-auto'>
+            <View className='w-[90%] mt-auto mx-auto'>
               <TouchableOpacity
               onPress={handleLogin}
               className={`text-center ${(validateInput())? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 mb-10 flex items-center justify-around`}

@@ -1,10 +1,10 @@
 import Constants from "expo-constants";
 
-const BASE_URL = `https://pickeat-backend.onrender.com/api/v1/`
 const ACOOUNT_BASE = `account/`
 const BUYER_BASE = `buyer/`
 const VENDOR_BASE = `vendor/`
 const RIDER_BASE = `rider/`
+const ADMIN_BASE = `admin/`
 const INVENTORY_BASE = `inventory/`
 const CART_BASE = `cart/`
 const PAYMENT_BASE = `payment/`
@@ -21,6 +21,7 @@ const ENDPOINTS = {
         'transaction-pin': `${ACOOUNT_BASE}transaction/pin`,
         'forgot-transaction-pin': `${ACOOUNT_BASE}transaction/forget`,
         'reset-transaction-pin': `${ACOOUNT_BASE}transaction/reset`,
+        'support': `${ACOOUNT_BASE}support`,
     },
     'buyer': { 
         'signin': `${BUYER_BASE}signin`,
@@ -76,6 +77,10 @@ const ENDPOINTS = {
         'notification': `${RIDER_BASE}notification`,
         'delete': `${RIDER_BASE}delete`,
         'profile': `${RIDER_BASE}profile`,
+    },
+    'admin': {
+        'signin': `${ADMIN_BASE}signin`,
+        'update-support': `${ADMIN_BASE}support/update`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,

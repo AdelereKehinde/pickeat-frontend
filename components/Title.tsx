@@ -5,6 +5,7 @@ import { router } from 'expo-router'
 import Back from '../assets/icon/back_arrow.svg';
 import Arrow from '../assets/icon/arrow_left.svg';
 import Bell from '../assets/icon/bell.svg';
+import BellDark from '../assets/icon/bell-dark.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
@@ -45,7 +46,11 @@ const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
                     <Pressable 
                     onPress={()=>{router.push('/notification')}}
                     className="ml-5">
+                        {(theme == 'dark')?
+                        <BellDark />
+                        :
                         <Bell />
+                        }
                     </Pressable>
                 )}
                 </View>

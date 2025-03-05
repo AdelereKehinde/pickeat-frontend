@@ -32,46 +32,55 @@ function AdminPages(){
 
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <ScrollView 
                   refreshControl={
                       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                   }
-                  className='w-full flex p-2 mb-[10px]' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className='bg-white rounded w-full p-2 mt-1'>
-                        <View className='flex flex-row justify-between items-center w-full px-2 py-4'>
+                  className='w-full flex mb-[10px]' contentContainerStyle={{ flexGrow: 1 }}>
+                    <View className='space-y-2 mt-2'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} flex flex-row justify-between items-center w-full px-5 py-4`}>
                             <View>
-                                <Text className='text-[#000000] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
+                                <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-900'} text-[14px]`}
+                                style={{fontFamily: 'Inter-Bold'}}>
                                     Users
                                 </Text>
                             </View>
                             <View className='px-2'>
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                onPress={()=>{}}
+                                >
                                     <ArrowRightCircle />
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View className='flex flex-row justify-between items-center w-full px-2 py-4'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} flex flex-row justify-between items-center w-full px-5 py-4`}>
                             <View>
-                                <Text className='text-[#000000] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
+                                <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-900'} text-[14px]`}
+                                style={{fontFamily: 'Inter-Bold'}}>
                                     Vendors
                                 </Text>
                             </View>
                             <View className='px-2'>
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                onPress={()=>{}}
+                                >
                                     <ArrowRightCircle />
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View className='flex flex-row justify-between items-center w-full px-2 py-4'>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} flex flex-row justify-between items-center w-full px-5 py-4`}>
                             <View>
-                                <Text className='text-[#000000] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
+                                <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-900'} text-[14px]`}
+                                style={{fontFamily: 'Inter-Bold'}}>
                                     Riders
                                 </Text>
                             </View>
                             <View className='px-2'>
-                                <TouchableOpacity>
+                                <TouchableOpacity
+                                onPress={()=>{}}
+                                >
                                     <ArrowRightCircle />
                                 </TouchableOpacity>
                             </View>

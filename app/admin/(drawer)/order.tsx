@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { Text, View, StatusBar, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
+import { Text, View, StatusBar, ScrollView, TouchableOpacity, RefreshControl, FlatList } from "react-native";
 import { router } from 'expo-router'
 import Check from '../../../assets/icon/check.svg'
 import AdminOrderHistory from '@/components/AdminOrderHistory';
@@ -14,6 +14,7 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
+import TitleCase from '@/components/TitleCase';
 
 function AdminOrder(){
     const toastConfig = {
@@ -22,7 +23,7 @@ function AdminOrder(){
     };
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('completed');
+    const [filter, setFilter] = useState('all');
     
     type ListData = { id: number; buyer_name: string; price: string; location: string; thumbnail: string; tracking_id: string; status_history_status: string; status: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
@@ -103,75 +104,47 @@ function AdminOrder(){
         setParentOrders(newOrder);  
     }
 
+    const Categories = [
+        {id: '1', name: 'all'},
+        {id: '2', name: 'pending'},
+        {id: '3', name: 'completed'},
+        {id: '4', name: 'cancelled'},
+    ]
+
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : 'custom-gray-1'} w-full h-full flex items-center`}>                
-                <View className='bg-white p-4 flex flex-row w-full justify-around'>
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('completed')}}
-                        className={`${(filter == 'all')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'all') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'all')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'text-gray-100'} w-full h-full flex items-center`}>                
+                <View className={`${theme == 'dark'? 'bg-gray-900' : 'text-white'} p-4 flex flex-row w-full justify-around`}>
+                    <FlatList
+                    data={Categories}
+                    keyExtractor={(item) => item.id}
+                    horizontal={true}  // This makes the list scroll horizontally
+                    ItemSeparatorComponent={() => <View className='w-3' />}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                        onPress={()=>{setFilter(item.name)}}
+                        className={`bg-gray-100 rounded-lg ${(filter == item.name) && 'bg-custom-green'} px-4 py-2 flex flex-row items-center`}
                         >
-                            All
-                        </Text>
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('pending')}}
-                        className={`${(filter == 'pending')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'pending') && (
-                            <Check />
+                            {(filter== item.name) && (
+                                <Check />
+                            )}
+                            <Text
+                            className={`${(filter == item.name)? 'text-white':'text-gray-600'} ml-1 text-[12px] text-center`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {TitleCase(item.name)}
+                            </Text>
+                        </TouchableOpacity>
                         )}
-                        <Text
-                        className={`${(filter == 'pending')? 'text-white pl-2': 'text-[#909090]'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Pending
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('completed')}}
-                        className={`${(filter == 'completed')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'completed') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'completed')? 'text-white pl-2': 'text-[#909090]'} text-[11px] `}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Completed 
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('cancelled')}}
-                        className={`${(filter == 'cancelled')? 'bg-custom-green': 'bg-[#F5F5F5]'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'cancelled') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'cancelled')? 'text-white pl-2': 'text-[#909090]'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Cancelled
-                        </Text>
-                    </TouchableOpacity>
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                    />
                 </View>
 
-                <View className='bg-white rounded w-full p-2 mt-1'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
                     <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View>
-                            <Text className='text-[#000000] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>
+                            <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[13px]`} 
+                            style={{fontFamily: 'Inter-SemiBold'}}>
                                 Order status control
                             </Text>
                         </View>
@@ -183,13 +156,15 @@ function AdminOrder(){
                     </View>
                 </View>
 
-                <View className='bg-white rounded w-full p-2 mt-1'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
                     <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
-                            <Text className='text-[#000000] text-[14px] mr-1' style={{fontFamily: 'Inter-Bold'}}>
+                            <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[13px] mr-1`}
+                            style={{fontFamily: 'Inter-SemiBold'}}>
                                 Order dispute
                             </Text>
-                            <Text className='text-[#228B22] text-[14px]' style={{fontFamily: 'Inter-Bold'}}>(5)</Text>
+                            <Text className='text-[#228B22] text-[13px]' 
+                            style={{fontFamily: 'Inter-SemiBold'}}>(5)</Text>
                         </View>
                         <View className='px-2'>
                             <TouchableOpacity>
@@ -199,7 +174,7 @@ function AdminOrder(){
                     </View>
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mt-1 mb-4 relative flex flex-row items-center justify-center`}>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full mt-1 mb-4 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
