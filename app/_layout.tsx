@@ -96,6 +96,10 @@ export default function RootLayout() {
           <Stack.Screen name="admin/user_details" options={{headerShown: false}} />
           <Stack.Screen name="admin/vendor_details" options={{headerShown: false}} />
           <Stack.Screen name="admin/rider_details" options={{headerShown: false}} />
+          <Stack.Screen name="admin/view_delivery_address" options={{headerShown: false}} />
+          <Stack.Screen name="admin/view_store_address" options={{headerShown: false}} />
+          <Stack.Screen name="admin/vendor_menu" options={{headerShown: false}} />
+          <Stack.Screen name="admin/meal_detail" options={{headerShown: false}} />
 
 
           {/* RIDER */}

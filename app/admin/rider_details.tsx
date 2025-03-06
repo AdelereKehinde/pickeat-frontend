@@ -108,14 +108,16 @@ export default function RiderDetails(){
     };
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}>
-                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
-                <TitleTag withprevious={false} title='Vendor Management' withbell={false} />
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content" backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
+                    <TitleTag withprevious={true} title='Rider Management' withbell={true} />
+                </View>
                 {loading && (
                     <FullScreenLoader />
                 )}
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] mx-auto rounded-md mt-5 py-4 relative flex items-center justify-center`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto rounded-md mt-5 py-4 relative flex items-center justify-center`}>
                         <Text
                         className={`text-custom-green text-[13px]`}
                         style={{fontFamily: 'Inter-Medium'}}
@@ -129,14 +131,41 @@ export default function RiderDetails(){
                             />
                         </View>
                     </View>
+
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center justify-between w-[90%] mx-auto rounded-lg mt-4 py-2 px-3`}>
+                        <View>
+                            <Text
+                            className={`text-gray-400 text-[11px]`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                Driver License
+                            </Text>
+                            <Text
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px]`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                    {resData?.full_name}
+                            </Text>
+                        </View>
+                        <TouchableOpacity
+                        className='bg-custom-green rounded-md py-1 px-4'
+                        >
+                            <Text
+                            className={`text-white text-[11px]`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                View
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                     
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} w-[90%] mx-auto space-y-3 mb-3 mt-4 rounded-md p-3`}>                    
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto space-y-3 mb-3 mt-4 rounded-md p-3`}>                    
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                Business Name
+                                Rider Name
                             </Text>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} text-[11px]`}
@@ -145,7 +174,7 @@ export default function RiderDetails(){
                                 {resData?.full_name}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -159,7 +188,7 @@ export default function RiderDetails(){
                                 {resData?.contact_mail}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -173,7 +202,7 @@ export default function RiderDetails(){
                                 {resData?.vehicle_type}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -187,7 +216,7 @@ export default function RiderDetails(){
                                 {resData?.vehicle_brand}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -201,7 +230,7 @@ export default function RiderDetails(){
                                 {resData?.plate_number}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -215,7 +244,7 @@ export default function RiderDetails(){
                                 {resData?.previous_workplace} {resData?.work_duration}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -229,7 +258,7 @@ export default function RiderDetails(){
                                 {resData?.available_on_holiday}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -243,7 +272,7 @@ export default function RiderDetails(){
                                 {resData?.available_from} - {resData?.available_to}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}

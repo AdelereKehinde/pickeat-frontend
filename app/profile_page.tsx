@@ -30,7 +30,8 @@ export default function ProfilePage(){
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     type APIResponse = {
-        first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; avatar: string;};
+        first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; service_option: number; rider_instruction: string; avatar: string;
+    };
 
     const [resData, setResData] = useState<APIResponse>({
         first_name: '',

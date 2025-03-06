@@ -105,16 +105,33 @@ export default function VendorDetails(){
           });
         }
     };
+
+    const ViewAddress = () =>{
+        if(resData?.address !== null){
+            router.push(`/admin/view_store_address?id=${id}`)
+        }else{
+            Toast.show({
+                type: 'error',
+                text1: "Vendor is yet to set store address",
+                // text2: error.data?.data?.message || 'Unknown Error',
+                visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+        }
+    }
+
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}>
-                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
-                <TitleTag withprevious={false} title='User Management' withbell={false} />
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content" backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
+                    <TitleTag withprevious={true} title='Vendor Management' withbell={true} />
+                </View>
                 {loading && (
                     <FullScreenLoader />
                 )}
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[90%] mx-auto rounded-md mt-5 py-4 relative flex items-center justify-center`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto rounded-lg mt-5 py-4 relative flex items-center justify-center`}>
                         <Text
                         className={`text-custom-green text-[13px]`}
                         style={{fontFamily: 'Inter-Medium'}}
@@ -128,9 +145,37 @@ export default function VendorDetails(){
                             />
                         </View>
                     </View>
+
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center justify-between w-[90%] mx-auto rounded-lg mt-4 py-2 px-3`}>
+                        <View>
+                            <Text
+                            className={`text-gray-400 text-[11px]`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                Kitchen Menu
+                            </Text>
+                            <Text
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px]`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {resData?.business_name}
+                            </Text>
+                        </View>
+                        <TouchableOpacity
+                        onPress={()=>{router.push(`/admin/vendor_menu?id=${resData?.id}`)}}
+                        className='bg-custom-green rounded-md py-1 px-4'
+                        >
+                            <Text
+                            className={`text-white text-[11px]`}
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                                View
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                     
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} w-[90%] mx-auto space-y-3 mb-3 mt-4 rounded-md p-3`}>                    
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto space-y-3 mb-3 mt-4 rounded-md p-3`}>                    
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -138,13 +183,13 @@ export default function VendorDetails(){
                                 Business Name
                             </Text>
                             <Text
-                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} text-[11px]`}
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 {resData?.business_name}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -158,7 +203,7 @@ export default function VendorDetails(){
                                 {resData?.business_mail}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -172,7 +217,7 @@ export default function VendorDetails(){
                                 {resData?.business_number}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -186,7 +231,7 @@ export default function VendorDetails(){
                                 {resData?.profession}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -200,7 +245,7 @@ export default function VendorDetails(){
                                 {resData?.category}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -214,7 +259,7 @@ export default function VendorDetails(){
                                 {resData?.no_of_worker}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -228,7 +273,7 @@ export default function VendorDetails(){
                                 {resData?.available_on_holiday}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -242,7 +287,7 @@ export default function VendorDetails(){
                                 {resData?.available_from} - {resData?.available_to}
                             </Text>
                         </View>
-                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-500'} w-full border-b pb-2`}>
+                        <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
                             <Text
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
@@ -259,7 +304,7 @@ export default function VendorDetails(){
                     </View>
 
                     <TouchableOpacity 
-                    onPress={()=>{router.push("/set_delivery_address?update=1")}}
+                    onPress={ViewAddress}
                     className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} w-full px-6 py-2 my-5`}>
                         <View className='w-full flex flex-row space-x-3 items-center'>
                             <Location />

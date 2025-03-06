@@ -16,11 +16,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import Pagination from '@/components/Pagination';
+import AdminProductList from '@/components/AdminProductList';
 import useDebounce from '@/components/Debounce';
 
-export default function Menu(){
+export default function VendorMenu(){
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
+    // Get query params
+    const {id} = useGlobalSearchParams()
     type CategoryArray = { id: number; category_name: string;}[];
     type MealArray = { id: number; thumbnail: string; meal_name: string; category: CategoryArray; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type ApiResponse = { count: number; next: string; previous: string; results: MealArray;};
@@ -32,7 +35,7 @@ export default function Menu(){
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
-
+    
     const [searchValue, setSearchValue] = useState('')
     const [preSearchValue, setPreSearchValue] = useState('')
     const [isFocused, setIsFocus] = useState(false);
@@ -57,9 +60,9 @@ export default function Menu(){
         setLoading(true)
         try {
             if(filterIndex ==  'all'){
-                var Endpoint = `${ENDPOINTS['inventory']['vendor-meal-list']}?page=${currentPage}&page_size=${pageSize}`
+                var Endpoint = `${ENDPOINTS['inventory']['kitchen-meal']}${id}/list?page=${currentPage}&page_size=${pageSize}`
             }else{
-                var Endpoint = `${ENDPOINTS['inventory']['vendor-meal-list']}?page=${currentPage}&page_size=${pageSize}&category=${filterIndex}`
+                var Endpoint = `${ENDPOINTS['inventory']['kitchen-meal']}${id}/list?page=${currentPage}&page_size=${pageSize}&category=${filterIndex}`
             }
             if (searchValue.length > 2){
                 Endpoint = `${Endpoint}&search=${searchValue}`
@@ -75,20 +78,14 @@ export default function Menu(){
         }
     };
 
-    const pageIsFocused = useIsFocused();
     useEffect(() => {
         fetchCategories();
-      }, []); // Empty dependency array ensures this runs once
-    
+    }, []); // Empty dependency array ensures this runs once
+
+    const pageIsFocused = useIsFocused();
     useEffect(() => {
         fetchMeals();
-    }, [currentPage, filterIndex, pageIsFocused, searchValue]);
-
-    const handleRemoveItem = (itemId: number) => { 
-        // alert(itemId)
-        var newMeals = meals.filter((item)=>item.id != itemId)
-        setMeals(newMeals); 
-    };
+    }, [currentPage, filterIndex, pageIsFocused, searchValue]); // Empty dependency array ensures this runs once
 
     // Create a debounced version of fetchMeals with 500ms delay
     const debouncedSearch = useDebounce(setSearchValue, 1000);
@@ -110,9 +107,7 @@ export default function Menu(){
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
-        await fetchCategories()
-
+        await fetchMeals()
         setRefreshing(false); // Stop the refreshing animation
     };
     
@@ -121,14 +116,8 @@ export default function Menu(){
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center mb-10`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
-                    <TitleTag withprevious={true} title='Menu' withbell={false} />
+                    <TitleTag withprevious={true} title='Vendor Menu' withbell={false} />
                 </View>
-
-                <TouchableOpacity
-                onPress={()=>{router.push('/vendor/create_product')}}
-                className='self-end -mt-8 mr-4'>
-                    <Add />
-                </TouchableOpacity>
 
                 <View className='w-full my-3 px-4 relative flex flex-row items-center justify-center'>
                     <View className='absolute left-6 z-10'>
@@ -141,8 +130,8 @@ export default function Menu(){
                         onFocus={()=>setIsFocus(true)}
                         onBlur={()=>setIsFocus(false)}
                         onChangeText={handleSearch}
-                        defaultValue={preSearchValue}
-                        placeholder="Search through your menu"
+                        value={preSearchValue}
+                        placeholder="Search through vendor menu"
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
                 </View>
@@ -235,7 +224,7 @@ export default function Menu(){
                         {(loading && (meals.length == 0)) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className='mt-5 border-b border-gray-900'>
+                                    <View key={index} className={`${theme == 'dark'? 'bg-gray-900' : ' border-gray-300'} mt-5 border-b`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
@@ -255,8 +244,7 @@ export default function Menu(){
                         {(!loading && (meals.length > 0)) &&
                             meals.map((item) => (
                                 <View key={item.id}>
-                                    <VendorProductList 
-                                    onRemove={handleRemoveItem}
+                                    <AdminProductList 
                                     image={item.thumbnail} 
                                     id={item.id}
                                     category={TitleCase(item.category[0].category_name)}
@@ -268,8 +256,10 @@ export default function Menu(){
                                     description={item.meal_description}
                                     />
                                 </View>
-                            ))    
+                            ))
                         }
+                                
+
                         {((meals.length != 0) && (count > meals.length)) && 
                             <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                         }

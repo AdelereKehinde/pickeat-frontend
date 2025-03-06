@@ -50,7 +50,8 @@ export default function AdminLogin(){
       try {
         if(!loading && validateInput()){
           setLoading(true)
-          type DataResponse = {message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; last_name:string; phone_number:string; is_superadmin: boolean;};
+          type CategoryArray = { id: string; category_name: string;}[];
+          type DataResponse = {meal_categories: CategoryArray; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; last_name:string; phone_number:string; is_superadmin: boolean;};
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['admin']['signin'], {
             email: email,
@@ -63,6 +64,7 @@ export default function AdminLogin(){
           await AsyncStorage.setItem('refresh', res.data.refresh);
           await AsyncStorage.setItem('service', 'admin');
           await AsyncStorage.setItem('is_superadmin', `${res.data.is_superadmin}`);
+          await AsyncStorage.setItem('categories', JSON.stringify(res.data.meal_categories));
           
           setLoading(false)
           setUser({

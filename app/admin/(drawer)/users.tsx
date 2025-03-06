@@ -251,7 +251,7 @@ function AdminUser(){
                                                 </Text>
                                             </View>
                                             <View className='ml-1'>
-                                                <Text className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>
+                                                <Text className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>
                                                     {TruncatedText(item.full_name, 15)}
                                                 </Text>
                                             </View>

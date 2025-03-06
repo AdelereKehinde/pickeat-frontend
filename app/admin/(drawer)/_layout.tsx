@@ -151,7 +151,7 @@ export default function Layout() {
           drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
       />
-      <Drawer.Screen 
+      {/* <Drawer.Screen 
         name="Pages & Restriction" 
         component={AdminPages} 
         options={{
@@ -165,7 +165,7 @@ export default function Layout() {
           },
           drawerActiveBackgroundColor: (theme == 'dark')? '#1f2937' : '#e5e7eb',
         }} 
-      />
+      /> */}
       {/* <Drawer.Screen 
         name="Content management" 
         component={AdminContent} 

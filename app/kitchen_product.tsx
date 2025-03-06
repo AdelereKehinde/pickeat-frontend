@@ -17,6 +17,7 @@ import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Check from '../assets/icon/check.svg'
+import useDebounce from '@/components/Debounce';
 
 export default function KitchenPageProduct(){
     const {kitchen_id} = useGlobalSearchParams()
@@ -36,13 +37,16 @@ export default function KitchenPageProduct(){
     const [kitchenMeal, setKitchenMeal] = useState<MealArray>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 10; // Items per page
+    const pageSize = 6; // Items per page
 
     const [categories, setCategories] = useState<CategoryArray>([{'id': 0, category_name: 'all'}]);
     const [filterIndex, setFilterIndex] = useState('all');
-
+    const [searchValue, setSearchValue] = useState('')
+    const [preSearchValue, setPreSearchValue] = useState('')
+    const [isFocused, setIsFocus] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const fetchMeals = async () => {
+
+    const fetchCategories = async () => {
         try {
             const storedData = await AsyncStorage.getItem('categories');
             // If data exists, parse it and set it to state
@@ -50,8 +54,24 @@ export default function KitchenPageProduct(){
                 const parsedData: CategoryArray = JSON.parse(storedData);
                 setCategories((prevCategories) => [...prevCategories, ...parsedData]);
             }
+        } catch (error) {
+            // alert(JSON.stringify(error));
+            // setLoading(false)
+        }
+    };
 
-            const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list?page_size=${pageSize}&page=${currentPage}`, true);
+    const fetchMeals = async () => {
+        try {
+            setLoading(true)
+            if(filterIndex ==  'all'){
+                var Endpoint = `${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list?page=${currentPage}&page_size=${pageSize}`
+            }else{
+                var Endpoint = `${ENDPOINTS['inventory']['kitchen-meal']}${kitchen_id}/list?page=${currentPage}&page_size=${pageSize}&category=${filterIndex}`
+            }
+            if (searchValue.length > 2){
+                Endpoint = `${Endpoint}&search=${searchValue}`
+            }
+            var response = await getRequest<MealResponse>(Endpoint, true); // Authenticated
             // alert(JSON.stringify(response.results))
             setCount(response.count)
             setKitchenMeal(response.results) 
@@ -63,14 +83,31 @@ export default function KitchenPageProduct(){
     };
 
     useEffect(() => {
-        setKitchenMeal([])
-        setLoading(true)
-        fetchMeals();
-    }, [currentPage]); // Empty dependency array ensures this runs once
-    
-    const [searchValue, setSearchValue] = useState('')
-    const [isFocused, setIsFocus] = useState(false);
+        fetchCategories();
+    }, []); 
 
+    useEffect(() => {
+        setKitchenMeal([])
+        fetchMeals();
+    }, [currentPage, filterIndex, searchValue]); // Empty dependency array ensures this runs once
+
+    // Create a debounced version of fetchMeals with 500ms delay
+    const debouncedSearch = useDebounce(setSearchValue, 1000);
+    const handleSearch = (query: string) => {
+        // setMeals([]); // Clear results if input is empty
+        setPreSearchValue(query)
+        if (query.trim() === '') {
+            // alert(1)
+            setSearchValue('')
+            setLoading(false);
+          return;
+        }else{
+            if(query.length >= 2){
+                debouncedSearch(query); // Call debounced function
+            }
+            // alert(2)
+        }
+    };
     const onRefresh = async () => {
         setRefreshing(true);
         await fetchMeals()
@@ -91,13 +128,13 @@ export default function KitchenPageProduct(){
                     </View>
                     <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
                         autoFocus={false}
                         onFocus={()=>setIsFocus(true)}
                         onBlur={()=>setIsFocus(false)}
-                        onChangeText={setSearchValue}
-                        defaultValue={searchValue}
-                        placeholder="Search for available home services"
+                        onChangeText={handleSearch}
+                        defaultValue={preSearchValue}
+                        placeholder="Search for meal in kitchen"
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
                     {/* <TouchableOpacity 
@@ -174,7 +211,7 @@ export default function KitchenPageProduct(){
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full space-y-1 mb-5' contentContainerStyle={{ flexGrow: 1 }}>
                         {kitchenMeal.map((item) => (
                             <View key={item.id}>
                                 <Product 
@@ -189,7 +226,9 @@ export default function KitchenPageProduct(){
                                 />
                             </View>
                         ))}
-                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        {((kitchenMeal.length != 0) && (count > kitchenMeal.length)) && 
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
                     </ScrollView>                    
                 </View>
                 <Toast config={toastConfig} />

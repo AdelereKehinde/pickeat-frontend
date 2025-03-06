@@ -80,16 +80,32 @@ export default function UserDetails(){
           });
         }
     };
+
+    const ViewAddress = () =>{
+        if(resData?.address !== null){
+            router.push(`/admin/view_delivery_address?id=${id}`)
+        }else{
+            Toast.show({
+                type: 'error',
+                text1: "User is yet to set delivery address",
+                // text2: error.data?.data?.message || 'Unknown Error',
+                visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+        }
+    }
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}>
-                <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
-                <TitleTag withprevious={false} title='User Management' withbell={false} />
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}>
+                <StatusBar barStyle="light-content" backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
+                    <TitleTag withprevious={true} title='User Management' withbell={true} />
+                </View>
                 {loading && (
                     <FullScreenLoader />
                 )}
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full py-4 relative flex items-center justify-center`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} w-full py-4 relative flex items-center justify-center`}>
                         <View className='w-24 h-24 overflow-hidden rounded-full'>
                             <Image 
                             source={{uri: resData?.avatar}}
@@ -97,7 +113,7 @@ export default function UserDetails(){
                             />
                         </View>
                         <Text
-                        className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-2xl`}
+                        className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-xl mt-2`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
                             {resData?.first_name} {resData?.last_name}
@@ -117,13 +133,13 @@ export default function UserDetails(){
                     </View>
                     
                     <Text
-                    className='text-custom-green text-[16px] self-start pl-5 mt-5'
+                    className='text-custom-green text-[16px] self-start pl-5 my-3'
                     style={{fontFamily: 'Inter-SemiBold'}}
                     >
                         Personal Information
                     </Text>
                     <View className='w-[90%] mx-auto space-y-3 mb-3'>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} flex flex-row rounded-xl px-4 items-center pt-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -142,7 +158,7 @@ export default function UserDetails(){
                                 />
                             </View>
                         </View>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row rounded-xl px-4 items-center pt-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -161,7 +177,7 @@ export default function UserDetails(){
                                 />
                             </View>
                         </View>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row rounded-xl px-4 items-center pt-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -180,7 +196,7 @@ export default function UserDetails(){
                                 />
                             </View>
                         </View>
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-200'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row rounded-xl px-4 items-center space-x-3 py-2`}>
                             <View className='grow'>
                                 <Text
                                 className='text-gray-400 text-[11px]'
@@ -203,7 +219,7 @@ export default function UserDetails(){
                     
 
                     <TouchableOpacity 
-                    onPress={()=>{router.push("/set_delivery_address?update=1")}}
+                    onPress={ViewAddress}
                     className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} w-full px-6 py-2 my-5`}>
                         <View className='w-full flex flex-row space-x-3 items-center'>
                             <Location />
