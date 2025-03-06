@@ -81,6 +81,10 @@ const ENDPOINTS = {
     'admin': {
         'signin': `${ADMIN_BASE}signin`,
         'update-support': `${ADMIN_BASE}support/update`,
+        'buyers': `${ADMIN_BASE}buyers`,
+        'vendors': `${ADMIN_BASE}vendors`,
+        'riders': `${ADMIN_BASE}riders`,
+        'admins': `${ADMIN_BASE}admins`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,

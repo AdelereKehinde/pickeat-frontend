@@ -122,7 +122,7 @@ export default function BookingHistory(){
                                 /> 
                             </View>
                         ))}
-                        {(orders.length != 0) && 
+                        {((orders.length != 0) && (count > orders.length)) && 
                             <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                         }
                     </ScrollView>

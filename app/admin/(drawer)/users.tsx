@@ -19,6 +19,8 @@ import EllipseDot from '../../../assets/icon/ellipse-dot.svg';
 import Search from '../../../assets/icon/search.svg';
 import Filter from '../../../assets/icon/filter.svg';
 import TitleCase from '@/components/TitleCase';
+import FullScreenLoader from '@/components/FullScreenLoader';
+import { TruncatedText } from '@/components/TitleCase';
 
 function AdminUser(){
     const toastConfig = {
@@ -31,59 +33,59 @@ function AdminUser(){
     const [isFocusedSearch, setIsFocusedSearch] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     
-    type ListData = { id: number; name: string; email: string; phone: string; thumbnail: string; type: string; status_history_status: string; status: string; items: string; date: string;}[];
-    type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
+    type ListData = { id: number; full_name: string;}[];
+    type ApiResponse = { suspended: number; count: number; next: string; previous: string; results: ListData;};
 
     const [parentUsers, setParentUsers] = useState<ListData>([]);
-    const [users, setUsers] = useState<ListData>([]);
+    const [suspended, setSuspended] = useState(0);
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const Categories = [
+        {id: '1', name: 'users'},
+        {id: '2', name: 'vendors'},
+        {id: '3', name: 'riders'},
+        {id: '4', name: 'admins'},
+    ]
     const fetchMeals = async () => {
         try {
-            // setParentUsers([])
-            // const response = await getRequest<ListData>(`${ENDPOINTS['cart']['vendor-users']}?all=true&exclude_status=completed`, true);
-            const response = [
-                {
-                    id: 1,
-                    name: 'John Davis',
-                    email: '2000',
-                    phone: 'Abuja',
-                    thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    type: 'users',
-                    status_history_status: 'completed',
-                    status: 'completed',
-                    items: 'string',
-                    date: 'Oct 24, 2022 at 06:00 am',
-                },
-                {
-                    id: 2,
-                    name: 'John Davis',
-                    email: '2000',
-                    phone: 'Abuja',
-                    thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    type: 'vendors',
-                    status_history_status: 'completed',
-                    status: 'completed',
-                    items: 'string22',
-                    date: 'Oct 24, 2022 at 06:00 am',
-                }
-            ]
-            // alert(JSON.stringify(response))
-            setParentUsers(response)
-            if(!ranOnce){
-                setUsers(response)
-                setRanOnce(true)
+            setParentUsers([])
+            switch (filter) {
+                case 'users':
+                    var response = await getRequest<ApiResponse>(`${ENDPOINTS['admin']['buyers']}?page_size=${pageSize}&page=${currentPage}&is_active=true`, true);
+                    break;
+                
+                case 'vendors':
+                    var response = await getRequest<ApiResponse>(`${ENDPOINTS['admin']['vendors']}?page_size=${pageSize}&page=${currentPage}&is_active=true`, true);
+                    break;
+                case 'riders':
+                    var response = await getRequest<ApiResponse>(`${ENDPOINTS['admin']['riders']}?page_size=${pageSize}&page=${currentPage}&is_active=true`, true);
+                    break;
+                case 'admins':
+                    var response = await getRequest<ApiResponse>(`${ENDPOINTS['admin']['admins']}?page_size=${pageSize}&page=${currentPage}&is_active=true`, true);
+                    break;
+                default:
+                    var response = await getRequest<ApiResponse>(`${ENDPOINTS['admin']['buyers']}?page_size=${pageSize}&page=${currentPage}is_active=true`, true);
+                    break;
             }
+            
+            // alert(JSON.stringify(response))
+            setSuspended(response.suspended)
+            setCount(response.count)
+            setParentUsers(response.results)
+            // if(!ranOnce){
+            //     setUsers(response)
+            //     setRanOnce(true)
+            // }
             // setCount(response.count)
             setLoading(false)
         } catch (error) {
-            alert(error);
+            // alert(error);
         } 
     };
     useEffect(() => {
@@ -91,35 +93,35 @@ function AdminUser(){
             setLoading(true)      
             fetchMeals(); 
         }
-    }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
+    }, [filter, currentPage]); // Empty dependency array ensures this runs once
     
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
         await fetchMeals()
-
         setRefreshing(false); // Stop the refreshing animation
     };
 
-    const UpdateStatus = (email: string, status: string, status_history_status: string) => {
-        // alert(status_history_status)
-        var newUser = parentUsers.map((item) =>
-            item.email === email ? { ...item, status: status, status_history_status: status_history_status } : item
-        );
-        setParentUsers(newUser);  
+    const NextPage = (id:number) => {
+        switch (filter) {
+            case 'users':
+                router.push(`/admin/user_details?id=${id}`)
+                break;
+            case 'vendors':
+                router.push(`/admin/vendor_details?id=${id}`)
+                break;
+            case 'riders':
+                router.push(`/admin/rider_details?id=${id}`)
+                break;
+        }
     }
-
-    const Categories = [
-        {id: '1', name: 'users'},
-        {id: '2', name: 'vendors'},
-        {id: '3', name: 'riders'},
-        {id: '4', name: 'admin'},
-    ]
 
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>      
+                {loading && (
+                    <FullScreenLoader />
+                )}
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />
@@ -158,7 +160,7 @@ function AdminUser(){
                     ItemSeparatorComponent={() => <View className='w-3' />}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                        onPress={()=>{setFilter(item.name)}}
+                        onPress={()=>{setFilter(item.name); setCurrentPage(1)}}
                         className={`bg-gray-100 rounded-lg ${(filter == item.name) && 'bg-custom-green'} flex flex-row items-center px-4 py-2`}
                         >
                             {(filter== item.name) && (
@@ -187,7 +189,7 @@ function AdminUser(){
                             <Text 
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[13px] ml-1`}
                             style={{fontFamily: 'Inter-Regular'}}>
-                                (5)
+                                ({suspended}) 
                             </Text>
                         </View>
                         <View className='px-2'>
@@ -204,14 +206,14 @@ function AdminUser(){
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
                     className='w-full p-1 mb-44 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!loading && (filter==='all' ? parentUsers.length : parentUsers.filter((item)=>item.type.includes(filter)).length == 0)) && (
+                        {(!loading && (filter==='all' ? parentUsers.length : parentUsers.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
                                 className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-600'} text-[11px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
-                                    We’ll notify you when there’s an order
+                                    Empty {filter}
                                 </Text>
                             </View>
                         )}
@@ -238,7 +240,7 @@ function AdminUser(){
                                 ))}
                             </View>
                         }
-                        {parentUsers.filter((item)=>item.type.includes(filter)).map((item, index) => (
+                        {parentUsers.map((item, index) => (
                                 <View key={item.id} className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-300'} flex flex-row items-center border-b w-full py-3 px-6`}>
                                             <View>
                                                 <EllipseDot width={15} height={15} />
@@ -250,22 +252,26 @@ function AdminUser(){
                                             </View>
                                             <View className='ml-1'>
                                                 <Text className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>
-                                                    {item.name}
+                                                    {TruncatedText(item.full_name, 15)}
                                                 </Text>
                                             </View>
                                             <View className='ml-auto'>
                                                 <Text className='text-[#228B22] text-[13px]' style={{fontFamily: 'Inter-Bold'}}>
-                                                    {TitleCase(item.type)}
+                                                    {TitleCase(filter)}
                                                 </Text>
                                             </View>
                                             <View className='ml-5'>
-                                                <TouchableOpacity>
+                                                <TouchableOpacity
+                                                onPress={()=>{NextPage(item.id)}}
+                                                >
                                                     <AngleRight width={20} height={20} />
                                                 </TouchableOpacity>
                                             </View>
                                     </View>
                         ))}
-                        {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
+                        {((parentUsers.length != 0) && (count > parentUsers.length)) && 
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

@@ -91,10 +91,11 @@ export default function RootLayout() {
           <Stack.Screen name="vendor/profile_page" options={{headerShown: false}} />
 
           {/* ADMIN */}
-          {/* <Stack.Screen name="admin/(tabs)" options={{ headerShown: false }} />   */}
-
-          <Stack.Screen name="admin/login" options={{headerShown: false}} />
           <Stack.Screen name="admin/(drawer)" options={{headerShown: false}} />
+          <Stack.Screen name="admin/login" options={{headerShown: false}} />
+          <Stack.Screen name="admin/user_details" options={{headerShown: false}} />
+          <Stack.Screen name="admin/vendor_details" options={{headerShown: false}} />
+          <Stack.Screen name="admin/rider_details" options={{headerShown: false}} />
 
 
           {/* RIDER */}
@@ -119,6 +120,7 @@ export default function RootLayout() {
           <Stack.Screen name="rider/transaction_pin" options={{headerShown: false}} />
           <Stack.Screen name="rider/reset_transaction_pin" options={{headerShown: false}} />
           <Stack.Screen name="rider/payment_info" options={{headerShown: false}} />
+          
         </Stack>
       </ThemeProvider>
     </UserProvider>
