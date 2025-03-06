@@ -33,7 +33,7 @@ export default function Account(){
         const checkPushNotification = async () => {
           const pushNoti = await AsyncStorage.getItem('pushNotification');
           if (pushNoti){
-            setShowPushNotification(eval(pushNoti)); // Show onboarding if the key doesn't exist
+            setShowPushNotification(pushNoti === 'true'); // Show onboarding if the key doesn't exist
           }
         };
         checkPushNotification();

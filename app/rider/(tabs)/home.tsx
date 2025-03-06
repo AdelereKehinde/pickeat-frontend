@@ -57,7 +57,7 @@ export default function Home(){
     const checkActiveStatus = async () => {
         const pushNoti = await AsyncStorage.getItem('rider_active_status');
         if (pushNoti){
-            setActiveStatus(eval(pushNoti)); // Show onboarding if the key doesn't exist
+            setActiveStatus(pushNoti === 'true'); // Show onboarding if the key doesn't exist
         }
     };
     const ToggleActiveStatus = async () => {
