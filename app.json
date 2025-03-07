@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/icon/logo_png.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.oltapp.Pickeat"
+      "package": "com.dev_haywhy.Pickeat"
     },
     "web": {
       "bundler": "metro",
