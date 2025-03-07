@@ -27,11 +27,6 @@
         "foregroundImage": "./assets/icon/logo.png",
         "backgroundColor": "#ffffff"
       },
-      "config": {
-        "networkSecurityConfig": {
-          "cleartextTrafficPermitted": true
-        }
-      },
       "package": "com.oltapp.Pickeat"
     },
     "web": {
