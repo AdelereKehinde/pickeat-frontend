@@ -185,7 +185,7 @@ export default function CreateProfile3(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, gender: !openState.bank_code}));}}
                                 >
-                                    <CharFieldDropDown options={bankList.map(item => ({label: item.name, value: item.code}))} open={openState.bank_code}  placeholder="Bank" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, bank_code: value, bank_name: (bankList.find(item => item.code === value)?.name || '')})); setData(prevState => ({...prevState, acc_name: ''})); setOpenState(prevState => ({...prevState, bank_code: false}))}}/>
+                                    <CharFieldDropDown options={bankList.map(item => ({label: item.name, value: item.code}))} open={openState.bank_code}  placeholder="Bank" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, bank_code: value, bank_name: (bankList.find(item => item.code === value)?.name || '')})); setData(prevState => ({...prevState, acc_name: ''})); setOpenState(prevState => ({...prevState, bank_code: false}))}}/>
                                 </Pressable>
                             </View> 
                         </View>

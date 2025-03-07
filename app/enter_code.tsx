@@ -53,8 +53,8 @@ export default function EnterCode(){
 
           await Delay(2000)
 
-          router.push({
-            pathname: '/login',
+          router.replace({
+            pathname: '/complete_profile',
           }); 
         }
 

@@ -208,7 +208,7 @@ export default function AccountSetup1(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, experience: !openState.experience}));}}
                                 >
-                                    <CharFieldDropDown options={experience_options} open={openState.experience}  placeholder="Years of Experience" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, experience: parseInt(value),})); setOpenState(prevState => ({...prevState, experience: false}))}}/>
+                                    <CharFieldDropDown options={experience_options} open={openState.experience}  placeholder="Years of Experience" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, experience: parseInt(value),})); setOpenState(prevState => ({...prevState, experience: false}))}}/>
                                 </Pressable>
                             </View>
                         </View>
@@ -265,8 +265,8 @@ export default function AccountSetup1(){
                                     </Text>
                                 )
                             }
-                            <View className='flex flex-row'>
-                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} rounded-md w-12 h-12 flex items-center justify-around mr-2 border border-gray-300'`}>
+                            <View className='flex flex-row items-center'>
+                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} rounded-md w-12 h-12 flex items-center justify-around mr-2 border border-gray-300`}>
                                     <Text
                                     style={{fontFamily: 'Inter-Medium'}}
                                     className={`${theme == 'dark'? 'text-white' : ' text-gray-600'} text-[11px] text-center`}
@@ -310,7 +310,7 @@ export default function AccountSetup1(){
                                 className='w-full z-30'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, profession: !openState.profession}));}}
                                 >
-                                    <CharFieldDropDown options={profession_option.map(item => ({label: item.name, value: item.id}))} open={openState.profession}  placeholder="Profession*" focus={false} border={true} name='' getValue={(value: string)=>{loadCategory(value); setOpenState(prevState => ({...prevState, profession: false}))}}/>
+                                    <CharFieldDropDown options={profession_option.map(item => ({label: item.name, value: item.id}))} open={openState.profession}   placeholder="Profession*" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{loadCategory(value); setOpenState(prevState => ({...prevState, profession: false}))}}/>
                                 </Pressable>
                             </View> 
                             <View>
@@ -347,7 +347,7 @@ export default function AccountSetup1(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, work_alone: !openState.work_alone}));}}
                                 >
-                                    <CharFieldDropDown options={work_alone_options} open={openState.work_alone}  placeholder="You work alone?" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, work_alone: value})); setOpenState(prevState => ({...prevState, work_alone: false}))}}/>
+                                    <CharFieldDropDown options={work_alone_options} open={openState.work_alone}  placeholder="You work alone?" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, work_alone: value})); setOpenState(prevState => ({...prevState, work_alone: false}))}}/>
                                 </Pressable>
                             </View> 
                         </View>

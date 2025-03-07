@@ -53,7 +53,7 @@ export default function TransactionPin(){
                         visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
                         autoHide: true,
                     });
-                    await Delay(2000)
+                    await Delay(1500)
                     router.replace({
                         pathname: '/rider/all_set',
                     });  
@@ -210,7 +210,7 @@ export default function TransactionPin(){
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
-            <TitleTag withprevious={true} title='Set Transaction Pin' withbell={false} />
+            <TitleTag withprevious={false} title='Set Transaction Pin' withbell={false} />
         </View>
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
 

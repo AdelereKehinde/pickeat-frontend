@@ -8,12 +8,13 @@ import FaceCapture from '../../assets/icon/face-capture.svg';
 import TitleTag from '@/components/Title';
 import { TruncatedText } from '@/components/TitleCase';
 import ENDPOINTS from '@/constants/Endpoint';
-import { patchRequest } from '@/api/RequestHandler';
+import { patchRequest, postRequest } from '@/api/RequestHandler';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import CaptureFace from '@/components/CaptureFace';
 
 export default function IdentityVerification(){
     const { user } = useUser();
@@ -49,7 +50,7 @@ export default function IdentityVerification(){
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [5, 5],
+        aspect: [5, 3.5],
         quality: 1,
       });
   
@@ -62,7 +63,6 @@ export default function IdentityVerification(){
     };
 
     const handleRequest = async () => {
-        router.push('/rider/create_profile_2')
         try {
             if (validateInput()){
                 setLoading(true)
@@ -95,7 +95,7 @@ export default function IdentityVerification(){
                 }
                 formData.append('additional_info', additionalInfo);
 
-                const updatedProfile = await patchRequest(ENDPOINTS['rider']['onboard'], formData, true, true);
+                const updatedProfile = await postRequest(ENDPOINTS['rider']['identity'], formData, true, true);
                 setLoading(false)
                 Toast.show({
                 type: 'success',
@@ -103,9 +103,9 @@ export default function IdentityVerification(){
                 visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
                 autoHide: true,
                 });
-                // await Delay(3000)
+                await Delay(1500)
                 router.replace({
-                pathname: '/vendor/account_setup_3',
+                pathname: '/rider/create_profile_2',
                 }); 
             }
         } catch (error: any) {
@@ -128,10 +128,8 @@ export default function IdentityVerification(){
         >
             <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
             <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
-              <TitleTag withprevious={true} title='Verify Idenity' withbell={false}/>
+              <TitleTag withprevious={true} title='Verify Identity' withbell={false}/>
             </View>
-
-            {/* {openCamera && <CaptureFace />} */}
 
             <ScrollView className='px-4 w-full mt-4' contentContainerStyle={{ flexGrow: 1 }}>
 
@@ -248,6 +246,7 @@ export default function IdentityVerification(){
             </ScrollView>
             <Toast config={toastConfig} />
         </View>
+        {openCamera && <CaptureFace get_image={(image)=>{setFace(image)}} close={(value)=>{setOpenCamera(false)}} />}
       </SafeAreaView>
     )
 }

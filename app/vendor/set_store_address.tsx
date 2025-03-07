@@ -308,7 +308,7 @@ export default function SetDeliveryAddress(){
                         onChangeText={setRiderInstruction}
                         value={riderInstruction}
                         placeholder='Example: Please knock instead of using the doorbell'
-                        placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                        placeholderTextColor={(theme == 'dark')? '#9ca3af':'#1f2937'}
                         />
                     </View>
 

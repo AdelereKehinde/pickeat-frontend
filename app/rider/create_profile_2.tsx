@@ -210,7 +210,7 @@ export default function CreateProfile2(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, guarantor_1_relationship: !openState.guarantor_1_relationship}));}}
                                 >
-                                    <CharFieldDropDown options={relationshipOption.map(item => ({label: item.name, value: item.id}))} open={openState.guarantor_1_relationship}  placeholder="Relationship" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, guarantor_1_relationship: value,})); setOpenState(prevState => ({...prevState, guarantor_1_relationship: false}))}}/>
+                                    <CharFieldDropDown options={relationshipOption.map(item => ({label: item.name, value: item.id}))} open={openState.guarantor_1_relationship}  placeholder="Relationship" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, guarantor_1_relationship: value,})); setOpenState(prevState => ({...prevState, guarantor_1_relationship: false}))}}/>
                                 </Pressable>
                             </View> 
                         </View>
@@ -230,7 +230,7 @@ export default function CreateProfile2(){
                                         </Text>
                                     )
                                 }
-                                <CharField  placeholder="Guarantor 2 Name*" focus={false} border={true} name='' getValue={(value: string)=>setData(prevState => ({...prevState, guarantor_2_name: value}))}/>
+                                <CharField  placeholder="Guarantor 2 Name*" focus={false} border={true} name='' setValue='' getValue={(value: string)=>setData(prevState => ({...prevState, guarantor_2_name: value}))}/>
                             </View>
                             {
                                 (data.guarantor_2_phone !== "" ) && (
@@ -270,7 +270,7 @@ export default function CreateProfile2(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, guarantor_2_relationship: !openState.guarantor_2_relationship}));}}
                                 >
-                                    <CharFieldDropDown options={relationshipOption.map(item => ({label: item.name, value: item.id}))} open={openState.guarantor_2_relationship}  placeholder="Relationship" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, guarantor_2_relationship: value,})); setOpenState(prevState => ({...prevState, guarantor_2_relationship: false}))}}/>
+                                    <CharFieldDropDown options={relationshipOption.map(item => ({label: item.name, value: item.id}))} open={openState.guarantor_2_relationship}  placeholder="Relationship" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, guarantor_2_relationship: value,})); setOpenState(prevState => ({...prevState, guarantor_2_relationship: false}))}}/>
                                 </Pressable>
                             </View> 
                         </View>
@@ -320,7 +320,7 @@ export default function CreateProfile2(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, vehicle_type: !openState.work_duration}));}}
                                 >
-                                    <CharFieldDropDown options={workDurationOptions} open={openState.work_duration}  placeholder="How long did you work there for?" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, work_duration: value,})); setOpenState(prevState => ({...prevState,work_durationvehicle_type: false}))}}/>
+                                    <CharFieldDropDown options={workDurationOptions} open={openState.work_duration}  placeholder="How long did you work there for?" focus={false} border={true} name='' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, work_duration: value,})); setOpenState(prevState => ({...prevState,work_durationvehicle_type: false}))}}/>
                                 </Pressable>
                             </View>
 

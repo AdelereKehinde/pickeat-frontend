@@ -205,16 +205,17 @@ export default function AccountSetup2(){
                   style={{fontFamily: 'Inter-SemiBold'}}
                   className='text-[11px] text-custom-green'
                   >
-                    Upload all business related{'\n'}documents
+                    Upload store cover photo
                   </Text>
                   <Text
                   style={{fontFamily: 'Inter-Medium'}}
                   className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                   >
-                    1. CAC registration{'\n'}
-                    2. TIN{'\n'}
-                    3. Business certificate{'\n'}
-                    4. Others
+                    Allowed format{'\n'}
+                    {' '} - Jpeg/jpg{'\n'}
+                    {' '} - Png{'\n'}
+                    {' '} - webp{'\n'}
+                    Less than 5mb
                   </Text>
                 </View>
               </View>
@@ -233,7 +234,7 @@ export default function AccountSetup2(){
                   style={{fontFamily: 'Inter-SemiBold'}}
                   placeholder="Kindly Provide details below"
                   className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[12px] rounded-lg text-start`}
-                  placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                  placeholderTextColor={(theme == 'dark')? '#9ca3af':'#1f2937'}
                 />
               </View>
 
@@ -251,7 +252,7 @@ export default function AccountSetup2(){
                   style={{fontFamily: 'Inter-SemiBold'}}
                   placeholder="Please provide additional details if need be"
                   className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[12px] rounded-lg text-start`}
-                  placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                  placeholderTextColor={(theme == 'dark')? '#9ca3af':'#1f2937'}
                 />
               </View>
 

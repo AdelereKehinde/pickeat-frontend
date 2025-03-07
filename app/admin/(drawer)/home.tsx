@@ -42,24 +42,24 @@ export default function AdminHome(){
 
     return (
       <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : 'custom-gray-1'} w-full h-full flex items-center`}>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <ScrollView 
                   refreshControl={
                       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                   }
-                  className='w-full flex p-5 mb-[10px]' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className='bg-white rounded w-full p-2'>
-                      <View className='flex flex-row justify-between items-center w-full p-2' 
+                  className='w-full flex p-5 mb-0' contentContainerStyle={{ flexGrow: 1 }}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full py-2 px-3'`}>
+                      <View className='flex flex-row justify-between items-center w-[90%] pb-2 mx-auto' 
                       style={{borderBottomWidth: 2, borderBottomColor:'#228B22'}}>
                           <Text
-                          className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[14px]`}
+                          className={`text-custom-green text-[14px]`}
                           style={{fontFamily: 'Inter-SemiBold'}}
                           >
                               Todays Orders
                           </Text>
                           <Text
-                          className={`${theme == 'dark'? 'text-gray-100' : 'text-[#787676]'} text-[14px]`}
+                          className={`${theme == 'dark'? 'text-gray-300' : 'text-gray-600'} text-[13px]`}
                           style={{fontFamily: 'Inter-SemiBold'}}
                           >
                               {currentDate}
@@ -70,10 +70,13 @@ export default function AdminHome(){
                           <PieChart widthAndHeight={widthAndHeight} series={series} cover={0.75} />
                           {/* Centered Label and Value */}
                           <View style={styles.centerText}>
-                            <Text style={styles.value}>
-                              {selectedSlice ? selectedSlice.value : '100%'}
+                            <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} mt-2 text-[15px]`}
+                            style={{fontFamily: 'Inter-Bold'}}>
+                              5,823,213
                             </Text>
-                            <Text style={styles.label}>
+                            <Text 
+                            className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-600'} text-[12px]`}
+                            style={{fontFamily: 'Inter-Medium'}}>
                               {selectedSlice ? selectedSlice.label : "Total"}
                             </Text>
                           </View>
@@ -85,7 +88,7 @@ export default function AdminHome(){
                               <TouchableOpacity onPress={() => setSelectedSlice({ value: 150, label: "Active Orders" })}>
                                 <Text
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[10px]`}
-                                style={{fontFamily: 'Inter-SemiBold'}}
+                                style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     Active Orders
                                 </Text>
@@ -104,7 +107,7 @@ export default function AdminHome(){
                               <TouchableOpacity onPress={() => setSelectedSlice({ value: 45, label: "Completed Orders" })}>
                                 <Text
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[10px]`}
-                                style={{fontFamily: 'Inter-SemiBold'}}
+                                style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     Completed Orders
                                 </Text>
@@ -123,7 +126,7 @@ export default function AdminHome(){
                               <TouchableOpacity onPress={() => setSelectedSlice({ value: 10, label: "Canceled Orders" })}>
                                 <Text
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[10px]`}
-                                style={{fontFamily: 'Inter-SemiBold'}}
+                                style={{fontFamily: 'Inter-Medium'}}
                                 >
                                     Canceled Orders
                                 </Text>
@@ -140,17 +143,21 @@ export default function AdminHome(){
                       </View>
                     </View>
 
-                    <View className='bg-white rounded w-full p-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
                           <View className='mr-[10px] my-auto'>
                             <Naira />
                           </View>
                           <View>
-                            <Text className='text-[#8D8D8D] text-[12px]'>Todays Earning</Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#000000]'} text-[14px]`}
+                            <Text 
+                            style={{fontFamily: 'Inter-Regular'}}
+                            className='text-[#8D8D8D] text-[10px]'>
+                              Todays Earning
+                            </Text>
+                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#000000]'} text-[15px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}>
-                                 {showAmount ? 'N 3,027.87' : '******'} 
+                                 {showAmount ? 'N 3,027.87' : '****'} 
                             </Text>
                           </View>
                         </View>
@@ -169,15 +176,19 @@ export default function AdminHome(){
                       </View>
                     </View>
 
-                    <View className='bg-white rounded w-full p-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
                           <View className='mr-[10px] my-auto'>
                             <PendingApproval />
                           </View>
-                          <View style={{borderLeftWidth: 2, borderLeftColor:'#787676', padding: 10}}>
-                            <Text className='text-[#787676] text-[14px]' style={{fontFamily: 'Inter-SemiBold'}}>Pending approvals</Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[16px]`}
+                          <View className='border-l-2 px-3 border-gray-400'>
+                            <Text 
+                            className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-600'} text-[14px]`}
+                            style={{fontFamily: 'Inter-SemiBold'}}>
+                              Pending approvals
+                            </Text>
+                            <Text className={`text-custom-green text-[25px]`}
                                 style={{fontFamily: 'Inter-Bold'}}>
                                  5
                             </Text>
@@ -191,7 +202,7 @@ export default function AdminHome(){
                       </View>
                     </View>
                     
-                    <View className='mt-4'>
+                    <View className={`mt-4`}>
                       <Text
                         className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[18px]`}
                         style={{fontFamily: 'Inter-SemiBold'}}
@@ -200,7 +211,7 @@ export default function AdminHome(){
                         </Text>
                     </View>
 
-                    <View className='bg-white rounded w-full p-2 mt-2'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-2`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View>
                           <Text
@@ -239,51 +250,63 @@ export default function AdminHome(){
                       </View>
                     </View>
 
-                    <View className='bg-white rounded w-full p-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
                           <View className='mr-[10px] my-auto'>
                             <ActiveOrder />
                           </View>
-                          <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Active Orders</Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[16px]`}
-                                style={{fontFamily: 'Inter-Bold'}}>
-                                 750,456
+                          <View
+                          className='border-l-2 border-gray-400 px-5'>
+                            <Text className={`text-custom-green text-[14px]`} style={{fontFamily: 'Inter-Bold'}}>Active Orders</Text>
+                            <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[18px]`}
+                            style={{fontFamily: 'Inter-Bold'}}>
+                              750,456
                             </Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px]`} style={{fontFamily: 'Inter-SemiBold'}}>N 9,456,004.98</Text>
+                            <Text className={`text-custom-green text-[12px]`} 
+                            style={{fontFamily: 'Inter-SemiBold'}}>
+                              N 9,456,004.98
+                            </Text>
                           </View>
                         </View>
                       </View>
                     </View>
                     
-                    <View className='bg-white rounded w-full p-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
                           <View className='mr-[10px] my-auto'>
-                            <Clickboard />
+                            <Clickboard width={30} height={30} />
                           </View>
-                          <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Completed Orders</Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[16px]`}
+                          <View 
+                          className='border-l-2 border-gray-400 px-5'>
+                            <Text className={`text-custom-green text-[16px]`} 
+                            style={{fontFamily: 'Inter-Bold'}}>
+                              Completed Orders
+                            </Text>
+                            <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-dark'} text-[16px]`}
                                 style={{fontFamily: 'Inter-Bold'}}>
                                  750,456
                             </Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[12px]`} style={{fontFamily: 'Inter-SemiBold'}}>N 9,456,004.98</Text>
+                            <Text className={`text-custom-green text-[12px]`} style={{fontFamily: 'Inter-SemiBold'}}>N 9,456,004.98</Text>
                           </View>
                         </View>
                       </View>
                     </View>
 
-                    <View className='bg-white rounded w-full p-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
                           <View className='mr-[10px] my-auto'>
                             <PendingOrder />
                           </View>
-                          <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#787676]'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Pending Orders</Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[16px]`}
+                          <View 
+                          className='border-l-2 border-gray-400 px-5'>
+                            <Text className={`${theme == 'dark'? 'text-gray-400' : 'text-[#787676]'} text-[14px]`} 
+                            style={{fontFamily: 'Inter-Bold'}}>
+                              Pending Orders
+                            </Text>
+                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[18px]`}
                                 style={{fontFamily: 'Inter-Bold'}}>
                                  5
                             </Text>
@@ -293,25 +316,30 @@ export default function AdminHome(){
                       </View>
                     </View>
                     
-                    <View className='bg-white rounded w-full p-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
                           <View className='mr-[10px] my-auto'>
                             <CancelledOrder />
                           </View>
-                          <View style={{borderLeftWidth: 2, borderLeftColor:'#E5F2FF', padding: 10}}>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#787676]'} text-[16px]`} style={{fontFamily: 'Inter-Bold'}}>Canceled Orders</Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[16px]`}
+                          <View className='border-l-2 border-gray-400 px-5'>
+                            <Text className={`${theme == 'dark'? 'text-gray-400' : 'text-[#787676]'} text-[14px]`} 
+                            style={{fontFamily: 'Inter-Bold'}}>
+                              Canceled Orders
+                            </Text>
+                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[18px]`}
                                 style={{fontFamily: 'Inter-Bold'}}>
                                  5
                             </Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#f00]'} text-[10px]`} style={{fontFamily: 'Inter-SemiBold'}}>N 9,456,004.98</Text>
+                            <Text className={`text-[#f00] text-[11px]`} style={{fontFamily: 'Inter-SemiBold'}}>
+                              N 9,456,004.98
+                            </Text>
                           </View>
                         </View>
                       </View>
                     </View>
                     
-                    <View className='bg-white rounded w-full p-2 my-4'>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-4 mb-14`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
                           <Text
@@ -411,6 +439,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: "bold",
     color: "#666",
+    fontFamily: 'Inter-Medium'
   },
   value: {
     fontSize: 8,

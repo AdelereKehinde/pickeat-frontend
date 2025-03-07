@@ -147,7 +147,7 @@ export default function AccountSetup3(){
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_from: !openState.available_from}));}}
                     >
-                      <CharFieldDropDown options={dropdown} open={openState.available_from}  placeholder="----------" focus={false} border={false} name='From' getValue={(value: string)=>{setData(prevState => ({...prevState, available_from: value,})); setOpenState(prevState => ({...prevState, available_from: false}))}}/>
+                      <CharFieldDropDown options={dropdown} open={openState.available_from}  placeholder="----------" focus={false} border={false} name='From' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, available_from: value,})); setOpenState(prevState => ({...prevState, available_from: false}))}}/>
                     </Pressable>
                   </View>
                   <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}`}>
@@ -155,7 +155,7 @@ export default function AccountSetup3(){
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_to: !openState.available_to}));}}
                     >
-                      <CharFieldDropDown options={dropdown} open={openState.available_to}   placeholder="----------" focus={false} border={false} name='To' getValue={(value: string)=>{setData(prevState => ({...prevState, available_to: value,})); setOpenState(prevState => ({...prevState, available_to: false}))}}/>
+                      <CharFieldDropDown options={dropdown} open={openState.available_to}   placeholder="----------" focus={false} border={false} name='To' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, available_to: value,})); setOpenState(prevState => ({...prevState, available_to: false}))}}/>
                     </Pressable>
                   </View>
                 </View>
@@ -165,7 +165,7 @@ export default function AccountSetup3(){
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, available_on_holiday: !openState.available_on_holiday}));}}
                     >
-                    <CharFieldDropDown options={availability} open={openState.available_on_holiday}   placeholder="----------" focus={false} border={false} name='Available during Holidays' getValue={(value: string)=>{setData(prevState => ({...prevState, available_on_holiday: eval(value),})); setOpenState(prevState => ({...prevState, available_on_holiday: false}))}}/>
+                    <CharFieldDropDown options={availability} open={openState.available_on_holiday}   placeholder="----------" focus={false} border={false} name='Available during Holidays' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, available_on_holiday: eval(value),})); setOpenState(prevState => ({...prevState, available_on_holiday: false}))}}/>
                   </Pressable>
                 </View>
 
@@ -193,7 +193,7 @@ export default function AccountSetup3(){
                     className='w-full'
                     onPress={()=>{setOpenState(prevState => ({...prevState, no_of_worker: !openState.no_of_worker}));}}
                     >
-                    <CharFieldDropDown options={workers} open={openState.no_of_worker}  placeholder="----------" focus={false} border={false} name='Total Number of Workers' getValue={(value: string)=>{setData(prevState => ({...prevState, no_of_worker: parseInt(value),})); setOpenState(prevState => ({...prevState, no_of_worker: false}))}}/>
+                    <CharFieldDropDown options={workers} open={openState.no_of_worker}  placeholder="----------" focus={false} border={false} name='Total Number of Workers' setValue='' getValue={(value: string)=>{setData(prevState => ({...prevState, no_of_worker: parseInt(value),})); setOpenState(prevState => ({...prevState, no_of_worker: false}))}}/>
                   </Pressable>
                 </View>
                 

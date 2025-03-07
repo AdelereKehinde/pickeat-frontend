@@ -205,7 +205,7 @@ export default function SignUp(){
                       <FontAwesome
                         name={showPassword ? 'eye-slash' : 'eye'}
                         size={18}
-                        color="#4b5563"
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
                         style={{ padding: 8 }}
                       />
                     </TouchableOpacity>
@@ -233,7 +233,7 @@ export default function SignUp(){
                       <FontAwesome
                         name={showPassword2 ? 'eye-slash' : 'eye'}
                         size={18}
-                        color="#4b5563"
+                        color={(theme == 'dark')? '#fff':'#4b5563'}
                         style={{ padding: 8 }}
                       />
                     </TouchableOpacity>

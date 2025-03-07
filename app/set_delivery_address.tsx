@@ -181,8 +181,8 @@ export default function SetDeliveryAddress(){
                     });
         
                     await Delay(1000)
-                    router.push({
-                    pathname: '/(tabs)/dashboard',
+                    router.replace({
+                        pathname: '/login',
                     }); 
                 }
             }

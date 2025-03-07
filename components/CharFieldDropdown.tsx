@@ -31,11 +31,11 @@ const CharFieldDropDown: React.FC<Properties> = ({name, placeholder, border, opt
     useEffect(() => {
         if(setValue !== ''){
             setInputValue(setValue+"")
-        }
-        for(var i=0; i<options.length; i++){
-            if(options[i].value == setValue){
-                setInputValue(options[i].label + "")
-                break
+            for(var i=0; i<options.length; i++){
+                if(options[i].value == setValue){
+                    setInputValue(options[i].label + "")
+                    break
+                }
             }
         }
       }, [setValue]); // Empty dependency array ensures this runs only once (on mount/unmount)

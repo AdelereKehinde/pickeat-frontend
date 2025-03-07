@@ -84,7 +84,7 @@ export default function VendorLogin(){
             autoHide: true,
           }); 
 
-          await Delay(2000)
+          await Delay(1500)
           router.push({
             pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? '/vendor/(tabs)/home' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
           }); 

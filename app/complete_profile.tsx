@@ -48,13 +48,13 @@ export default function CompleteProfile(){
             setLoading(false)
             Toast.show({
               type: 'success',
-              text1: "Address Created",
+              text1: "Profile Created",
               visibilityTime: 3000, // time in milliseconds (5000ms = 5 seconds)
               autoHide: true,
             });
 
             await Delay(1000)
-            router.push({
+            router.replace({
               pathname: '/complete_profile_2',
             }); 
           }
@@ -89,13 +89,19 @@ export default function CompleteProfile(){
                     </Text>    
 
                     <View className='mt-10 space-y-3'>
-                        <View>
+                        <View
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} rounded-lg`}
+                        >
                           <CharField  placeholder="Enter first name" focus={true} border={false} name='First name' getValue={(value: string)=>setFirstName(value)}/>
                         </View>
-                        <View>
+                        <View
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} rounded-lg`}
+                        >
                           <CharField  placeholder="Enter last name" focus={false} border={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
                         </View>
-                        <View>
+                        <View
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} rounded-lg`}
+                        >
                           <PhoneNumber border={false}  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
                         </View>
                     </View>
