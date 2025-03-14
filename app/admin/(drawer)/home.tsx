@@ -157,7 +157,7 @@ export default function AdminHome(){
                             </Text>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#000000]'} text-[15px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}>
-                                 {showAmount ? 'N 3,027.87' : '****'} 
+                                 ₦ {showAmount ? '3,027.87' : '****'} 
                             </Text>
                           </View>
                         </View>
@@ -265,7 +265,7 @@ export default function AdminHome(){
                             </Text>
                             <Text className={`text-custom-green text-[12px]`} 
                             style={{fontFamily: 'Inter-SemiBold'}}>
-                              N 9,456,004.98
+                              ₦ 9,456,004.98
                             </Text>
                           </View>
                         </View>
@@ -288,7 +288,10 @@ export default function AdminHome(){
                                 style={{fontFamily: 'Inter-Bold'}}>
                                  750,456
                             </Text>
-                            <Text className={`text-custom-green text-[12px]`} style={{fontFamily: 'Inter-SemiBold'}}>N 9,456,004.98</Text>
+                            <Text className={`text-custom-green text-[12px]`} 
+                            style={{fontFamily: 'Inter-SemiBold'}}>
+                              ₦ 9,456,004.98
+                            </Text>
                           </View>
                         </View>
                       </View>
@@ -310,7 +313,10 @@ export default function AdminHome(){
                                 style={{fontFamily: 'Inter-Bold'}}>
                                  5
                             </Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[10px]`} style={{fontFamily: 'Inter-SemiBold'}}>N 9,456,004.98</Text>
+                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[10px]`} 
+                            style={{fontFamily: 'Inter-SemiBold'}}>
+                              ₦ 9,456,004.98
+                            </Text>
                           </View>
                         </View>
                       </View>
@@ -332,7 +338,7 @@ export default function AdminHome(){
                                  5
                             </Text>
                             <Text className={`text-[#f00] text-[11px]`} style={{fontFamily: 'Inter-SemiBold'}}>
-                              N 9,456,004.98
+                            ₦ 9,456,004.98
                             </Text>
                           </View>
                         </View>

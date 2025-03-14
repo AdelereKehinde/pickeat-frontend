@@ -85,7 +85,9 @@ const ENDPOINTS = {
         'vendors': `${ADMIN_BASE}vendors`,
         'riders': `${ADMIN_BASE}riders`,
         'admins': `${ADMIN_BASE}admins`,
+        'status': `${ADMIN_BASE}toggle-status`,
         'meal-detail': `${ADMIN_BASE}meal`,
+        'orders': `${ADMIN_BASE}orders`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,

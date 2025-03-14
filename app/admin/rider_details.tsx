@@ -10,6 +10,7 @@ import { getRequest, postRequest } from '@/api/RequestHandler';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import ENDPOINTS from '@/constants/Endpoint';
 import Location from '../../assets/icon/location_highlight.svg';
+import LicenseModal from '@/components/License';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 
@@ -28,12 +29,12 @@ export default function RiderDetails(){
        vehicle_type: string; 
        first_name: string; 
        last_name: string;
-       contact_mail: string; 
+       contact_email: string; 
        phone_number: string; 
        gender: string;
        vehicle_brand: string; 
        plate_number: string; 
-       licence: string; 
+       license: string; 
        face: string; 
        additional_info: string;
        guarantor_1_name: string; 
@@ -49,6 +50,7 @@ export default function RiderDetails(){
        available_on_holiday: string;
        time_start: string;
        time_end: string;
+       is_active: boolean;
     };
 
     const [loading, setLoading] = useState(true)
@@ -62,10 +64,18 @@ export default function RiderDetails(){
                 const response = await getRequest<APIResponse>(`${ENDPOINTS['admin']['riders']}/${id}`, true);
                 setResData(response)
                 setLoading(false) 
+                setIsActive(response.is_active)
                 // alert(JSON.stringify(response))
             } catch (error) {
-                // alert(error);
-                // setLoading(false) 
+                setLoading(false) 
+                Toast.show({
+                    type: 'error',
+                    text1: "Rider is yet to setup profile.",
+                    // text2: error.data?.data?.message || 'Unknown Error',
+                    visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                    autoHide: true,
+                });
+                router.back()
             }
         };
     
@@ -74,23 +84,19 @@ export default function RiderDetails(){
 
     const handleLogin = async () => {
         try {
-          if(!loading && isActive){
+          if(!loading){
             setLoading(true)
-            
-            // const res = await postRequest(ENDPOINTS['admin']['signin'], {
-            //   id: id,
-            // }, true);
-
+            const res = await postRequest(`${ENDPOINTS['admin']['status']}/rider/${id}`, {}, true);
             setLoading(false)
             // alert(JSON.stringify(res))
             Toast.show({
               type: 'success',
-              text1: "Account Suspended",
+              text1: isActive? "Account Suspended" : "Account Activated",
               visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
               autoHide: true,
             }); 
 
-            setIsActive(false)
+            setIsActive(!isActive)
   
           }
   
@@ -106,6 +112,8 @@ export default function RiderDetails(){
           });
         }
     };
+
+    const [openLicenseModal, setOpenLicenseModal] = useState(false); 
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}>
@@ -116,6 +124,9 @@ export default function RiderDetails(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+
+                <LicenseModal full_name={resData?.full_name} face={resData?.face} license={resData?.license} open={openLicenseModal} getValue={(value: boolean)=>{setOpenLicenseModal(value)}}/>
+
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto rounded-md mt-5 py-4 relative flex items-center justify-center`}>
                         <Text
@@ -148,6 +159,7 @@ export default function RiderDetails(){
                             </Text>
                         </View>
                         <TouchableOpacity
+                        onPress={()=>{setOpenLicenseModal(!openLicenseModal)}}
                         className='bg-custom-green rounded-md py-1 px-4'
                         >
                             <Text
@@ -179,13 +191,13 @@ export default function RiderDetails(){
                             className='text-custom-green text-[11px]'
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                Contact mail
+                                Contact email
                             </Text>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                {resData?.contact_mail}
+                                {resData?.contact_email}
                             </Text>
                         </View>
                         <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
@@ -255,7 +267,7 @@ export default function RiderDetails(){
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                {resData?.available_on_holiday}
+                                {(resData?.available_on_holiday)? "Yes" : "No"}
                             </Text>
                         </View>
                         <View className={`${theme == 'dark'? 'border-gray-500' : ' border-gray-400'} w-full border-b pb-2`}>
@@ -292,7 +304,7 @@ export default function RiderDetails(){
                     <View className='w-[90%] mx-auto mb-10'>
                             <TouchableOpacity
                             onPress={handleLogin}
-                            className={`text-center ${isActive? 'bg-red-600' : 'bg-red-300'} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
+                            className={`text-center ${isActive? 'bg-red-600' : 'bg-custom-green'} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
                             >
                             {loading && (
                                 <View className='absolute w-full top-4'>
@@ -304,7 +316,7 @@ export default function RiderDetails(){
                             className='text-white'
                             style={{fontFamily: 'Inter-Regular'}}
                             >
-                                Suspend Account
+                                {isActive? 'Suspend Account' : 'Activate Account'}
                             </Text>
                                         
                         </TouchableOpacity>

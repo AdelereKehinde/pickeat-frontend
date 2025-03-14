@@ -25,67 +25,33 @@ function AdminOrder(){
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('all');
     
-    type ListData = { id: number; buyer_name: string; price: string; location: string; thumbnail: string; tracking_id: string; status_history_status: string; status: string; items: string; date: string;}[];
+    type ListData = { id: number; buyer: string; order_items: number; date: string; status: string; price: string; thumbnail: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
-    const [parentorders, setParentOrders] = useState<ListData>([]);
     const [orders, setOrders] = useState<ListData>([]);
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const isFocused = useIsFocused();
-    const [ranOnce, setRanOnce] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
-            // setParentOrders([])
-            // const response = await getRequest<ListData>(`${ENDPOINTS['cart']['vendor-orders']}?all=true&exclude_status=completed`, true);
-            const response = [
-                {
-                    id: 1,
-                    buyer_name: 'John Davis',
-                    price: '2000',
-                    location: 'Abuja',
-                    thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    tracking_id: '#yye563e',
-                    status_history_status: 'completed',
-                    status: 'completed',
-                    items: 'string',
-                    date: 'Oct 24, 2022 at 06:00 am',
-                },
-                {
-                    id: 2,
-                    buyer_name: 'John Davis',
-                    price: '2000',
-                    location: 'Abuja',
-                    thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxMG6duOnBRLCIvsjJxFAb7WAUj5b8iOWiAg&s',
-                    tracking_id: '#yye563e',
-                    status_history_status: 'completed',
-                    status: 'completed',
-                    items: 'string1',
-                    date: 'Oct 24, 2022 at 06:00 am',
-                }
-            ]
+            setLoading(true)     
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['admin']['orders']}?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
-            setParentOrders(response)
-            if(!ranOnce){
-                setOrders(response)
-                setRanOnce(true)
-            }
-            // setCount(response.count)
+            setOrders(response.results)
+            setCount(response.count)
             setLoading(false)
         } catch (error) {
+            setLoading(false)     
             alert(error);
         } 
     };
-    useEffect(() => {
-        if (isFocused){  
-            setLoading(true)      
-            fetchMeals(); 
-        }
-    }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
+    useEffect(() => { 
+        fetchMeals(); 
+    }, []); // Empty dependency array ensures this runs once
     
 
     const onRefresh = async () => {
@@ -96,13 +62,13 @@ function AdminOrder(){
         setRefreshing(false); // Stop the refreshing animation
     };
 
-    const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
-        // alert(status_history_status)
-        var newOrder = parentorders.map((item) =>
-            item.tracking_id === tracking_id ? { ...item, status: status, status_history_status: status_history_status } : item
-        );
-        setParentOrders(newOrder);  
-    }
+    // const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
+    //     // alert(status_history_status)
+    //     var newOrder = parentorders.map((item) =>
+    //         item.tracking_id === tracking_id ? { ...item, status: status, status_history_status: status_history_status } : item
+    //     );
+    //     setParentOrders(newOrder);  
+    // }
 
     const Categories = [
         {id: '1', name: 'all'},
@@ -164,7 +130,7 @@ function AdminOrder(){
                                 Order dispute
                             </Text>
                             <Text className='text-[#228B22] text-[13px]' 
-                            style={{fontFamily: 'Inter-SemiBold'}}>(5)</Text>
+                            style={{fontFamily: 'Inter-SemiBold'}}>(0)</Text>
                         </View>
                         <View className='px-2'>
                             <TouchableOpacity>
@@ -174,13 +140,13 @@ function AdminOrder(){
                     </View>
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full mt-1 mb-4 relative flex flex-row items-center justify-center`}>
+                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full mt-1 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full p-1 mb-40 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!loading && (filter==='all' ? parentorders.length : parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
+                    className='w-full p-1 mb-48 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                        {(!loading && (orders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
@@ -192,7 +158,7 @@ function AdminOrder(){
                             </View>
                         )}
                         
-                        {(parentorders.length === 0 && loading) && 
+                        {(orders.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 6 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
@@ -214,21 +180,22 @@ function AdminOrder(){
                                 ))}
                             </View>
                         }
-                        {parentorders.filter((item)=>item.status.includes(filter)).map((item) => (
+                        {orders.map((item) => (
                             <View key={item.id}>
                                 <AdminOrderHistory 
+                                id={item.id}
                                 image={item.thumbnail}
-                                kitchen={item.buyer_name} 
+                                name={item.buyer} 
                                 price={item.price}
                                 date={item.date}
-                                status_history_status={item.status_history_status}
                                 status={item.status}
-                                tracking_id={item.tracking_id}
-                                onUpdate={UpdateStatus}
+                                order_items={item.order_items}
                                 /> 
                             </View>
                         ))}
-                        {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
+                        {((orders.length != 0) && (count > orders.length)) && 
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

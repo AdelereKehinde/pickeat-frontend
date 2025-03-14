@@ -22,7 +22,7 @@ export default function UserDetails(){
     };
 
     type APIResponse = {
-       id: number; first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; avatar: string;
+       id: number; first_name: string; last_name: string; email: string; building_type: string; building_name: string; floor: string; address: string; phone_number: string; avatar: string; is_active: boolean;
     };
 
     const [loading, setLoading] = useState(true)
@@ -35,11 +35,19 @@ export default function UserDetails(){
                 setLoading(true)
                 const response = await getRequest<APIResponse>(`${ENDPOINTS['admin']['buyers']}/${id}`, true);
                 setResData(response)
+                setIsActive(response.is_active)
                 setLoading(false) 
                 // alert(JSON.stringify(response))
             } catch (error) {
-                // alert(error);
-                // setLoading(false) 
+                setLoading(false) 
+                Toast.show({
+                    type: 'error',
+                    text1: "User is yet to setup profile.",
+                    // text2: error.data?.data?.message || 'Unknown Error',
+                    visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                    autoHide: true,
+                });
+                router.back()
             }
         };
     
@@ -50,21 +58,17 @@ export default function UserDetails(){
         try {
           if(!loading && isActive){
             setLoading(true)
-            
-            // const res = await postRequest(ENDPOINTS['admin']['signin'], {
-            //   id: id,
-            // }, true);
-
+            const res = await postRequest(`${ENDPOINTS['admin']['status']}/user/${id}`, {}, true);
             setLoading(false)
             // alert(JSON.stringify(res))
             Toast.show({
               type: 'success',
-              text1: "Account Suspended",
+              text1: isActive? "Account Suspended" : "Account Activated",
               visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
               autoHide: true,
             }); 
 
-            setIsActive(false)
+            setIsActive(!isActive)
   
           }
   
@@ -253,7 +257,7 @@ export default function UserDetails(){
                     <View className='w-[90%] mx-auto mb-10'>
                             <TouchableOpacity
                             onPress={handleLogin}
-                            className={`text-center ${isActive? 'bg-red-600' : 'bg-red-300'} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
+                            className={`text-center ${isActive? 'bg-red-600' : 'bg-custom-green'} relative rounded-xl p-4 w-[90%] self-center flex items-center justify-around`}
                             >
                             {loading && (
                                 <View className='absolute w-full top-4'>
@@ -265,7 +269,7 @@ export default function UserDetails(){
                             className='text-white'
                             style={{fontFamily: 'Inter-Regular'}}
                             >
-                                Suspend Account
+                                {isActive? 'Suspend Account' : 'Activate Account'}
                             </Text>
                                         
                         </TouchableOpacity>

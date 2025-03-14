@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { Text, View, StatusBar, TextInput, ScrollView, TouchableOpacity, RefreshControl, FlatList } from "react-native";
-import { router } from 'expo-router'
-import Check from '../../../assets/icon/check.svg'
+import { router, useGlobalSearchParams } from 'expo-router';
+import Check from '../../assets/icon/check.svg'
 import AdminOrderHistory from '@/components/AdminOrderHistory';
 import { getRequest } from '@/api/RequestHandler';
-import Empty from '../../../assets/icon/Empty2.svg';
+import Empty from '../../assets/icon/Empty2.svg';
 import ENDPOINTS from '@/constants/Endpoint';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,24 +13,26 @@ import Pagination from '@/components/Pagination';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
-import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
-import AngleRight from '../../../assets/icon/angler.svg';
-import EllipseDot from '../../../assets/icon/ellipse-dot.svg';
-import Search from '../../../assets/icon/search.svg';
-import Filter from '../../../assets/icon/filter.svg';
+import ArrowRightCircle from '../../assets/icon/arrow-right-circle.svg';
+import AngleRight from '../../assets/icon/angler.svg';
+import EllipseDotRed from '../../assets/icon/EllipseDotRed.svg';
+import Search from '../../assets/icon/search.svg';
+import Filter from '../../assets/icon/filter.svg';
 import TitleCase from '@/components/TitleCase';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { TruncatedText } from '@/components/TitleCase';
 import useDebounce from '@/components/Debounce';
+import TitleTag from '@/components/Title';
 
-function AdminUser(){
+function SuspendedAccounts(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
     const { theme, toggleTheme } = useContext(ThemeContext);
+    const {user} = useGlobalSearchParams()
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('users');
+    const [filter, setFilter] = useState(`${user}`);
     const [isFocusedSearch, setIsFocusedSearch] = useState(false);
     const [searchValue, setSearchValue] = useState('')
     const [preSearchValue, setPreSearchValue] = useState('')
@@ -59,19 +61,19 @@ function AdminUser(){
             var Endpoint = ''
             switch (filter) {
                 case 'users':
-                    Endpoint = `${ENDPOINTS['admin']['buyers']}?page_size=${pageSize}&page=${currentPage}&is_active=true`
+                    Endpoint = `${ENDPOINTS['admin']['buyers']}?page_size=${pageSize}&page=${currentPage}&is_active=false`
                     break;
                 case 'vendors':
-                    Endpoint = `${ENDPOINTS['admin']['vendors']}?page_size=${pageSize}&page=${currentPage}&is_active=true`
+                    Endpoint = `${ENDPOINTS['admin']['vendors']}?page_size=${pageSize}&page=${currentPage}&is_active=false`
                     break;
                 case 'riders':
-                    Endpoint = `${ENDPOINTS['admin']['riders']}?page_size=${pageSize}&page=${currentPage}&is_active=true`
+                    Endpoint = `${ENDPOINTS['admin']['riders']}?page_size=${pageSize}&page=${currentPage}&is_active=false`
                     break;
                 case 'admins':
-                    Endpoint = `${ENDPOINTS['admin']['admins']}?page_size=${pageSize}&page=${currentPage}&is_active=true`
+                    Endpoint = `${ENDPOINTS['admin']['admins']}?page_size=${pageSize}&page=${currentPage}&is_active=false`
                     break;
                 default:
-                    Endpoint = `${ENDPOINTS['admin']['buyers']}?page_size=${pageSize}&page=${currentPage}&is_active=true`
+                    Endpoint = `${ENDPOINTS['admin']['buyers']}?page_size=${pageSize}&page=${currentPage}&is_active=false`
                     break;
             }
 
@@ -141,12 +143,15 @@ function AdminUser(){
 
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>      
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>    
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
+                    <TitleTag withprevious={true} title='Suspended accounts' withbell={true} />
+                </View>  
                 {loading && (
                     <FullScreenLoader />
                 )}
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full p-4 relative flex flex-row items-center justify-center`}>
-                    <View className='absolute left-6'>
+                    <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
                     <TextInput
@@ -201,30 +206,6 @@ function AdminUser(){
                     />
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' text-white'} rounded w-full p-2 mt-1`}>
-                    <View className='flex flex-row justify-between items-center w-full p-2'>
-                        <View className='flex flex-row justify-start'>
-                            <Text 
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[13px] mr-1' `}
-                            style={{fontFamily: 'Inter-Medium'}}>
-                                Suspended account
-                            </Text>
-                            <Text 
-                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[13px] ml-1`}
-                            style={{fontFamily: 'Inter-Regular'}}>
-                                ({suspended}) 
-                            </Text>
-                        </View>
-                        <View className='px-2'>
-                            <TouchableOpacity
-                            onPress={()=>{router.push(`/admin/suspended?user=${filter}`)}}
-                            >
-                                <ArrowRightCircle />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full mt-1 mb-4 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
@@ -268,7 +249,7 @@ function AdminUser(){
                         {parentUsers.map((item, index) => (
                                 <View key={item.id} className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-300'} flex flex-row items-center border-b w-full py-3 px-6`}>
                                             <View>
-                                                <EllipseDot width={15} height={15} />
+                                                <EllipseDotRed width={15} height={15} />
                                             </View>
                                             <View className='ml-4'>
                                                 <Text className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>
@@ -305,4 +286,4 @@ function AdminUser(){
     )
 }
 
-export default AdminUser;
+export default SuspendedAccounts;
