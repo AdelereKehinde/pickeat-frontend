@@ -9,6 +9,7 @@ import { TruncatedText } from '@/components/TitleCase';
 import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import Pagination from '@/components/Pagination';
 
 function SpecialOfferCard(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -17,11 +18,18 @@ function SpecialOfferCard(){
     type CategoryArray = { id: string; category_name: string;}[];
     type MealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
     type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
-    const [specialOffer, setSpecialOffer] = useState<MealArray>([]);
+    type SpecialOfferMealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string;}[];
+    type SpecialOfferResponse = { count: string; next: string; previous: string; results: SpecialOfferMealArray;};
+    const [specialOffer, setSpecialOffer] = useState<SpecialOfferMealArray>([]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [count, setCount] = useState(1);
+    const pageSize = 10; // Items per page
+
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await getRequest<MealResponse>(ENDPOINTS['inventory']['special-offer-meal-list'], true);
+                const response = await getRequest<SpecialOfferResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?&page_size=${pageSize}&page=${currentPage}`, true);
                 // alert(JSON.stringify(response2.results))
                 setSpecialOffer(response.results) 
             } catch (error) {
@@ -42,7 +50,7 @@ function SpecialOfferCard(){
                 </View>
                 
                 {/* <View className='w-full'> */}
-                    <ScrollView className='w-[100%] px-5 space-y-3 mb-4' contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView className='w-[100%] px-5 space-y-3 mb-4 ' contentContainerStyle={{ flexGrow: 1 }}>
                         {(specialOffer.length === 0) && 
                             <View className='flex space-y-3'>
                                 {Array.from({ length: 5 }).map((_, index) => (
@@ -70,7 +78,7 @@ function SpecialOfferCard(){
                                 >
                                     <SpecialOffer 
                                         image={item.thumbnail}
-                                        title={TruncatedText(item.vendor_store.business_name, 25)}
+                                        title={TruncatedText(item.vendor_store, 25)}
                                         sub_title={`₦${item.delivery_fee} Delivery fee | ${item.delivery_time}`}
                                         discount={item.discount}
                                         discount_in_price={item.discount}
@@ -79,7 +87,11 @@ function SpecialOfferCard(){
                                     />
                                 </Pressable>
                             </View>    
-                        ))}
+                        ))} 
+
+                    {((specialOffer.length > 0) && (count > specialOffer.length)) &&
+                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    }
                     </ScrollView>
                 {/* </View> */}
             </View>

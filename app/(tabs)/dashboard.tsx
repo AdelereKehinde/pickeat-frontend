@@ -32,7 +32,11 @@ export default function Dashboard(){
     type VendorStore = { id: string; avatar: string; business_name: string;};
     type CategoryArray = { id: string; category_name: string;}[];
     type MealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; category: CategoryArray; vendor_store: VendorStore; price: string; discount: string;  discounted_price: string; meal_description: string; in_stock: string; in_cart: string; in_wishlist: string; cart_quantity: string}[];
+    type SpecialOfferMealArray = { id: string; thumbnail: string; delivery_time: string; delivery_fee: string; meal_name: string; vendor_store: string; price: string; discount: string;  discounted_price: string; meal_description: string;}[];
+    type MealArray2 = { id: string; thumbnail: string; meal_name: string;}[];
     type MealResponse = { count: string; next: string; previous: string; results: MealArray;};
+    type SpecialOfferResponse = { count: string; next: string; previous: string; results: SpecialOfferMealArray;};
+    type MealResponse2 = { count: string; next: string; previous: string; results: MealArray2;};
 
     type SellerResponseResult = { id: string; store_id: number; avatar: string; full_name: string; email: string; phone_number: string; email_verified: boolean}[];
     type sellerResponse = { count: string; next: string; previous: string; results: SellerResponseResult;};
@@ -41,8 +45,8 @@ export default function Dashboard(){
     type kitchenResponseResult = { id: string; avatar: string; delivery_time: string; delivery_fee: string; business_name: string; review: ReviewData; is_favourite: boolean}[];
     type kitchenResponse = { count: string; next: string; previous: string; results: kitchenResponseResult;};
 
-    const [meals, setMeals] = useState<MealArray>([]);
-    const [specialOffer, setSpecialOffer] = useState<MealArray>([]);
+    const [meals, setMeals] = useState<MealArray2>([]);
+    const [specialOffer, setSpecialOffer] = useState<SpecialOfferMealArray>([]);
     const [sellers, setSellers] = useState<SellerResponseResult>([]);
     const [kitchens, setKitchens] = useState<kitchenResponseResult>([]);
 
@@ -51,10 +55,10 @@ export default function Dashboard(){
 
     const fetchCategories = async () => {
         try {
-            const response = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['meal-list']}?page_size=15&page=1`, true); // Authenticated
+            const response = await getRequest<MealResponse2>(`${ENDPOINTS['inventory']['meal-list2']}?page_size=15&page=1`, true); // Authenticated
             // alert(JSON.stringify(response.results))
             setMeals(response.results) 
-            const response2 = await getRequest<MealResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=15&page=1`, true);
+            const response2 = await getRequest<SpecialOfferResponse>(`${ENDPOINTS['inventory']['special-offer-meal-list']}?page_size=15&page=1`, true);
             // alert(JSON.stringify(response2.results))
             setSpecialOffer(response2.results) 
             const response3 = await getRequest<sellerResponse>(`${ENDPOINTS['vendor']['list']}?page_size=15&page=1`, true);
@@ -290,7 +294,7 @@ export default function Dashboard(){
                                         >
                                             <SpecialOffer 
                                             image={item.thumbnail}
-                                            title={TruncatedText(item.vendor_store.business_name, 25)}
+                                            title={TruncatedText(item.vendor_store, 25)}
                                             sub_title={`₦${item.delivery_fee} Delivery fee | ${item.delivery_time}`}
                                             discount={item.discount}
                                             discount_in_price={item.discount}
@@ -409,7 +413,15 @@ export default function Dashboard(){
                             </View>
                         }
                         {kitchens.map((item) => (
-                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time={item.delivery_time} rating={item.review.average_rating} fee={item.delivery_fee} />
+                            <KitchenCard 
+                            key={item.id} 
+                            kitchen_id={item.id} 
+                            image={item.avatar} 
+                            name={item.business_name} 
+                            is_favourite={item.is_favourite} 
+                            time={item.delivery_time} 
+                            rating={item.review.average_rating} 
+                            fee={item.delivery_fee} />
                         ))}
                     </View>
                 </ScrollView>   

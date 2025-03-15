@@ -94,6 +94,7 @@ const ENDPOINTS = {
         'categories': `${INVENTORY_BASE}categories`,
         'create-meal': `${INVENTORY_BASE}meal/create`,
         'meal-list': `${INVENTORY_BASE}meal/list`,
+        'meal-list2': `${INVENTORY_BASE}meal/list2`,
         'meal': `${INVENTORY_BASE}meal/`,
         'special-offer-meal-list': `${INVENTORY_BASE}meal/list/special-offer`,
         'vendor-meal-list': `${INVENTORY_BASE}meal/list/vendor`,

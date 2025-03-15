@@ -5,7 +5,7 @@ import TitleCase from './TitleCase';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
-    kitchen:any,
+    kitchens:string[],
     items: string,
     date: string,
     price: string,
@@ -13,7 +13,7 @@ interface Properties {
     status: string,
   }
 
-const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, order_id, status}) =>{
+const ServicesLayout: React.FC<Properties> = ({kitchens, date, price, items, order_id, status}) =>{
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     return(
@@ -24,7 +24,11 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                     style={{fontFamily: 'Inter-Bold'}}
                     className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
                     >
-                        {kitchen}
+                        {(kitchens.length == 1)?
+                            `${kitchens[0]}`
+                            :
+                            `${kitchens[0]}.. +${kitchens.length - 1}`
+                        }
                     </Text>
                     <Text className='text-[10px] text-gray-500'>
                         <Text
@@ -71,9 +75,8 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                     {date}
                 </Text>
                 <View className='flex flex-row items-center'>
-                    {status.includes('in progress') && (
                         <TouchableOpacity
-                        onPress={()=>{(router.push(`/track_order?tracking_id=${order_id}&kitchen=${kitchen}`))}}
+                        onPress={()=>{(router.push(`/track_order?order_id=${order_id}`))}}
                         >   
                             {}
                             <Text
@@ -83,7 +86,6 @@ const ServicesLayout: React.FC<Properties> = ({kitchen, date, price, items, orde
                                 Track Order
                             </Text>
                         </TouchableOpacity>
-                    )}
                     {/* {((status=='completed') || (status=='cancelled')) && (
                         <TouchableOpacity
                         onPress={()=>{alert('Re Order now')}}

@@ -25,7 +25,7 @@ export default function BookingHistory(){
     };
     const [loading, setLoading] = useState(false);
 
-    type ListData = { id: number; store_name: string; price: string;  tracking_id: string; status_history_status: string; status: string; order_id: string; items: string; date: string;}[];
+    type ListData = { id: number; status: string; order_id: string; kitchens: string[]; price: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [orders, serOrders] = useState<ListData>([]);
@@ -111,13 +111,13 @@ export default function BookingHistory(){
                             </View>
                         }
                         {orders.map((item) => (
-                            <View key={item.id}>
+                            <View key={item.id}> 
                                 <ServicesLayout 
-                                kitchen={item.store_name} 
+                                kitchens={item.kitchens} 
                                 price={item.price} 
                                 date={item.date}
                                 items={item.items}
-                                order_id={item.tracking_id}
+                                order_id={item.order_id}
                                 status={item.status}
                                 /> 
                             </View>

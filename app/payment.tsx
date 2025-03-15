@@ -158,7 +158,7 @@ export default function PaymentPage(){
                         />
                         <TouchableOpacity 
                         onPress={()=>{}}
-                        className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-2 right-7 rounded-lg h-8 bg-gray-100 my-auto'>
+                        className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-[2px] right-7 rounded-lg h-8 bg-gray-100 my-auto'>
                             <View className=''>
                                 <ChevronRight width={15} height={15} />
                             </View>

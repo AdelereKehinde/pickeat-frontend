@@ -10,16 +10,15 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import TitleCase from '@/components/TitleCase';
 
 function TrackOrder(){
-    const {tracking_id, kitchen} = useGlobalSearchParams()
+    const {order_id, kitchen} = useGlobalSearchParams()
 
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     const [showPrompt, setShowPrompt] = useState(false)
     const [loading, setLoading] = useState(true)
-    const [trackingId, setTrackingId] = useState(Array.isArray(tracking_id)? tracking_id[0] : tracking_id)
-    const [kitchenName, setKitchenName] = useState(Array.isArray(kitchen)? kitchen[0] : kitchen)
 
     const [orderDetail, setOrderDetail] = useState({
         order_time: '09:45am',
@@ -32,19 +31,18 @@ function TrackOrder(){
 
     type ListData_ = {date: string; days_ago: string; status: string;}[];
     type ListData = { status: string; data: ListData_};
-    const [status, setStatus] = useState<ListData>();
-    const [history, setHistory] = useState<ListData_>([]);
+    type responseData = { name: string; status: string; data: ListData_}[];
+    const [history, setHistory] = useState<responseData>([]);
 
     const fetchMeals = async () => {
         try {
             setLoading(true)
             // setParentOrders([])
             
-            const response = await getRequest<ListData>(`${ENDPOINTS['cart']['orders-history']}?tracking_id=${trackingId}`, true);
+            const response = await getRequest<responseData>(`${ENDPOINTS['cart']['orders-history']}?order_id=${order_id}`, true);
             // alert(JSON.stringify(response))
-            setStatus(response) 
-            setHistory(response.data)
-            // setCount(response.count)
+            setHistory(response)
+            // setCount(response.count) 
             setLoading(false)
         } catch (error) {
             // alert(error);
@@ -78,144 +76,157 @@ function TrackOrder(){
                         Order Progess
                     </Text>
                     
-                    <View className='w-full p-4 space-y-1'>
-                        <View className='flex flex-row w-full justify-start space-x-2'>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                {(history.find((item) => item.status == "accepted") !== undefined)?
-                                    history.find((item) => item.status == "accepted")?.date
-                                    :
-                                    '---------' 
-                                }
-                            </Text>
-                            <View className='flex items-center space-y-1'>
-                                <DoubleCheck/>
-                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "accepted") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
+                    {history.map((item) => (
+                        <View>
+                            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} px-4 py-3`}>
+                                <Text
+                                className='text-custom-green text-[13px]'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    From {TitleCase(item.name)}
+                                </Text>
+                            </View>
+                            
+                            <View className='w-full px-4 pt-4 space-y-1'>
+                            <View className='flex flex-row w-full justify-start space-x-2'>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {(item.data.find((item) => item.status == "accepted") !== undefined)?
+                                        item.data.find((item) => item.status == "accepted")?.date
+                                        :
+                                        '---------' 
+                                    }
+                                </Text>
+                                <View className='flex items-center space-y-1'>
+                                    <DoubleCheck/>
+                                    <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "accepted") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
+                                    </View>
                                 </View>
+                                <Text
+                                className='text-gray-500 text-[12px]' 
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {item.name} has recieved and {'\n'}confirmed your order
+                                </Text>
                             </View>
-                            <Text
-                            className='text-gray-500 text-[12px]' 
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                {kitchenName} has recieved and {'\n'}confirmed your order
-                            </Text>
-                        </View>
 
-                        <View className='flex flex-row w-full justify-start space-x-2'>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                            {(history.find((item) => item.status == "preparing") !== undefined)?
-                                    history.find((item) => item.status == "preparing")?.date
-                                    :
-                                    '---------' 
-                                }
-                            </Text>
-                            <View className='flex items-center space-y-1'>
-                                {(history.find((item) => item.status == "preparing") === undefined)? <RadioButton/>:<DoubleCheck/>}
-                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "preparing") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
+                            <View className='flex flex-row w-full justify-start space-x-2'>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                {(item.data.find((item) => item.status == "preparing") !== undefined)?
+                                        item.data.find((item) => item.status == "preparing")?.date
+                                        :
+                                        '---------' 
+                                    }
+                                </Text>
+                                <View className='flex items-center space-y-1'>
+                                    {(item.data.find((item) => item.status == "preparing") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                    <View className={`w-[2px] h-8 ${(item.data.find((item) => item.status == "preparing") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
+                                    </View>
                                 </View>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {item.name} is preparing your order
+                                </Text>
                             </View>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                {kitchenName} is preparing your order
-                            </Text>
-                        </View>
 
-                        <View className='flex flex-row w-full justify-start space-x-2'>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                {(history.find((item) => item.status == "ready") !== undefined)?
-                                    history.find((item) => item.status == "ready")?.date
-                                    :
-                                    '---------' 
-                                }
-                            </Text>
-                            <View className='flex items-center space-y-1'>
-                                {(history.find((item) => item.status == "ready") === undefined)? <RadioButton/>:<DoubleCheck/>}
-                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "ready") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
+                            <View className='flex flex-row w-full justify-start space-x-2'>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {(item.data.find((item) => item.status == "ready") !== undefined)?
+                                        item.data.find((item) => item.status == "ready")?.date
+                                        :
+                                        '---------' 
+                                    }
+                                </Text>
+                                <View className='flex items-center space-y-1'>
+                                    {(item.data.find((item) => item.status == "ready") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                    <View className={`w-[2px] h-8 ${(item.data.find((item) => item.status == "ready") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
+                                    </View>
                                 </View>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    A courier has been assigned to {'\n'}your order
+                                </Text>
                             </View>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                A courier has been assigned to {'\n'}your order
-                            </Text>
-                        </View>
 
-                        <View className='flex flex-row w-full justify-start space-x-2'>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                            {(history.find((item) => item.status == "shipped") !== undefined)?
-                                    history.find((item) => item.status == "shipped")?.date
-                                    :
-                                    '---------' 
-                                }
-                            </Text>
-                            <View className='flex items-center space-y-1'>
-                                {(history.find((item) => item.status == "shipped") === undefined)? <RadioButton/>:<DoubleCheck/>}
-                                <View className={`w-[2px] h-8 ${(history.find((item) => item.status == "shipped") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
+                            <View className='flex flex-row w-full justify-start space-x-2'>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                {(item.data.find((item) => item.status == "shipped") !== undefined)?
+                                        item.data.find((item) => item.status == "shipped")?.date
+                                        :
+                                        '---------' 
+                                    }
+                                </Text>
+                                <View className='flex items-center space-y-1'>
+                                    {(item.data.find((item) => item.status == "shipped") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                    <View className={`w-[2px] h-8 ${(item.data.find((item) => item.status == "shipped") === undefined)? 'bg-gray-200':'bg-custom-green'} `}>
 
+                                    </View>
                                 </View>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    The courier is on their way to deliver {'\n'}your order
+                                </Text>
                             </View>
-                            <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                The courier is on their way to deliver {'\n'}your order
-                            </Text>
+
+                            <View className='flex flex-row w-full justify-start space-x-2'>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    {(item.data.find((item) => item.status == "completed") !== undefined)?
+                                        item.data.find((item) => item.status == "completed")?.date
+                                        :
+                                        '---------' 
+                                    }
+                                </Text>
+                                <View className='flex items-center space-y-1'>
+                                {(item.data.find((item) => item.status == "completed") === undefined)? <RadioButton/>:<DoubleCheck/>}
+                                </View>
+                                <Text
+                                className='text-gray-500 text-[12px]'
+                                style={{fontFamily: 'Inter-Medium'}}
+                                >
+                                    The courier is delivering your order
+                                </Text>
+                            </View>
                         </View>
 
-                        <View className='flex flex-row w-full justify-start space-x-2'>
+                        <View className='p-4 flex flex-row justify-between items-center'>
                             <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-custom-green text-[17px]'
+                            style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                {(history.find((item) => item.status == "completed") !== undefined)?
-                                    history.find((item) => item.status == "completed")?.date
-                                    :
-                                    '---------' 
-                                }
+                                10:01AM
                             </Text>
-                            <View className='flex items-center space-y-1'>
-                            {(history.find((item) => item.status == "completed") === undefined)? <RadioButton/>:<DoubleCheck/>}
-                            </View>
                             <Text
-                            className='text-gray-500 text-[12px]'
-                            style={{fontFamily: 'Inter-Medium'}}
+                            className='text-gray-400 text-[12px]'
+                            style={{fontFamily: 'Inter-SemiBold'}} 
                             >
-                                The courier is delivering your order
+                                Estimated time of delivery
                             </Text>
                         </View>
-                    </View>
-
-                    <View className='p-4 flex flex-row justify-between items-center my-4'>
-                        <Text
-                        className='text-custom-green text-[17px]'
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            10:01AM
-                        </Text>
-                        <Text
-                        className='text-gray-400 text-[12px]'
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            Estimated time of delivery
-                        </Text>
-                    </View>
+                        </View>
+                    ))}
 
                     <View className='px-4 flex flex-row justify-between items-center'>
                         <Text
@@ -227,7 +238,7 @@ function TrackOrder(){
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 Order ID:
-                            </Text> {trackingId}
+                            </Text> {order_id}
                         </Text>
                         {/* <TouchableOpacity 
                         onPress={()=>{setShowPrompt(true)}}
@@ -240,6 +251,7 @@ function TrackOrder(){
                             </Text>
                         </TouchableOpacity> */}
                     </View>
+                    
                 </ScrollView>
             </View>
         </SafeAreaView>
