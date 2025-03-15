@@ -15,6 +15,10 @@ import CancelledOrder from '../../../assets/icon/cancelled-order.svg';
 import ActiveOrder from '../../../assets/icon/active-order.svg';
 import Information from '../../../assets/icon/alert-circle.svg';
 import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
+import { useIsFocused } from '@react-navigation/native';
+import { getRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 export default function AdminHome(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -24,26 +28,75 @@ export default function AdminHome(){
 
   const currentDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).replace(',', '');
 
-  const onRefresh = async () => {
-        setRefreshing(true);
-    
-      // await fetchMeals()
+  type RanItem1 = {count: number; amount: number}
+  type Data = {
+    orders: {
+      total: RanItem1;
+      completed: RanItem1;
+      cancelled: RanItem1;
+      pending: RanItem1;
+    };
+    today_orders: {
+      total: RanItem1;
+      pending: RanItem1;
+      completed: RanItem1;
+      cancelled: RanItem1
+    };
+    earnings: {
+      total: number;
+      pending_approval: number;
+    };
+    users:{
+      total: number;
+      buyers: number;
+      vendors: number;
+      riders: number;
+    }
+  }
+  type APIResponse = { status: string; message: string; data: Data;};
+  const isFocused = useIsFocused();
+  const [loading, setLoading] = useState(true);
+  const [resData, setResData] = useState<Data>()
+  
+  // Calculate the percentage for each user group (vendors, buyers, riders
+  const [vendorPercentage, setVendorPercentage] = useState(33)
+  const [buyerPercentage, setBuyerPercentage] = useState(33)
+  const [riderPercentage, setRiderPercentage] = useState(33)
 
+  const fetchMeals = async () => {
+    try {  
+        // setLoading(true)    
+        const response = await getRequest<APIResponse>(`${ENDPOINTS['admin']['dashboard']}`, true);
+        setRiderPercentage((response?.data.users.riders || 0) / (response?.data.users.total || 1) * 100);
+        setVendorPercentage((response?.data.users.vendors || 0) / (response?.data.users.total || 1) * (100));
+        setBuyerPercentage((response?.data.users.buyers || 0) / (response?.data.users.total || 1) * (100));
+        // alert(`${riderPercentage},${vendorPercentage},${buyerPercentage}`)
+        setResData(response.data)
+        setLoading(false)
+    } catch (error) {
+        setLoading(false)     
+        // alert(error);
+    } 
+  };
+
+  useEffect(() => { 
+      fetchMeals(); 
+  }, [isFocused]); // Empty dependency array ensures this runs once
+
+  const onRefresh = async () => {
+      setRefreshing(true);
+      await fetchMeals()
       setRefreshing(false); // Stop the refreshing animation
   };
 
-  //Donut Chart
-  const widthAndHeight = 150
-  const series = [
-    { value: 150, color: '#97ACFC'  },
-    { value: 45, color: '#365DFD' },
-    { value: 10, color: '#D5DEFE'  },
-  ]
 
     return (
       <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+                {loading && (
+                    <FullScreenLoader />
+                )}
                 <ScrollView 
                   refreshControl={
                       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -67,12 +120,18 @@ export default function AdminHome(){
                       </View>
                       <View className='flex flex-row justify-between items-center w-full p-2 mt-4'>
                         <View style={styles.chartContainer}>
-                          <PieChart widthAndHeight={widthAndHeight} series={series} cover={0.75} />
+                          <PieChart widthAndHeight={150} series={[
+                            { value: resData?.today_orders.pending.count || 10, color: '#99aeff'  },
+                            { value: resData?.today_orders.completed.count || 10, color: '#365eff' },
+                            { value: resData?.today_orders.cancelled.count || 10, color: '#d6dfff'  },
+                          ]} 
+                          cover={0.75} 
+                          />
                           {/* Centered Label and Value */}
                           <View style={styles.centerText}>
                             <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} mt-2 text-[15px]`}
                             style={{fontFamily: 'Inter-Bold'}}>
-                              5,823,213
+                              {resData?.today_orders.total.count || 0}
                             </Text>
                             <Text 
                             className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-600'} text-[12px]`}
@@ -90,13 +149,13 @@ export default function AdminHome(){
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[10px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
-                                    Active Orders
+                                    Pending Orders
                                 </Text>
                                 <Text
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#11263C]'} text-[12px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    150 Orders
+                                    {resData?.today_orders.pending.count || 0} Orders
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -115,7 +174,7 @@ export default function AdminHome(){
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#11263C]'} text-[12px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    45 Orders
+                                    {resData?.today_orders.completed.count || 0} Orders
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -128,13 +187,13 @@ export default function AdminHome(){
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[10px]`}
                                 style={{fontFamily: 'Inter-Medium'}}
                                 >
-                                    Canceled Orders
+                                    Cancelled Orders
                                 </Text>
                                 <Text
                                 className={`${theme == 'dark'? 'text-gray-100' : 'text-[#11263C]'} text-[12px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    10 Orders
+                                    {resData?.today_orders.cancelled.count || 0} Orders
                                 </Text>
                               </TouchableOpacity>
                             </View>
@@ -155,9 +214,9 @@ export default function AdminHome(){
                             className='text-[#8D8D8D] text-[10px]'>
                               Todays Earning
                             </Text>
-                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#000000]'} text-[15px]`}
+                            <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-[#000000]'} text-[18px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}>
-                                 ₦ {showAmount ? '3,027.87' : '****'} 
+                                 ₦ {showAmount ? `${resData?.earnings.total || 0.00}`: '****'} 
                             </Text>
                           </View>
                         </View>
@@ -189,8 +248,8 @@ export default function AdminHome(){
                               Pending approvals
                             </Text>
                             <Text className={`text-custom-green text-[25px]`}
-                                style={{fontFamily: 'Inter-Bold'}}>
-                                 5
+                            style={{fontFamily: 'Inter-Bold'}}>
+                                 {resData?.earnings.pending_approval || 0}
                             </Text>
                           </View>
                         </View>
@@ -250,7 +309,7 @@ export default function AdminHome(){
                       </View>
                     </View>
 
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-4`}>
+                    {/* <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start pb-2'>
                           <View className='mr-[10px] my-auto'>
@@ -258,19 +317,21 @@ export default function AdminHome(){
                           </View>
                           <View
                           className='border-l-2 border-gray-400 px-5'>
-                            <Text className={`text-custom-green text-[14px]`} style={{fontFamily: 'Inter-Bold'}}>Active Orders</Text>
+                            <Text className={`text-custom-green text-[14px]`} style={{fontFamily: 'Inter-Bold'}}>
+                              Active Orders
+                            </Text>
                             <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[18px]`}
                             style={{fontFamily: 'Inter-Bold'}}>
-                              750,456
+                              {resData?.orders.pe.count || 0}
                             </Text>
                             <Text className={`text-custom-green text-[12px]`} 
                             style={{fontFamily: 'Inter-SemiBold'}}>
-                              ₦ 9,456,004.98
+                              ₦ {resData?.orders.active.amount || 0}
                             </Text>
                           </View>
                         </View>
                       </View>
-                    </View>
+                    </View> */}
                     
                     <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-4`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
@@ -285,12 +346,12 @@ export default function AdminHome(){
                               Completed Orders
                             </Text>
                             <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-dark'} text-[16px]`}
-                                style={{fontFamily: 'Inter-Bold'}}>
-                                 750,456
+                            style={{fontFamily: 'Inter-Bold'}}>
+                                 {resData?.orders.completed.count || 0}
                             </Text>
                             <Text className={`text-custom-green text-[12px]`} 
                             style={{fontFamily: 'Inter-SemiBold'}}>
-                              ₦ 9,456,004.98
+                              ₦ {resData?.orders.completed.amount || 0}
                             </Text>
                           </View>
                         </View>
@@ -310,12 +371,12 @@ export default function AdminHome(){
                               Pending Orders
                             </Text>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[18px]`}
-                                style={{fontFamily: 'Inter-Bold'}}>
-                                 5
+                            style={{fontFamily: 'Inter-Bold'}}>
+                                {resData?.orders.pending.count || 0}
                             </Text>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[10px]`} 
                             style={{fontFamily: 'Inter-SemiBold'}}>
-                              ₦ 9,456,004.98
+                              ₦ {resData?.orders.pending.amount || 0}
                             </Text>
                           </View>
                         </View>
@@ -331,14 +392,14 @@ export default function AdminHome(){
                           <View className='border-l-2 border-gray-400 px-5'>
                             <Text className={`${theme == 'dark'? 'text-gray-400' : 'text-[#787676]'} text-[14px]`} 
                             style={{fontFamily: 'Inter-Bold'}}>
-                              Canceled Orders
+                              Cancelled Orders
                             </Text>
                             <Text className={`${theme == 'dark'? 'text-gray-100' : 'text-dark'} text-[18px]`}
                                 style={{fontFamily: 'Inter-Bold'}}>
-                                 5
+                                {resData?.orders.cancelled.count || 0}
                             </Text>
                             <Text className={`text-[#f00] text-[11px]`} style={{fontFamily: 'Inter-SemiBold'}}>
-                            ₦ 9,456,004.98
+                              ₦ {resData?.orders.cancelled.count || 0}
                             </Text>
                           </View>
                         </View>
@@ -362,7 +423,7 @@ export default function AdminHome(){
                         className={`${theme == 'dark'? 'text-gray-100' : 'text-[#11263C]'} text-[18px] mr-2`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
-                            594
+                          {resData?.users.total || 0}
                         </Text>
                         <Text
                         className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[12px]`}
@@ -372,9 +433,27 @@ export default function AdminHome(){
                         </Text>
                       </View>
                       <View className='flex flex-row justify-start p-2'>
-                        <View className="bg-[#228B22] w-[75%] h-[15px] rounded-[5px]"></View>
-                        <View className="bg-[#E5F2FF] w-[15%] h-[15px] rounded-[5px]"></View>
-                        <View className="bg-[#F5F5F5] w-[10%] h-[15px] rounded-[5px]"></View>
+                        <View
+                          style={{ width: '100%' }}
+                          className="bg-gray-200 absolute h-[15px] rounded-[5px]"
+                        ></View>
+
+                        {/* Vendor + Rider Bar */}
+                        <View
+                          style={{
+                            width: `${vendorPercentage + buyerPercentage }%`,
+                          }}
+                          className="bg-gray-400 absolute h-[15px] rounded-[5px]"
+                        ></View>
+
+                        {/* Buyer Bar */}
+                        <View
+                          style={{
+                            width: `${buyerPercentage}%`,
+                          }}
+                          className="bg-custom-green absolute h-[15px] rounded-[5px]"
+                        ></View>
+
                       </View>
                       <View className='flex flex-row justify-start p-2'>
                         <View className="bg-[#228B22] w-[35px] h-[5px] rounded-[5px]"></View>
@@ -384,12 +463,12 @@ export default function AdminHome(){
                             className={`${theme == 'dark'? 'text-gray-100' : 'text-[#868585]'} text-[12px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                Clients
+                                Clients 
                             </Text>
                           </TouchableOpacity>
                         </View>
 
-                        <View className="bg-[#E5F2FF] w-[35px] h-[5px] rounded-[5px] ml-[10px]"></View>
+                        <View className="bg-gray-400 w-[35px] h-[5px] rounded-[5px] ml-[10px]"></View>
                         <View className='mt-[-8px] ml-[10px]'>
                           <TouchableOpacity onPress={() => setSelectedSlice({ value: 10, label: "Clients" })}>
                             <Text
@@ -401,7 +480,7 @@ export default function AdminHome(){
                           </TouchableOpacity>
                         </View>
 
-                        <View className="bg-[#F5F5F5] w-[35px] h-[5px] rounded-[5px] ml-[10px]"></View>
+                        <View className="bg-gray-200 w-[35px] h-[5px] rounded-[5px] ml-[10px]"></View>
                         <View className='mt-[-8px] ml-[10px]'>
                           <TouchableOpacity onPress={() => setSelectedSlice({ value: 10, label: "Clients" })}>
                             <Text
@@ -412,9 +491,7 @@ export default function AdminHome(){
                             </Text>
                           </TouchableOpacity>
                         </View>
-                      </View>
-
-                      
+                      </View>     
 
                     </View>
                 </ScrollView>

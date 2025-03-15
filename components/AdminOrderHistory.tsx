@@ -78,7 +78,7 @@ const AdminOrderHistory: React.FC<Properties> = ({id, name, date, price, image, 
                     style={{fontFamily: 'Inter-Bold'}}
                     className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[10px]`}
                     >
-                        Amount: <Text className='text-[14px] text-custom-green'>₦{price}</Text>
+                        Amount: <Text className='text-[12px] text-custom-green'>₦{price}</Text>
                     </Text>
                     <View className='flex flex-row items-center'>
                         <Text

@@ -46,7 +46,7 @@ function AdminOrder(){
             setLoading(false)
         } catch (error) {
             setLoading(false)     
-            alert(error);
+            // alert(error);
         } 
     };
     useEffect(() => { 
@@ -89,7 +89,7 @@ function AdminOrder(){
                     renderItem={({ item }) => (
                         <TouchableOpacity
                         onPress={()=>{setFilter(item.name)}}
-                        className={`bg-gray-100 rounded-lg ${(filter == item.name) && 'bg-custom-green'} px-4 py-2 flex flex-row items-center`}
+                        className={`bg-white rounded-lg ${(filter == item.name) && 'bg-custom-green'} px-4 py-2 flex flex-row items-center`}
                         >
                             {(filter== item.name) && (
                                 <Check />
@@ -106,7 +106,7 @@ function AdminOrder(){
                     />
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
+                {/* <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
                     <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View>
                             <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[13px]`} 
@@ -120,7 +120,7 @@ function AdminOrder(){
                             </TouchableOpacity>
                         </View>
                     </View>
-                </View>
+                </View> */}
 
                 <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
                     <View className='flex flex-row justify-between items-center w-full p-2'>
@@ -145,7 +145,7 @@ function AdminOrder(){
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full p-1 mb-48 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full p-1 mb-32 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (orders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>

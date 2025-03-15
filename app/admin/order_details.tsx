@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ChevronNext from '../../assets/icon/chevron-next.svg';
-import PaymentItem from '@/components/PaymentItem';
+import TitleCase from '@/components/TitleCase';
 import AdminOrderItem from '@/components/AdminOrderItem';
 
 export default function AdminOrderDetails(){
@@ -77,6 +77,8 @@ export default function AdminOrderDetails(){
         service_charge: number;
         delivery_fee: number;
         time: string;
+        promo_code: number;
+        total: number;
         delivery_address: {
             latitude: string;
             longitude: string;
@@ -103,7 +105,7 @@ export default function AdminOrderDetails(){
             }
         };
     
-        // fetchMeals();
+        fetchMeals();
     }, []); // Empty dependency array ensures this runs once
     
     return (
@@ -176,7 +178,7 @@ export default function AdminOrderDetails(){
                         </Text>  
                     </View>  
 
-                    <View className={`${theme == 'dark'? 'border-gray-700' : 'border-gray-400'} space-y-1 border-b w-[90%] py-2 self-center`}>
+                    <View className={`space-y-1 w-[90%] py-2 self-center`}>
                         {resData?.order_items.map((item) => (
                             <View key={item.id} className='flex flex-row mt-5 justify-between items-center'>
                                 <View
@@ -205,7 +207,7 @@ export default function AdminOrderDetails(){
                         ))}
                     </View>
 
-                    <View className='space-y-2 mt-4'>
+                    <View className={`${theme == 'dark'? 'border-gray-700' : 'border-gray-400'} border-b space-y-2 pb-4 mt-4`}>
                             <View className='flex flex-row items-center justify-between w-full px-5'>
                                 <Text
                                 style={{fontFamily: 'Inter-Medium'}}
@@ -245,7 +247,7 @@ export default function AdminOrderDetails(){
                                 style={{fontFamily: 'Inter-Medium'}}
                                 className=' text-[11px] text-custom-green'
                                 >
-                                    ₦{resData?.delivery_fee}
+                                    ₦{resData?.promo_code}
                                 </Text>  
                             </View> 
                             <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -256,10 +258,10 @@ export default function AdminOrderDetails(){
                                     Total: 
                                 </Text>  
                                 <Text
-                                style={{fontFamily: 'Inter-Medium'}}
-                                className=' text-[11px] text-custom-green'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className=' text-[13px] text-custom-green'
                                 >
-                                    ₦{resData?.delivery_fee}
+                                    ₦{resData?.total}
                                 </Text>  
                             </View> 
                     </View>
@@ -280,13 +282,13 @@ export default function AdminOrderDetails(){
                     </View> 
 
                     
-                    <View className='mb-10'>
+                    <View className='mb-10 space-y-2'>
                         {resData?.riders.map((item, _) => (
-                            <View key={_} >
+                            <View key={_}>
                                 <View className='w-full px-5 mt-5 flex flex-row items-center'>
                                     <View>
                                         <Text
-                                        style={{fontFamily: 'Inter-Medium'}}
+                                        style={{fontFamily: 'Inter-SemiBold'}}
                                         className={`text-custom-green text-[12px]`}
                                         >
                                             ASSIGNED RIDER ({_ + 1})
@@ -299,31 +301,58 @@ export default function AdminOrderDetails(){
                                         </Text>  
                                     </View>
 
-                                    <TouchableOpacity
-                                    className={`bg-custom-green rounded-md p-2 ml-auto flex`}
-                                    onPress={()=>{alert(item.id)}}
-                                    >
-                                        <Text
-                                        style={{fontFamily: 'Inter-Regular'}}
-                                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[11px]`}
+                                    {(item.status == 'pending')?
+                                        <TouchableOpacity
+                                        className={`bg-custom-green rounded-md p-2 ml-auto flex`}
+                                        onPress={()=>{alert(item.id)}}
                                         >
-                                            Change Rider
-                                        </Text>  
-                                    </TouchableOpacity>
+                                            <Text
+                                            style={{fontFamily: 'Inter-Regular'}}
+                                            className={`text-white text-[11px]`}
+                                            >
+                                                Change Rider
+                                            </Text>  
+                                        </TouchableOpacity>
+                                        :
+                                        <View
+                                        className={`bg-custom-inactive-green rounded-md p-2 ml-auto flex`}
+                                        >
+                                            <Text
+                                            style={{fontFamily: 'Inter-Regular'}}
+                                            className={`text-white text-[11px]`}
+                                            >
+                                                {TitleCase(item.status)}
+                                            </Text>  
+                                        </View>
+                                    }
                                 </View> 
 
                                 <View className={`mx-5`}>
                                     <Text
-                                    style={{fontFamily: 'Inter-Regular'}}
+                                    style={{fontFamily: 'Inter-Medium'}}
                                     className={`text-custom-green text-[12px]`}
                                     >
                                         Pickup Location
                                     </Text>  
                                     <Text
                                     style={{fontFamily: 'Inter-Regular'}}
-                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[11px]`}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[11px]`}
                                     >
                                         {item?.pickup.address} ({item?.pickup.building_type}) {item?.pickup.building_name} | {item?.pickup.floor}
+                                    </Text>  
+                                </View>
+                                <View className={`mx-5 flex flex-row space-x-1`}>
+                                    <Text
+                                    style={{fontFamily: 'Inter-Medium'}}
+                                    className={`text-custom-green text-[12px]`}
+                                    >
+                                        Fee -
+                                    </Text>  
+                                    <Text
+                                    style={{fontFamily: 'Inter-Regular'}}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[11px]`}
+                                    >
+                                        {item?.delivery_fee}
                                     </Text>  
                                 </View>
                             </View>
