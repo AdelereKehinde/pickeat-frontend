@@ -11,7 +11,7 @@ export const getAuthToken = async (): Promise<string | null> => {
 };
 
 const apiClient = axios.create({
-  baseURL: 'https://29f3-102-89-82-243.ngrok-free.app/api/v1/',
+  baseURL: 'https://b0d1-102-89-75-180.ngrok-free.app/api/v1/',
   // baseURL: 'https://pickeat-backend.onrender.com/api/v1/',
   // timeout: 10000,
   // headers: {  

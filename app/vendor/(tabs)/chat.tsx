@@ -41,11 +41,14 @@ const ChatList: React.FC = () => {
 
     useEffect(() => {
         fetchMeals();
-        const intervalId = setInterval(() => {
-            fetchMeals();; // Fetch messages periodically
-        }, 30000); // Poll every 5 seconds
-      
-        return () => clearInterval(intervalId); // Clean up on unmount
+        if(isFocusedd){
+            const intervalId = setInterval(() => {
+                fetchMeals();; // Fetch messages periodically
+            }, 30000); // Poll every 5 seconds
+          
+            return () => clearInterval(intervalId); // Clean up on unmount
+        }
+        
     }, [isFocusedd]); // Empty dependency array ensures this runs once
 
   return (

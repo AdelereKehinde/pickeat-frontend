@@ -3,6 +3,7 @@ import { Text, View, Image, TouchableOpacity } from "react-native";
 import { router } from 'expo-router'
 import TitleCase from './TitleCase';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import { TruncatedText } from './TitleCase';
 
 interface Properties {
     kitchens:string[],
@@ -20,16 +21,23 @@ const ServicesLayout: React.FC<Properties> = ({kitchens, date, price, items, ord
         <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} flex items-center justify-between border-b w-full h-28 py-3 px-6`}>
             <View className='w-full flex flex-row'>
                 <View className=''>
-                    <Text
-                    style={{fontFamily: 'Inter-Bold'}}
-                    className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
-                    >
-                        {(kitchens.length == 1)?
-                            `${kitchens[0]}`
-                            :
-                            `${kitchens[0]}.. +${kitchens.length - 1}`
-                        }
-                    </Text>
+                    <View className='flex flex-row space-x-2'>
+                        <Text
+                        style={{fontFamily: 'Inter-Bold'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
+                        >
+                            {TruncatedText(kitchens[0], 18)}
+                        </Text>
+                        
+                        {(kitchens.length !== 1)&& (
+                            <Text
+                            style={{fontFamily: 'Inter-Bold'}}
+                            className={`text-custom-green text-[14px]`}
+                            >
+                                +{kitchens.length - 1}
+                            </Text>
+                        )}
+                    </View>
                     <Text className='text-[10px] text-gray-500'>
                         <Text
                         style={{fontFamily: 'Inter-Bold'}}

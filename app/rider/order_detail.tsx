@@ -15,6 +15,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ChevronNext from '../../assets/icon/chevron-next.svg';
+import { isLoading } from 'expo-font';
+import RiderCompleteOrderPrompt from '@/components/RiderCompleteOrderPrompt';
 
 export default function RiderOrderDetails(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -25,6 +27,8 @@ export default function RiderOrderDetails(){
         error: CustomToast,
     };
     const [loading, setLoading] = useState(true);
+    const [loading2, setLoading2] = useState(false);
+
     
     type PickupDeliveryData = {
         id: number; 
@@ -57,6 +61,7 @@ export default function RiderOrderDetails(){
         message: string; 
         data: {
             status: string;
+            status_history: string;
             pickup: PickupDeliveryData;
             delivery: PickupDeliveryData;
             delivery_fee: number;
@@ -76,6 +81,13 @@ export default function RiderOrderDetails(){
     const [resData, setResData] = useState<ApiResponse>();
 
     const [action, setAction] = useState('')
+    const [statement, setStatement] = useState('Please choose to accept or reject this order.')
+    const [order_id, setOrderId] = useState('')
+    const [isActive, setIsActive] = useState(true)
+    const [status, setStatus] = useState('')
+    const [statusHistory, setStatusHistory] = useState('')
+    const [totalWithCharge, setTotalWithCharge] = useState(0.00)
+    const [totalWithoutCharge, setTotalWithoutCharge] = useState(0.00)
 
     useEffect(() => {
         const fetchMeals = async () => {
@@ -84,6 +96,35 @@ export default function RiderOrderDetails(){
                 const response = await getRequest<ApiResponse>(`${ENDPOINTS['rider']['task']}/${task_id}`, true);
                 // alert(JSON.stringify(response))
                 setResData(response)
+                setOrderId(response.data.order_detail.order_id)
+                setStatusHistory(response.data.status_history)
+                setStatus(response.data.status)
+                setTotalWithCharge(response.data.total_including_service_charge)
+                setTotalWithoutCharge(response.data.total_excluding_service_charge)
+
+                switch (response.data.status) {
+                    case 'pending':
+                        setStatement('Please choose to accept or reject this order.')
+                        break;
+                    case 'accepted':
+                        if (response.data.status_history == 'shipped'){
+                            setStatement('Proceed to the delivery location')
+                        }else{
+                            setStatement('Click on the button when you obtain the item from the pickup location')
+                        }
+                        break;
+                    case 'completed':
+                        setStatement('This order has been completed')
+                        setIsActive(false)
+                        break;
+                    case 'reject':
+                        setStatement('This order has been rejected')
+                        setIsActive(false)
+                        break;
+                    default:
+                        break;
+                }
+
                 setLoading(false)
             } catch (error) {
                 setLoading(false)
@@ -93,6 +134,70 @@ export default function RiderOrderDetails(){
     
         fetchMeals();
     }, []); // Empty dependency array ensures this runs once
+
+
+
+    const OrderStatusUpdate = async (status_:string) => {
+        try {
+        if(!loading2 && isActive){
+            setLoading2(true)
+
+            switch (status_) { 
+                case 'accept':
+                    var res = await postRequest(`${ENDPOINTS['rider']['order-status-update']}`, {status: 'accepted', task_id: task_id}, true);
+                    setStatus('accepted')
+                    setStatement('Click on the button when you obtain the item from the pickup location.')
+                    break;
+                case 'reject':
+                    var res = await postRequest(`${ENDPOINTS['rider']['order-status-update']}`, {status: 'rejected', task_id: task_id}, true);
+                    setStatement('This order has been rejected')
+                    setStatus('rejected')
+                    setIsActive(false)
+                    break;
+                case 'shipped':
+                    var res = await postRequest(`${ENDPOINTS['rider']['order-status-update']}`, {status: 'shipped', task_id: task_id}, true);
+                    setStatusHistory('shipped')
+                    setStatus('accepted')
+                    setStatement('Proceed to the delivery location.')
+                    break;
+                case 'complete':                
+                    var res = await postRequest(`${ENDPOINTS['rider']['order-status-update']}`, {status: 'completed', task_id: task_id}, true);
+                    setStatusHistory('completed')
+                    setStatus('completed')
+                    setStatement('This order has been completed.')
+                    setIsActive(false)
+                    break;
+                default:
+                    break;
+            }
+
+            // alert(status_)
+            Toast.show({
+                type: 'success',
+                text1: 'Status Updated',
+                visibilityTime: 3000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+            setLoading2(false)
+        }
+
+        } catch (error:any) {
+            setLoading2(false)
+            // alert(JSON.stringify(error))
+            Toast.show({
+                type: 'error',
+                text1: "An error occured",
+                // text2: error.data?.message || 'Unknown Error',
+                visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+        }
+    };
+
+    const [showPrompt, setShowPrompt] = useState(false)
+    const OnPromptClick = () => {
+        setShowPrompt(false)
+    }
     
     return (
         <SafeAreaView>
@@ -105,6 +210,10 @@ export default function RiderOrderDetails(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+
+                {showPrompt && 
+                    <RiderCompleteOrderPrompt order_id={order_id} clickFunction={OnPromptClick}/>
+                }
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}
                 className='px-4'
@@ -134,12 +243,14 @@ export default function RiderOrderDetails(){
                                 </TouchableOpacity>
                             </View>
                             <View  className='ml-4'>
-                                <Text
-                                style={{fontFamily: 'Inter-SemiBold'}}
-                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[11px] mt-4 `}
-                                >
-                                    {resData?.data.pickup.building_name} {resData?.data.pickup.building_type} ({resData?.data.pickup.address} - {resData?.data.pickup.floor}) {resData?.data.pickup.address}
-                                </Text>
+                                {(!loading && (
+                                    <Text
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[11px] mt-4 `}
+                                    >
+                                        {resData?.data.pickup.building_name} {resData?.data.pickup.building_type} ({resData?.data.pickup.address} - {resData?.data.pickup.floor}) {resData?.data.pickup.address}
+                                    </Text>
+                                ))}
                             </View>
                         </View>
                     </View>
@@ -168,12 +279,14 @@ export default function RiderOrderDetails(){
                                 </TouchableOpacity>
                             </View>
                             <View  className='ml-4'>
-                                <Text
-                                style={{fontFamily: 'Inter-SemiBold'}}
-                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[11px] mt-4 `}
-                                >
-                                    {resData?.data.delivery.building_name} {resData?.data.delivery.building_type} ({resData?.data.delivery.address} - {resData?.data.delivery.floor}) {resData?.data.delivery.address}
-                                </Text>
+                                {(!loading) && (
+                                    <Text
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[11px] mt-4 `}
+                                    >
+                                        {resData?.data.delivery.building_name} {resData?.data.delivery.building_type} ({resData?.data.delivery.address} - {resData?.data.delivery.floor}) {resData?.data.delivery.address}
+                                    </Text>
+                                )}
                             </View>
                         </View>
                     </View>
@@ -320,7 +433,7 @@ export default function RiderOrderDetails(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[14px] text-custom-green'
                         >
-                            ₦{resData?.data.total_including_service_charge}
+                            ₦{RoundToDecimalPlace(totalWithCharge, 2)}
                         </Text>  
                     </View>
                     <View className='flex flex-row items-center justify-between w-full px-5'>
@@ -334,32 +447,43 @@ export default function RiderOrderDetails(){
                         style={{fontFamily: 'Inter-Medium'}}
                         className=' text-[14px] text-custom-green'
                         >
-                            ₦{resData?.data.total_excluding_service_charge} 
+                            ₦{RoundToDecimalPlace(totalWithoutCharge, 2)} 
                         </Text>  
                     </View>
                 </View>
 
-                {(resData?.data.status == 'pending') &&
-                    <View className='flex flex-row items-center px-5 justify-between w-full my-8'>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full px-5 py-2 mt-12 flex justify-around items-center mb-2`}>
+                    {!loading && (
+                        <Text
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`text-custom-green text-center text-[11px]`}
+                        >
+                            {statement}
+                        </Text>
+                    )}  
+                </View>
+
+                {((status == 'pending') &&  (statusHistory == 'ready')) &&
+                    <View className='flex flex-row items-center px-5 justify-between w-full mb-8'>
                         <TouchableOpacity
-                        onPress={()=>{}}
-                        className={`text-center bg-gray-100 ${loading && 'bg-gray-200'} relative rounded-md py-2 px-2 self-center flex items-center justify-around`}
+                        onPress={()=>{OrderStatusUpdate('reject')}}
+                        className={`text-center bg-gray-100 ${(loading2 || !isActive) && 'bg-gray-200'} relative rounded-md py-2 px-2 self-center flex items-center justify-around`}
                         >
                             <Text
-                            className={`text-custom-green ${loading && 'text-gray-500'} text-[12px]`}
-                            style={{fontFamily: 'Inter-Medium'}}
+                            className={`text-custom-green ${(loading2 || !isActive) && 'text-gray-500'} text-[12px]`}
+                            style={{fontFamily: 'Inter-Medium'}} 
                             >
                             Reject Order
                             </Text>
-                            {(loading) && (
+                            {(loading2) && (
                                 <View className='absolute w-full top-2'>
                                     <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                 </View>
                             )}
                         </TouchableOpacity>
                         <TouchableOpacity
-                        onPress={()=>{}}
-                        className={`text-center bg-custom-green ${(loading) && 'bg-custom-inactive-green'} relative rounded-md placeholder-yellow-100 py-2 px-2 self-center flex items-center justify-around`}
+                        onPress={()=>{OrderStatusUpdate('accept')}}
+                        className={`text-center bg-custom-green ${(loading2 || !isActive) && 'bg-custom-inactive-green'} relative rounded-md placeholder-yellow-100 py-2 px-2 self-center flex items-center justify-around`}
                         >
                             <Text
                             className='text-white text-[12px]'
@@ -367,7 +491,7 @@ export default function RiderOrderDetails(){
                             >
                             Accept Order
                             </Text>
-                            {(loading) && (
+                            {(loading2) && (
                                 <View className='absolute w-full top-2'>
                                     <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
                                 </View>
@@ -376,19 +500,44 @@ export default function RiderOrderDetails(){
                     </View>
                 }
 
-                {(resData?.data.status !== 'pending') &&
-                    <View className='flex flex-row items-center px-5 justify-between w-full my-8'>
-
+                {((status == 'accepted') && (statusHistory == 'ready')) &&
+                    <View className='flex flex-row items-center px-5 justify-around w-full mb-8'>
                         <TouchableOpacity
-                        onPress={()=>{}}
-                        className={`text-center ${(resData?.data.status == 'rejected')? 'bg-red-500' : 'bg-custom-green'} relative rounded-md py-2 px-2 self-center flex items-center justify-around`}
+                        onPress={()=>{OrderStatusUpdate('shipped')}}
+                        className={`text-center bg-custom-green ${(loading2 || !isActive) && 'bg-custom-inactive-green'} relative rounded-md placeholder-yellow-100 py-2 px-2 self-center flex items-center justify-around`}
                         >
                             <Text
-                            className={`text-custom-green ${loading && 'text-gray-500'} text-[12px]`}
+                            className='text-white text-[12px]'
                             style={{fontFamily: 'Inter-Medium'}}
                             >
-                            {resData?.data.status}
+                            Shipped
                             </Text>
+                            {(loading2) && (
+                                <View className='absolute w-full top-2'>
+                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
+                                </View>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                }
+ 
+                {((statusHistory == 'shipped')) &&
+                    <View className='flex flex-row items-center px-5 justify-around w-full mb-8'>
+                        <TouchableOpacity
+                        onPress={()=>{setShowPrompt(true)}}
+                        className={`text-center bg-custom-green ${(loading2 || !isActive) && 'bg-custom-inactive-green'} relative rounded-md placeholder-yellow-100 py-2 px-2 self-center flex items-center justify-around`}
+                        >
+                            <Text
+                            className='text-white text-[12px]'
+                            style={{fontFamily: 'Inter-Medium'}}
+                            >
+                            Complete Order
+                            </Text>
+                            {(loading2) && (
+                                <View className='absolute w-full top-2'>
+                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
+                                </View>
+                            )}
                         </TouchableOpacity>
                     </View>
                 }

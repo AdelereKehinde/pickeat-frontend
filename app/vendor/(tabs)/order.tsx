@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useIsFocused } from '@react-navigation/native';
-import { Text, View, StatusBar, ScrollView, TouchableOpacity, RefreshControl } from "react-native";
+import { Text, View, StatusBar, ScrollView, TouchableOpacity, RefreshControl, FlatList } from "react-native";
 import { router } from 'expo-router'
 import TitleTag from '@/components/Title';
 import KitchenCard from '@/components/Kitchen';
@@ -15,6 +15,8 @@ import Pagination from '@/components/Pagination';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import FullScreenLoader from '@/components/FullScreenLoader';
+import TitleCase from '@/components/TitleCase';
 
 function Order(){
     const toastConfig = {
@@ -25,7 +27,7 @@ function Order(){
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     
-    type ListData = { id: number; buyer_name: string; location: string; thumbnail: string; tracking_id: string; status_history_status: string; status: string; items: string; date: string;}[];
+    type ListData = { id: number; buyer_name: string; address: string; thumbnail: string; order_id: string; status_history_status:string; status: string; items: number; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
     const [parentorders, setParentOrders] = useState<ListData>([]);
@@ -35,45 +37,46 @@ function Order(){
     const [count, setCount] = useState(1);
     const pageSize = 6; // Items per page
 
-    const isFocused = useIsFocused();
-    const [ranOnce, setRanOnce] = useState(false);
+    const isFocused = useIsFocused(); 
+    const [ranOnce, setRanOnce] = useState(false); 
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
             // setParentOrders([])
-            const response = await getRequest<ListData>(`${ENDPOINTS['cart']['vendor-orders']}?all=true&exclude_status=completed`, true);
+            setCount(0)
+            setLoading(true)
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['vendor-orders']}?status=${filter}&page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
-            setParentOrders(response)
-            if(!ranOnce){
-                setOrders(response)
-                setRanOnce(true)
-            }
-            // setCount(response.count)
+            setParentOrders(response.results)
+            setCount(response.count)
             setLoading(false)
         } catch (error) {
-            alert(error);
+            // alert(error);
         } 
     };
-    useEffect(() => {
-        if (isFocused){  
-            setLoading(true)      
-            fetchMeals(); 
-        }
-    }, [isFocused, currentPage]); // Empty dependency array ensures this runs once
+
+    useEffect(() => {  
+        fetchMeals(); 
+    }, [currentPage, filter]); // Empty dependency array ensures this runs once
     
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
         await fetchMeals()
-
         setRefreshing(false); // Stop the refreshing animation
     };
 
-    const UpdateStatus = (tracking_id: string, status: string, status_history_status: string) => {
+    const Categories = [
+        {id: '1', name: 'pending', main: 'pending'},
+        {id: '2', name: 'accepted', main: 'in progress'},
+        {id: '3', name: 'completed', main: 'completed'},
+        {id: '4', name: 'cancelled', main: 'cancelled'},
+    ]
+
+    const UpdateStatus = (order_id: string, status: string, status_history_status: string) => {
         // alert(status_history_status)
         var newOrder = parentorders.map((item) =>
-            item.tracking_id === tracking_id ? { ...item, status: status, status_history_status: status_history_status } : item
+            item.order_id === order_id ? { ...item, status: status, status_history_status: status_history_status } : item
         );
         setParentOrders(newOrder);  
     }
@@ -86,6 +89,9 @@ function Order(){
                     <TitleTag withprevious={false} title='Orders' withbell={false} />
                 </View>
 
+                {loading && (
+                    <FullScreenLoader />
+                )}
                 <Text
                 className='text-custom-green text-[16px] self-start pl-5 mt-5'
                 style={{fontFamily: 'Inter-SemiBold'}}
@@ -93,51 +99,30 @@ function Order(){
                     My Orders
                 </Text>
                 
-                <View className='my-3 mt-3 flex flex-row w-full justify-around'>
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('pending')}}
-                        className={`${(filter == 'pending')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >   
-                        {(filter== 'pending') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'pending')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
+                <View className={`${theme == 'dark'? 'bg-gray-800' : 'text-white'} p-2 flex flex-row w-full justify-around mt-2`}>
+                    <FlatList
+                    data={Categories}
+                    keyExtractor={(item) => item.id}
+                    horizontal={true}  // This makes the list scroll horizontally
+                    ItemSeparatorComponent={() => <View className='w-3' />}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                        onPress={()=>{setFilter(item.main)}}
+                        className={`bg-white rounded-lg ${(filter == item.main) && 'bg-custom-green'} px-6 py-2 flex flex-row items-center`}
                         >
-                            Pending
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('in progress')}}
-                        className={`${(filter == 'in progress')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'completed') && (
-                            <Check />
+                            {(filter== item.main) && (
+                                <Check />
+                            )}
+                            <Text
+                            className={`${(filter == item.main)? 'text-white':'text-gray-600'} ml-1 text-[12px] text-center`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                {TitleCase(item.name)}
+                            </Text>
+                        </TouchableOpacity>
                         )}
-                        <Text
-                        className={`${(filter == 'in progress')? 'text-white pl-2': ' text-gray-500'} text-[11px] `}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Confirmed 
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity 
-                        onPress={()=>{setFilter('cancelled')}}
-                        className={`${(filter == 'cancelled')? 'bg-custom-green': 'bg-blue-100'} flex flex-row items-center px-3 rounded-lg h-8  my-auto`}
-                    >
-                        {(filter == 'cancelled') && (
-                            <Check />
-                        )}
-                        <Text
-                        className={`${(filter == 'cancelled')? 'text-white pl-2': ' text-gray-500'} text-[11px]`}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Cancelled
-                        </Text>
-                    </TouchableOpacity>
+                        showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
+                    />
                 </View>
 
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full my-3 relative flex flex-row items-center justify-center`}>
@@ -146,7 +131,7 @@ function Order(){
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
                     className='w-full p-1 mb-40 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
-                        {(!loading && (parentorders.filter((item)=>item.status.includes(filter)).length == 0)) && (
+                        {(!loading && (parentorders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                                 <Text
@@ -180,12 +165,26 @@ function Order(){
                                 ))}
                             </View>
                         }
-                        {parentorders.filter((item)=>item.status.includes(filter)).map((item) => (
-                            <View key={item.id}>
-                                <VendorOrder status_history_status={item.status_history_status} tracking_id={item.tracking_id} image={item.thumbnail} name={item.buyer_name} time={item.date} address={item.location} status={item.status} onUpdate={UpdateStatus}/>
+                        {parentorders.map((item, _) => (
+                            <View key={_}>
+                                <VendorOrder 
+                                id={item.id}
+                                order_id={item.order_id} 
+                                image={item.thumbnail} 
+                                name={item.buyer_name} 
+                                time={item.date} 
+                                address={item.address}
+                                items={item.items} 
+                                status_history_status={item.status_history_status} 
+                                status={item.status} 
+                                onUpdate={UpdateStatus}
+                                />
                             </View>
                         ))}
-                        {/* <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} /> */}
+
+                        {((parentorders.length > 0) && (count > parentorders.length)) &&
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

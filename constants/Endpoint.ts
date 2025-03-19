@@ -77,6 +77,7 @@ const ENDPOINTS = {
         'notification': `${RIDER_BASE}notification`,
         'delete': `${RIDER_BASE}delete`,
         'profile': `${RIDER_BASE}profile`,
+        'order-status-update': `${RIDER_BASE}update-status`,
     },
     'admin': {
         'signin': `${ADMIN_BASE}signin`,
@@ -112,6 +113,8 @@ const ENDPOINTS = {
         'buyer-confirm-order': `${CART_BASE}buyer/orders/confirm`,
         'vendor-orders': `${CART_BASE}vendor/orders`,
         'orders-history': `${CART_BASE}order_history`,
+        'vendor-order-status-update': `${CART_BASE}vendor/update-status`,
+        'buyer-order-status-update': `${CART_BASE}buyer/update-status`,
     },
     'payment': {
         'buyer-create': `${PAYMENT_BASE}buyer/card/create`,
