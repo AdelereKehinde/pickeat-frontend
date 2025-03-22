@@ -51,7 +51,24 @@ export default function VendorLogin(){
         if(!loading && validateInput()){
           setLoading(true)
           type CategoryArray = { id: string; category_name: string;}[];
-          type DataResponse = {meal_categories: CategoryArray;  onboarded: string; message: string; token:string; refresh: string; email:string; avatar:string; first_name:string; full_name:string; phone_number:string; store_name: string; set_availability:boolean; set_profile: boolean; address: boolean;};
+          type DataResponse = {
+            meal_categories: CategoryArray;  
+            onboarded: string; 
+            message: string; 
+            token:string; 
+            refresh: string; 
+            email:string; 
+            avatar:string; 
+            first_name:string; 
+            full_name:string; 
+            phone_number:string; 
+            store_name: string; 
+            set_availability:boolean; 
+            set_profile: boolean; 
+            set_pin: boolean;
+            set_profile_4: boolean;
+            address: boolean;
+          };
           type ApiResponse = { status: string; message: string; data:DataResponse };
           const res = await postRequest<ApiResponse>(ENDPOINTS['vendor']['signin'], {
             email: email,
@@ -86,7 +103,7 @@ export default function VendorLogin(){
 
           await Delay(1500)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? '/vendor/(tabs)/home' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
+            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? res.data.set_profile_4? res.data.set_pin? '/vendor/(tabs)/home' : '/vendor/transaction_pin' : '/vendor/account_setup_4' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
           }); 
         }
 

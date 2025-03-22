@@ -32,19 +32,26 @@ export default function Home(){
 
     const { theme, toggleTheme } = useContext(ThemeContext);
 
-    type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
-    type EarningResponse = { amount_in_wallet: string; pending_payout:  string; count: number; results: ListData; next: string; previous: string;};
-    type ApiResponse = { status: string; message: string; data: EarningResponse;};
-    const [data, setData] = useState<ApiResponse>()
+    type reqResponse = { status: number; message: string; data: {
+        total_earnings: number;
+        non_withdrawable: number;
+        today_order: number;
+        distance: number;
+    };};
+    const [data, setData] = useState<reqResponse>()
     const [showAmount, setShowAmount] = useState(false)
 
     const isNavFocused = useIsFocused();
     const [refreshing, setRefreshing] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [ranOnce, setRanOnce] = useState(false);
 
     const fetchCategories = async () => {
         try {
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-transactions']}`, true);
+            if (!ranOnce){
+                setRanOnce(true)
+            }
+            const response = await getRequest<reqResponse>(`${ENDPOINTS['rider']['dashboard']}`, true);
             // alert(JSON.stringify(response))
             setData(response)
             setLoading(false)
@@ -73,11 +80,10 @@ export default function Home(){
     
     useEffect(() => {
         if (isNavFocused){
-            // fetchCategories();
+            fetchCategories();
             checkActiveStatus()
         }
-    }, []); // Empty dependency array ensures this runs once
-
+    }, [isNavFocused]); // Empty dependency array ensures this runs once
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -98,143 +104,180 @@ export default function Home(){
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
                 className={`overflow-hidden mx-auto w-full`} contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className='w-full px-5 my-1'>
-                        <View
-                        className='flex flex-row w-full items-center'
-                        >
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}} 
-                            className={`text-custom-green text-[12px] font-medium`}
-                            >
-                                Active status
-                            </Text>
-                            <TouchableOpacity
-                            onPress={ToggleActiveStatus}
-                            className='ml-auto'
-                            >
-                                {activeStatus?
-                                <ToggleOn width={40} />
-                                :
-                                <ToggleOff width={40} />
-                                }
-                                
-                            </TouchableOpacity>
+                    {(loading) && 
+                        <View className='flex space-y-5 w-[90%] mx-auto mt-10 overflow-hidden'>
+                            {Array.from({ length: 3 }).map((_, index) => (
+                                <View key={index} className='flex items-center w-full'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={100}
+                                    backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                    foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="0" y="0" rx="5" ry="5" width="100%" height="100" />
+                                    </ContentLoader>
+                                </View> 
+                            ))}
                         </View>
-                    </View>
-                    <View 
-                    style={styles.shadow_box}
-                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
-                    >
-                        <View 
-                        className='flex flex-row items-center py-3 rounded-lg'>
-                            <Naira />
-                            <View>
+                    }
+                    {(!loading) && 
+                    <View className='w-full'>
+                        <View className='w-full px-5 my-1'>
+                            <View
+                            className='flex flex-row w-full items-center'
+                            >
                                 <Text
-                                className={`text-[11px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
-                                style={{fontFamily: 'Inter-SemiBold'}}
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                className={`text-custom-green text-[12px] font-medium`}
                                 >
-                                    Total Earning
+                                    Active status
                                 </Text>
-                                <Text
-                                className={`text-custom-green text-[20px] mx-4`}
-                                style={{fontFamily: 'Inter-SemiBold'}}
+                                <TouchableOpacity
+                                onPress={ToggleActiveStatus}
+                                className='ml-auto'
                                 >
-                                    {showAmount? `N ${data?.data.amount_in_wallet}` :'****'}
-                                </Text>
-                            </View>
-                            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} flex flex-row px-2 rounded-2xl items-center space-x-1 ml-auto`}>
-                                <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
-                                className=''
-                                >
-                                <FontAwesome
-                                    name={showAmount ? 'eye' : 'eye-slash'}
-                                    size={18}
-                                    color={(theme == 'dark')? '#fff':'#4b5563'}
-                                />
+                                    {activeStatus?
+                                    <ToggleOn width={40} />
+                                    :
+                                    <ToggleOff width={40} />
+                                    }
+                                    
                                 </TouchableOpacity>
-                                <Nigeria />
+                            </View>
+                        </View>
+                        <View 
+                        style={styles.shadow_box}
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
+                        >
+                            <View 
+                            className='flex flex-row items-center py-3 rounded-lg'>
+                                <Naira />
+                                <View>
+                                    <Text
+                                    className={`text-[11px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    >
+                                        Total Earning (withdrawable)
+                                    </Text>
+                                    <Text
+                                    className={`text-custom-green text-[20px] mx-4`}
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    >
+                                        {showAmount? `N ${data?.data.total_earnings || 0}` :'****'}
+                                    </Text>
+                                </View>
+                                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} flex flex-row px-2 rounded-2xl items-center space-x-1 ml-auto`}>
+                                    <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
+                                    className=''
+                                    >
+                                    <FontAwesome
+                                        name={showAmount ? 'eye' : 'eye-slash'}
+                                        size={18}
+                                        color={(theme == 'dark')? '#fff':'#4b5563'}
+                                    />
+                                    </TouchableOpacity>
+                                    <Nigeria />
+                                </View>
+                            </View>
+                            <View>
+                                <View className='ml-8'>
+                                    <Text
+                                    className={`text-[10px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    >
+                                        Non-withdrawable
+                                    </Text>
+                                    <Text
+                                    className={`text-custom-green text-[11px] mx-4`}
+                                    style={{fontFamily: 'Inter-SemiBold'}}
+                                    >
+                                        {showAmount? `N ${data?.data.non_withdrawable || 0}` :'****'}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View 
+                        style={styles.shadow_box}
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
+                        >
+                            <View
+                            className='flex flex-row items-center'
+                            >
+                                <TodayOrder />
+                                <Text
+                                className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Todays Orders
+                                </Text>
+                                <TouchableOpacity
+                                onPress={()=>{}}
+                                className='ml-auto'
+                                >
+                                    <ChevronNext />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                            className='flex flex-row items-end ml-10 mt-2'
+                            >
+                                <Text
+                                className={`text-[35px] text-custom-green`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    {data?.data.today_order || 0}
+                                </Text>
+                                <Text
+                                className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} pb-2 ml-1`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    orders
+                                </Text>
+                            </View>
+                        </View>
+
+
+                        <View 
+                        style={styles.shadow_box}
+                        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
+                        >
+                            <View
+                            className='flex flex-row items-center'
+                            >
+                                <Text
+                                className={`text-[13px] text-custom-green mx-2`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Distance
+                                </Text>
+                                <Caution />
+                                <TouchableOpacity
+                                onPress={()=>{}}
+                                className='ml-auto'
+                                >
+                                    <ChevronNext />
+                                </TouchableOpacity>
+                            </View>
+                            <View
+                            className='flex flex-row items-end ml-2 mt-2'
+                            >
+                                <Text
+                                className={`text-[35px]  ${theme == 'dark'? 'text-gray-200' : ' text-gray-800'}`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    {data?.data.distance || 0}
+                                </Text>
+                                <Text
+                                className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} pb-2 ml-1`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    KM
+                                </Text>
                             </View>
                         </View>
                     </View>
-
-                    <View 
-                    style={styles.shadow_box}
-                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
-                    >
-                        <View
-                        className='flex flex-row items-center'
-                        >
-                            <TodayOrder />
-                            <Text
-                            className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} mx-4`}
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Todays Orders
-                            </Text>
-                            <TouchableOpacity
-                            onPress={()=>{}}
-                            className='ml-auto'
-                            >
-                                <ChevronNext />
-                            </TouchableOpacity>
-                        </View>
-                        <View
-                        className='flex flex-row items-end ml-10 mt-2'
-                        >
-                            <Text
-                            className={`text-[35px] text-custom-green`}
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                4
-                            </Text>
-                            <Text
-                            className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} pb-2 ml-1`}
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                orders
-                            </Text>
-                        </View>
-                    </View>
-
-
-                    <View 
-                    style={styles.shadow_box}
-                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg shadow-2xl`}
-                    >
-                        <View
-                        className='flex flex-row items-center'
-                        >
-                            <Text
-                            className={`text-[13px] text-custom-green mx-2`}
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                Distance
-                            </Text>
-                            <Caution />
-                            <TouchableOpacity
-                            onPress={()=>{}}
-                            className='ml-auto'
-                            >
-                                <ChevronNext />
-                            </TouchableOpacity>
-                        </View>
-                        <View
-                        className='flex flex-row items-end ml-2 mt-2'
-                        >
-                            <Text
-                            className={`text-[35px]  ${theme == 'dark'? 'text-gray-200' : ' text-gray-800'}`}
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                15.89
-                            </Text>
-                            <Text
-                            className={`text-[12px] ${theme == 'dark'? 'text-gray-400' : ' text-gray-400'} pb-2 ml-1`}
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            >
-                                KM
-                            </Text>
-                        </View>
-                    </View>
+                }
                 </ScrollView>   
             </View>
         </SafeAreaView>

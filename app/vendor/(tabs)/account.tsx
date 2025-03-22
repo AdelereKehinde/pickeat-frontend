@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, StatusBar, Pressable, Image, ScrollView } from "react-native";
+import { FontAwesome } from '@expo/vector-icons';
 import { router, useGlobalSearchParams } from 'expo-router';
 import { Link } from "expo-router";
 import { useUser } from '@/context/UserProvider';
@@ -121,6 +122,22 @@ export default function Account(){
                                 className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px] font-medium ml-5`}
                                 >
                                     Order History
+                                </Text>
+                            </Pressable>
+                        </View>
+                        <View className='w-full px-5 my-1'>
+                            <Pressable
+                            onPress={()=>{(router.push("/vendor/settings"))}}
+                            className='flex flex-row w-full items-center'
+                            >
+                                <View className={`${theme == 'dark'? 'bg-gray-700' : ' bg-gray-100'} w-10 h-10 flex items-center justify-around rounded-full`}>
+                                    <FontAwesome name="cogs" size={20} color="#228b22" />
+                                </View>
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[12px] font-medium ml-5`}
+                                >
+                                    Settings
                                 </Text>
                             </Pressable>
                         </View>

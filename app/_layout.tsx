@@ -81,6 +81,7 @@ export default function RootLayout() {
           <Stack.Screen name="vendor/account_setup_1" options={{headerShown: false}} />
           <Stack.Screen name="vendor/account_setup_2" options={{headerShown: false}} />
           <Stack.Screen name="vendor/account_setup_3" options={{headerShown: false}} />
+          <Stack.Screen name="vendor/account_setup_4" options={{headerShown: false}} />
           <Stack.Screen name="vendor/order_history" options={{headerShown: false}} />
           <Stack.Screen name="vendor/menu" options={{headerShown: false}} />
           <Stack.Screen name="vendor/create_product" options={{headerShown: false}} />
@@ -90,6 +91,11 @@ export default function RootLayout() {
           <Stack.Screen name="vendor/set_store_address" options={{headerShown: false}} />
           <Stack.Screen name="vendor/profile_page" options={{headerShown: false}} />
           <Stack.Screen name="vendor/order_details" options={{headerShown: false}} />
+          <Stack.Screen name="vendor/transaction_pin" options={{headerShown: false}} />
+          <Stack.Screen name="vendor/reset_transaction_pin" options={{headerShown: false}} />
+          <Stack.Screen name="vendor/payment_info" options={{headerShown: false}} />
+          <Stack.Screen name="vendor/settings" options={{headerShown: false}} />
+          <Stack.Screen name="vendor/handbook" options={{headerShown: false}} />
 
           {/* ADMIN */}
           <Stack.Screen name="admin/(drawer)" options={{headerShown: false}} />

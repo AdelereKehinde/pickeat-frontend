@@ -59,6 +59,8 @@ const ENDPOINTS = {
         'update-address': `${VENDOR_BASE}address/update`,
         'information': `${VENDOR_BASE}information`,
         'notification': `${VENDOR_BASE}notification`,
+        'bank-details': `${VENDOR_BASE}bank-details`,
+        'delete': `${VENDOR_BASE}delete`,
     },
     'rider': {
         'signin': `${RIDER_BASE}signin`,
@@ -77,6 +79,7 @@ const ENDPOINTS = {
         'notification': `${RIDER_BASE}notification`,
         'delete': `${RIDER_BASE}delete`,
         'profile': `${RIDER_BASE}profile`,
+        'dashboard': `${RIDER_BASE}dashboard`,
         'order-status-update': `${RIDER_BASE}update-status`,
     },
     'admin': {
@@ -126,6 +129,8 @@ const ENDPOINTS = {
         'initialize': `${PAYMENT_BASE}initialize`,
         'vendor-transactions': `${PAYMENT_BASE}transaction/vendor`,
         'rider-transactions': `${PAYMENT_BASE}transaction/rider`,
+        'rider-withdrawal': `${PAYMENT_BASE}withdrawal/rider`,
+        'vendor-withdrawal': `${PAYMENT_BASE}withdrawal/vendor`,
     },
 }
 

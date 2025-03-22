@@ -23,7 +23,7 @@ function AdminOrder(){
     };
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('all');
+    const [filter, setFilter] = useState('pending');
     
     type ListData = { id: number; buyer: string; order_items: number; date: string; status: string; price: string; thumbnail: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
@@ -38,27 +38,30 @@ function AdminOrder(){
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
-            setLoading(true)     
-            const response = await getRequest<OrderResponse>(`${ENDPOINTS['admin']['orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['admin']['orders']}?status=${filter}page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
             setOrders(response.results)
             setCount(response.count)
-            setLoading(false)
         } catch (error) {
             setLoading(false)     
             // alert(error);
         } 
     };
+
+    const useFetchMeal = async() =>{
+        setLoading(true) 
+        setOrders([])
+        await fetchMeals()  
+        setLoading(false) 
+    }
     useEffect(() => { 
-        fetchMeals(); 
-    }, []); // Empty dependency array ensures this runs once
+        useFetchMeal(); 
+    }, [filter]); // Empty dependency array ensures this runs once
     
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
         await fetchMeals()
-
         setRefreshing(false); // Stop the refreshing animation
     };
 
@@ -71,10 +74,10 @@ function AdminOrder(){
     // }
 
     const Categories = [
-        {id: '1', name: 'all'},
-        {id: '2', name: 'pending'},
-        {id: '3', name: 'completed'},
-        {id: '4', name: 'cancelled'},
+        {id: '1', name: 'pending', main: 'pending'},
+        {id: '2', name: 'accepted', main: 'in progress'},
+        {id: '3', name: 'completed', main: 'completed'},
+        {id: '4', name: 'cancelled', main: 'cancelled'},
     ]
 
     return (
@@ -88,17 +91,17 @@ function AdminOrder(){
                     ItemSeparatorComponent={() => <View className='w-3' />}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                        onPress={()=>{setFilter(item.name)}}
-                        className={`bg-white rounded-lg ${(filter == item.name) && 'bg-custom-green'} px-4 py-2 flex flex-row items-center`}
+                        onPress={()=>{setFilter(item.main)}}
+                        className={`bg-white rounded-lg ${(filter == item.main) && 'bg-custom-green'} px-4 py-2 flex flex-row items-center`}
                         >
-                            {(filter== item.name) && (
+                            {(filter== item.main) && (
                                 <Check />
                             )}
                             <Text
-                            className={`${(filter == item.name)? 'text-white':'text-gray-600'} ml-1 text-[12px] text-center`}
+                            className={`${(filter == item.main)? 'text-white':'text-gray-600'} ml-1 text-[12px] text-center`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                {TitleCase(item.name)}
+                                {TitleCase(item.main)}
                             </Text>
                         </TouchableOpacity>
                         )}
@@ -158,9 +161,9 @@ function AdminOrder(){
                             </View>
                         )}
                         
-                        {(orders.length === 0 && loading) && 
+                        {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 6 }).map((_, index) => (
+                                {Array.from({ length: 3 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"

@@ -204,7 +204,7 @@ export default function SetDeliveryAddress(){
     
               await Delay(1000)
               router.replace({
-                pathname: '/vendor/(tabs)/home',
+                pathname: '/vendor/account_setup_4',
               }); 
             }
         }

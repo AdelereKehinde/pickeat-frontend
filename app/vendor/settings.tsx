@@ -13,7 +13,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import TitleTag from '@/components/Title';
 import DeleteAccountModal from '@/components/DeleteAccountModal';
 
-export default function RiderSettings(){
+export default function VendorSettings(){
     const { theme, toggleTheme } = useContext(ThemeContext);
     const { setUser } = useUser();
     const [openDeleteModal, setOpenDeleteModal] = useState(false); 
@@ -27,26 +27,26 @@ export default function RiderSettings(){
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
-            <DeleteAccountModal open={openDeleteModal} service='rider' getValue={(value: boolean)=>{setOpenDeleteModal(value)}}/>
+            <DeleteAccountModal open={openDeleteModal} service='vendor' getValue={(value: boolean)=>{setOpenDeleteModal(value)}}/>
 
             <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
 
                 <View className='flex flex-col px-5 mt-5 w-full'>
                     <TouchableOpacity
-                    onPress={()=>{router.push({pathname: '/rider/handbook'});}}
+                    onPress={()=>{router.push({pathname: '/vendor/handbook'});}}
                     className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-500'} border-b py-3 flex flex-row items-center justify-between`}
                     >   
                         <Text
                         style={{fontFamily: 'Inter-SemiBold'}}
                         className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px] `}
                         >
-                            Riders Handbook
+                            Vendors Handbook
                         </Text>
 
                         <ChevronNext />
                     </TouchableOpacity>
                     <TouchableOpacity
-                    onPress={()=>{router.push({pathname: '/rider/reset_transaction_pin'});}}
+                    onPress={()=>{router.push({pathname: '/vendor/reset_transaction_pin'});}}
                     className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-500'} border-b py-3 flex flex-row items-center justify-between`}
                     >   
                         <Text

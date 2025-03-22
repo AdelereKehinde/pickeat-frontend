@@ -226,8 +226,8 @@ export default function ConfirmOrder(){
         //   alert(JSON.stringify(error))
           Toast.show({
             type: 'error',
-            text1: "An error occured",
-            text2: error.data?.message || 'Unknown Error',
+            text1: error.data?.message  || "An error occured",
+            // text2: error.data?.message || 'Unknown Error',
             visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
           })

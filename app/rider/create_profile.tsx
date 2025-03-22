@@ -38,7 +38,7 @@ export default function CreateProfile(){
     const [vehcleTypeOption, setVehicleTypeOption] = useState<Item[]>([]);
     const genderOption = [
         { label: 'Male', value: 'M' },
-        { label: 'Femal', value: 'F' },
+        { label: 'Female', value: 'F' },
     ]
     
     const [fetchloading, setFetchLoading] = useState(true); // Loading state
@@ -199,7 +199,7 @@ export default function CreateProfile(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, gender: !openState.gender}));}}
                                 >
-                                    <CharFieldDropDown options={genderOption} open={openState.gender}  placeholder="Gender" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, gender: value,})); setOpenState(prevState => ({...prevState, gender: false}))}}/>
+                                    <CharFieldDropDown options={genderOption} open={openState.gender}  placeholder="Gender" focus={false} border={true} setValue='' name='' getValue={(value: string)=>{setData(prevState => ({...prevState, gender: value,})); setOpenState(prevState => ({...prevState, gender: false}))}}/>
                                 </Pressable>
                             </View> 
                             {
@@ -258,7 +258,7 @@ export default function CreateProfile(){
                                 className='w-full z-10'
                                 onPress={()=>{setOpenState(prevState => ({...prevState, vehicle_type: !openState.vehicle_type}));}}
                                 >
-                                    <CharFieldDropDown options={vehcleTypeOption.map(item => ({label: item.name, value: item.id}))} open={openState.vehicle_type}  placeholder="Vehicle type" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, vehicle_type: value,})); setOpenState(prevState => ({...prevState, vehicle_type: false}))}}/>
+                                    <CharFieldDropDown options={vehcleTypeOption.map(item => ({label: item.name, value: item.id}))} open={openState.vehicle_type} setValue=''  placeholder="Vehicle type" focus={false} border={true} name='' getValue={(value: string)=>{setData(prevState => ({...prevState, vehicle_type: value,})); setOpenState(prevState => ({...prevState, vehicle_type: false}))}}/>
                                 </Pressable>
                             </View> 
                                 

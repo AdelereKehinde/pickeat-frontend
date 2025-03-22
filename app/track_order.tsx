@@ -61,7 +61,7 @@ function TrackOrder(){
 
     type ListData_ = {date: string; days_ago: string; status: string;}[];
     type ListData = { status: string; data: ListData_};
-    type responseData = { name: string; store_id: number; status: string; data: ListData_}[];
+    type responseData = { name: string; store_id: number; status: string; delivery_time: string; data: ListData_}[];
     const [history, setHistory] = useState<responseData>([]);
 
     const fetchMeals = async () => {
@@ -311,7 +311,7 @@ function TrackOrder(){
                                 className='text-custom-green text-[14px]'
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    10:01AM
+                                    {item.delivery_time}
                                 </Text>
                                 <Text
                                 className='text-gray-400 text-[12px]'

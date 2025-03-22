@@ -9,10 +9,11 @@ import CustomToast from '@/components/ToastConfig';
 
 interface Properties {
     open: boolean,
+    service: string,
     getValue: (value: boolean) => void
 }
 
-const DeleteAccountModal: React.FC<Properties> = ({open,  getValue}) => {
+const DeleteAccountModal: React.FC<Properties> = ({open, service,  getValue}) => {
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [ loading, setLoading ] = useState(false);
 
@@ -25,8 +26,14 @@ const DeleteAccountModal: React.FC<Properties> = ({open,  getValue}) => {
         if (!loading){
             setLoading(true);
             try {
-                const response = await postRequest(`${ENDPOINTS['rider']['delete']}`, {}, true);              
-                router.push('/rider/signup')
+                if(service == 'rider'){
+                    const response = await postRequest(`${ENDPOINTS['rider']['delete']}`, {}, true);     
+                    router.push('/rider/signup')         
+                }
+                if(service == 'vendor'){
+                    const response = await postRequest(`${ENDPOINTS['vendor']['delete']}`, {}, true);     
+                    router.push('/vendor/signup')         
+                }
             } catch (error) {
                 Toast.show({
                     type: 'error',
