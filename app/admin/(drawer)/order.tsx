@@ -38,7 +38,7 @@ function AdminOrder(){
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
-            const response = await getRequest<OrderResponse>(`${ENDPOINTS['admin']['orders']}?status=${filter}page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['admin']['orders']}?status=${filter}&page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
             setOrders(response.results)
             setCount(response.count)

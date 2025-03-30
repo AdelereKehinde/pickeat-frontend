@@ -145,7 +145,7 @@ export default function CreateProfile4(){
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
 
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
-                    <TitleTag withprevious={false} title='Create Profile' withbell={false}/>
+                    <TitleTag withprevious={false} title='Set Account Details' withbell={false}/>
                 </View> 
 
                 {fetchloading && (

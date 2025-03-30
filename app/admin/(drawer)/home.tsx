@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, StyleSheet ,StatusBar, ScrollView, TouchableOpacity, Alert, Image, TextInput, RefreshControl  } from "react-native";
+import { Text, View, StyleSheet ,StatusBar, ScrollView, TouchableOpacity, Dimensions, Image, TextInput, RefreshControl  } from "react-native";
 import TitleTag from '@/components/Title';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
@@ -19,6 +19,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import { BarChart, LineChart } from 'react-native-chart-kit';
 
 export default function AdminHome(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -83,11 +84,54 @@ export default function AdminHome(){
       fetchMeals(); 
   }, [isFocused]); // Empty dependency array ensures this runs once
 
+  const [barChartFilter, setBarChartFilter] = useState('W')
+  const [barLoading, setBarLoading] = useState(true)
+  type barType = { labels: string[]; datasets: {
+    data: number[]
+  }[]; };
+  const [barData, setBarData] = useState<barType>({
+    labels: ['0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 20, 45, 28, 80, 99, 20, 45, 28, 80, 110],
+      },
+    ],
+  })
+  const fetchBarchart = async () => {
+    try {  
+        setBarLoading(true)    
+        // const response = await getRequest<APIResponse>(`${ENDPOINTS['admin']['dashboard']}`, true);
+        // setRiderPercentage((response?.data.users.riders || 0) / (response?.data.users.total || 1) * 100);
+        // setVendorPercentage((response?.data.users.vendors || 0) / (response?.data.users.total || 1) * (100));
+        // setBuyerPercentage((response?.data.users.buyers || 0) / (response?.data.users.total || 1) * (100));
+        // // alert(`${riderPercentage},${vendorPercentage},${buyerPercentage}`)
+        // setResData(response.data)
+        setBarData({
+          labels: ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30'],
+          datasets: [
+            {
+              data: [20, 45, 28, 80, 99, 20, 45, 28, 80, 99, 20, 45, 28, 80, 110],
+            },
+          ],
+        })
+        setBarLoading(false)
+    } catch (error) {
+        setLoading(false)     
+        // alert(error);
+    } 
+  };
+
+  useEffect(() => { 
+    fetchBarchart(); 
+  }, [isFocused, barChartFilter]);
+
   const onRefresh = async () => {
       setRefreshing(true);
       await fetchMeals()
       setRefreshing(false); // Stop the refreshing animation
   };
+  
+  const screenWidth = Dimensions.get('window').width;
 
 
     return (
@@ -263,14 +307,14 @@ export default function AdminHome(){
                     
                     <View className={`mt-4`}>
                       <Text
-                        className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[18px]`}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[15px]`}
                         style={{fontFamily: 'Inter-SemiBold'}}
                         >
                             Order Stat
                         </Text>
                     </View>
 
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-2`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-1`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View>
                           <Text
@@ -280,33 +324,74 @@ export default function AdminHome(){
                               August 2023
                           </Text>
                         </View>
-                        <View className='flex flex-row px-2 rounded-2xl items-center space-x-4 ml-auto'>
-                            <TouchableOpacity>
+                        <View className='flex flex-row px-2 rounded-2xl items-center space-x-1 ml-auto'>
+                            <TouchableOpacity
+                            onPress={()=>{setBarChartFilter('D')}}>
                               <Text
-                                className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[14px]`}
+                                className={`${theme == 'dark'? (barChartFilter == 'D')? 'text-gray-100 bg-custom-green' : 'text-gray-100' : (barChartFilter == 'D')? "bg-custom-green text-white" : 'text-custom-green'} rounded-lg px-2 py-1 text-[14px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >D</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={()=>{setBarChartFilter('W')}}>
                               <Text
-                                className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[14px]`}
+                                className={`${theme == 'dark'? (barChartFilter == 'W')? 'text-gray-100 bg-custom-green' : 'text-gray-100' : (barChartFilter == 'W')? "bg-custom-green text-white" : 'text-custom-green'} rounded-lg px-2 py-1 text-[14px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >W</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={()=>{setBarChartFilter('M')}}>
                               <Text
-                                className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[14px]`}
-                                style={{fontFamily: 'Inter-SemiBold', backgroundColor: '#228B22', color: '#fff', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 5}}
+                                className={`${theme == 'dark'? (barChartFilter == 'M')? 'text-gray-100 bg-custom-green' : 'text-gray-100' : (barChartFilter == 'M')? "bg-custom-green text-white" : 'text-custom-green'} rounded-lg px-2 py-1 text-[14px]`}
+                                style={{fontFamily: 'Inter-SemiBold'}}
                                 >M</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={()=>{setBarChartFilter('Y')}}>
                               <Text
-                                className={`${theme == 'dark'? 'text-gray-100' : 'text-custom-green'} text-[14px]`}
+                                className={`${theme == 'dark'? (barChartFilter == 'Y')? 'text-gray-100 bg-custom-green' : 'text-gray-100' : (barChartFilter == 'Y')? "bg-custom-green text-white" : 'text-custom-green'} rounded-lg px-2 py-1 text-[14px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >Y</Text>
                             </TouchableOpacity>
                         </View>
                       </View>
+                    </View>
+
+                    <View className=''>
+                      <LineChart
+                        bezier
+                        data={barData}
+                        width={screenWidth * 0.89}
+                        height={220}
+                        yAxisLabel="₦"
+                        yAxisSuffix=""
+                        chartConfig={{
+                          backgroundColor: (theme == 'dark')? "#1f2937" :"#fff",
+                          backgroundGradientFrom: (theme == 'dark')? "#1f2937" :"#fff",
+                          backgroundGradientTo: (theme == 'dark')? "#1f2937" :"#fff",
+                          decimalPlaces: 2,
+                          color: (opacity = 1) => `#228B22`,
+                          labelColor: (opacity = 1) => `#228B22`,
+                          style: {
+                            borderRadius: 16,
+                            shadowOffset: { width: 0, height: 10 },
+                            shadowOpacity: 0.3,
+                            shadowRadius: 10,
+                            elevation: 5,
+                          },
+                          propsForLabels: {
+                            fontFamily: 'Inter-Medium',  // Custom font family for labels
+                            fontSize: 11,            // Custom font size for labels
+                            // fontWeight: 'bold',      // Custom font weight
+                          },
+                          propsForVerticalLabels: {
+                            fontSize: 11,
+                            // fontWeight: 'bold',
+                            fontFamily: 'Inter-Medium',
+                          },
+                        }}
+                        verticalLabelRotation={0}
+                      />
                     </View>
 
                     {/* <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-4`}>

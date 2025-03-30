@@ -47,11 +47,7 @@ export default function Orders(){
         try {
             setLoading(true)
             // setParentOrders([])
-            if (ranOnce){
-                setFilterLoading(true)
-            }else{
-                setRanOnce(true)
-            }
+            setFilterLoading(true)
             const response = await getRequest<OrderResponse>(`${ENDPOINTS['rider']['task']}?page_size=${pageSize}&page=${currentPage}&status=${orderFilter}`, true);
             // alert(JSON.stringify(response))
             if (['completed', 'cancelled'].includes(orderFilter)){

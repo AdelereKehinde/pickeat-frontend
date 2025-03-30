@@ -92,7 +92,7 @@ export default function PaymentPage(){
                 </View>
                 
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
-                    <View className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-200'} w-full border-b-2 mb-5 relative flex flex-row items-start justify-center h-80`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-200'} w-full border-b-2 mb-5 relative flex flex-row items-start justify-center max-h-80`}>
                         <ScrollView className='w-full space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
                             {(cartItems.length === 0) && 
                                 <View className='flex space-y-2 w-screen px-2 mt-2 overflow-hidden'>
@@ -134,131 +134,133 @@ export default function PaymentPage(){
                             ))}
                         </ScrollView>
                     </View>
-
-                    <Text
-                    style={{fontFamily: 'Inter-Bold'}}
-                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-800'} text-[14px] self-start ml-5`}
-                    >
-                        Payment Summary
-                    </Text>         
-                    <View className={`w-full my-3 px-4 relative flex flex-row items-center justify-center`}>
-                        <View className='absolute left-6 z-10'>
-                            <PromoCode />
-                        </View>
-                        <TextInput
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className={`w-full ${isFocused? 'border-custom-green border text-gray-200': 'border-gray-400 border text-black'} rounded-lg px-3 pl-9 py-2 text-[11px]`}
-                            autoFocus={false}
-                            onFocus={()=>setIsFocus(true)}
-                            onBlur={()=>setIsFocus(false)}
-                            onChangeText={setPromoCode}
-                            value={promoCode}
-                            placeholder="Enter your promo code"
-                            placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
-                        />
-                        <TouchableOpacity 
-                        onPress={()=>{}}
-                        className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-[2px] right-7 rounded-lg h-8 bg-gray-100 my-auto'>
-                            <View className=''>
-                                <ChevronRight width={15} height={15} />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
                     
-                    <View className='space-y-2'>
-                        <View className='flex flex-row items-center justify-between w-full px-5'>
-                            <Text
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[13px]`}
-                            >
-                                Subtotal
-                            </Text>  
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
-                            >
-                                ₦{CalcSubTotal.toFixed(2)}
-                            </Text>  
+                    <View className='mt-auto mb-12'>
+                        <Text
+                        style={{fontFamily: 'Inter-Bold'}}
+                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-800'} text-[14px] self-start ml-5`}
+                        >
+                            Payment Summary
+                        </Text>         
+                        <View className={`w-full my-3 px-4 relative flex flex-row items-center justify-center`}>
+                            <View className='absolute left-6 z-10'>
+                                <PromoCode />
+                            </View>
+                            <TextInput
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`w-full ${isFocused? 'border-custom-green border text-gray-200': 'border-gray-400 border text-black'} rounded-lg px-3 pl-9 py-2 text-[11px]`}
+                                autoFocus={false}
+                                onFocus={()=>setIsFocus(true)}
+                                onBlur={()=>setIsFocus(false)}
+                                onChangeText={setPromoCode}
+                                value={promoCode}
+                                placeholder="Enter your promo code"
+                                placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
+                            />
+                            <TouchableOpacity 
+                            onPress={()=>{}}
+                            className='flex flex-row items-center px-2 absolute inset-y-0 space-x-1 top-[2px] right-7 rounded-lg h-8 bg-gray-100 my-auto'>
+                                <View className=''>
+                                    <ChevronRight width={15} height={15} />
+                                </View>
+                            </TouchableOpacity>
                         </View>
-                        <View className='flex flex-row items-center justify-between w-full px-5'>
-                            <Text
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[13px]`}
-                            >
-                                Coupon discount
-                            </Text>  
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
-                            >
-                                -₦0.00
-                            </Text>  
+                        
+                        <View className='space-y-2'>
+                            <View className='flex flex-row items-center justify-between w-full px-5'>
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[13px]`}
+                                >
+                                    Subtotal
+                                </Text>  
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
+                                >
+                                    ₦{CalcSubTotal.toFixed(2)}
+                                </Text>  
+                            </View>
+                            <View className='flex flex-row items-center justify-between w-full px-5'>
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[13px]`}
+                                >
+                                    Coupon discount
+                                </Text>  
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
+                                >
+                                    -₦0.00
+                                </Text>  
+                            </View>
+                            <View className='flex flex-row items-center justify-between w-full px-5'>
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[14px]`}
+                                >
+                                    Delivery fee
+                                </Text>  
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
+                                >
+                                    ₦{deliveryFee}
+                                </Text>  
+                            </View>
+                            <View className='flex flex-row items-center justify-between w-full px-5'>
+                                <Text
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
+                                >
+                                    Total Amount
+                                </Text>  
+                                <Text
+                                style={{fontFamily: 'Inter-Medium'}}
+                                className=' text-[14px] text-custom-green'
+                                >
+                                    ₦{RoundToDecimalPlace((CalcSubTotal + deliveryFee), 2)}
+                                </Text>  
+                            </View>
                         </View>
-                        <View className='flex flex-row items-center justify-between w-full px-5'>
-                            <Text
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-400'} text-[14px]`}
-                            >
-                                Delivery fee
-                            </Text>  
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
-                            >
-                                ₦{deliveryFee}
-                            </Text>  
-                        </View>
-                        <View className='flex flex-row items-center justify-between w-full px-5'>
-                            <Text
-                            style={{fontFamily: 'Inter-SemiBold'}}
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[14px]`}
-                            >
-                                Total Amount
-                            </Text>  
-                            <Text
-                            style={{fontFamily: 'Inter-Medium'}}
-                            className=' text-[14px] text-custom-green'
-                            >
-                                ₦{RoundToDecimalPlace((CalcSubTotal + deliveryFee), 2)}
-                            </Text>  
-                        </View>
-                    </View>
 
-                    <View className='flex flex-row items-center px-5 space-x-2 w-full mt-8'>
-                        <TouchableOpacity
-                        onPress={()=>{router.replace('/kitchen_page')}}
-                        className={`text-center  border border-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'border-gray-400'} relative rounded-xl grow  p-4 self-center flex items-center justify-around`}
-                        >
-                            {(loadSignal) && (
-                                <View className='absolute w-full top-4'>
-                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
-                                </View>
-                            )}
-                            <Text
-                            className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} ${(cartItems.length === 0 || loading) && 'text-gray-400'}`}
-                            style={{fontFamily: 'Inter-Regular'}}
+                        <View className='flex flex-row items-center px-5 space-x-2 w-full mt-8'>
+                            <TouchableOpacity
+                            onPress={()=>{router.replace('/kitchen_page')}}
+                            className={`text-center  border border-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'border-gray-400'} relative rounded-xl grow  p-4 self-center flex items-center justify-around`}
                             >
-                            Add to cart
-                            </Text>
-                                
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                        onPress={()=>{!(cartItems.length === 0 || loading || loadSignal) && router.push(`/payment_confirmation?promo_code=${promoCode}`)}} 
-                        className={`text-center bg-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl grow  p-4 self-center flex items-center justify-around`}
-                        >
-                            {(loadSignal) && (
-                                <View className='absolute w-full top-4'>
-                                    <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
-                                </View>
-                            )}
-                            <Text   
-                            className='text-white'
-                            style={{fontFamily: 'Inter-Regular'}}
+                                {(loadSignal) && (
+                                    <View className='absolute w-full top-4'>
+                                        <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
+                                    </View>
+                                )}
+                                <Text
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} ${(cartItems.length === 0 || loading) && 'text-gray-400'}`}
+                                style={{fontFamily: 'Inter-Regular'}}
+                                >
+                                Add to cart
+                                </Text>
+                                    
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                            onPress={()=>{!(cartItems.length === 0 || loading || loadSignal) && router.push(`/payment_confirmation?promo_code=${promoCode}`)}} 
+                            className={`text-center bg-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl grow  p-4 self-center flex items-center justify-around`}
                             >
-                            Checkout
-                            </Text>
-                                
-                        </TouchableOpacity>
+                                {(loadSignal) && (
+                                    <View className='absolute w-full top-4'>
+                                        <ActivityIndicator size="small" color={(theme=='dark')? "#fff" : "#4b5563"} />
+                                    </View>
+                                )}
+                                <Text   
+                                className='text-white'
+                                style={{fontFamily: 'Inter-Regular'}}
+                                >
+                                Checkout
+                                </Text>
+                                    
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </ScrollView>
                 <Toast config={toastConfig} />

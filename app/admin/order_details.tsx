@@ -261,7 +261,7 @@ export default function AdminOrderDetails(){
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 className=' text-[13px] text-custom-green'
                                 >
-                                    ₦{resData?.total}
+                                    ₦{RoundToDecimalPlace(resData?.total || 0.000, 2)}
                                 </Text>  
                             </View> 
                     </View>

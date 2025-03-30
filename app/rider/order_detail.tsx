@@ -248,7 +248,7 @@ export default function RiderOrderDetails(){
                                     style={{fontFamily: 'Inter-SemiBold'}}
                                     className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} text-[11px] mt-4 `}
                                     >
-                                        {resData?.data.pickup.building_name} {resData?.data.pickup.building_type} ({resData?.data.pickup.address} - {resData?.data.pickup.floor}) {resData?.data.pickup.address}
+                                        {resData?.data.pickup.building_name} {resData?.data.pickup.building_type} - ({resData?.data.pickup.floor}) {resData?.data.pickup.address}
                                     </Text>
                                 ))}
                             </View>

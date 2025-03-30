@@ -164,7 +164,7 @@ export default function Home(){
                                     className={`text-custom-green text-[20px] mx-4`}
                                     style={{fontFamily: 'Inter-SemiBold'}}
                                     >
-                                        {showAmount? `N ${data?.data.total_earnings || 0}` :'****'}
+                                        {showAmount? `₦ ${data?.data.total_earnings || 0}` :'****'}
                                     </Text>
                                 </View>
                                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} flex flex-row px-2 rounded-2xl items-center space-x-1 ml-auto`}>
@@ -192,7 +192,7 @@ export default function Home(){
                                     className={`text-custom-green text-[11px] mx-4`}
                                     style={{fontFamily: 'Inter-SemiBold'}}
                                     >
-                                        {showAmount? `N ${data?.data.non_withdrawable || 0}` :'****'}
+                                        {showAmount? `₦ ${data?.data.non_withdrawable || 0}` :'****'}
                                     </Text>
                                 </View>
                             </View>

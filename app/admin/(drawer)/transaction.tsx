@@ -30,7 +30,10 @@ function AdminTransaction(){
     };
 
     type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
-    type EarningResponse = { amount_in_wallet: string; pending_payout:  string; count: number; results: ListData; next: string; previous: string;};
+    type EarningResponse = { amount_in_wallet: string; pending_payout:  {
+        count: number;
+        amount: number;
+    }; count: number; results: ListData; next: string; previous: string;};
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
 
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -51,42 +54,42 @@ function AdminTransaction(){
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
-            // const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['admin-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
-            const response = 
-                {
-                    status: 'completed',
-                    message: 'string',
-                    data: {
-                        amount_in_wallet: '',
-                        pending_payout: '',
-                        count: 2,
-                        next: '',
-                        previous: '',
-                        results: [
-                            {
-                                id: 1,
-                                type: "credit",
-                                order_id: "or66773",
-                                bank_name: "UBA",
-                                wallet: "",
-                                price: "15000",
-                                date: "26th Feb, 2025",
-                                commision: "500"
-                            },
-                            {
-                                id: 2,
-                                type: "debit",
-                                order_id: "or66773n",
-                                bank_name: "UBA",
-                                wallet: "",
-                                price: "15000",
-                                date: "26th Feb, 2025",
-                                commision: "500"
-                            }
-                        ]
-                    }
-                }
+            // const response = 
+            //     {
+            //         status: 'completed',
+            //         message: 'string',
+            //         data: {
+            //             amount_in_wallet: '',
+            //             pending_payout: '',
+            //             count: 2,
+            //             next: '',
+            //             previous: '',
+            //             results: [
+            //                 {
+            //                     id: 1,
+            //                     type: "credit",
+            //                     order_id: "or66773",
+            //                     bank_name: "UBA",
+            //                     wallet: "",
+            //                     price: "15000",
+            //                     date: "26th Feb, 2025",
+            //                     commision: "500"
+            //                 },
+            //                 {
+            //                     id: 2,
+            //                     type: "debit",
+            //                     order_id: "or66773n",
+            //                     bank_name: "UBA",
+            //                     wallet: "",
+            //                     price: "15000",
+            //                     date: "26th Feb, 2025",
+            //                     commision: "500"
+            //                 }
+            //             ]
+            //         }
+            //     }
 
 
             setData(response)
@@ -123,7 +126,7 @@ function AdminTransaction(){
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>      
-                <View className={` w-full p-4 relative flex flex-row items-center justify-center`}>
+                {/* <View className={` w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />
                     </View>
@@ -138,19 +141,6 @@ function AdminTransaction(){
                         placeholder="Search"
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
-                    {/* <TouchableOpacity 
-                    onPress={()=>{}}
-                    className='flex flex-row items-center absolute right-6 rounded-lg p-2 bg-gray-100'>
-                        <Text
-                        className='text-custom-green text-[12px]'
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            Filter
-                        </Text>
-                        <View className=''>
-                            <Filter width={15} height={15} />
-                        </View>
-                    </TouchableOpacity> */}
                 </View>
 
                 <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} p-4 flex flex-row w-full justify-around`}>
@@ -177,7 +167,7 @@ function AdminTransaction(){
                         )}
                         showsHorizontalScrollIndicator={false}  // Hide the horizontal scroll bar
                     />
-                </View>
+                </View> */}
 
                 <ScrollView 
                 refreshControl={
@@ -202,7 +192,7 @@ function AdminTransaction(){
                                 className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[20px] mx-4`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    {showAmount? 'N 3,027.87':'****'}
+                                    {showAmount? `${data?.data.amount_in_wallet || 0.00}`:'****'}
                                 </Text>
                                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} flex flex-row px-2 rounded-2xl items-center space-x-1 ml-auto`}>
                                     <TouchableOpacity onPress={() => setShowAmount(!showAmount)}
@@ -223,7 +213,7 @@ function AdminTransaction(){
                                 className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
-                                    Pending Payout - <Text className='text-custom-green'>N {showAmount? '1,027.87':'****'}</Text>
+                                    Pending Payout - <Text className='text-custom-green'>{showAmount? `₦ ${data?.data.pending_payout.amount || 0.00}`:'****'}</Text>
                                 </Text>
                             </View>
                         </View>
@@ -238,7 +228,7 @@ function AdminTransaction(){
                                     </Text>
                                     <Text className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-700'} text-[13px]`}
                                     style={{fontFamily: 'Inter-SemiBold'}}>
-                                        (5)
+                                        ({`${data?.data.pending_payout.count}` || 0})
                                     </Text>
                                 </View>
                                 <View className='px-2'>
@@ -259,7 +249,7 @@ function AdminTransaction(){
                             </Text>
                         </View>
                     
-                        <View className='flex flex-row items-center space-x-1'>
+                        {/* <View className='flex flex-row items-center space-x-1'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px]`}
                             style={{fontFamily: 'Inter-Regular'}}
@@ -267,7 +257,7 @@ function AdminTransaction(){
                                 21st May - 25th Aug
                             </Text>
                             <Calender />
-                        </View>
+                        </View> */}
                     </View>
                     <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-[#F2F2F2]'} px-4`}>
                         {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
@@ -283,7 +273,7 @@ function AdminTransaction(){
                         )}
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 10 }).map((_, index) => (
+                                {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"

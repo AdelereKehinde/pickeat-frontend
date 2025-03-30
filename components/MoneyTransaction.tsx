@@ -52,12 +52,12 @@ const MoneyTransaction: React.FC<Properties> = ({receiver, type, amount, commiss
                 >
                     -₦{amount}
                 </Text>
-                <Text
+                {/* <Text
                 className='text-[10px] text-gray-500'
                 style={{fontFamily: 'Inter-Regular'}}
                 >
                     Commission - #{commission}
-                </Text>
+                </Text> */}
             </View>
         </View>
     )

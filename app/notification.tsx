@@ -29,14 +29,14 @@ function Notification(){
     const [count, setCount] = useState(1);
     const pageSize = 10; // Items per page
 
-    type SERVICES = 'buyer' | 'vendor' | 'rider';
+    type SERVICES = 'buyer' | 'vendor' | 'rider' | 'admin';
     const [refreshing, setRefreshing] = useState(false);
 
     const [service, setService] = useState<SERVICES>('buyer');
     
     const checkService = async () => {
         const servi_ = await AsyncStorage.getItem('service');
-        if (servi_ && ['buyer', 'vendor', 'rider',].includes(servi_)) {
+        if (servi_ && ['buyer', 'vendor', 'rider', 'admin'].includes(servi_)) {
             setService(servi_ as SERVICES); // Type assertion to SERVICES
         }
         return servi_ as SERVICES

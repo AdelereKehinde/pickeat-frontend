@@ -340,7 +340,7 @@ function TrackOrder(){
                                         className='text-white text-[12px]'
                                         style={{fontFamily: 'Inter-Medium'}}
                                         >
-                                        Completed
+                                        Complete
                                         </Text>
                                         {(loading2) && (
                                             <View className='absolute w-full top-2'>

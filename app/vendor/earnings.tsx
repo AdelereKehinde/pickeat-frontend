@@ -16,6 +16,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import TitleCase from '@/components/TitleCase';
+import WithdrawalRequest from '@/components/WithdrawalRequestModal';
 
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
@@ -101,16 +103,71 @@ const downloadTransactionHistoryPDF = async (data: ListData) => {
 
 export default function Earnings(){
     const { theme, toggleTheme } = useContext(ThemeContext);
-    type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
-    type EarningResponse = { amount_in_wallet: string; pending_payout:  string; count: number; results: ListData; next: string; previous: string;};
+    type ListData = { 
+        id: number; 
+        type: string; 
+        order_id: string; 
+        bank_name: string; 
+        wallet: string; 
+        price: string; 
+        date: string; 
+        commision: string;
+        status: string;
+        item_data: {
+            total: number;
+            order_id: string;
+            status: string;
+            date: string;   
+            items: {
+                name: string;
+                quantity: number;
+            }[]            
+        }
+    }[];
+    type BankDetails = {
+        id: number;
+        bank_name: string;
+        acc_number: string;
+        acc_name: string
+    }
+    type PopUpData = { 
+        total: number;
+        order_id: string;
+        status: string;
+        date: string;
+        items: {
+            name: string;
+            quantity: number;
+        }[]            
+    }
+
+    type EarningResponse = { 
+        amount_in_wallet: string; 
+        pending_payout:  string; 
+        bank_details: BankDetails;
+        count: number; 
+        results: ListData; 
+        next: string; previous: string;
+    };
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
     const [data, setData] = useState<ApiResponse>()
+    const [popUpData, setPopUpdata] = useState<PopUpData>({
+        total: 0, 
+        order_id: '',
+        status: '',
+        date: '',
+        items: [
+            {name: 'Fried Rice', quantity: 1}
+        ]
+    })
+    const [showPopUp, setShowPopUp] = useState(false)
     const [showAmount, setShowAmount] = useState(true)
     const [loading, setLoading] = useState(true); // Loading state
     const [downloadLoading, setDownloadLoading] = useState(false); // Loading state
 
     const [transactions, setTransactions] = useState<ListData>([]);
-    
+    const [bankDetails, setBankDetails] = useState<BankDetails>();
+
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
     const pageSize = 10; // Items per page
@@ -124,6 +181,7 @@ export default function Earnings(){
             setData(response)
             setTransactions(response.data.results)
             setCount(response.data.count)
+            setBankDetails(response.data.bank_details)
             setLoading(false)
         } catch (error) {
             setLoading(false) 
@@ -155,6 +213,8 @@ export default function Earnings(){
         }
     };
 
+    const [showWithdrawalReq, setShowWithdrawalReq] = useState(false)
+
     return (
         <SafeAreaView>
             <View 
@@ -162,10 +222,91 @@ export default function Earnings(){
             >
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
-                    <TitleTag withprevious={false} title='Earnings and Payment' withbell={false} />
+                    <TitleTag withprevious={true} title='Earnings and Payment' withbell={false} />
                 </View>
 
                 {downloadLoading && <FullScreenLoader/>}
+
+                <WithdrawalRequest 
+                open={showWithdrawalReq} 
+                getValue={(value)=>{setShowWithdrawalReq(value)}} 
+                bank_name={bankDetails?.bank_name || ''}
+                acc_name={bankDetails?.acc_name || ''}
+                acc_number={bankDetails?.acc_number || ''}
+                user='rider'
+                />
+
+                {showPopUp && (
+                    <View 
+                    className="absolute mb-4 w-full h-full flex items-center justify-around  z-10" style={{backgroundColor: '#00000080'}}>
+                        <View 
+                        style={{ minHeight: 250 }}
+                        className={`${theme == 'dark'? 'bg-gray-700' : ' bg-white'} w-[90%] flex items-center justify-around p-3 rounded-3xl shadow-2xl`}>
+                            <View
+                            className='flex flex-col items-center mb-2'>
+                                <Text
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[16px]`}
+                                style={{fontFamily: 'Inter-Bold'}} 
+                                >
+                                    {popUpData.order_id}
+                                </Text>
+                                <Text
+                                className={`text-custom-green text-[11px]`}
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                >
+                                    {TitleCase(popUpData.status)}
+                                </Text>
+                            </View>
+                            {popUpData.items.map((item_, _) => (
+                                <View 
+                                className='flex w-full'
+                                key={_}>
+                                    <View
+                                    className='flex flex-row justify-between items-center w-full px-3'>
+                                        <Text
+                                        className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px]`}
+                                        style={{fontFamily: 'Inter-Regular'}} 
+                                        >
+                                            {item_.name}
+                                        </Text>
+                                        <Text
+                                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[11px]`}
+                                        style={{fontFamily: 'Inter-SemiBold'}} 
+                                        >
+                                            X{item_.quantity}
+                                        </Text>
+                                    </View>
+                                </View>
+                            ))}
+                            <View
+                            className='flex flex-row justify-between items-center w-full px-3 mt-3'>
+                                <Text
+                                className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px]`}
+                                style={{fontFamily: 'Inter-Regular'}} 
+                                >
+                                    Date
+                                </Text>
+                                <Text
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[11px]`}
+                                style={{fontFamily: 'Inter-SemiBold'}} 
+                                >
+                                    {popUpData.date}
+                                </Text>
+                            </View>
+
+                            <TouchableOpacity 
+                                onPress={()=>{setShowPopUp(!showPopUp)}}
+                                className='flex flex-row items-center px-8 py-2 rounded-lg bg-custom-green mt-5'>
+                                <Text
+                                className='text-white text-[12px] items-center'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
 
                 <ScrollView 
                 refreshControl={
@@ -210,7 +351,7 @@ export default function Earnings(){
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
-                                Pending Payout - <Text className='text-custom-green'>N {showAmount? data?.data.pending_payout:'****'}</Text>
+                                Pending Payout - <Text className='text-custom-green'>₦ {showAmount? data?.data.pending_payout:'****'}</Text>
                             </Text>
                         </View>
                     </View>
@@ -252,7 +393,7 @@ export default function Earnings(){
                         )}
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 10 }).map((_, index) => (
+                                {Array.from({ length: 5 }).map((_, index) => (
                                     <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
@@ -272,20 +413,21 @@ export default function Earnings(){
                                 ))}
                             </View>
                         }
-                        {transactions.map((item) => (
+                        {transactions.map((item, _) => (
                             (item.type=='credit')
                             ?
-                            <OrderTransaction key={item.id} 
-                            receiver={item.bank_name}
-                            time={item.date} 
-                            commission={item.commision} 
-                            amount={item.price}
-                            status='Successful' 
-                            order_id = {item.order_id}
-                            item = {['Fried Rice', 'Chicken']}
-                            price = "8000.00"
-                            date={item.date}
-                            />
+                            <TouchableOpacity 
+                            onPress={()=>{setPopUpdata(item.item_data); setShowPopUp(!showPopUp)}} 
+                            key={_}>
+                                <OrderTransaction 
+                                receiver={item.bank_name}
+                                time={item.date} 
+                                commission={item.commision} 
+                                amount={item.price}
+                                status={item.status}
+                                order_id = {item.order_id}
+                                />
+                            </TouchableOpacity>
                             :
                             <MoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
                         ))}
@@ -294,24 +436,40 @@ export default function Earnings(){
                     <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                     
                     <View className='w-[90%] mx-auto mb-5'>
-                    <TouchableOpacity
-                    onPress={handleDownload}
-                    className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
-                    >
-                        {loading && (
-                        <View className='absolute w-full top-4'>
-                            <ActivityIndicator size="small" color="#fff" />
-                        </View>
-                        )}
-                    
-                        <Text
-                        className='text-white'
-                        style={{fontFamily: 'Inter-Regular'}}
+                        <TouchableOpacity
+                        onPress={()=>{setShowWithdrawalReq(!showWithdrawalReq)}}
+                        className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-2 flex items-center justify-around`}
                         >
-                        Download
-                        </Text>
-                            
-                    </TouchableOpacity>
+                            {loading && (
+                                <View className='absolute w-full top-4'>
+                                    <ActivityIndicator size="small" color="#fff" />
+                                </View>
+                            )}
+                                            
+                            <Text
+                            className='text-white'
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                            Request Withdrawal
+                            </Text>     
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                        onPress={handleDownload}
+                        className={`text-center bg-blue-100 relative rounded-xl p-4 w-[90%] self-center mt-2 flex items-center justify-around`}
+                        >
+                            {loading && (
+                                <View className='absolute w-full top-4'>
+                                    <ActivityIndicator size="small" color="#fff" />
+                                </View>
+                            )}
+                                            
+                            <Text
+                            className={'text-custom-green'}
+                            style={{fontFamily: 'Inter-Regular'}}
+                            >
+                            Download Report
+                            </Text>     
+                        </TouchableOpacity>
                     </View>
                 </ScrollView>
             </View>

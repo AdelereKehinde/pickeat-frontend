@@ -24,7 +24,7 @@ export default function BookingHistory(){
         error: CustomToast,
     };
     const [loading, setLoading] = useState(false);
-
+    const [ranOnce, setRanOnce] = useState(false);
     type ListData = { id: number; status: string; order_id: string; kitchens: string[]; price: string; items: string; date: string;}[];
     type OrderResponse = { count: number; next: string; previous: string; results: ListData;};
 
@@ -32,13 +32,16 @@ export default function BookingHistory(){
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const [refreshing, setRefreshing] = useState(false);
     const fetchMeals = async () => {
         try {
             setLoading(true)
             serOrders([])
+            if(!ranOnce){
+                setRanOnce(true)
+            }
             const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
             // alert(JSON.stringify(response))
             serOrders(response.results)
@@ -90,7 +93,7 @@ export default function BookingHistory(){
                         )}
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 6 }).map((_, index) => (
+                                {Array.from({ length: 3 }).map((_, index) => (
                                     <View key={index} className='border-b border-gray-300'>
                                         <ContentLoader
                                         width="100%"
@@ -122,7 +125,7 @@ export default function BookingHistory(){
                                 /> 
                             </View>
                         ))}
-                        {((orders.length != 0) && (count > orders.length)) && 
+                        {((count > orders.length) && ranOnce) && 
                             <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                         }
                     </ScrollView>

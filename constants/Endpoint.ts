@@ -93,6 +93,7 @@ const ENDPOINTS = {
         'meal-detail': `${ADMIN_BASE}meal`,
         'orders': `${ADMIN_BASE}orders`,
         'dashboard': `${ADMIN_BASE}dashboard`,
+        'notification': `${ADMIN_BASE}notification`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,
@@ -128,6 +129,7 @@ const ENDPOINTS = {
         'account-validate': `${PAYMENT_BASE}account/validate`,
         'initialize': `${PAYMENT_BASE}initialize`,
         'vendor-transactions': `${PAYMENT_BASE}transaction/vendor`,
+        'admin-transactions': `${PAYMENT_BASE}transaction/admin`,
         'rider-transactions': `${PAYMENT_BASE}transaction/rider`,
         'rider-withdrawal': `${PAYMENT_BASE}withdrawal/rider`,
         'vendor-withdrawal': `${PAYMENT_BASE}withdrawal/vendor`,
