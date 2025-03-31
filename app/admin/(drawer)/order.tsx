@@ -162,22 +162,23 @@ function AdminOrder(){
                         )}
                         
                         {(loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 3 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                            <View className='flex space-y-2 w-screen px-3 overflow-hidden'>
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                    <View key={index} className={` ${theme == 'dark'? 'border-gray-700' : ' border-gray-300'}`}>
                                         <ContentLoader
                                         width="100%"
-                                        height={100}
-                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        height={90}
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
-                                            {/* Add custom shapes for your skeleton */}
-                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                            <Rect x="" y="0" rx="5" ry="5" width="100%" height="90" />
+                                            <Rect x="10" y="5" rx="5" ry="5" width="70" height="80" />
+                                            <Rect x="90" y="15" rx="5" ry="5" width="70" height="10" />
+                                            <Rect x="90" y="35" rx="5" ry="5" width="100" height="10" />
+                                            <Rect x="90" y="65" rx="5" ry="5" width="150" height="10" />
+                                            
+                                            <Rect x="270" y="15" rx="5" ry="5" width="50" height="30" />
+                                            <Rect x="270" y="65" rx="5" ry="5" width="50" height="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}

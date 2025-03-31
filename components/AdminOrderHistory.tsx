@@ -23,7 +23,7 @@ const AdminOrderHistory: React.FC<Properties> = ({id, name, date, price, image, 
     const [loading, setLoading] = useState(false); // Loading state
 
     return(
-        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row items-center justify-between border-b w-full py-3 px-6`}>
+        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row items-center justify-between rounded-lg mx-auto w-[95%] py-3 px-3`}>
             <View className='rounded-md overflow-hidden'>    
                 <Image 
                 source={{uri: image}}

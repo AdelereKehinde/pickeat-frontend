@@ -18,7 +18,7 @@ const ServicesLayout: React.FC<Properties> = ({kitchens, date, price, items, ord
     const { theme, toggleTheme } = useContext(ThemeContext);
 
     return(
-        <View className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} flex items-center justify-between border-b w-full h-28 py-3 px-6`}>
+        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex items-center justify-between rounded-lg w-[95%] mx-auto h-28 py-3 px-3`}>
             <View className='w-full flex flex-row'>
                 <View className=''>
                     <View className='flex flex-row space-x-2'>

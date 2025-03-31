@@ -6,6 +6,12 @@ import Out_Of_Bound from '../assets/icon/out_of_bound.svg';
 import Arrow from '../assets/icon/arrow_left.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import Search from '../assets/icon/search.svg';
+import TransactionPinPrompt from './TransactionPinPrompt';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
+import FullScreenLoader from './FullScreenLoader';
+import { postRequest } from '@/api/RequestHandler';
+import ENDPOINTS from '@/constants/Endpoint';
 
 type OptionType = {
     label: string;
@@ -21,15 +27,73 @@ interface Properties {
   getValue: (value: boolean) => void
 }
 
-const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user='buyer', acc_name, acc_number, bank_name}) => {
+const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_name, acc_number, bank_name}) => {
     const { theme, toggleTheme } = useContext(ThemeContext);
-    const [searchValue, setSearchValue] = useState('')
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+    };
+    const [amount, setAmount] = useState('')
     const [isFocused, setIsFocus] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const [showTransactionPinPrompt, setShowTransactionPinPrompt] = useState(false);
+    const [transactionPinCorrect, setTransactionPinCorrect] = useState(false);
+    const [transactionPin, setTransactionPin] = useState('');
+    const [showSuccessPopUp, setShowSuccessPopUp] = useState(false);
     const handleRequest = async () => {
-        
+        if(parseInt(amount) < 1000){
+            Toast.show({
+                type: 'error',
+                text1: "You cannot withdraw less than 1000.",
+                visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+              });  
+        }else{
+            setShowTransactionPinPrompt(true)
+        }
+        // getValue(false)
     };
+    
+    const MakeWithdrawal = async() =>{
+        try{
+            type ApiResponse = { status: string; message: string; data:{} };
+            if (user=='rider'){
+                var res = await postRequest<ApiResponse>(`${ENDPOINTS['payment']['rider-withdrawal']}`, {
+                    'amount': amount,
+                    'pin': transactionPin,
+                }, true);
+            }
+            if (user=='vendor'){
+                var res = await postRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-withdrawal']}`, {
+                    'amount': amount,
+                    'pin': transactionPin,
+                }, true);
+            }
+            setAmount('')
+            setShowSuccessPopUp(true)
+            setTransactionPin('')
+            setTransactionPinCorrect(false)
+        }catch (error:any) {
+            setLoading(false)
+            // alert(JSON.stringify(error))
+            setTransactionPin('')
+            setTransactionPinCorrect(false)
+            Toast.show({
+                type: 'error',
+                text1: error.data?.message || 'Unknown Error',
+                // text2: error.data?.data?.message || 'Unknown Error',
+                visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
+                autoHide: true,
+            });
+        }
+    }
+
+    useEffect(() => {
+        if(transactionPinCorrect){
+            MakeWithdrawal()
+        }
+    }, [transactionPinCorrect]); // Empty dependency array ensures this runs once
 
     return (
             <Modal
@@ -43,6 +107,52 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user='buyer',
                 className="flex-1 bg-black/40"
                 onPress={()=>getValue(false)}
                 /> */}
+
+                {showTransactionPinPrompt && (
+                    <TransactionPinPrompt 
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false)}}/>
+                )}
+
+
+                {transactionPinCorrect && (
+                    <FullScreenLoader/>
+                )}
+
+                {showSuccessPopUp && (
+                    <View 
+                    className="absolute mb-4 w-full h-full flex items-center justify-around  z-10" style={{backgroundColor: '#00000080'}}>
+                        <View 
+                        style={{ minHeight: 150 }}
+                        className={`${theme == 'dark'? 'bg-gray-700' : ' bg-white'} w-[90%] flex items-center justify-around p-3 rounded-lg shadow-2xl`}>
+                            <View
+                            className='flex flex-col items-center mb-2'>
+                                <Text
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[16px]`}
+                                style={{fontFamily: 'Inter-Bold'}} 
+                                >
+                                    Withdrawal Processed
+                                </Text>
+                                <Text
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[12px]`}
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                >
+                                    Kindly wait for the admin approval
+                                </Text>
+                            </View>
+
+                            <TouchableOpacity 
+                                onPress={()=>{setShowSuccessPopUp(false); getValue(false)}}
+                                className='flex flex-row items-center px-8 py-2 rounded-lg bg-custom-green mt-5'>
+                                <Text
+                                className='text-white text-[12px] items-center'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
                 
                 {/* Modal Container */}
                 <View className={`${(theme == 'dark')? "bg-gray-900" :"bg-white"} h-full`}>
@@ -50,11 +160,9 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user='buyer',
                         <Pressable 
                         onPress={()=>{getValue(false)}}
                         className="">
-                            {(theme == 'dark')?
+
                             <Arrow />
-                            :
-                            <Back />
-                            }
+                            
                         </ Pressable>
                     </View>
 
@@ -89,8 +197,8 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user='buyer',
                                 autoFocus={false}
                                 onFocus={()=>setIsFocus(true)}
                                 onBlur={()=>setIsFocus(false)}
-                                onChangeText={setSearchValue}
-                                value={searchValue}
+                                onChangeText={setAmount}
+                                value={amount}
                                 keyboardType="number-pad"
                                 // placeholder="Search for available foods"
                                 placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
@@ -154,7 +262,7 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user='buyer',
                         <View className='mt-3'>
                             <TouchableOpacity
                             onPress={handleRequest}
-                            className={`text-center ${(loading || searchValue.length == 0)? 'bg-custom-inactive-green' : 'bg-custom-green'} relative rounded-xl p-2 w-full self-center mt-2 flex items-center justify-around`}
+                            className={`text-center ${(loading || amount.length == 0)? 'bg-custom-inactive-green' : 'bg-custom-green'} relative rounded-xl p-2 w-full self-center mt-2 flex items-center justify-around`}
                             >
                                 {loading && (
                                 <View className='absolute w-full top-4'>
@@ -172,6 +280,7 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user='buyer',
                         </View>
                     </ScrollView>
                 </View>
+                <Toast config={toastConfig} />
             </Modal>
     );
 };

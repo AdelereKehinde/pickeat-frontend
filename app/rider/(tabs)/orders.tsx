@@ -132,27 +132,28 @@ export default function Orders(){
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full mt-4 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (orders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
                         )}
                         {((orders.length === 0 && loading)) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            <View className='flex space-y-2 w-screen px-3 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className={` ${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
+                                    <View key={index} className={` ${theme == 'dark'? 'border-gray-700' : ' border-gray-300'}`}>
                                         <ContentLoader
                                         width="100%"
-                                        height={100}
+                                        height={90}
                                         backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                            <Rect x="" y="0" rx="5" ry="5" width="100%" height="90" />
+                                            <Rect x="10" y="5" rx="5" ry="5" width="70" height="80" />
+                                            <Rect x="90" y="25" rx="5" ry="5" width="70" height="10" />
+                                            <Rect x="90" y="45" rx="5" ry="5" width="100" height="10" />
+                                            <Rect x="90" y="65" rx="5" ry="5" width="150" height="10" />
+                                            <Circle cx="300" cy="40" r="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}
@@ -182,9 +183,12 @@ export default function Orders(){
                                 
                             </View>
                         ))}
-                    {(orders.length != 0) && 
-                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
-                    }
+
+                    <View className='mt-auto mb-2'>
+                        {(orders.length != 0) && 
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
+                    </View>
                     </ScrollView>
                 </View>
                 <Toast config={toastConfig} />

@@ -19,6 +19,8 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import TitleCase from '@/components/TitleCase';
 import WithdrawalRequest from '@/components/WithdrawalRequestModal';
+import Toast from 'react-native-toast-message';
+import CustomToast from '@/components/ToastConfig';
 
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
@@ -104,6 +106,10 @@ const downloadTransactionHistoryPDF = async (data: ListData) => {
 
 export default function Earnings(){
     const { theme, toggleTheme } = useContext(ThemeContext);
+    const toastConfig = {
+        success: CustomToast,
+        error: CustomToast,
+      };
     type ListData = { 
         id: number; 
         type: string; 
@@ -403,8 +409,8 @@ export default function Earnings(){
                         </View> */}
                     </View>
 
-                    <ScrollView 
-                    className='w-[98%] px-3 mt-2 mb-8' contentContainerStyle={{ flexGrow: 1 }}>
+                    <View 
+                    className='w-[98%] px-3 mt-2'>
                         {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -417,9 +423,9 @@ export default function Earnings(){
                             </View>
                         )}
                         {(loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            <View className='flex space-y-2 w-screen overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'}`}>
                                         <ContentLoader
                                         width="100%"
                                         height={50}
@@ -427,7 +433,7 @@ export default function Earnings(){
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                            <Rect x="5" y="0" rx="5" ry="5" width="90%" height="50" />
                                             <Rect x="230" y="10" rx="5" ry="5" width="90" height="10" />
                                             <Rect x="230" y="30" rx="5" ry="5" width="90" height="15" />
                                             <Rect x="20" y="5" rx="5" ry="5" width="80" height="10" />
@@ -463,15 +469,17 @@ export default function Earnings(){
                             status={item.status}
                             />
                         ))}
-                    </ScrollView>
+                    </View>
                     
-                    {(transactions.length != 0) &&
-                        <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
-                    }
+                    <View className='mt-auto'>
+                        {((transactions.length > 0) && (count > transactions.length)) &&
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
+                    </View>
                     
                     <View className='w-[90%] mx-auto mb-5'>
                         <TouchableOpacity
-                        onPress={()=>{setShowWithdrawalReq(!showWithdrawalReq)}}
+                        onPress={()=>{if(!loading){setShowWithdrawalReq(!showWithdrawalReq)}}}
                         className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-2 flex items-center justify-around`}
                         >
                             {loading && (
@@ -507,6 +515,7 @@ export default function Earnings(){
                     </View>
                 </ScrollView>
             </View>
+            {/* <Toast config={toastConfig} /> */}
         </SafeAreaView>
     )
 }

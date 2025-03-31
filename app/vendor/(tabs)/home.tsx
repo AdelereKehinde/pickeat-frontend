@@ -158,17 +158,18 @@ function Home(){
                                     <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
                                         <ContentLoader
                                         width="100%"
-                                        height={100}
+                                        height={61}
                                         backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                            <Circle cx="50" cy="25" r="25" />
+                                            {/* <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
+                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" /> */}
+                                            {/* <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" /> */}
+                                            <Rect x="85" y="10" rx="5" ry="5" width="80" height="8" />
+                                            <Rect x="85" y="30" rx="5" ry="5" width="100" height="8" />
                                         </ContentLoader>
                                     </View> 
                                 ))}

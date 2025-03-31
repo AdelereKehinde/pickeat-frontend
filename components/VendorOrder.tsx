@@ -32,7 +32,7 @@ const VendorOrder: React.FC<Properties> = ({id, image, name, address, time, stat
     const [STS, setSTS] = useState(status_history_status); // Loading state
 
     return(
-        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row  items-center mx-3 py-2 border-b`}>
+        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row  items-center rounded-lg mx-2 px-2 py-2`}>
             <View className=''>    
                 <Image 
                 source={{uri: image}}

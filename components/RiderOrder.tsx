@@ -24,7 +24,7 @@ const RiderOrder: React.FC<Properties> = ({image, name, address, time, order_id,
     const [loading, setLoading] = useState(false);
 
     return(
-        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row  items-center px-3 py-2 border-b`}>
+        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row  items-center mx-3 rounded-lg px-3 py-2`}>
             <View className=''>    
                 <Image 
                 source={{uri: image}}

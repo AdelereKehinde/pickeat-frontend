@@ -99,7 +99,7 @@ function Order(){
                     My Orders
                 </Text>
                 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : 'text-white'} p-2 flex flex-row w-full justify-around mt-2`}>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-gray-100'} p-2 flex flex-row w-full justify-around mt-2`}>
                     <FlatList
                     data={Categories}
                     keyExtractor={(item) => item.id}
@@ -125,7 +125,7 @@ function Order(){
                     />
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full my-3 relative flex flex-row items-center justify-center`}>
+                <View className={`${theme == 'dark'? '' : ' bg-white'} w-full my-3 relative flex flex-row items-center justify-center`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -144,22 +144,21 @@ function Order(){
                         )}
                         
                         {(parentorders.length === 0 && loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 6 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                            <View className='flex space-y-2 w-screen px-3 overflow-hidden'>
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                    <View key={index} className={` ${theme == 'dark'? 'border-gray-700' : ' border-gray-300'}`}>
                                         <ContentLoader
                                         width="100%"
-                                        height={100}
-                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        height={90}
+                                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
-                                            {/* Add custom shapes for your skeleton */}
-                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                            <Rect x="" y="0" rx="5" ry="5" width="100%" height="90" />
+                                            <Rect x="10" y="5" rx="5" ry="5" width="70" height="80" />
+                                            <Rect x="90" y="25" rx="5" ry="5" width="70" height="10" />
+                                            <Rect x="90" y="45" rx="5" ry="5" width="100" height="10" />
+                                            <Rect x="90" y="65" rx="5" ry="5" width="150" height="10" />
+                                            <Circle cx="300" cy="40" r="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}

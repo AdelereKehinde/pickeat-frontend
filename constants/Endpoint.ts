@@ -21,6 +21,7 @@ const ENDPOINTS = {
         'transaction-pin': `${ACOOUNT_BASE}transaction/pin`,
         'forgot-transaction-pin': `${ACOOUNT_BASE}transaction/forget`,
         'reset-transaction-pin': `${ACOOUNT_BASE}transaction/reset`,
+        'match-transaction-pin': `${ACOOUNT_BASE}transaction/match`,
         'support': `${ACOOUNT_BASE}support`,
     },
     'buyer': { 

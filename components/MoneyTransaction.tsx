@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, View, Image, TouchableOpacity } from "react-native";
 import ArrowUp from '../assets/icon/arrow_up.svg';
 import { TruncatedText } from './TitleCase';
+import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 
 interface Properties {
     receiver: string,
@@ -13,24 +14,25 @@ interface Properties {
   }
 
 const MoneyTransaction: React.FC<Properties> = ({receiver, type, amount, commission, time, status}) =>{
+    const { theme, toggleTheme } = useContext(ThemeContext);
     return(
         <View
         // style={styles.shadow_box}
-        className='flex flex-row items-center space-x-1 my-2 bg-white p-2 rounded-lg w-full'
+        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-1 my-2 p-2 rounded-lg w-full`}
         >
-            <View className='w-8 h-8 bg-blue-50 rounded-full flex items-center justify-around'>
+            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-8 h-8 rounded-full flex items-center justify-around`}>
                 <ArrowUp />
             </View>
             <View className=''>
                 <Text
-                className='text-[10px] text-gray-800'
+                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[10px]`}
                 style={{fontFamily: 'Inter-Bold',}}
                 >
-                    {TruncatedText(receiver, 25)}
+                    {TruncatedText(receiver, 28)}
                 </Text>
                 <View className='flex flex-row space-x-1'>
                     <Text
-                    className='text-[9px] text-gray-500' 
+                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[9px]`}
                     style={{fontFamily: 'Inter-Regular'}} 
                     >
                         {time}
@@ -47,7 +49,7 @@ const MoneyTransaction: React.FC<Properties> = ({receiver, type, amount, commiss
             </View>
             <View className=' flex items-end grow'>
                 <Text
-                className='text-[11px] text-gray-800'
+                className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[11px]`}
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
                     -₦{amount}
@@ -58,6 +60,14 @@ const MoneyTransaction: React.FC<Properties> = ({receiver, type, amount, commiss
                 >
                     Commission - #{commission}
                 </Text> */}
+                <View className={`${(status == 'pending') && 'bg-yellow-500'} ${(status == 'completed') && 'bg-custom-green'} ${(status == 'failed') && 'bg-red-500'} mt-1 px-2 rounded-sm`}>
+                    <Text
+                    className='text-[9px] text-white'
+                    style={{fontFamily: 'Inter-Regular'}}
+                    >
+                        {status}
+                    </Text>
+                </View>
             </View>
         </View>
     )

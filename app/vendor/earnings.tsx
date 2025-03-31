@@ -5,6 +5,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import Nigeria from '../../assets/icon/nigeria.svg';
 import Naira from '../../assets/icon/naira.svg';
 import Calender from '../../assets/icon/calender.svg';
+import ChevronRight from '../../assets/icon/chevron_right.svg';
 import TitleTag from '@/components/Title';
 import MoneyTransaction from '@/components/MoneyTransaction';
 import OrderTransaction from '@/components/OrderTransaction';
@@ -142,8 +143,9 @@ export default function Earnings(){
     }
 
     type EarningResponse = { 
-        amount_in_wallet: string; 
-        pending_payout:  string; 
+        amount_in_wallet: number; 
+        pending_payout:  number;  
+        non_withdrawable: number
         bank_details: BankDetails;
         count: number; 
         results: ListData; 
@@ -233,7 +235,7 @@ export default function Earnings(){
                 bank_name={bankDetails?.bank_name || ''}
                 acc_name={bankDetails?.acc_name || ''}
                 acc_number={bankDetails?.acc_number || ''}
-                user='rider'
+                user='vendor'
                 />
 
                 {showPopUp && (
@@ -354,7 +356,31 @@ export default function Earnings(){
                                 Pending Payout - <Text className='text-custom-green'>₦ {showAmount? data?.data.pending_payout:'****'}</Text>
                             </Text>
                         </View>
+                        
+                        <View>
+                            <Text
+                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            >
+                                Non Withdrawable - <Text className='text-custom-green'>₦ {showAmount? data?.data.non_withdrawable:'****'}</Text>
+                            </Text>
+                        </View>
                     </View>
+
+
+                    <TouchableOpacity
+                    onPress={()=>{router.push('/vendor/payment_info')}}
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg flex flex-row justify-between`}
+                    >
+                        <Text
+                        style={{fontFamily: 'Inter-SemiBold'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-700'} text-[13px]`}
+                        >
+                            Update Payment Info
+                        </Text>
+
+                        <ChevronRight />
+                    </TouchableOpacity>
 
 
                     <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
@@ -378,8 +404,8 @@ export default function Earnings(){
                         </View> */}
                     </View>
 
-                    <ScrollView 
-                    className='w-[98%] px-3 mt-2 mb-8' contentContainerStyle={{ flexGrow: 1 }}>
+                    <View 
+                    className='w-[98%] px-3 mt-2'>
                         {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -392,9 +418,9 @@ export default function Earnings(){
                             </View>
                         )}
                         {(loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            <View className='flex space-y-2 w-screen overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'}`}>
                                         <ContentLoader
                                         width="100%"
                                         height={50}
@@ -402,7 +428,7 @@ export default function Earnings(){
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                            <Rect x="5" y="0" rx="5" ry="5" width="90%" height="50" />
                                             <Rect x="230" y="10" rx="5" ry="5" width="90" height="10" />
                                             <Rect x="230" y="30" rx="5" ry="5" width="90" height="15" />
                                             <Rect x="20" y="5" rx="5" ry="5" width="80" height="10" />
@@ -429,15 +455,27 @@ export default function Earnings(){
                                 />
                             </TouchableOpacity>
                             :
-                            <MoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
+                            <MoneyTransaction 
+                            key={item.id} 
+                            type={item.type} 
+                            receiver={item.bank_name} 
+                            time={item.date} 
+                            commission={item.commision} 
+                            amount={item.price} status={item.status} 
+                            />
                         ))}
-                    </ScrollView>
-
-                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    </View>
                     
-                    <View className='w-[90%] mx-auto mb-5'>
+                    <View className='mt-auto'>
+                        {((transactions.length > 0) && (count > transactions.length)) &&
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
+                    </View>
+
+
+                    <View className='w-[90%] mx-auto mb-8'>
                         <TouchableOpacity
-                        onPress={()=>{setShowWithdrawalReq(!showWithdrawalReq)}}
+                        onPress={()=>{if(!loading){setShowWithdrawalReq(!showWithdrawalReq)}}}
                         className={`text-center ${(transactions.length !== 0)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-2 flex items-center justify-around`}
                         >
                             {loading && (

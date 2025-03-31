@@ -35,7 +35,7 @@ const TitleTag: React.FC<Properties> = ({title, withbell, withprevious})  =>{
                 </View>
                 <Text
                 style={{fontFamily: 'Inter-SemiBold'}} 
-                className={`${theme == 'dark'? 'text-white' : ' text-gray-700'} text-[14px] `}
+                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[14px] `}
                 >
                     {title}
                 </Text>
