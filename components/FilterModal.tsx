@@ -42,25 +42,21 @@ const FilterModal: React.FC<Properties> = ({options, active=true, open,  getValu
         className=''
         >
 
-            <View 
-            className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-2 my-2 py-2 px-4 rounded-lg`}>
+            <Pressable 
+            onPress={() => setIsVisible(!isVisible)} 
+            className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row items-center space-x-2 my-2 py-2 px-4 rounded-lg`}>
                 
                 {/* TextInput */}
                 <Text 
                 style={{fontFamily: 'Inter-Regular'}} 
-                className={`${theme == 'dark'? 'text-gray-100' : ' text-black'} text-[10px]`}>
+                className={`${theme == 'dark'? 'text-gray-100' : ' text-black'} text-[11px]`}>
                     {inputValue}
                 </Text>
-                
-                {active && (
-                    <Pressable 
-                    onPress={() => setIsVisible(!isVisible)} 
-                    className={` text-gray-400`}
-                    >   
-                        <Filter width={15} height={15} />
-                    </Pressable>
-                )}
-            </View>
+            
+                <View>   
+                    <Filter width={15} height={15} />
+                </View>
+            </Pressable>
         
         {/* Dropdown list */}
         {isVisible && (

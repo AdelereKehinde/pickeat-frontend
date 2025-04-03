@@ -113,7 +113,7 @@ export default function Reviews(){
             >
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
-                    <TitleTag withprevious={false} title='Reviews' withbell={false} />
+                    <TitleTag withprevious={true} title='Reviews' withbell={false} />
                 </View>
 
                 <ScrollView 
@@ -184,7 +184,7 @@ export default function Reviews(){
                         {(loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
+                                    <View key={index} className={``}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
@@ -193,11 +193,11 @@ export default function Reviews(){
                                         >
                                             {/* Add custom shapes for your skeleton */}
                                             {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
+                                            <Circle cx="30" cy="25" r="20" />
+                                            <Rect x="60" y="20" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="15" y="50" rx="5" ry="5" width="200" height="50" />
+                                            {/* <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
+                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" /> */}
                                         </ContentLoader>
                                     </View> 
                                 ))}
@@ -248,7 +248,12 @@ export default function Reviews(){
                             </View>                
                         ))}
                     </View>
-                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                    
+                    <View className='mt-auto'>
+                        {((reviewData.length != 0) && (count > reviewData.length)) && 
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
+                    </View>
                 </ScrollView>
             </View>
         </SafeAreaView>

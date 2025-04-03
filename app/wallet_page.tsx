@@ -320,7 +320,7 @@ export default function WalletPage(){
                 )}
                 
                 {transactions.map((item) => (
-                    <View key={item.id} className={`${theme == 'dark'? 'border-gray-800' : ' border-gray-200'} flex w-full py-2 px-4 border-y`}>
+                    <View key={item.id} className={`${theme == 'dark'? 'border-gray-800' : ' border-gray-200'} flex w-full py-2 px-4 border-b`}>
                         <View className='flex flex-row items-center w-full justify-between'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-700'} text-[13px]`}

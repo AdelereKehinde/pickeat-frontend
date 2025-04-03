@@ -31,7 +31,7 @@ export default function Menu(){
 
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const [searchValue, setSearchValue] = useState('')
     const [preSearchValue, setPreSearchValue] = useState('')
@@ -117,8 +117,8 @@ export default function Menu(){
     };
     
     return (
-        <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center mb-10`}>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+            {/* <View > */}
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Menu' withbell={false} />
@@ -208,12 +208,12 @@ export default function Menu(){
                     />
                 </View> */}
                 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-50'} w-full mt-3`}>
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full space-y-1 mb-56' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full pb-2' 
+                    contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && filterIndex == 'all' && meals.length == 0) && (
                             <View className='flex items-center'>
                                 <TouchableOpacity
@@ -235,47 +235,53 @@ export default function Menu(){
                         {(loading && (meals.length == 0)) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className='mt-5 border-b border-gray-900'>
+                                    <View key={index} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-md`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        backgroundColor={(theme == 'dark')? '#111827':'#fff'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
+                                            <Rect x="5" y="5" rx="5" ry="5" width="100" height="90" />
                                             <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="230" y="45" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="120" y="10" rx="5" ry="5" width="70" height="10" />
+                                            <Rect x="120" y="30" rx="5" ry="5" width="70" height="10" />
+                                            <Rect x="120" y="50" rx="5" ry="5" width="70" height="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}
                             </View>
                         }
-                        {(!loading && (meals.length > 0)) &&
-                            meals.map((item) => (
-                                <View key={item.id}>
-                                    <VendorProductList 
-                                    onRemove={handleRemoveItem}
-                                    image={item.thumbnail} 
-                                    id={item.id}
-                                    category={TitleCase(item.category[0].category_name)}
-                                    name={TitleCase(item.meal_name)} 
-                                    price={item.price} 
-                                    discount={item.discount} 
-                                    discounted_price={item.discounted_price} 
-                                    quantity_in_cart={item.cart_quantity}
-                                    description={item.meal_description}
-                                    />
-                                </View>
-                            ))    
-                        }
-                        {((meals.length != 0) && (count > meals.length)) && 
-                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
-                        }
+                        <View className='space-y-2'>
+                            {(!loading && (meals.length > 0)) &&
+                                meals.map((item) => (
+                                    <View key={item.id}>
+                                        <VendorProductList 
+                                        onRemove={handleRemoveItem}
+                                        image={item.thumbnail} 
+                                        id={item.id}
+                                        category={TitleCase(item.category[0].category_name)}
+                                        name={TitleCase(item.meal_name)} 
+                                        price={item.price} 
+                                        discount={item.discount} 
+                                        discounted_price={item.discounted_price} 
+                                        quantity_in_cart={item.cart_quantity}
+                                        description={item.meal_description}
+                                        />
+                                    </View>
+                                ))    
+                            }
+                        </View>
+                        
+                        <View className='mt-auto'>
+                            {((meals.length != 0) && (count > meals.length)) && 
+                                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                            }
+                        </View>
                     </ScrollView>
-                </View>
-            </View>
+                {/* </View> */}
         </SafeAreaView>
     )
 }

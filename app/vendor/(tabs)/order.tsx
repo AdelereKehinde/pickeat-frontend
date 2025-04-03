@@ -35,7 +35,7 @@ function Order(){
     
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 6; // Items per page
+    const pageSize = 10; // Items per page
 
     const isFocused = useIsFocused(); 
     const [ranOnce, setRanOnce] = useState(false); 
@@ -82,8 +82,7 @@ function Order(){
     }
 
     return (
-        <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='Orders' withbell={false} />
@@ -125,12 +124,12 @@ function Order(){
                     />
                 </View>
 
-                <View className={`${theme == 'dark'? '' : ' bg-white'} w-full my-3 relative flex flex-row items-center justify-center`}>
+                {/* <View className={`${theme == 'dark'? '' : ' bg-white'} w-full my-3 relative flex flex-row items-center justify-center`}> */}
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full p-1 mb-40 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full p-1 mt-3' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (parentorders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -164,30 +163,33 @@ function Order(){
                                 ))}
                             </View>
                         }
-                        {parentorders.map((item, _) => (
-                            <View key={_}>
-                                <VendorOrder 
-                                id={item.id}
-                                order_id={item.order_id} 
-                                image={item.thumbnail} 
-                                name={item.buyer_name} 
-                                time={item.date} 
-                                address={item.address}
-                                items={item.items} 
-                                status_history_status={item.status_history_status} 
-                                status={item.status} 
-                                onUpdate={UpdateStatus}
-                                />
-                            </View>
-                        ))}
-
-                        {((parentorders.length > 0) && (count > parentorders.length)) &&
-                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
-                        }
+                        <View className='space-y-2'>
+                            {parentorders.map((item, _) => (
+                                <View key={_}>
+                                    <VendorOrder 
+                                    id={item.id}
+                                    order_id={item.order_id} 
+                                    image={item.thumbnail} 
+                                    name={item.buyer_name} 
+                                    time={item.date} 
+                                    address={item.address}
+                                    items={item.items} 
+                                    status_history_status={item.status_history_status} 
+                                    status={item.status} 
+                                    onUpdate={UpdateStatus}
+                                    />
+                                </View>
+                            ))}
+                        </View>
+                        
+                        <View className='mt-auto'>
+                            {((parentorders.length > 0) && (count > parentorders.length)) &&
+                                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                            }
+                        </View>
+                        
                     </ScrollView>
-                </View>
                 <Toast config={toastConfig} />
-            </View>
         </SafeAreaView>
     )
 }

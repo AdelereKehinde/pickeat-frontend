@@ -58,7 +58,7 @@ const VendorProductList: React.FC<Properties> = ({image, id, name, price, catego
       }
     };
     return(
-        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row items-center border-b w-full p-4 h-28`}>
+        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-gray-100'} rounded-md w-[95%] mx-auto flex flex-row items-center  p-4 h-28`}>
             <View className=''>    
                 <Image 
                 source={{ uri: image }}

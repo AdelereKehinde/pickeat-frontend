@@ -119,7 +119,7 @@ export default function BookingHistory(){
                                         <ContentLoader
                                         width="100%"
                                         height={100}
-                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                        backgroundColor={(theme == 'dark')? '#111827':'#fff'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}

@@ -73,10 +73,9 @@ function Notification(){
     };
 
     return (
-        <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex`}>
+        <SafeAreaView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex`}>
                 <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
+                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Notification' withbell={false} />
                 </View>
 
@@ -84,7 +83,7 @@ function Notification(){
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
-                contentContainerStyle={{ flexGrow: 1 }} className='px-3'>
+                contentContainerStyle={{ flexGrow: 1 }} className=''>
                     {(!loading && notifications.length === 0) && (
                         <View className='flex items-center'> 
                             <Empty/>
@@ -93,18 +92,19 @@ function Notification(){
                     {(loading) && 
                         <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                             {Array.from({ length: 6 }).map((_, index) => (
-                                <View key={index} className='mt-3 border-b border-gray-300'>
+                                <View key={index} className='mt-3 w-[90%]'>
                                     <ContentLoader
                                     width="100%"
                                     height={100}
-                                    backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                                    backgroundColor={(theme == 'dark')? '#1f2937':'#fff'}
                                     foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                     >
                                         {/* Add custom shapes for your skeleton */}
-                                        <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                        <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                        <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                        <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                        <Circle cx="35" cy="35" r="30" />
+                                        <Rect x="80" y="10" rx="5" ry="5" width="60" height="10" />
+                                        <Rect x="80" y="50" rx="5" ry="5" width="60" height="10" />
+                                        <Rect x="230" y="10" rx="5" ry="5" width="80" height="10" />
+                                        <Rect x="230" y="50" rx="5" ry="5" width="80" height="10" />
                                     </ContentLoader>
                                 </View> 
                             ))}
@@ -144,10 +144,13 @@ function Notification(){
                             ))}
                         </View>   
                     ))}
-                    
-                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+
+                    <View className='mt-auto'>
+                        {((notifications.length != 0) && (count > notifications.length)) && 
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
+                    </View>
                 </ScrollView>
-            </View>
         </SafeAreaView>
     )
 }

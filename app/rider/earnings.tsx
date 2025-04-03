@@ -21,6 +21,7 @@ import TitleCase from '@/components/TitleCase';
 import WithdrawalRequest from '@/components/WithdrawalRequestModal';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import FilterModal from '@/components/FilterModal';
 
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
@@ -182,9 +183,18 @@ export default function Earnings(){
 
     const [refreshing, setRefreshing] = useState(false);
 
+    const [filter, setFilter] = useState('');
+    const [openFilter, setOpenFilter] = useState(false)
+    const filterOptions = [
+        { label: 'all', value: '' },
+        { label: 'pending', value: 'pending'},
+        { label: 'completed', value: 'completed' },
+        { label: 'failed', value: 'failed' },
+    ];
+
     const fetchMeals = async () => {
         try {
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['rider-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['rider-transactions']}?page_size=${pageSize}&page=${currentPage}&status=${filter}`, true);
             // alert(JSON.stringify(response))
             setData(response)
             setTransactions(response.data.results)
@@ -201,7 +211,7 @@ export default function Earnings(){
         setLoading(true)
         setTransactions([])
         fetchMeals(); 
-    }, [currentPage]); // Empty dependency array ensures this runs once
+    }, [currentPage, filter]); // Empty dependency array ensures this runs once
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -375,7 +385,7 @@ export default function Earnings(){
 
                     <TouchableOpacity
                     onPress={()=>{router.push('/rider/payment_info')}}
-                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-4 rounded-lg flex flex-row justify-between`}
+                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mt-10 m-3 w-[90%] mx-auto p-3 rounded-lg flex flex-row justify-between`}
                     >
                         <Text
                         style={{fontFamily: 'Inter-SemiBold'}}
@@ -387,8 +397,22 @@ export default function Earnings(){
                         <ChevronRight />
                     </TouchableOpacity>
 
+                    <View className='bg-white flex flex-row items-center justify-between w-full px-4 py-1'>
+                        <Text
+                        className={`text-[14px] ${theme == 'dark'? 'text-gray-100' : ' text-gray-900'}`}
+                        style={{fontFamily: 'Inter-Bold'}}
+                        >
+                            Transactions
+                        </Text>
 
-                    <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
+                        <FilterModal 
+                        options={filterOptions} 
+                        getValue={(value)=>{setFilter(value); setOpenFilter(false)}}
+                        open={openFilter}
+                        />
+                    </View>
+
+                    {/* <View className='flex flex-row items-center justify-between w-[90%] mt-3'>
                         <View className='flex flex-row space-x-2'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-100' : ' text-custom-green'} text-[13px] ml-4`}
@@ -398,7 +422,7 @@ export default function Earnings(){
                             </Text>
                         </View>
                     
-                        {/* <View className='flex flex-row items-center space-x-2'>
+                        <View className='flex flex-row items-center space-x-2'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[11px]`}
                             style={{fontFamily: 'Inter-Regular'}}
@@ -406,8 +430,8 @@ export default function Earnings(){
                                 21st May - 25th Aug
                             </Text>
                             <Calender />
-                        </View> */}
-                    </View>
+                        </View>
+                    </View> */}
 
                     <View 
                     className='w-[98%] px-3 mt-2'>

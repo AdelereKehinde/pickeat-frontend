@@ -57,8 +57,8 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
         }
     };
     return(
-        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row items-center justify-between border-b w-full py-3 px-6`}>
-            <View className=''>    
+        <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} flex flex-row items-center justify-between rounded-md w-[95%] mx-auto py-3 px-3`}>
+            <View className='rounded-md overflow-hidden'>    
                 <Image 
                 source={{uri: image}}
                 className='border'
@@ -123,7 +123,7 @@ const VendorOrderHistory: React.FC<Properties> = ({kitchen, date, price, image, 
                     style={{fontFamily: 'Inter-Bold'}}
                     className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[10px]`}
                     >
-                        Amount: <Text className='text-[14px] text-custom-green'>N{price}</Text>
+                        Amount: <Text className='text-[13px] text-custom-green'>₦{price}</Text>
                     </Text>
                     <View className='flex flex-row items-center'>
                         <Text

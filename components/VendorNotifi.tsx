@@ -8,6 +8,7 @@ import { postRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { Link, router } from "expo-router";
+import { TruncatedText } from './TitleCase';
 
 interface Properties {
     image:string,
@@ -25,27 +26,24 @@ const VendorNotifi: React.FC<Properties> = ({image, message, time, from, order_i
     const [loading, setLoading] = useState(false);
 
     return(
-        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row  items-center px-3 py-2`}>
-            <View
-            className='flex flex-row items-center space-x-2 w-full py-3'
-            >
+        <View className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-300'} flex flex-row w-[95%] mx-auto items-center px-3 py-2`}>
                 <Image 
                     source={{uri: image}}
                     className='w-12 h-12 rounded-full'
                 />
-                    <View className=''>
+                    <View className='ml-2'>
                         <Text
                         className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium-Italic'}}
                         >
-                            {message}
+                            {TruncatedText(message, 30)}
                         </Text>
-                        <Text
+                        {/* <Text
                         className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
                         >
-                            {message}
-                        </Text>
+                            {TruncatedText(message, 30)}
+                        </Text> */}
                         <Text
                         className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px]`}
                         style={{fontFamily: 'Inter-Medium'}}
@@ -58,31 +56,24 @@ const VendorNotifi: React.FC<Properties> = ({image, message, time, from, order_i
                             </Text>
                             {order_id}
                         </Text>
+                    </View>
 
-                        <View className='flex flex-row space-x-3'>
+                    <View className='flex ml-auto'>
                             <Text
                             className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[12px]`}
                             style={{fontFamily: 'Inter-SemiBold'}}
                             >
                                 ₦{amount}
                             </Text>
-                            <Text
-                            className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px]`}
-                            style={{fontFamily: 'Inter-Medium'}}
-                            >
-                                -
-                            </Text>
+
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-800'} text-[11px]`}
                             style={{fontFamily: 'Inter-Medium'}}
                             >
                                 {time}
                             </Text>
-                        </View>
                     </View>
-                    
                 </View>
-        </View>
         
     )
 }
