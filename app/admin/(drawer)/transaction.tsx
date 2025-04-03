@@ -218,21 +218,23 @@ function AdminTransaction(){
                             </View>
                         </View>
 
-                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
+                        <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full py-1 px-3 mt-1`}>
                             <View className='flex flex-row justify-between items-center w-full p-2'>
                                 <View className='flex flex-row justify-start'>
                                     <Text 
-                                    className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-900'} text-[13px] mr-1`}
+                                    className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-900'} text-[12px] mr-1`}
                                     style={{fontFamily: 'Inter-SemiBold'}}>
                                         Payout Management 
                                     </Text>
                                     <Text className={`${theme == 'dark'? 'text-gray-400' : 'text-gray-700'} text-[13px]`}
                                     style={{fontFamily: 'Inter-SemiBold'}}>
-                                        ({`${data?.data.pending_payout.count}` || 0})
+                                        ({`${data?.data.pending_payout.count || 0}`})
                                     </Text>
                                 </View>
                                 <View className='px-2'>
-                                    <TouchableOpacity>
+                                    <TouchableOpacity
+                                    onPress={()=>{router.push('/admin/payout')}}
+                                    >
                                         <ArrowRightCircle />
                                     </TouchableOpacity>
                                 </View>
@@ -272,9 +274,9 @@ function AdminTransaction(){
                             </View>
                         )}
                         {(loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            <View className='flex space-y-2 w-screen overflow-hidden'>
                                 {Array.from({ length: 5 }).map((_, index) => (
-                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} border-b`}>
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'}`}>
                                         <ContentLoader
                                         width="100%"
                                         height={50}
@@ -282,7 +284,7 @@ function AdminTransaction(){
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
+                                            <Rect x="5" y="0" rx="5" ry="5" width="90%" height="50" />
                                             <Rect x="230" y="10" rx="5" ry="5" width="90" height="10" />
                                             <Rect x="230" y="30" rx="5" ry="5" width="90" height="15" />
                                             <Rect x="20" y="5" rx="5" ry="5" width="80" height="10" />

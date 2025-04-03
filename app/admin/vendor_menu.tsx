@@ -214,11 +214,10 @@ export default function VendorMenu(){
                         )} 
                         {(!loading && filterIndex !== 'all' && meals.filter((item)=>item.category[0].category_name == filterIndex).length == 0) && (
                             <View className='flex items-center'>
-                                <TouchableOpacity
-                                onPress={()=>{router.push('/vendor/create_product')}}
+                                <View
                                 className=''>
                                     <Empty />
-                                </TouchableOpacity>
+                                </View>
                             </View>
                         )} 
                         {(loading && (meals.length == 0)) && 

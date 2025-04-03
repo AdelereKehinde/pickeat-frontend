@@ -17,6 +17,7 @@ import Pagination from '@/components/Pagination';
 import { WebView } from 'react-native-webview';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import FilterModal from '@/components/FilterModal';
 
 export default function WalletPage(){
     const toastConfig = {
@@ -45,11 +46,20 @@ export default function WalletPage(){
 
     const [refreshing, setRefreshing] = useState(false);
     const isFocusedd = useIsFocused();
+
+    const [filter, setFilter] = useState('');
+    const [openFilter, setOpenFilter] = useState(false)
+    const filterOptions = [
+        { label: 'all', value: '' },
+        { label: 'credit', value: 'credit' },
+        { label: 'debit', value: 'debit' },
+    ];
+
     const fetchCategories = async () => {
         try {
             setLoading(true)
             setTransactions([])
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['wallet-dashboard']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['wallet-dashboard']}?page_size=${pageSize}&page=${currentPage}&type=${filter}`, true);
             // alert(JSON.stringify(response))
             setCards(response.data.cards) 
             setCount(response.data.transactions.count)
@@ -63,7 +73,7 @@ export default function WalletPage(){
     };
     useEffect(() => {    
         fetchCategories();
-    }, [currentPage, isFocusedd]); // Empty dependency array ensures this runs once
+    }, [currentPage, isFocusedd, filter]); // Empty dependency array ensures this runs once
 
 
     const handleFunding = async () => {
@@ -117,7 +127,7 @@ export default function WalletPage(){
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
-                    <TitleTag withprevious={true} title='Payment' withbell={true} />
+                    <TitleTag withprevious={true} title='Wallet' withbell={true} />
                 </View>
                 <ScrollView
                 refreshControl={
@@ -132,23 +142,13 @@ export default function WalletPage(){
                     >
                         Wallet
                     </Text>
-                    {loading? 
-                        <ContentLoader
-                        width="100%"
-                        height={30}
-                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
-                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
-                        >
-                            <Rect x="" y="0" rx="5" ry="5" width="100" height="30" fill="#fff" />
-                        </ContentLoader>
-                        :
-                        <Text
-                        className={`text-[22px] text-custom-green`}
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        >
-                            ₦{amount}
-                        </Text>
-                    }
+                        
+                    <Text
+                    className={`text-[22px] text-custom-green`}
+                    style={{fontFamily: 'Inter-SemiBold'}}
+                    >
+                        ₦{amount}
+                    </Text>
 
                     <View className='self-end mt-2 flex flex-row items-center space-x-2'>
                         <TextInput
@@ -183,7 +183,7 @@ export default function WalletPage(){
                     </View>
                 </View>
                 
-                <Text
+                {/* <Text
                 className={`${theme == 'dark'? 'text-gray-200' : ' text-black'} text-[12px] self-start ml-4`}
                 style={{fontFamily: 'Inter-SemiBold'}}
                 >
@@ -276,14 +276,22 @@ export default function WalletPage(){
                     >
                         Add card
                     </Text>       
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
-                <Text
-                className={`text-custom-green text-[12px] mt-5 mx-auto`}
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Transaction History
-                </Text>
+                <View className='flex flex-row items-center justify-between w-full px-4 py-2'>
+                    <Text
+                    className={`text-[14px] ${theme == 'dark'? 'text-gray-100' : ' text-gray-900'}`}
+                    style={{fontFamily: 'Inter-Bold'}}
+                    >
+                        Transaction History
+                    </Text>
+
+                    <FilterModal 
+                    options={filterOptions} 
+                    getValue={(value)=>{setFilter(value); setOpenFilter(false)}}
+                    open={openFilter}
+                    />
+                </View>
                 
                 {loading && 
                     <View className='flex space-y-2 w-screen px-2 overflow-hidden'>

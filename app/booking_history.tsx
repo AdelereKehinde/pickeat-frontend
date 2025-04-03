@@ -12,6 +12,7 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import FilterModal from '@/components/FilterModal';
 
 export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
@@ -35,6 +36,17 @@ export default function BookingHistory(){
     const pageSize = 10; // Items per page
 
     const [refreshing, setRefreshing] = useState(false);
+
+    const [filter, setFilter] = useState('');
+    const [openFilter, setOpenFilter] = useState(false)
+    const filterOptions = [
+        { label: 'all', value: '' },
+        { label: 'pending', value: 'pending' },
+        { label: 'in progress', value: 'in progress' },
+        { label: 'completed', value: 'completed' },
+        { label: 'cancelled', value: 'cancelled' },
+    ];
+
     const fetchMeals = async () => {
         try {
             setLoading(true)
@@ -42,7 +54,7 @@ export default function BookingHistory(){
             if(!ranOnce){
                 setRanOnce(true)
             }
-            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}?page_size=${pageSize}&page=${currentPage}`, true);
+            const response = await getRequest<OrderResponse>(`${ENDPOINTS['cart']['buyer-orders']}?page_size=${pageSize}&page=${currentPage}&status=${filter}`, true);
             // alert(JSON.stringify(response))
             serOrders(response.results)
             setCount(response.count)
@@ -55,7 +67,7 @@ export default function BookingHistory(){
 
     useEffect(() => {
         fetchMeals(); 
-    }, [currentPage]); // Empty dependency array ensures this runs once
+    }, [currentPage, filter]); // Empty dependency array ensures this runs once
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -72,29 +84,38 @@ export default function BookingHistory(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
-                
-                <Text
-                className='text-custom-green text-[18px] self-start pl-5 mt-5'
-                style={{fontFamily: 'Inter-SemiBold'}}
-                >
-                    Booking History
-                </Text>
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full my-3 mb-28 relative flex items-center`}>
+                <View className='flex flex-row items-center justify-between w-full px-4 py-2'>
+                    <Text
+                    className={`text-[18px] ${theme == 'dark'? 'text-gray-100' : ' text-gray-900'}`}
+                    style={{fontFamily: 'Inter-Bold'}}
+                    >
+                        Booking History
+                    </Text>
+
+                    <FilterModal 
+                    options={filterOptions} 
+                    getValue={(value)=>{setFilter(value); setOpenFilter(false)}}
+                    open={openFilter}
+                    />
+                </View>
+
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full mt-4 space-y-1' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full mt-4' 
+                    contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && orders.length === 0) && (
                             <View className='flex items-center'> 
                                 <Empty/>
                             </View>
                         )}
+
                         {(loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
+                            <View className='flex space-y-3 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 3 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                    <View key={index} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} rounded-md`}>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
@@ -113,23 +134,26 @@ export default function BookingHistory(){
                                 ))}
                             </View>
                         }
-                        {orders.map((item) => (
-                            <View key={item.id}> 
-                                <ServicesLayout 
-                                kitchens={item.kitchens} 
-                                price={item.price} 
-                                date={item.date}
-                                items={item.items}
-                                order_id={item.order_id}
-                                status={item.status}
-                                /> 
-                            </View>
-                        ))}
-                        {((count > orders.length) && ranOnce) && 
-                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
-                        }
+                        <View className='space-y-2'>
+                            {orders.map((item) => (
+                                <View key={item.id}> 
+                                    <ServicesLayout 
+                                    kitchens={item.kitchens} 
+                                    price={item.price} 
+                                    date={item.date}
+                                    items={item.items}
+                                    order_id={item.order_id}
+                                    status={item.status}
+                                    /> 
+                                </View>
+                            ))}                    
+                        </View>
+                        <View className='mt-auto'>
+                            {((count > orders.length) && ranOnce) && 
+                                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                            }
+                        </View>
                     </ScrollView>
-                </View>
             </View>
         </SafeAreaView>
     )

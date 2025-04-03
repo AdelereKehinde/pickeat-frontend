@@ -134,6 +134,10 @@ const ENDPOINTS = {
         'rider-transactions': `${PAYMENT_BASE}transaction/rider`,
         'rider-withdrawal': `${PAYMENT_BASE}withdrawal/rider`,
         'vendor-withdrawal': `${PAYMENT_BASE}withdrawal/vendor`,
+        //Admin withdrawal Operations
+        'admin-withdrawal': `${PAYMENT_BASE}withdrawal/admin`,
+        'approve-withdrawal': `${PAYMENT_BASE}withdrawal/approve`,
+        'decline-withdrawal': `${PAYMENT_BASE}withdrawal/decline`,
     },
 }
 
