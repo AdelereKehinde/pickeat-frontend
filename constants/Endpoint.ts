@@ -95,6 +95,8 @@ const ENDPOINTS = {
         'orders': `${ADMIN_BASE}orders`,
         'dashboard': `${ADMIN_BASE}dashboard`,
         'notification': `${ADMIN_BASE}notification`,
+        'chart': `${ADMIN_BASE}chart`,
+        'user-engagement': `${ADMIN_BASE}user-engagement`,
     },
     'inventory': {
         'categories': `${INVENTORY_BASE}categories`,

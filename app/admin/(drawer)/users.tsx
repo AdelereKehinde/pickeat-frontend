@@ -268,7 +268,7 @@ function AdminUser(){
                         {parentUsers.map((item, index) => (
                                 <View key={item.id} className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-300'} flex flex-row items-center w-full py-3 px-6`}>
                                             <View>
-                                                <EllipseDot width={15} height={15} />
+                                                <EllipseDot width={12} height={12} />
                                             </View>
                                             <View className='ml-4'>
                                                 <Text className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-700'} text-[14px]`} style={{fontFamily: 'Inter-SemiBold'}}>

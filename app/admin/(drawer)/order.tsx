@@ -125,7 +125,7 @@ function AdminOrder(){
                     </View>
                 </View> */}
 
-                <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
+                {/* <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-1`}>
                     <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View className='flex flex-row justify-start'>
                             <Text className={`${theme == 'dark'? 'text-gray-200' : 'text-gray-900'} text-[13px] mr-1`}
@@ -141,7 +141,7 @@ function AdminOrder(){
                             </TouchableOpacity>
                         </View>
                     </View>
-                </View>
+                </View> */}
 
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full mt-1 relative flex flex-row items-center justify-center`}>
                     <ScrollView 

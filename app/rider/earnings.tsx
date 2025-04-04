@@ -397,7 +397,7 @@ export default function Earnings(){
                         <ChevronRight />
                     </TouchableOpacity>
 
-                    <View className='bg-white flex flex-row items-center justify-between w-full px-4 py-1'>
+                    <View className={`${theme == 'dark'? '' : ' bg-white'} flex flex-row items-center justify-between w-full px-4 py-1`}>
                         <Text
                         className={`text-[14px] ${theme == 'dark'? 'text-gray-100' : ' text-gray-900'}`}
                         style={{fontFamily: 'Inter-Bold'}}

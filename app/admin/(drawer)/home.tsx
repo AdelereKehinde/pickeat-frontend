@@ -13,6 +13,7 @@ import PendingApproval from '../../../assets/icon/pending-approval.svg';
 import PendingOrder from '../../../assets/icon/pending-order.svg';
 import CancelledOrder from '../../../assets/icon/cancelled-order.svg';
 import ActiveOrder from '../../../assets/icon/active-order.svg';
+import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import Information from '../../../assets/icon/alert-circle.svg';
 import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
 import { useIsFocused } from '@react-navigation/native';
@@ -100,34 +101,25 @@ export default function AdminHome(){
   const fetchBarchart = async () => {
     try {  
         setBarLoading(true)    
-        // const response = await getRequest<APIResponse>(`${ENDPOINTS['admin']['dashboard']}`, true);
-        // setRiderPercentage((response?.data.users.riders || 0) / (response?.data.users.total || 1) * 100);
-        // setVendorPercentage((response?.data.users.vendors || 0) / (response?.data.users.total || 1) * (100));
-        // setBuyerPercentage((response?.data.users.buyers || 0) / (response?.data.users.total || 1) * (100));
-        // // alert(`${riderPercentage},${vendorPercentage},${buyerPercentage}`)
-        // setResData(response.data)
-        setBarData({
-          labels: ['2', '4', '6', '8', '10', '12', '14', '16', '18', '20', '22', '24', '26', '28', '30'],
-          datasets: [
-            {
-              data: [20, 45, 28, 80, 99, 20, 45, 28, 80, 99, 20, 45, 28, 80, 110],
-            },
-          ],
-        })
+        type ChartResponse = { status: string; message: string; data: barType;};
+        const response = await getRequest<ChartResponse>(`${ENDPOINTS['admin']['chart']}?period=${barChartFilter}`, true);
+        
+        setBarData(response.data)
         setBarLoading(false)
     } catch (error) {
-        setLoading(false)     
+      setBarLoading(false)     
         // alert(error);
     } 
   };
 
   useEffect(() => { 
     fetchBarchart(); 
-  }, [isFocused, barChartFilter]);
+  }, [barChartFilter]);
 
   const onRefresh = async () => {
       setRefreshing(true);
       await fetchMeals()
+      await fetchBarchart(); 
       setRefreshing(false); // Stop the refreshing animation
   };
   
@@ -314,7 +306,7 @@ export default function AdminHome(){
                         </Text>
                     </View>
 
-                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full p-2 mt-1`}>
+                    <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded-lg w-full py-3 px-2 mt-1`}>
                       <View className='flex flex-row justify-between items-center w-full p-2'>
                         <View>
                           <Text
@@ -358,18 +350,29 @@ export default function AdminHome(){
                     </View>
 
                     <View className=''>
-                      <LineChart
+                      {barLoading?
+                        <ContentLoader
+                        width="100%"
+                        height={260}
+                        backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
+                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
+                        >
+                            <Rect x="" y="0" rx="5" ry="5" width="100%" height="260" />
+                        </ContentLoader>
+                        :
+                        <LineChart
                         bezier
                         data={barData}
                         width={screenWidth * 0.89}
-                        height={220}
+                        height={260}
                         yAxisLabel="₦"
                         yAxisSuffix=""
                         chartConfig={{
                           backgroundColor: (theme == 'dark')? "#1f2937" :"#fff",
                           backgroundGradientFrom: (theme == 'dark')? "#1f2937" :"#fff",
                           backgroundGradientTo: (theme == 'dark')? "#1f2937" :"#fff",
-                          decimalPlaces: 2,
+                          decimalPlaces: 0,
+                          paddingTop: 10,
                           color: (opacity = 1) => `#228B22`,
                           labelColor: (opacity = 1) => `#228B22`,
                           style: {
@@ -381,7 +384,7 @@ export default function AdminHome(){
                           },
                           propsForLabels: {
                             fontFamily: 'Inter-Medium',  // Custom font family for labels
-                            fontSize: 11,            // Custom font size for labels
+                            fontSize: 11,         // Custom font size for labels
                             // fontWeight: 'bold',      // Custom font weight
                           },
                           propsForVerticalLabels: {
@@ -390,8 +393,10 @@ export default function AdminHome(){
                             fontFamily: 'Inter-Medium',
                           },
                         }}
-                        verticalLabelRotation={0}
+                        verticalLabelRotation={30}
+                        horizontalLabelRotation={0}
                       />
+                      }
                     </View>
 
                     {/* <View className={`${theme == 'dark'? 'bg-gray-800' : 'bg-white'} rounded w-full p-2 mt-4`}>

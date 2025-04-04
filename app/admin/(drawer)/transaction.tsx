@@ -22,24 +22,39 @@ import Filter from '../../../assets/icon/filter.svg';
 import { FontAwesome } from '@expo/vector-icons';
 import Calender from '../../../assets/icon/calender.svg';
 import TitleCase from '@/components/TitleCase';
+import FilterModal from '@/components/FilterModal';
 
 function AdminTransaction(){
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
     };
-
-    type ListData = { id: number; type: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string;}[];
+    type PopUpData = { 
+        id: number;
+        bank_name: string;
+        bank_code: string;
+        acc_number: string;
+        acc_name: string; 
+    }
+    type ListData = { id: number; type: string; commission: string; status: string; order_id: string; bank_name: string; wallet: string; price: string; date: string; commision: string; item_data: PopUpData;}[];
     type EarningResponse = { amount_in_wallet: string; pending_payout:  {
         count: number;
         amount: number;
     }; count: number; results: ListData; next: string; previous: string;};
     type ApiResponse = { status: string; message: string; data: EarningResponse;};
 
+
+    const [popUpData, setPopUpdata] = useState<PopUpData>({
+        id: 0, 
+        bank_name: '',
+        bank_code: '',
+        acc_name: '',
+        acc_number: ''
+    })
     const { theme, toggleTheme } = useContext(ThemeContext);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState('all');
     const [isFocusedSearch, setIsFocusedSearch] = useState(false);
+    const [showPopUp, setShowPopUp] = useState(false)
     const [searchValue, setSearchValue] = useState('')
     const [showAmount, setShowAmount] = useState(true)
     const [transactions, setTransactions] = useState<ListData>([]);
@@ -52,53 +67,25 @@ function AdminTransaction(){
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [filter, setFilter] = useState('');
+    const [openFilter, setOpenFilter] = useState(false)
+    const filterOptions = [
+        { label: 'all', value: '' },
+        { label: 'pending', value: 'pending'},
+        { label: 'completed', value: 'completed' },
+        { label: 'failed', value: 'failed' },
+    ];
     const fetchMeals = async () => {
         try {
-            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['admin-transactions']}?page_size=${pageSize}&page=${currentPage}`, true);
-            // alert(JSON.stringify(response))
-            // const response = 
-            //     {
-            //         status: 'completed',
-            //         message: 'string',
-            //         data: {
-            //             amount_in_wallet: '',
-            //             pending_payout: '',
-            //             count: 2,
-            //             next: '',
-            //             previous: '',
-            //             results: [
-            //                 {
-            //                     id: 1,
-            //                     type: "credit",
-            //                     order_id: "or66773",
-            //                     bank_name: "UBA",
-            //                     wallet: "",
-            //                     price: "15000",
-            //                     date: "26th Feb, 2025",
-            //                     commision: "500"
-            //                 },
-            //                 {
-            //                     id: 2,
-            //                     type: "debit",
-            //                     order_id: "or66773n",
-            //                     bank_name: "UBA",
-            //                     wallet: "",
-            //                     price: "15000",
-            //                     date: "26th Feb, 2025",
-            //                     commision: "500"
-            //                 }
-            //             ]
-            //         }
-            //     }
-
-
+            const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['admin-transactions']}?page_size=${pageSize}&page=${currentPage}&status=${filter}`, true);
+            
             setData(response)
             setTransactions(response.data.results)
             setCount(response.data.count)
             setLoading(false)
         } catch (error) {
             setLoading(false) 
-            alert(error);
+            // alert(error);
         } 
     };
     
@@ -106,7 +93,7 @@ function AdminTransaction(){
         setLoading(true)
         setTransactions([])
         fetchMeals(); 
-    }, [currentPage]); // Empty dependency array ensures this runs once
+    }, [currentPage, filter]); // Empty dependency array ensures this runs once
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -125,7 +112,54 @@ function AdminTransaction(){
 
     return (
         <SafeAreaView>
-            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>      
+            <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>   
+
+                {showPopUp && (
+                    <View 
+                    className="absolute mb-4 w-full h-full flex items-center justify-around  z-10" style={{backgroundColor: '#00000080'}}>
+                        <View 
+                        style={{ minHeight: 250 }}
+                        className={`${theme == 'dark'? 'bg-gray-700' : ' bg-white'} w-[90%] flex items-center justify-around p-3 rounded-3xl shadow-2xl`}>
+                            <View
+                            className='flex flex-col items-center mb-2'>
+                                <Text
+                                className={`${theme == 'dark'? 'text-white' : ' text-gray-900'} text-[16px]`}
+                                style={{fontFamily: 'Inter-Bold'}} 
+                                >
+                                    {popUpData.acc_name}
+                                </Text>
+                                <Text
+                                className={`text-custom-green text-[11px]`}
+                                style={{fontFamily: 'Inter-Medium'}} 
+                                >
+                                    {TitleCase(popUpData.bank_name)}
+                                </Text>
+                            </View>
+                            <View 
+                            className='flex w-full'>
+                                <View
+                                className='flex flex-row justify-between items-center w-full px-3'>
+                                    <Text
+                                    className={`${theme == 'dark'? 'text-gray-300' : ' text-gray-500'} text-[11px]`}
+                                    style={{fontFamily: 'Inter-Regular'}} 
+                                    >
+                                        {popUpData.acc_number}
+                                    </Text>
+                                </View>
+                            </View>
+                            <TouchableOpacity 
+                                onPress={()=>{setShowPopUp(!showPopUp)}}
+                                className='flex flex-row items-center px-8 py-2 rounded-lg bg-custom-green mt-5'>
+                                <Text
+                                className='text-white text-[12px] items-center'
+                                style={{fontFamily: 'Inter-SemiBold'}}
+                                >
+                                    Ok
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}   
                 {/* <View className={` w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />
@@ -189,7 +223,7 @@ function AdminTransaction(){
                             className='flex flex-row items-center py-3 rounded-lg'>
                                 <Naira />
                                 <Text
-                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[20px] mx-4`}
+                                className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-900'} text-[20px] mx-2`}
                                 style={{fontFamily: 'Inter-SemiBold'}}
                                 >
                                     {showAmount? `${data?.data.amount_in_wallet || 0.00}`:'****'}
@@ -241,7 +275,21 @@ function AdminTransaction(){
                             </View>
                         </View>
                     </View>
-                    <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} flex flex-row items-center justify-between w-full px-4 py-3`}>
+                    <View className={`${theme == 'dark'? '' : ' bg-white'} flex flex-row items-center justify-between w-full px-4 py-1`}>
+                        <Text
+                        className={`text-[14px] ${theme == 'dark'? 'text-gray-100' : ' text-gray-900'}`}
+                        style={{fontFamily: 'Inter-Bold'}}
+                        >
+                            Transactions
+                        </Text>
+
+                        <FilterModal 
+                        options={filterOptions} 
+                        getValue={(value)=>{setFilter(value); setOpenFilter(false)}}
+                        open={openFilter}
+                        />
+                    </View>
+                    {/* <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-gray-100'} flex flex-row items-center justify-between w-full px-4 py-3`}>
                         <View className='flex flex-row'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-100' : ' text-custom-green'} text-[18px]`}
@@ -251,7 +299,7 @@ function AdminTransaction(){
                             </Text>
                         </View>
                     
-                        {/* <View className='flex flex-row items-center space-x-1'>
+                        <View className='flex flex-row items-center space-x-1'>
                             <Text
                             className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[12px]`}
                             style={{fontFamily: 'Inter-Regular'}}
@@ -259,9 +307,10 @@ function AdminTransaction(){
                                 21st May - 25th Aug
                             </Text>
                             <Calender />
-                        </View> */}
-                    </View>
-                    <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-[#F2F2F2]'} px-4`}>
+                        </View>
+                    </View> */}
+
+                    <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-[#F2F2F2]'} px-2`}>
                         {((!loading || (transactions.length !== 0)) && transactions.length === 0 ) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -284,7 +333,7 @@ function AdminTransaction(){
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            <Rect x="5" y="0" rx="5" ry="5" width="90%" height="50" />
+                                            <Rect x="5" y="0" rx="5" ry="5" width="93%" height="50" />
                                             <Rect x="230" y="10" rx="5" ry="5" width="90" height="10" />
                                             <Rect x="230" y="30" rx="5" ry="5" width="90" height="15" />
                                             <Rect x="20" y="5" rx="5" ry="5" width="80" height="10" />
@@ -295,23 +344,26 @@ function AdminTransaction(){
                                 ))}
                             </View>
                         }
-                        {transactions.map((item) => (
-                            (item.type=='credit')
-                            ?
-                            <AdminOrderTransaction key={item.id} 
-                            receiver={item.bank_name}
-                            time={item.date} 
-                            commission={item.commision} 
-                            amount={item.price}
-                            status='Successful' 
-                            order_id = {item.order_id}
-                            item = {['Fried Rice', 'Chicken']}
-                            price = "8000.00"
-                            date={item.date}
-                            />
-                            :
-                            <AdminMoneyTransaction key={item.id} type={item.type} receiver={item.bank_name} time={item.date} commission={item.commision} amount={item.price} status='Successful' />
+                        {transactions.map((item, _) => (
+                            // <TouchableOpacity 
+                            // onPress={()=>{setPopUpdata(item.item_data); setShowPopUp(!showPopUp)}} 
+                            // key={_}>
+                                <AdminMoneyTransaction 
+                                key={item.id} 
+                                type={item.type} 
+                                receiver={item.bank_name} 
+                                time={item.date} 
+                                commission={item.commision} 
+                                amount={item.price} 
+                                status={item.status} />
+                            // </TouchableOpacity>
                         ))}
+                    </View>
+
+                    <View className='mt-auto'>
+                        {((transactions.length > 0) && (count > transactions.length)) &&
+                            <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                        }
                     </View>
                 </ScrollView>
                 <Toast config={toastConfig} />

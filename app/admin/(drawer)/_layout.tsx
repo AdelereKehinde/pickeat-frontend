@@ -17,6 +17,7 @@ import PagesRestriction from '../../../assets/icon/pages-restrictions.svg';
 import ContentManagement from '../../../assets/icon/content-management.svg';
 import HelpSupport from '../../../assets/icon/help-support.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import { FontAwesome } from '@expo/vector-icons';
 
 import AdminHome from './home'
 import AdminOrder from './order'
@@ -201,7 +202,8 @@ export default function Layout() {
         component={Account} 
         options={{
           drawerIcon: ({ focused, size }) => (
-            <AccountInactive width={28} height={28} />
+            <FontAwesome name="user" size={28} color={(theme == 'dark')? "#6b7280" : "#9ca3af"} />
+            // <AccountInactive width={28} height={28} />
           ),
           drawerLabelStyle: {
             fontSize: 13,

@@ -50,7 +50,7 @@ const AdminOrderTransaction: React.FC<Properties> = ({receiver, amount, commissi
             )}
             <TouchableOpacity
             onPress={()=>{setShowPopup(!showPopup)}}
-            className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-1 my-2 p-2 rounded-lg w-full`}
+            className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-1 my-1 p-2 rounded-lg w-full`}
             >
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-8 h-8 rounded-full flex items-center justify-around`}>
                     <ArrowUp />
@@ -70,14 +70,14 @@ const AdminOrderTransaction: React.FC<Properties> = ({receiver, amount, commissi
                     </Text>
                     <View className='flex flex-row space-x-1'>
                         <Text
-                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[9px]`}
+                        className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[8px]`}
                         style={{fontFamily: 'Inter-Regular'}} 
                         >
                             {time}
                         </Text>
                         <View className='bg-custom-green px-2 rounded-sm'>
                             <Text
-                            className='text-[9px] text-white'
+                            className='text-[8px] text-white'
                             style={{fontFamily: 'Inter-Regular'}}
                             >
                                 {status}
@@ -92,12 +92,12 @@ const AdminOrderTransaction: React.FC<Properties> = ({receiver, amount, commissi
                     >
                         ₦{amount}
                     </Text>
-                    <Text
-                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[10px]`}
+                    {/* <Text
+                    className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-[9px]`}
                     style={{fontFamily: 'Inter-Regular'}}
                     >
                         Commission - #{commission}
-                    </Text>
+                    </Text> */}
                 </View>
             </TouchableOpacity>
             
