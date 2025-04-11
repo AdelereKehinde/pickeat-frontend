@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import { router, useGlobalSearchParams } from 'expo-router';
 
 export default function Index(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -55,33 +56,50 @@ export default function Index(){
                     </View>
                     
                     <View className='w-[80%] space-y-6 -mt-14'>
-                        <Link 
-                        href={showBuyerOnboarding? "/get_started" : "/login"}
-                        style={{fontFamily: 'Inter-Medium'}}
-                        className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
-                            User
-                        </Link>
+                        <TouchableOpacity 
+                        onPress={async()=>{router.push((showBuyerOnboarding)? '/get_started' : '/login'); await AsyncStorage.setItem('service', 'buyer');}} 
+                        // href={showBuyerOnboarding? "/get_started" : "/login"}
+                        className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border`}>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-custom-green text-center'
+                            >
+                                User
+                            </Text>
+                        </TouchableOpacity>
 
-                        <Link 
-                        href={showSellerOnboarding? "/vendor/welcome" : "/vendor/login"}
-                        style={{fontFamily: 'Inter-Medium'}}
+                        <TouchableOpacity
+                        onPress={async()=>{router.push((showSellerOnboarding)? '/vendor/welcome' : '/vendor/login'); await AsyncStorage.setItem('service', 'vendor');}} 
                         className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
-                            Vendor
-                        </Link>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-custom-green text-center'
+                            >
+                                Vendor
+                            </Text>
+                        </TouchableOpacity>
                         
-                        <Link 
-                        href={showRiderOnboarding? "/rider/welcome" : "/rider/login"}
-                        style={{fontFamily: 'Inter-Medium'}}
+                        <TouchableOpacity 
+                        onPress={async()=>{router.push((showRiderOnboarding)? '/rider/welcome' : '/rider/login'); await AsyncStorage.setItem('service', 'rider');}} 
                         className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
-                            Rider
-                        </Link>
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-custom-green text-center'
+                            >
+                                Rider
+                            </Text>
+                        </TouchableOpacity>
 
-                        <Link 
-                        href={"/admin/login" as any}
-                        style={{fontFamily: 'Inter-Medium'}}
+                        <TouchableOpacity 
+                        onPress={async()=>{router.push('/admin/login'); await AsyncStorage.setItem('service', 'admin');}} 
                         className={`${theme == 'dark'? 'bg-gray-800  border-gray-500' : '  bg-gray-100 border-custom-green'} rounded-2xl p-4 border text-custom-green text-center`}>
-                            Admin
-                        </Link> 
+                            <Text
+                            style={{fontFamily: 'Inter-Medium'}}
+                            className=' text-custom-green text-center'
+                            >
+                                Admin
+                            </Text>
+                        </TouchableOpacity> 
                     </View>
                 </View>
                 

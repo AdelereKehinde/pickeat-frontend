@@ -15,6 +15,8 @@ import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DeviceUUID from '@/constants/DeviceID';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import validatePassword from '@/constants/passwordValidator';
+import validateEmail from '@/constants/emailValidator';
 
 export default function Login(){
     const {next} = useGlobalSearchParams()
@@ -28,9 +30,33 @@ export default function Login(){
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
+    const [pswdValidation, setPswdValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+    const [emailValidation, setEmailValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+    
+    const handlePasswordChange = (pswd: string) => {
+      setPassword(pswd);
+  
+      // Validate the new password and update validation state
+      const validationResult = validatePassword(pswd);
+      setPswdValidation(validationResult);
+    };
+
+    const handleEmailChange = (email: string) => {
+      setEmail(email);
+  
+      // Validate the new password and update validation state
+      const validationResult = validateEmail(email);
+      setEmailValidation(validationResult);
+    };
 
     const validateInput = () =>{
-      if(email.includes(".com") && (password.length>5)){
+      if( emailValidation.isValid && (email.length !== 0) && (password.length !== 0) && (pswdValidation.isValid)){
         return true;
       }
       return false;
@@ -81,7 +107,7 @@ export default function Login(){
             autoHide: true,
           });
 
-          await Delay(2000)
+          await Delay(1500)
           router.replace({
             pathname: (res.data.first_name == '')?'/complete_profile': (res.data.delivery_address)?'/dashboard': (res.data.buyer_address == '')? '/complete_profile_2' : `/set_delivery_address`,
             params: { name: res.data.name, longitude: res.data.longitude, latitude: res.data.latitude, address: res.data.buyer_address},
@@ -93,8 +119,8 @@ export default function Login(){
         // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
-          text1: "An error occured",
-          text2: error.data?.data?.message || 'Unknown Error',
+          text1: error.data?.data?.message || 'Unknown Error',
+          // text2: error.data?.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
@@ -121,21 +147,32 @@ export default function Login(){
             </Text>
 
             <View className='flex flex-row justify-around items-center w-full p-5 space-x-3 mt-10'>
-                <View className='grow space-y-5'>
+                <View className='grow'>
                   <TextInput
                     style={{fontFamily: 'Inter-Medium'}}
                     className={`${theme == 'dark'? 'bg-gray-800 text-gray-100' : ' bg-gray-100 text-gray-600'} rounded-xl p-3 text-[13px]`}
-                    onChangeText={setEmail}
-                    // maxLength={10}
-                    // keyboardType="number-pad"
+                    onChangeText={handleEmailChange}
                     placeholder='Email address'
                     placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                   />
-                  <View className="w-full flex-row items-center relative rounded-lg">
+                  {/* Display validation error messages */}
+                  {!(emailValidation.isValid) && (
+                    <View className='mt-2 ml-2'>
+                      {emailValidation.errors.map((error, index) => (
+                        <Text key={index} 
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  <View className="w-full flex-row items-center relative rounded-lg mt-3">
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
                       className={`${theme == 'dark'? 'bg-gray-800 text-gray-100' : ' bg-gray-100 text-gray-600'} rounded-xl p-3 text-[13px] w-full`}
-                      onChangeText={setPassword}
+                      onChangeText={handlePasswordChange}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Password'
@@ -153,6 +190,18 @@ export default function Login(){
                       />
                     </TouchableOpacity>
                   </View>
+                  {/* Display validation error messages */}
+                  {!(pswdValidation.isValid) && (
+                    <View className='mt-2 ml-2'>
+                      {pswdValidation.errors.map((error, index) => (
+                        <Text key={index} 
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
                 </View>
             </View> 
 
@@ -165,7 +214,7 @@ export default function Login(){
 
             <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px] mt-auto`}
+              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px] mt-auto pt-5`}
               >
                 Don't have an account? <Link href="/registration" style={{fontFamily: 'Inter-Bold'}} className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'}`}>Sign Up</Link> 
               </Text>

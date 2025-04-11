@@ -18,6 +18,9 @@ import Empty from '../assets/icon/empy_transaction.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import TransactionPinPrompt from '@/components/TransactionPinPrompt';
+import TransactionPinModal from '@/components/SetTransactionPinModal';
+import FullScreenLoader from '@/components/FullScreenLoader';
 
 export default function PaymentConfirmationPage(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -103,6 +106,31 @@ export default function PaymentConfirmationPage(){
         (sum, item) => sum + item.discounted_price * item.quantity,
         0
     );
+
+
+    const [showTransactionPinPrompt, setShowTransactionPinPrompt] = useState(false);
+    const [transactionPinCorrect, setTransactionPinCorrect] = useState(false);
+    const [transactionPin, setTransactionPin] = useState('');
+    const [showTransactionPinModal, setShowTransactionPinModal] = useState(false);
+    const getPinStatus = async() =>{
+        type PinApiResponse = {
+            status: string; 
+            message: string; 
+            data: {
+                status: boolean;
+            }
+        }
+        setLoading(true)
+        const response = await getRequest<PinApiResponse>(`${ENDPOINTS['account']['transaction-pin']}`, true); // Authenticated
+        if (response.data.status == true){
+            setShowTransactionPinPrompt(response.data.status)
+        }else{
+            setShowTransactionPinModal(true)
+        }
+        
+        setLoading(false)
+    }
+
     
     const handlePayment = async () => {
         try {
@@ -152,6 +180,22 @@ export default function PaymentConfirmationPage(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
                     <TitleTag withprevious={true} title='Payment confirmation' withbell={false} />
                 </View>
+
+                {loading && (
+                    <FullScreenLoader />
+                )}
+
+                {showTransactionPinPrompt && (
+                    <TransactionPinPrompt 
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){handlePayment()}else{setLoadSignal(false)};}}/>
+                )}
+
+
+                <TransactionPinModal 
+                open={showTransactionPinModal}
+                getValue={(value)=>{setShowTransactionPinModal(value)}}
+                />
+
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mb-5 relative flex flex-row items-start justify-center`}>
                     <View className='w-full space-y-1'>
@@ -349,7 +393,7 @@ export default function PaymentConfirmationPage(){
 
                 <View className='flex items-center px-5 space-y-2 w-full my-8'>
                     <TouchableOpacity
-                    onPress={handlePayment}
+                    onPress={getPinStatus}
                     className={`text-center bg-custom-green ${(cartItems.length === 0 || loading || loadSignal) && 'bg-custom-inactive-green'} relative rounded-xl w-[80%]  p-4 self-center flex items-center justify-around`}
                     >
                         <Text

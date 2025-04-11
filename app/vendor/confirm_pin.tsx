@@ -40,6 +40,9 @@ export default function ConfirmPin(){
         case 'buyer':
             endpoint = ENDPOINTS['buyer']['validate-password-reset']
             break;
+        case 'rider':
+            endpoint = ENDPOINTS['rider']['validate-password-reset']
+            break;
         default:
             endpoint = ENDPOINTS['vendor']['validate-password-reset']
             break;

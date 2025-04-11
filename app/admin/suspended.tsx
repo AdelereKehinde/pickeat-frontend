@@ -225,26 +225,25 @@ function SuspendedAccounts(){
                         )}
                         
                         {(parentUsers.length === 0 && loading) && 
-                            <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 6 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
-                                        <ContentLoader
-                                        width="100%"
-                                        height={100}
-                                        backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
-                                        foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
-                                        >
-                                            {/* Add custom shapes for your skeleton */}
-                                            {/* <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" /> */}
-                                            <Rect x="230" y="20" rx="5" ry="5" width="90" height="10" />
-                                            <Rect x="230" y="50" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="20" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="20" y="30" rx="5" ry="5" width="120" height="10" />
-                                            <Rect x="20" y="60" rx="5" ry="5" width="150" height="10" />
-                                        </ContentLoader>
-                                    </View> 
-                                ))}
-                            </View>
+                            <View className='flex space-y-2 w-screen overflow-hidden'>
+                            {Array.from({ length: 6 }).map((_, index) => (
+                                <View key={index} className=' border-gray-300'>
+                                    <ContentLoader
+                                    width="100%"
+                                    height={50}
+                                    backgroundColor={(theme == 'dark')? '#111827':'#f3f3f3'}
+                                    foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
+                                    >
+                                        {/* Add custom shapes for your skeleton */}
+                                        <Rect x="0" y="0" rx="5" ry="5" width="100%" height="50" />
+                                        <Circle cx="15" cy="25" r="10" />
+                                        <Rect x="30" y="20" rx="5" ry="5" width="150" height="10" />
+                                        <Rect x="270" y="20" rx="5" ry="5" width="50" height="10" />
+                                        
+                                    </ContentLoader>
+                                </View> 
+                            ))}
+                        </View>
                         }
                         {parentUsers.map((item, index) => (
                                 <View key={item.id} className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-300'} flex flex-row items-center border-b w-full py-3 px-6`}>

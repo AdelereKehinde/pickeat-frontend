@@ -12,6 +12,8 @@ import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Device from "expo-device";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import validatePassword from '@/constants/passwordValidator';
+import validateEmail from '@/constants/emailValidator';
 
 export default function Registration(){
     const toastConfig = {
@@ -26,10 +28,35 @@ export default function Registration(){
     const [showPassword, setShowPassword] = useState(false)
     const [showPassword2, setShowPassword2] = useState(false)
 
+    const [pswdValidation, setPswdValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+    const [emailValidation, setEmailValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+
+    const handlePasswordChange = (pswd: string) => {
+      setPassword(pswd);
+  
+      // Validate the new password and update validation state
+      const validationResult = validatePassword(pswd);
+      setPswdValidation(validationResult);
+    };
+
+    const handleEmailChange = (email: string) => {
+      setEmail(email);
+  
+      // Validate the new password and update validation state
+      const validationResult = validateEmail(email);
+      setEmailValidation(validationResult);
+    };
+
     const deviceName = Device.modelName; // e.g., "iPhone 12"
     const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
     const validateInput = () =>{
-      if(email.includes(".com") && (password.length>5) && (password2.length>5) && (password.trim() == password2.trim())){
+      if(emailValidation.isValid && (email.length != 0) && (pswdValidation.isValid) && (password.trim() == password2.trim())){
         return true;
       }
       return false;
@@ -101,21 +128,35 @@ export default function Registration(){
             </Text>
 
             <View className='flex flex-row justify-around items-center w-full p-5 space-x-3 mt-10'>
-                <View className='grow space-y-5'>
+                <View className='grow'>
                   <TextInput
                     style={{fontFamily: 'Inter-Medium'}}
                     className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : ' bg-gray-100 text-gray-700'} rounded-xl p-3 text-[13px]`}
-                    onChangeText={setEmail}
+                    onChangeText={handleEmailChange}
                     // maxLength={10}
                     // keyboardType="number-pad"
                     placeholder='Email address'
                     placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                   />
-                  <View className="w-full flex-row items-center relative rounded-lg">
+
+                  {/* Display validation error messages */}
+                  {!(emailValidation.isValid) && (
+                    <View className='mt-2 ml-2'>
+                      {emailValidation.errors.map((error, index) => (
+                        <Text key={index} 
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  <View className="w-full flex-row items-center relative rounded-lg mt-2">
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
                       className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : ' bg-gray-100 text-gray-700'}  rounded-xl p-3 text-[13px] w-full`}
-                      onChangeText={setPassword}
+                      onChangeText={handlePasswordChange}
                       // maxLength={10}
                       // keyboardType="number-pad"
                       placeholder='Password'
@@ -133,8 +174,21 @@ export default function Registration(){
                       />
                     </TouchableOpacity>
                   </View>
+
+                  {/* Display validation error messages */}
+                  {!(pswdValidation.isValid) && (
+                    <View className='mt-2 ml-2'>
+                      {pswdValidation.errors.map((error, index) => (
+                        <Text key={index} 
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
                   
-                  <View className="w-full flex-row items-center relative rounded-lg">
+                  <View className="w-full flex-row items-center relative rounded-lg mt-2">
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
                       className={`${theme == 'dark'? 'bg-gray-800 text-gray-200' : ' bg-gray-100 text-gray-700'} rounded-xl p-3 text-[13px] w-full`}
@@ -156,13 +210,21 @@ export default function Registration(){
                       />
                     </TouchableOpacity>
                   </View>
+                  {(password != password2) && (
+                    <Text
+                      style={{fontFamily: 'Inter-Regular'}}
+                      className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px] ml-2`}>
+                        password does not match
+                      </Text>
+                  )}
+
                 </View>
             </View> 
 
             
               <Text
               style={{fontFamily: 'Inter-Medium'}}
-              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px]`}
+              className={`${theme == 'dark'? 'text-gray-400' : ' text-gray-500'} text-center text-[12px] pt-2`}
               >
                 Already have an account? <Link href="/login" className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-800'}`}>Sign In</Link> 
               </Text>

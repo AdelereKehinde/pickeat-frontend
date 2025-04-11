@@ -56,7 +56,7 @@ export default function UserDetails(){
 
     const handleLogin = async () => {
         try {
-          if(!loading && isActive){
+          if(!loading){
             setLoading(true)
             const res = await postRequest(`${ENDPOINTS['admin']['status']}/user/${id}`, {}, true);
             setLoading(false)

@@ -82,6 +82,9 @@ const ENDPOINTS = {
         'profile': `${RIDER_BASE}profile`,
         'dashboard': `${RIDER_BASE}dashboard`,
         'order-status-update': `${RIDER_BASE}update-status`,
+        'forget-password': `${RIDER_BASE}password/forget`,
+        'validate-password-reset': `${RIDER_BASE}password/validate-otp`,
+        'reset-password': `${RIDER_BASE}password/reset`,
     },
     'admin': {
         'signin': `${ADMIN_BASE}signin`,

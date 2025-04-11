@@ -12,6 +12,7 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import useDebounce from '@/components/Debounce';
 
 export default function KitchenPage(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -27,12 +28,14 @@ export default function KitchenPage(){
     const [filterIndex, setFilterIndex] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [count, setCount] = useState(1);
-    const pageSize = 7; // Items per page
+    const pageSize = 10; // Items per page
 
     const [refreshing, setRefreshing] = useState(false);
-    const fetchCategories = async () => {
+    const fetchCategories = async (query: string) => {
         try {
-            const response = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=${pageSize}&page=${currentPage}&search=${searchValue}`, true);
+            setKitchens([]);
+            setLoading(true)
+            const response = await getRequest<kitchenResponse>(`${ENDPOINTS['vendor']['store-list']}?page_size=${pageSize}&page=${currentPage}&search=${query}`, true);
             setCount(response.count)
             setLoading(false)
             // alert(JSON.stringify(response.results))
@@ -46,16 +49,27 @@ export default function KitchenPage(){
     useEffect(() => {
         setKitchens([])
         setLoading(true)
-        fetchCategories();
+        fetchCategories('');
     }, [currentPage]); // Empty dependency array ensures this runs once
     
 
     const onRefresh = async () => {
         setRefreshing(true);
-    
-        await fetchCategories()
-    
+        await fetchCategories(searchValue)
         setRefreshing(false); // Stop the refreshing animation
+    };
+
+    // Create a debounced version of fetchMeals with 500ms delay
+    const debouncedSearch = useDebounce(fetchCategories, 800);
+
+    const handleSearch = (query: string) => {
+        setSearchValue(query);
+         // Clear results if input is empty
+        if (query.trim() === '') {
+          setLoading(false);
+          return;
+        }
+        debouncedSearch(query); // Call debounced function
     };
 
     return (
@@ -72,13 +86,13 @@ export default function KitchenPage(){
                     </View>
                     <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
-                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
+                        className={`w-full ${isFocused? 'border-custom-green border': 'border-gray-400 border'} ${(theme == 'dark')? 'text-white': 'text-gray-900'} rounded-lg px-3 pl-7 py-2 text-[11px]`}
                         autoFocus={false}
                         onFocus={()=>setIsFocus(true)}
                         onBlur={()=>setIsFocus(false)}
-                        onChangeText={setSearchValue}
+                        onChangeText={handleSearch}
                         defaultValue={searchValue}
-                        placeholder="Search for available home services"
+                        placeholder="Search for store or kitchen"
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                     />
                     {/* <TouchableOpacity 
@@ -162,33 +176,39 @@ export default function KitchenPage(){
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
-                className='w-full p-1 pb-5 mt-5 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                className='w-full p-1 pb-5 mt-5' contentContainerStyle={{ flexGrow: 1 }}>
                 {(loading) && 
-                    <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                        {Array.from({ length: 6 }).map((_, index) => (
-                            <View key={index} className='mt-5 border-b border-gray-300'>
+                    <View className='flex space-y-2 w-screen overflow-hidden'>
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} mt-5 border-b`}>
                                 <ContentLoader
                                 width="100%"
-                                height={100}
+                                height={76}
                                 backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                 foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                 >
                                     {/* Add custom shapes for your skeleton */}
-                                    <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                    <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                    <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                    <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                    <Rect x="2.5%" y="0" rx="5" ry="5" width="80" height="70" />
+                                    <Rect x="70%" y="10" rx="50" ry="5" width="15%" height="25" />
+                                    <Rect x="30%" y="15" rx="5" ry="5" width="20%" height="10" />
+                                    <Rect x="30%" y="45" rx="5" ry="5" width="25%" height="10" />
+                                    <Rect x="70%" y="45" rx="5" ry="5" width="28%" height="10" />
                                 </ContentLoader>
                             </View> 
                         ))}
                     </View>
                 }
-                {kitchens.map((item) => (
-                    <View key={item.id}>
-                        <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time={item.delivery_time} rating={item.review.average_rating} fee={item.delivery_fee} />
-                    </View>
-                ))}
-                <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                <View className='space-y-2 mb-6'>
+                    {kitchens.map((item) => (
+                        <View key={item.id}>
+                            <KitchenCard key={item.id} kitchen_id={item.id} image={item.avatar} name={item.business_name} is_favourite={item.is_favourite} time={item.delivery_time} rating={item.review.average_rating} fee={item.delivery_fee} />
+                        </View>
+                    ))}
+                </View>
+                
+                {((kitchens.length != 0) && (count > kitchens.length)) && 
+                    <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
+                }
                 </ScrollView>
             </View>
         </SafeAreaView>

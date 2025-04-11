@@ -142,7 +142,7 @@ export default function Cart(){
                         {(cartItems.length === 0 && loading) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
                                 {Array.from({ length: 4 }).map((_, index) => (
-                                    <View key={index} className='border-b border-gray-300'>
+                                    <View key={index} className=''>
                                         <ContentLoader
                                         width="100%"
                                         height={100}
@@ -150,10 +150,11 @@ export default function Cart(){
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                            <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="3%" y="0" rx="5" ry="5" width="80" height="80" />
+                                            <Circle cx="92%" cy="10" r="10" />
+                                            <Rect x="70%" y="55" rx="5" ry="5" width="90" height="25" />
+                                            <Rect x="30%" y="10" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="30%" y="30" rx="5" ry="5" width="60" height="8" />
                                         </ContentLoader>
                                     </View> 
                                 ))}

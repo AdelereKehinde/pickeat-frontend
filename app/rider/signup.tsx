@@ -16,6 +16,8 @@ import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Device from "expo-device";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import validateEmail from '@/constants/emailValidator';
+import validatePassword from '@/constants/passwordValidator';
 
 
 export default function RiderSignUp(){
@@ -35,8 +37,33 @@ export default function RiderSignUp(){
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
 
+    const [pswdValidation, setPswdValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+    const [emailValidation, setEmailValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+
+    const handlePasswordChange = (pswd: string) => {
+      setPassword(pswd);
+  
+      // Validate the new password and update validation state
+      const validationResult = validatePassword(pswd);
+      setPswdValidation(validationResult);
+    };
+
+    const handleEmailChange = (email: string) => {
+      setEmail(email);
+  
+      // Validate the new password and update validation state
+      const validationResult = validateEmail(email);
+      setEmailValidation(validationResult);
+    };
+
     const validateInput = () =>{
-      if(email.includes(".com") && (password.length>5) && (password.trim() == password2.trim())){
+      if(emailValidation.isValid && (email.length != 0) && pswdValidation.isValid && (password.length != 0) && (password.trim() == password2.trim())){
         return true;
       }
       return false;
@@ -127,7 +154,7 @@ export default function RiderSignUp(){
             </View>
 
             <View className='flex flex-col justify-around items-center w-full p-5 space-x-3 mt-5'>
-                <View className='grow space-y-5'>
+                <View className='grow space-y-2'>
                   <View className={`w-full flex-row items-center relative border ${(focus=='email')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
                     <View className='absolute left-2'>
                       <Email />
@@ -135,7 +162,7 @@ export default function RiderSignUp(){
                     <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
                         className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
-                        onChangeText={setEmail}
+                        onChangeText={handleEmailChange}
                         onFocus={()=>{setFocus('email')}}
                         onBlur={()=>{setFocus('')}}
                         // maxLength={10}
@@ -144,6 +171,19 @@ export default function RiderSignUp(){
                         placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
                       />
                   </View>
+
+                  {/* Display validation error messages */}
+                  {!(emailValidation.isValid) && (
+                    <View className='mt-2 ml-2'>
+                      {emailValidation.errors.map((error, index) => (
+                        <Text key={index} 
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
                 
                   <View className={`w-full flex-row items-center relative border ${(focus=='password')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
                     <View className='absolute left-2'>
@@ -152,7 +192,7 @@ export default function RiderSignUp(){
                     <TextInput
                       style={{fontFamily: 'Inter-Medium'}}
                       className={`${theme == 'dark'? 'text-gray-100' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
-                      onChangeText={setPassword}
+                      onChangeText={handlePasswordChange}
                       onFocus={()=>{setFocus('password')}}
                       onBlur={()=>{setFocus('')}}
                       // maxLength={10}
@@ -172,6 +212,20 @@ export default function RiderSignUp(){
                       />
                     </TouchableOpacity>
                   </View>
+
+                  {/* Display validation error messages */}
+                  {!(pswdValidation.isValid) && (
+                    <View className='mt-2 ml-2'>
+                      {pswdValidation.errors.map((error, index) => (
+                        <Text key={index} 
+                        style={{fontFamily: 'Inter-Regular'}}
+                        className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                          {error}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
                   <View className={`w-full flex-row items-center relative border ${(focus=='password2')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
                     <View className='absolute left-2'>
                       <Locked />

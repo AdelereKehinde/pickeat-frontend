@@ -72,9 +72,9 @@ export default function Dashboard(){
         }
     };
     useEffect(() => {
-        // if (isNavFocused){
+        if (isNavFocused){
             fetchCategories();
-        // }
+        }
     }, []); // Empty dependency array ensures this runs once
 
     const [isFocused, setIsFocus] = useState(false);
@@ -191,10 +191,10 @@ export default function Dashboard(){
                     </TouchableOpacity>
                         
 
-                    <View className="mt-3 px-3 h-40">
+                    <View className="mt-3 px-3">
                         {(meals.length === 0) && 
                         <View className='flex flex-row space-x-2 w-screen overflow-hidden'>
-                            {Array.from({ length: 3 }).map((_, index) => (
+                            {Array.from({ length: 4 }).map((_, index) => (
                                 <View key={index}>
                                     <ContentLoader
                                         width={140}
@@ -262,10 +262,10 @@ export default function Dashboard(){
                                 view all
                             </Link>
                         </View>
-                        <View className={`h-[180px] p-3`}>
+                        <View className={`p-3`}>
                             {(specialOffer.length === 0) && 
                             <View className='flex flex-row space-x-2 w-screen overflow-hidden'>
-                                {Array.from({ length: 2 }).map((_, index) => (
+                                {Array.from({ length: 4 }).map((_, index) => (
                                     <View key={index} className='flex items-center'>
                                         <ContentLoader
                                         width={250}
@@ -320,20 +320,20 @@ export default function Dashboard(){
                         >
                             Featured Sellers
                         </Text>
-                        <View className='h-24 p-3'>
+                        <View className='p-3'>
                             {(specialOffer.length === 0) && 
                                 <View className='flex flex-row space-x-2 w-screen px-2 overflow-hidden'>
                                     {Array.from({ length: 4 }).map((_, index) => (
                                         <View key={index} className='flex items-center'>
                                             <ContentLoader
                                             width={100}
-                                            height={101}
+                                            height={85}
                                             backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                             foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                             >
                                                 {/* Add custom shapes for your skeleton */}
-                                                <Circle cx="50" cy="20" r="20" />
-                                                <Rect x="5" y="50" rx="5" ry="5" width="90" height="10" />
+                                                <Circle cx="50" cy="28" r="25" />
+                                                <Rect x="5" y="60" rx="5" ry="5" width="90" height="10" />
                                             </ContentLoader>
                                         </View> 
                                     ))}
@@ -394,19 +394,20 @@ export default function Dashboard(){
                         </View>
                         {(kitchens.length === 0) && 
                             <View className='flex space-y-2 w-screen px-2 overflow-hidden'>
-                                {Array.from({ length: 3 }).map((_, index) => (
-                                    <View key={index} className='mt-5 border-b border-gray-300'>
+                                {Array.from({ length: 4 }).map((_, index) => (
+                                    <View key={index} className={`${theme == 'dark'? 'border-gray-700' : ' border-gray-300'} mt-5 border-b`}>
                                         <ContentLoader
                                         width="100%"
-                                        height={100}
+                                        height={76}
                                         backgroundColor={(theme == 'dark')? '#1f2937':'#f3f3f3'}
                                         foregroundColor={(theme == 'dark')? '#4b5563':'#ecebeb'}
                                         >
                                             {/* Add custom shapes for your skeleton */}
-                                            <Rect x="5" y="0" rx="5" ry="5" width="100" height="70" />
-                                            <Rect x="230" y="10" rx="5" ry="5" width="90" height="25" />
-                                            <Rect x="120" y="10" rx="5" ry="5" width="80" height="10" />
-                                            <Rect x="120" y="50" rx="5" ry="5" width="80" height="10" />
+                                            <Rect x="2.5%" y="0" rx="5" ry="5" width="80" height="70" />
+                                            <Rect x="70%" y="10" rx="50" ry="5" width="15%" height="25" />
+                                            <Rect x="30%" y="15" rx="5" ry="5" width="20%" height="10" />
+                                            <Rect x="30%" y="45" rx="5" ry="5" width="25%" height="10" />
+                                            <Rect x="70%" y="45" rx="5" ry="5" width="28%" height="10" />
                                         </ContentLoader>
                                     </View> 
                                 ))}

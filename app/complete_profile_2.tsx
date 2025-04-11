@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { router, useGlobalSearchParams } from 'expo-router';
-import { Text, View, StatusBar, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet } from "react-native";
+import { Text, View, StatusBar, FlatList, TextInput, Pressable, TouchableOpacity, ActivityIndicator, ScrollView, StyleSheet } from "react-native";
 import { Link } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FontAwesome } from '@expo/vector-icons';
@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import OutOfBound from '@/components/OutOfBound';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import useDebounce from '@/components/Debounce';
 
 export default function CompleteProfile2(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -34,7 +35,7 @@ export default function CompleteProfile2(){
     const [getloading, setGetLoading] = useState(true); // Loading state
     const [isFocused, setIsFocus] = useState(false);
 
-    type Result = { name: ''; latitude: 0; longitude: 0; place_id: ''; description: '';}[];
+    type Result = {latitude: 0; longitude: 0; place_id: ''; name: '';}[];
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState<Result>([]);
     const [selectedLocation, setSelectedLocation] = useState({latitude: 0, longitude: 0, address: ''});
@@ -110,34 +111,27 @@ export default function CompleteProfile2(){
     // Fetch addresses from Google Places API
     const fetchAddresses = async (query: string) => {
         const response = await getRequest<Result>(`${ENDPOINTS['account']['geocode']}?address=${query}`, true);
-        alert(JSON.stringify(response))
+        // alert(JSON.stringify(response))
         setResults(response);
     };
 
-    // Handle search query changes
+    // Create a debounced version of fetchMeals with 500ms delay
+    const debouncedSearch = useDebounce(fetchAddresses, 800);
+
     const handleSearch = (query: string) => {
-        // alert(query)
         setSearchQuery(query);
-        if (query.length > 2) {
-        fetchAddresses(query);
-        } else {
-        setResults([]);
+        setResults([]); // Clear results if input is empty
+        if (query.trim() === '') {
+          setLoading(false);
+            return;
         }
+        debouncedSearch(query); // Call debounced function
     };
 
     // Get detailed location information and update map
-    const handleSelectAddress = async (placeId: string, address: string, longitude: number, latitude: number) => {
-        if (placeId === ''){
-            setSelectedLocation({ latitude: latitude, longitude: longitude, address: address });
-
-        }else{
-            setGetLoading(true)
-            type LongLatType = { lat: number; lng: number;};
-            const response = await getRequest<LongLatType>(`${ENDPOINTS['account']['geocode']}?place_id=${placeId}`, true);
-
-            setSelectedLocation({ latitude: response.lat, longitude: response.lng, address: address })
-            setGetLoading(false)
-        }
+    const handleSelectAddress = async (address: string, longitude: number, latitude: number) => {
+        // if (placeId === ''){
+        setSelectedLocation({ latitude: latitude, longitude: longitude, address: address });
 
         setSearchQuery(''); // Clear search query
         setResults([]); // Clear search results
@@ -219,6 +213,8 @@ export default function CompleteProfile2(){
                     <FullScreenLoader />
                 )}
 
+                
+
                 <ScrollView
                 className='w-full'
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -236,7 +232,7 @@ export default function CompleteProfile2(){
                                 autoFocus={false}
                                 onFocus={()=>setIsFocus(true)}
                                 onBlur={()=>setIsFocus(false)}
-                                // onChangeText={handleSearch}
+                                onChangeText={handleSearch}
                                 value={searchQuery}
                                 placeholder="Enter a new address"
                                 placeholderTextColor={(theme == 'dark')? '#fff':'#1f2937'}
@@ -246,22 +242,25 @@ export default function CompleteProfile2(){
                         {results.length > 0 && (
                             <View
                             style={styles.shadow_box}
-                            className='bg-white w-full absolute top-14 z-30  mb-2 border border-gray-400 rounded-lg'
+                            className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full absolute top-14 z-30  mb-2 border border-gray-400 rounded-lg`}
                             >
-                                <ScrollView
-                                className=" bg-white shadow-lg max-h-60 rounded-lg"
-                                >
-                                    {results.map((item, _) => (
+                                <FlatList 
+                                    data={results}
+                                    className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} pb-2 pt-2 px-4 mb-3`}
+                                    renderItem={({item, index}) =>  (
                                         <TouchableOpacity
-                                        key={_}
                                         className="px-4 py-2 border-b border-gray-200"
-                                        onPress={() => handleSelectAddress(item.place_id, item.description, item.longitude, item.latitude)}
+                                        onPress={() => handleSelectAddress(item.name, item.longitude, item.latitude)}
                                         >
-                                            <Text className="text-gray-700">{item.description}</Text>
-                                        </TouchableOpacity>                
-                                    ))}
-                                    
-                                </ScrollView>
+                                            <Text 
+                                            style={{fontFamily: 'Inter-Regular'}}
+                                            className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-700'} text-[12px]`}>
+                                                {item.name}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )}
+                                    keyExtractor={(item, index) => index.toString()}
+                                />
                             </View>
                         )}
                     </View>

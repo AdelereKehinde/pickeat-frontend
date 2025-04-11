@@ -13,6 +13,7 @@ import PhoneNumber from '@/components/NumberField';
 import { postRequest, patchRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import validatePhoneNumber from '@/constants/phonenumberValidator';
 
 export default function CompleteProfile(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -24,12 +25,25 @@ export default function CompleteProfile(){
     const [lastName, setLastName] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
 
+    const [phoneValidation, setPhoneValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+
+    const handlePhoneChange = (value: string) => {
+      setPhoneNumber(value);
+  
+      // Validate the new password and update validation state
+      const validationResult = validatePhoneNumber(value);
+      setPhoneValidation(validationResult);
+    };
+
     const [data, setData] = useState(null); // To store the API data
     const [loading, setLoading] = useState(false); // Loading state
     const [error, setError] = useState(''); // Error state 
 
     const ValidateFormContent = ():boolean =>{
-        if((firstName !== '') && (lastName !== '') && (phoneNumber !== '')){
+        if((firstName !== '') && (lastName !== '') && (phoneNumber !== '') && (phoneValidation.isValid)){
             return true
         }
         return false
@@ -84,7 +98,7 @@ export default function CompleteProfile(){
                 {/* <View className='w-full p-5'> */}
                     <Text 
                     style={{fontFamily: 'Inter-Regular'}}
-                    className='text-gray-400 text-[13px]'>
+                    className={`${theme == 'dark'? 'text-gray-100' : 'text-gray-400'} text-[13px]`}>
                         Let us know how to properly address you
                     </Text>    
 
@@ -99,11 +113,24 @@ export default function CompleteProfile(){
                         >
                           <CharField  placeholder="Enter last name" focus={false} border={false} name='Last name' getValue={(value: string)=>setLastName(value)}/>
                         </View>
+
                         <View
                         className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} rounded-lg`}
                         >
-                          <PhoneNumber border={false}  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>setPhoneNumber(value)}/>
+                          <PhoneNumber border={false}  placeholder="Enter Phone Number" focus={false} name='Phone Number' getValue={(value: string)=>handlePhoneChange(value)}/>
                         </View>
+                        {/* Display validation error messages */}
+                        {!(phoneValidation.isValid) && (
+                          <View className=''>
+                            {phoneValidation.errors.map((error, index) => (
+                              <Text key={index} 
+                              style={{fontFamily: 'Inter-Regular'}}
+                              className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                                {error}
+                              </Text>
+                            ))}
+                          </View>
+                        )}
                     </View>
                     
                     <TouchableOpacity

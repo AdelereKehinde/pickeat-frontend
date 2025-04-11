@@ -21,7 +21,12 @@
         "foregroundImage": "./assets/icon/logo_png.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.dev_haywhy.Pickeat"
+      "package": "com.dev_haywhy.Pickeat",
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
+      }
     },
     "web": {
       "bundler": "metro",

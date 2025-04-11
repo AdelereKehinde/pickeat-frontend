@@ -21,6 +21,8 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import TransactionPinPrompt from '@/components/TransactionPinPrompt';
+import TransactionPinModal from '@/components/SetTransactionPinModal';
 
 export default function ConfirmOrder(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -76,6 +78,29 @@ export default function ConfirmOrder(){
 
     const [sliderValue, setSliderValue] = useState(0);
     const heatLevel = sliderValue < 0.5 ? "Mild" : "Hot";
+    
+    const [showTransactionPinPrompt, setShowTransactionPinPrompt] = useState(false);
+    const [transactionPinCorrect, setTransactionPinCorrect] = useState(false);
+    const [transactionPin, setTransactionPin] = useState('');
+    const [showTransactionPinModal, setShowTransactionPinModal] = useState(false);
+    const getPinStatus = async() =>{
+        type PinApiResponse = {
+            status: string; 
+            message: string; 
+            data: {
+                status: boolean;
+            }
+        }
+        setLoading(true)
+        const response = await getRequest<PinApiResponse>(`${ENDPOINTS['account']['transaction-pin']}`, true); // Authenticated
+        if (response.data.status == true){
+            setShowTransactionPinPrompt(response.data.status)
+        }else{
+            setShowTransactionPinModal(true)
+        }
+        
+        setLoading(false)
+    }
 
     const handleSetItems = (data: ItemsType) => {
         // alert(JSON.stringify(data))
@@ -253,6 +278,17 @@ export default function ConfirmOrder(){
                 {showPrompt && 
                     <Prompt main_text='' sub_text='' order_id={orderID} estimated_time={estimatedTime} clickFunction={OnPromptClick}/>
                 }
+
+                {showTransactionPinPrompt && (
+                    <TransactionPinPrompt 
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){handleOrder()}; }}/>
+                )}
+
+
+                <TransactionPinModal 
+                open={showTransactionPinModal}
+                getValue={(value)=>{setShowTransactionPinModal(value)}}
+                />
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }} className=''>
                     <View className='px-4 mt-4'>
@@ -671,7 +707,7 @@ export default function ConfirmOrder(){
 
                     <View className='w-[90%] mx-auto mb-5 mt-5'>
                         <TouchableOpacity
-                        onPress={handleOrder}
+                        onPress={getPinStatus}
                         className={`text-center ${(validateInput() || loading)? 'bg-custom-green' : 'bg-custom-inactive-green'} ${loading && ('bg-custom-inactive-green')} relative rounded-xl p-4 w-[90%] self-center mt-5 flex items-center justify-around`}
                         >        
                             <Text

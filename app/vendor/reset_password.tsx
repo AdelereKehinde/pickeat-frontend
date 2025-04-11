@@ -13,6 +13,7 @@ import Delay from '@/constants/Delay';
 import { postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import validatePassword from '@/constants/passwordValidator';
 
 export default function ResetPassword(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -26,6 +27,18 @@ export default function ResetPassword(){
     const [phoneNumber, setPhoneNumber] = useState('');
     const [showPassword, setShowPassword] = useState(false)
     const [showPassword2, setShowPassword2] = useState(false)
+    const [pswdValidation, setPswdValidation] = useState({
+      isValid: true,
+      errors: [] as string[],
+    });
+
+    const handlePasswordChange = (pswd: string) => {
+      setPassword(pswd);
+  
+      // Validate the new password and update validation state
+      const validationResult = validatePassword(pswd);
+      setPswdValidation(validationResult);
+    };
 
     const [focus, setFocus] = useState('')
 
@@ -50,6 +63,10 @@ export default function ResetPassword(){
         case 'buyer':
           endpoint = ENDPOINTS['buyer']['reset-password']
           next_url = '/login'
+          break;
+        case 'rider':
+          endpoint = ENDPOINTS['rider']['reset-password']
+          next_url = '/rider/login'
           break;
         default:
           endpoint = ENDPOINTS['vendor']['reset-password']
@@ -137,7 +154,7 @@ export default function ResetPassword(){
                       <TextInput
                         style={{fontFamily: 'Inter-Medium'}}
                         className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-600'} rounded-xl p-3 py-2 pl-10 text-[13px] w-full`}
-                        onChangeText={setPassword}
+                        onChangeText={handlePasswordChange}
                         onFocus={()=>{setFocus('password')}}
                         onBlur={()=>{setFocus('')}}
                         // maxLength={10}
@@ -147,7 +164,7 @@ export default function ResetPassword(){
                         secureTextEntry={!showPassword}
                       />
                       <TouchableOpacity onPress={() => setShowPassword(!showPassword)}
-                      className='absolute inset-y-1 right-2 my-auto'
+                      className='absolute right-2 my-auto'
                       >
                         <FontAwesome
                           name={showPassword ? 'eye-slash' : 'eye'}
@@ -157,6 +174,18 @@ export default function ResetPassword(){
                         />
                       </TouchableOpacity>
                     </View>
+
+                    {!(pswdValidation.isValid) && (
+                      <View className='mt-2 ml-2'>
+                        {pswdValidation.errors.map((error, index) => (
+                          <Text key={index} 
+                          style={{fontFamily: 'Inter-Regular'}}
+                          className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px]`}>
+                            {error}
+                          </Text>
+                        ))}
+                      </View>
+                    )}
                     
                     <View className={`w-full flex-row items-center relative border ${(focus=='password2')? 'border-custom-green':'border-gray-300'}  rounded-md`}>
                       <View className='absolute left-2'>
@@ -175,7 +204,7 @@ export default function ResetPassword(){
                         secureTextEntry={!showPassword2}
                       />
                       <TouchableOpacity onPress={() => setShowPassword2(!showPassword2)}
-                      className='absolute inset-y-1 right-2 my-auto'
+                      className='absolute right-2 my-auto'
                       >
                         <FontAwesome
                           name={showPassword2 ? 'eye-slash' : 'eye'}
@@ -185,6 +214,13 @@ export default function ResetPassword(){
                         />
                       </TouchableOpacity>
                     </View>
+                    {(password != password2) && (
+                      <Text
+                      style={{fontFamily: 'Inter-Regular'}}
+                      className={`${theme == 'dark'? 'text-gray-100' : 'text-red-500'} text-[10px] ml-2`}>
+                        password does not match
+                      </Text>
+                    )}
                   </View>
               </View> 
 

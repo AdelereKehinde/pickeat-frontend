@@ -126,13 +126,13 @@ export default function Orders(){
                         />
                 </View>
 
-                <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full my-3 mb-44 relative flex flex-row items-center justify-center`}>
+                {/* <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full my-3 mb-44 relative flex flex-row items-center justify-center`}> */}
                     
                     <ScrollView 
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    className='w-full mt-4 space-y-2' contentContainerStyle={{ flexGrow: 1 }}>
+                    className='w-full mt-4' contentContainerStyle={{ flexGrow: 1 }}>
                         {(!loading && (orders.length == 0)) && (
                             <View className='flex items-center'> 
                                 <Empty/>
@@ -159,38 +159,40 @@ export default function Orders(){
                                 ))}
                             </View>
                         }
-                        {orders.map((item) => (
-                            <View key={item.id}>
-                                {(displayType == 1)?
-                                    <RiderOrder 
-                                        task_id={item.id}
-                                        order_id={item.order_id}
-                                        image={item.kitchen_thumbnail}
-                                        name={item.kitchen_name}
-                                        time={item.time}
-                                        address={item.kitchen_address}
-                                    />
-                                    :
-                                    <RiderOrder2 
-                                        task_id={item.id}
-                                        order_id={item.order_id}
-                                        image={item.kitchen_thumbnail}
-                                        name={item.kitchen_name}
-                                        time={item.time}
-                                        address={item.kitchen_address}
-                                    />
-                                }
-                                
-                            </View>
-                        ))}
+                        <View className='space-y-2'>
+                            {orders.map((item) => (
+                                <View key={item.id}>
+                                    {(displayType == 1)?
+                                        <RiderOrder 
+                                            task_id={item.id}
+                                            order_id={item.order_id}
+                                            image={item.kitchen_thumbnail}
+                                            name={item.kitchen_name}
+                                            time={item.time}
+                                            address={item.kitchen_address}
+                                        />
+                                        :
+                                        <RiderOrder2 
+                                            task_id={item.id}
+                                            order_id={item.order_id}
+                                            image={item.kitchen_thumbnail}
+                                            name={item.kitchen_name}
+                                            time={item.time}
+                                            address={item.kitchen_address}
+                                        />
+                                    }
+                                    
+                                </View>
+                            ))}
+                        </View>
 
                     <View className='mt-auto mb-2'>
-                        {(orders.length != 0) && 
+                        {((orders.length != 0) && (count > orders.length)) && 
                             <Pagination currentPage={currentPage} count={count} pageSize={pageSize} onPageChange={(page)=>{setCurrentPage(page);}} />
                         }
                     </View>
                     </ScrollView>
-                </View>
+                {/* </View> */}
                 <Toast config={toastConfig} />
             </View>
         </SafeAreaView>
