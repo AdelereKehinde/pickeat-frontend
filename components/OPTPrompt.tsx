@@ -20,11 +20,10 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { FontAwesome } from '@expo/vector-icons';
 
 interface Properties {
-    with_otp: boolean,
     getValue: (value: boolean, pin: string) => void
 }
 
-const TransactionPinPrompt: React.FC<Properties> = ({with_otp=false, getValue}) => {
+const OTPPrompt: React.FC<Properties> = ({getValue}) => {
     const { theme, toggleTheme } = useContext(ThemeContext);
     const {email, id} = useGlobalSearchParams()
     const toastConfig = {
@@ -39,28 +38,20 @@ const TransactionPinPrompt: React.FC<Properties> = ({with_otp=false, getValue}) 
 
     const handleSubmit = async () => {
       try {
-        if(!loading && codeComplete){
-            setLoading(true)
-            type ApiResponse = { status: string; message: string; data:{} };
-            const res = await postRequest<ApiResponse>(`${ENDPOINTS['account']['match-transaction-pin']}`, {
-                'pin': code.join(''),
-                'with_otp': with_otp
-            }, true);
+        // alert(codeComplete)
+        if(codeComplete && code.join('').length == 4){
+            // alert('yh')
             getValue(true, code.join(''))
-            setLoading(false)
         }
 
       } catch (error:any) {
-        setLoading(false)
         // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
-          text1: error.data?.message || 'Unknown Error',
+          text1: "Input the 4 digit OTP sent to your mail.",
           visibilityTime: 4000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
-        });
-        setError(error.data?.message || 'Unknown Error'); // Set error message
-      }
+        });      }
     };
 
 
@@ -137,9 +128,9 @@ const TransactionPinPrompt: React.FC<Properties> = ({with_otp=false, getValue}) 
                 </TouchableOpacity>
                 <Text
                 style={{fontFamily: 'Inter-Medium'}}
-                className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[14px] mx-auto`}
+                className={`${theme == 'dark'? 'text-white' : ' text-gray-800'} text-[13px] mx-auto`}
                 >
-                    Kindly enter your transaction pin
+                    Kindly enter the OTP sent to your mail
                 </Text>
 
                 <View className='w-full'>
@@ -190,4 +181,4 @@ const TransactionPinPrompt: React.FC<Properties> = ({with_otp=false, getValue}) 
     )
 }
 
-export default TransactionPinPrompt;
+export default OTPPrompt;

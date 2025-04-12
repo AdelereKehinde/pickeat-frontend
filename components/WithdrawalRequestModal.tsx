@@ -7,6 +7,7 @@ import Arrow from '../assets/icon/arrow_left.svg';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import Search from '../assets/icon/search.svg';
 import TransactionPinPrompt from './TransactionPinPrompt';
+import OTPPrompt from './OPTPrompt';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import FullScreenLoader from './FullScreenLoader';
@@ -40,6 +41,8 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
     const [showTransactionPinPrompt, setShowTransactionPinPrompt] = useState(false);
     const [transactionPinCorrect, setTransactionPinCorrect] = useState(false);
     const [transactionPin, setTransactionPin] = useState('');
+    const [OTP, setOTP] = useState('');
+    const [showOTPPromt, setShowOTPPromt] = useState(false);
     const [showSuccessPopUp, setShowSuccessPopUp] = useState(false);
     const handleRequest = async () => {
         if(parseInt(amount) < 1000){
@@ -55,6 +58,7 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
         // getValue(false)
     };
     
+    const [startWithdrawal, setStartWithdrawal] = useState(false);
     const MakeWithdrawal = async() =>{
         try{
             type ApiResponse = { status: string; message: string; data:{} };
@@ -62,23 +66,29 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
                 var res = await postRequest<ApiResponse>(`${ENDPOINTS['payment']['rider-withdrawal']}`, {
                     'amount': amount,
                     'pin': transactionPin,
+                    'otp': OTP,
                 }, true);
             }
             if (user=='vendor'){
                 var res = await postRequest<ApiResponse>(`${ENDPOINTS['payment']['vendor-withdrawal']}`, {
                     'amount': amount,
                     'pin': transactionPin,
+                    'otp': OTP,
                 }, true);
             }
             setAmount('')
             setShowSuccessPopUp(true)
             setTransactionPin('')
             setTransactionPinCorrect(false)
+            setOTP('')
+            setStartWithdrawal(false)
         }catch (error:any) {
             setLoading(false)
             // alert(JSON.stringify(error))
             setTransactionPin('')
             setTransactionPinCorrect(false)
+            setStartWithdrawal(false)
+            setOTP('')
             Toast.show({
                 type: 'error',
                 text1: error.data?.message || 'Unknown Error',
@@ -90,10 +100,10 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
     }
 
     useEffect(() => {
-        if(transactionPinCorrect){
+        if(startWithdrawal){
             MakeWithdrawal()
         }
-    }, [transactionPinCorrect]); // Empty dependency array ensures this runs once
+    }, [startWithdrawal]); // Empty dependency array ensures this runs once
 
     return (
             <Modal
@@ -110,11 +120,16 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
 
                 {showTransactionPinPrompt && (
                     <TransactionPinPrompt 
-                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false)}}/>
+                    with_otp={true}
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); setShowOTPPromt(true);}}/>
+                )}
+                
+                {showOTPPromt && (
+                    <OTPPrompt 
+                    getValue={(value, pin)=>{setOTP(pin); setStartWithdrawal(value); setShowOTPPromt(false)}}/>
                 )}
 
-
-                {transactionPinCorrect && (
+                {startWithdrawal && (
                     <FullScreenLoader/>
                 )}
 

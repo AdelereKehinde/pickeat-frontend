@@ -29,6 +29,8 @@ const CustomToast = (props:any) => {
       style={[styles.toast, { backgroundColor, borderLeftColor: borderColor }]}
       text1Style={styles.text1}
       text2Style={styles.text2}
+      text1NumberOfLines={0}
+      text2NumberOfLines={0}
     />
   );
 };

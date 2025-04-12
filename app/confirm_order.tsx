@@ -227,7 +227,7 @@ export default function ConfirmOrder(){
         }
     }
 
-    const handleOrder = async () => {
+    const handleOrder = async (pin: string) => {
         try {
           if(!loading && validateInput()){
             setLoading(true)
@@ -238,6 +238,7 @@ export default function ConfirmOrder(){
                 meals: items,
                 schedule_send: scheduleSend, 
                 schedule_time: djangoDateTime,
+                pin: transactionPin,
             }, true);
             setLoading(false)
 
@@ -281,9 +282,10 @@ export default function ConfirmOrder(){
 
                 {showTransactionPinPrompt && (
                     <TransactionPinPrompt 
-                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){handleOrder()}; }}/>
+                    with_otp={false}
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){handleOrder(pin)}; }}/>
                 )}
-
+ 
 
                 <TransactionPinModal 
                 open={showTransactionPinModal}
