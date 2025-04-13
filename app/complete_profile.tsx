@@ -14,6 +14,7 @@ import { postRequest, patchRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validatePhoneNumber from '@/constants/phonenumberValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function CompleteProfile(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -94,6 +95,10 @@ export default function CompleteProfile(){
               <StatusBar barStyle="dark-content" backgroundColor="#f3f4f6" />
               <TitleTag withprevious={true} title='Complete profile' withbell={false}/>
 
+              {/* Page requires intermet connection */}
+              <ConnectionModal />
+              {/* Page requires intermet connection */}
+              
               <ScrollView className='w-full p-5' contentContainerStyle={{ flexGrow: 1 }}>
                 {/* <View className='w-full p-5'> */}
                     <Text 

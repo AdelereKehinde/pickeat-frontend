@@ -15,6 +15,7 @@ import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
 import TitleCase from '@/components/TitleCase';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function AdminOrder(){
     const toastConfig = {
@@ -82,6 +83,10 @@ function AdminOrder(){
 
     return (
         <SafeAreaView>
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+            
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'text-gray-100'} w-full h-full flex items-center`}>                
                 <View className={`${theme == 'dark'? 'bg-gray-900' : 'text-white'} p-4 flex flex-row w-full justify-around`}>
                     <FlatList

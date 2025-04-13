@@ -17,6 +17,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import Pagination from '@/components/Pagination';
 import useDebounce from '@/components/Debounce';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Menu(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -123,6 +124,10 @@ export default function Menu(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Menu' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <TouchableOpacity
                 onPress={()=>{router.push('/vendor/create_product')}}

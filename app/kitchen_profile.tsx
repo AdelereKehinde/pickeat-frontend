@@ -13,6 +13,7 @@ import TitleCase from '@/components/TitleCase';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function KitchenProfile(){
     const {kitchen_id, name} = useGlobalSearchParams()
@@ -154,6 +155,10 @@ function KitchenProfile(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}

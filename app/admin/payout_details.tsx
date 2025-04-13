@@ -13,6 +13,9 @@ import Location from '../../assets/icon/location_highlight.svg';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import RNPickerSelect from 'react-native-picker-select';
+import TransactionPinModal from '@/components/SetTransactionPinModal';
+import TransactionPinPrompt from '@/components/TransactionPinPrompt';
+import OTPPrompt from '@/components/OPTPrompt';
 
 export default function PayoutDetails(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -36,6 +39,7 @@ export default function PayoutDetails(){
     const [bankDetail, setBankDetails] = useState<BankDetails>()
     const [resData, setResData] = useState<APIResponse>()
     const [status, setStatus] = useState('pending')
+    const [action, setAction] = useState('')
 
     useEffect(() => {
         const fetchInformation = async () => {
@@ -65,13 +69,16 @@ export default function PayoutDetails(){
         fetchInformation(); 
     }, []); // Empty dependency array ensures this runs once
 
-    const handleRequest = async (action: 'approve' | 'decline') => {
+    const handleRequest = async (action: string, otp: string) => {
         try {
           if(!loading){
             if (action == 'approve'){
                 if(status !== 'success'){
                     setLoading(true)
-                    const res = await postRequest(`${ENDPOINTS['payment']['approve-withdrawal']}/${id}`, {}, true);
+                    const res = await postRequest(`${ENDPOINTS['payment']['approve-withdrawal']}/${id}`, {
+                        'otp': otp,
+                        'pin': transactionPin
+                    }, true);
                     setStatus('success') 
                     Toast.show({
                         type: 'success',
@@ -84,7 +91,10 @@ export default function PayoutDetails(){
             if (action == 'decline'){
                 if(status === 'pending'){
                     setLoading(true)
-                    const res = await postRequest(`${ENDPOINTS['payment']['decline-withdrawal']}/${id}`, {}, true);
+                    const res = await postRequest(`${ENDPOINTS['payment']['decline-withdrawal']}/${id}`, {
+                        'otp': OTP,
+                        'pin': transactionPin
+                    }, true);
                     setStatus('failed') 
                     Toast.show({
                         type: 'success',
@@ -109,6 +119,32 @@ export default function PayoutDetails(){
         }
     };
 
+    const [showTransactionPinPrompt, setShowTransactionPinPrompt] = useState(false);
+    const [transactionPinCorrect, setTransactionPinCorrect] = useState(false);
+    const [transactionPin, setTransactionPin] = useState('');
+    const [showTransactionPinModal, setShowTransactionPinModal] = useState(false);
+    const [OTP, setOTP] = useState('');
+    const [showOTPPromt, setShowOTPPromt] = useState(false);
+    const getPinStatus = async() =>{
+        type PinApiResponse = {
+            status: string; 
+            message: string; 
+            data: {
+                status: boolean;
+            }
+        }
+        setLoading(true)
+        const response = await getRequest<PinApiResponse>(`${ENDPOINTS['account']['transaction-pin']}`, true); // Authenticated
+        if (response.data.status == true){
+            setShowTransactionPinPrompt(response.data.status)
+        }else{
+            setShowTransactionPinModal(true)
+        }
+        
+        setLoading(false)
+    }
+
+
     return (
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}>
@@ -116,9 +152,25 @@ export default function PayoutDetails(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Payout Details' withbell={true} />
                 </View>
-                {fetchLoading && (
+                {(fetchLoading || loading) && (
                     <FullScreenLoader />
                 )}
+
+                {showTransactionPinPrompt && (
+                    <TransactionPinPrompt 
+                    with_otp={true} 
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){setShowOTPPromt(true)}; setLoading(false);}}/>
+                )}
+
+                {showOTPPromt && (
+                    <OTPPrompt 
+                    getValue={(value, pin)=>{setOTP(pin); handleRequest(action, pin); setShowOTPPromt(false)}}/>
+                )}
+
+                <TransactionPinModal 
+                open={showTransactionPinModal}
+                getValue={(value)=>{setShowTransactionPinModal(value)}}
+                />
                 <ScrollView
                 className='w-full px-5' contentContainerStyle={{ flexGrow: 1 }}>
                     <Text
@@ -274,7 +326,7 @@ export default function PayoutDetails(){
                                         
                     <View className='mt-3 mb-8'>
                         <TouchableOpacity
-                        onPress={()=>{handleRequest('approve')}}
+                        onPress={()=>{setAction('approve'); getPinStatus()}}
                         className={`text-center ${(loading || (status == 'success'))? 'bg-custom-inactive-green' : 'bg-custom-green'} relative rounded-xl p-2 w-full self-center mt-2 flex items-center justify-around`}
                         >
                             {loading && (
@@ -291,7 +343,7 @@ export default function PayoutDetails(){
                             </Text>     
                         </TouchableOpacity>
                         <TouchableOpacity
-                        onPress={()=>{handleRequest('decline')}}
+                        onPress={()=>{setAction('decline'); getPinStatus();}}
                         className={`text-center ${(loading || (status !== 'pending'))? 'bg-red-300' : 'bg-red-500'} relative rounded-xl p-2 w-full self-center mt-2 flex items-center justify-around`}
                         >
                             {loading && (

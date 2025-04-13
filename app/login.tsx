@@ -17,6 +17,7 @@ import DeviceUUID from '@/constants/DeviceID';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validatePassword from '@/constants/passwordValidator';
 import validateEmail from '@/constants/emailValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Login(){
     const {next} = useGlobalSearchParams()
@@ -134,6 +135,10 @@ export default function Login(){
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
+          {/* Page requires intermet connection */}
+          <ConnectionModal />
+          {/* Page requires intermet connection */}
+          
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-10 mx-auto'>
               <Logo width={200} height={200} />

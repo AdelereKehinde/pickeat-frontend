@@ -19,6 +19,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validateEmail from '@/constants/emailValidator';
 import validatePhoneNumber from '@/constants/phonenumberValidator';
 import validatePassword from '@/constants/passwordValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function AdminLogin(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -136,6 +137,10 @@ export default function AdminLogin(){
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
+          {/* Page requires intermet connection */}
+          <ConnectionModal />
+          {/* Page requires intermet connection */}
+          
           <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-5 mx-auto'>
               <Logo width={120} height={120} />

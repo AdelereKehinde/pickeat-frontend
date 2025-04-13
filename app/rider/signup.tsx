@@ -18,6 +18,7 @@ import * as Device from "expo-device";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validateEmail from '@/constants/emailValidator';
 import validatePassword from '@/constants/passwordValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 
 export default function RiderSignUp(){
@@ -121,6 +122,11 @@ export default function RiderSignUp(){
     return (
       <SafeAreaView>
         <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+        
+        {/* Page requires intermet connection */}
+        <ConnectionModal />
+        {/* Page requires intermet connection */}
+        
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >

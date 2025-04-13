@@ -126,7 +126,7 @@ const TransactionPinPrompt: React.FC<Properties> = ({with_otp=false, getValue}) 
         <View className={`w-full h-full flex items-center absolute z-50`} style={{backgroundColor: '#00000080'}}>
             <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] my-auto pb-10 px-3 rounded-lg`}>
                 <TouchableOpacity
-                onPress={()=>{getValue(false, '')}}
+                onPress={()=>{if(!loading){getValue(false, '')}; }}
                 className='ml-auto mb-5 mt-2'>
                     <FontAwesome 
                     name="times" 

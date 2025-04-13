@@ -25,6 +25,7 @@ import EllipseDot from '../../assets/icon/ellipse-dot.svg';
 import RNPickerSelect from 'react-native-picker-select';
 import { useTailwind } from 'nativewind';
 import FilterModal from '@/components/FilterModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function PayoutManagement(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -86,6 +87,10 @@ export default function PayoutManagement(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Withdrawal Requests' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-[95%] mx-auto mt-4 mb-5 px-2 py-2 space-y-2 rounded-lg`}>
                     <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} flex flex-row p-2 rounded-lg space-x-3`}>

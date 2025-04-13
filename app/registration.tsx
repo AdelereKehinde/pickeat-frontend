@@ -14,6 +14,7 @@ import * as Device from "expo-device";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validatePassword from '@/constants/passwordValidator';
 import validateEmail from '@/constants/emailValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Registration(){
     const toastConfig = {
@@ -115,6 +116,10 @@ export default function Registration(){
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
+          {/* Page requires intermet connection */}
+          <ConnectionModal />
+          {/* Page requires intermet connection */}
+
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mx-auto'>
               <Logo width={200} height={200} />

@@ -12,6 +12,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import Location from '../../assets/icon/location_highlight.svg';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function VendorDetails(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -136,6 +137,11 @@ export default function VendorDetails(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-[90%] mx-auto rounded-lg mt-5 py-4 relative flex items-center justify-center`}>
                         <Text

@@ -24,6 +24,7 @@ import CharField from '@/components/CharField';
 import OutOfBound from '@/components/OutOfBound';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ViewDeliveryAddress(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -97,6 +98,10 @@ export default function ViewDeliveryAddress(){
                 {loading && 
                   <FullScreenLoader />
                 }
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView
                 className='w-full'

@@ -132,14 +132,16 @@ export default function PaymentConfirmationPage(){
     }
 
     
-    const handlePayment = async () => {
+    const handlePayment = async (pin: string) => {
         try {
           if(!loading && cartItems.length !== 0){
             setLoading(true)
             setLoadSignal(true)
             type DataResponse = { message: string; token:string; refresh: string };
             type ApiResponse = { status: string; message: string; data:DataResponse };
-            const res = await postRequest<ApiResponse>(ENDPOINTS['payment']['pay'], {}, true);
+            const res = await postRequest<ApiResponse>(ENDPOINTS['payment']['pay'], {
+                'pin': pin
+            }, true);
             setLoading(false)
             setLoadSignal(false)
             Toast.show({
@@ -160,7 +162,7 @@ export default function PaymentConfirmationPage(){
           Toast.show({
             type: 'error',
             text1: error.data?.message || "An error occured",
-            text2: error.data?.message || 'Unknown Error',
+            // text2: error.data?.message || 'Unknown Error',
             visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
             autoHide: true,
           });
@@ -187,7 +189,8 @@ export default function PaymentConfirmationPage(){
 
                 {showTransactionPinPrompt && (
                     <TransactionPinPrompt 
-                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){handlePayment()}else{setLoadSignal(false)};}}/>
+                    with_otp={false}
+                    getValue={(value, pin)=>{setTransactionPinCorrect(value); setTransactionPin(pin); setShowTransactionPinPrompt(false); if(value == true){handlePayment(pin)}else{setLoadSignal(false)};}}/>
                 )}
 
 

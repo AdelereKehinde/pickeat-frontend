@@ -10,6 +10,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 const ChatList: React.FC = () => {
     const [isFocused, setIsFocus] = useState(false);
@@ -71,6 +72,11 @@ const ChatList: React.FC = () => {
             {loading && (
                 <FullScreenLoader />
             )}
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+            
             <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full px-4 py-3 relative flex flex-row items-center justify-center`}>
                 <View className='absolute left-6 z-10'>
                     <Search />

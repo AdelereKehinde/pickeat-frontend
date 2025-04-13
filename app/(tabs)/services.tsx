@@ -16,6 +16,7 @@ import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import TitleCase from '@/components/TitleCase';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Services(){
     const [filter, setFilter] = useState('pending');
@@ -92,6 +93,10 @@ export default function Services(){
                     <FullScreenLoader />
                 )}
 
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <Text
                 className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[18px] self-start pl-5 pt-5`}
                 style={{fontFamily: 'Inter-SemiBold'}}

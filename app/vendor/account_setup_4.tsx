@@ -18,6 +18,7 @@ import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function CreateProfile4(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -148,6 +149,10 @@ export default function CreateProfile4(){
                     <TitleTag withprevious={false} title='Set Account Details' withbell={false}/>
                 </View> 
 
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 {fetchloading && (
                     <FullScreenLoader />
                 )}

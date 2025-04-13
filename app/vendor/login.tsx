@@ -18,6 +18,7 @@ import * as Device from "expo-device";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validatePassword from '@/constants/passwordValidator';
 import validateEmail from '@/constants/emailValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 
 export default function VendorLogin(){
@@ -153,6 +154,10 @@ export default function VendorLogin(){
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}
         >
+          {/* Page requires intermet connection */}
+          <ConnectionModal />
+          {/* Page requires intermet connection */}
+          
           <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='mt-5 mx-auto'>
               <Logo width={120} height={120} />

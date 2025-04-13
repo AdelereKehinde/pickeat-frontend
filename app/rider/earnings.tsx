@@ -22,6 +22,7 @@ import WithdrawalRequest from '@/components/WithdrawalRequestModal';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import FilterModal from '@/components/FilterModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
@@ -235,6 +236,10 @@ export default function Earnings(){
 
     return (
         <SafeAreaView>
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+            
             <View 
             className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}
             >

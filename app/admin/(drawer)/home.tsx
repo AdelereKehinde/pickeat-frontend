@@ -21,6 +21,7 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { BarChart, LineChart } from 'react-native-chart-kit';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function AdminHome(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -133,6 +134,11 @@ export default function AdminHome(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView 
                   refreshControl={
                       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

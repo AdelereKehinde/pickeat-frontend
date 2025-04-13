@@ -15,6 +15,7 @@ import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import CaptureFace from '@/components/CaptureFace';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function IdentityVerification(){
     const { user } = useUser();
@@ -123,6 +124,10 @@ export default function IdentityVerification(){
 
     return (
       <SafeAreaView>
+        {/* Page requires intermet connection */}
+        <ConnectionModal />
+        {/* Page requires intermet connection */}
+
         <View 
         className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full h-full flex items-center`}
         >

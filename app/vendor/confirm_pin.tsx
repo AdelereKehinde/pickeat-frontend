@@ -17,6 +17,7 @@ import Logo from '../../assets/images/Logo.svg';
 import { getRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ConfirmPin(){
     const {email, id, service} = useGlobalSearchParams()
@@ -147,6 +148,10 @@ export default function ConfirmPin(){
 
     return (
         <SafeAreaView>
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+            
             <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full`} contentContainerStyle={{ flexGrow: 1 }}>
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                     <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />

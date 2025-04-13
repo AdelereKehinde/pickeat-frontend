@@ -18,6 +18,7 @@ import Logout from '../../../assets/icon/log_out.svg'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Account(){
     const { user } = useUser();
@@ -28,6 +29,10 @@ export default function Account(){
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-50'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full py-4 relative flex items-center justify-center`}>
                         <View className='w-24 h-24 overflow-hidden rounded-full'>

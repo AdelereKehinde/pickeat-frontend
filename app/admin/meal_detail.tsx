@@ -15,6 +15,7 @@ import FullScreenLoader from '@/components/FullScreenLoader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function MealDetails(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -78,6 +79,10 @@ export default function MealDetails(){
             {fetchloading && (
               <FullScreenLoader />
             )}
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
 
             <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
               <View className='px-4 w-full'>

@@ -18,6 +18,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ChevronNext from '../../assets/icon/chevron-next.svg';
 import TitleCase from '@/components/TitleCase';
 import AdminOrderItem from '@/components/AdminOrderItem';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function AdminOrderDetails(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -176,6 +177,10 @@ export default function AdminOrderDetails(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}
                 className=''

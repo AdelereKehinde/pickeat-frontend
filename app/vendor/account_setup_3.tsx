@@ -13,6 +13,7 @@ import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function AccountSetup3(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -127,6 +128,10 @@ export default function AccountSetup3(){
             <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
               <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             </View> 
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
             
             <ScrollView className='px-4' contentContainerStyle={{ flexGrow: 1 }}>
             <View className='w-full grow'>

@@ -13,6 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Pagination from '@/components/Pagination';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import FilterModal from '@/components/FilterModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function BookingHistory(){
     const [isFocused, setIsFocus] = useState(false);
@@ -84,6 +85,10 @@ export default function BookingHistory(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <View className='flex flex-row items-center justify-between w-full px-4 py-2'>
                     <Text

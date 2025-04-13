@@ -20,6 +20,7 @@ import FullScreenLoader from '@/components/FullScreenLoader';
 import TitleCase from '@/components/TitleCase';
 import WithdrawalRequest from '@/components/WithdrawalRequestModal';
 import FilterModal from '@/components/FilterModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
@@ -237,6 +238,10 @@ export default function Earnings(){
                     <TitleTag withprevious={true} title='Earnings and Payment' withbell={false} />
                 </View>
 
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 {downloadLoading && <FullScreenLoader/>}
 
                 <WithdrawalRequest 

@@ -19,6 +19,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { TruncatedText } from '@/components/TitleCase';
 import { useUser } from '@/context/UserProvider';
 import * as ImagePicker from 'expo-image-picker';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ProfilePage(){
     const { setUser } = useUser();
@@ -278,6 +279,11 @@ export default function ProfilePage(){
             {loading && 
                 <FullScreenLoader />
             }
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+            
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>

@@ -18,6 +18,7 @@ import { WebView } from 'react-native-webview';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import FilterModal from '@/components/FilterModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function WalletPage(){
     const toastConfig = {
@@ -129,6 +130,11 @@ export default function WalletPage(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Wallet' withbell={true} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

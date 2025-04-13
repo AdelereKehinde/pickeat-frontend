@@ -17,6 +17,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import RiderOrder from '@/components/RiderOrder';
 import RiderOrder2 from '@/components/RiderOrder2';
 import FullScreenLoader from '@/components/FullScreenLoader';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Orders(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -95,6 +96,10 @@ export default function Orders(){
                 {filterLoading && (
                     <FullScreenLoader />
                 )}
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <Text
                 className={`${theme == 'dark'? 'text-white' : ' text-custom-green'} text-[18px] self-start pl-5 py-5`}

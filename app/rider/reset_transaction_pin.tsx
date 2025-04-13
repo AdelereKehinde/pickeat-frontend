@@ -17,6 +17,7 @@ import Logo from '../../assets/images/Logo.svg';
 import { getRequest, patchRequest, postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ResetTransactionPin(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -273,8 +274,13 @@ export default function ResetTransactionPin(){
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
-            <TitleTag withprevious={true} title='Reset Transaction Pin' withbell={false} />
-        </View>
+                    <TitleTag withprevious={true} title='Reset Transaction Pin' withbell={false} />
+                </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
 
                 <View className='w-full mt-8'>

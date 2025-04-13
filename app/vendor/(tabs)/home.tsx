@@ -11,6 +11,7 @@ import Empty from '../../../assets/icon/empy_transaction.svg';
 import RatingMeter from '@/components/Rating Meter';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function Home(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -90,6 +91,11 @@ function Home(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='My Dashboard' withbell={true} />
                 </View> 
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView 
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

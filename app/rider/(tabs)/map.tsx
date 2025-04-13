@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import axios from 'axios';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import TitleTag from '@/components/Title';
+import ConnectionModal from '@/components/ConnectionModal';
 
 // Define the type for the region state
 type RegionState = Region | null;
@@ -107,6 +108,11 @@ const RiderMap = () => {
       <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
         <TitleTag withprevious={false} title='Map' withbell={true} />
       </View>
+
+      {/* Page requires intermet connection */}
+      <ConnectionModal />
+      {/* Page requires intermet connection */}
+      
       {/* <MapView
         style={{ flex: 1 }}
         initialRegion={region}

@@ -12,6 +12,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BuyerNotifi from '@/components/BuyerNotifi';
 import VendorNotifi from '@/components/VendorNotifi';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function Notification(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -78,6 +79,10 @@ function Notification(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Notification' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView 
                 refreshControl={

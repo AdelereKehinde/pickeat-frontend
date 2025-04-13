@@ -9,6 +9,7 @@ import { getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
 import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 const ChatList: React.FC = () => {
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -55,6 +56,11 @@ const ChatList: React.FC = () => {
     <SafeAreaView>
         <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'}`}>
             <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full px-4 py-3 relative flex flex-row items-center justify-center`}>
                 <View className='absolute left-6 z-10'>
                     <Search />

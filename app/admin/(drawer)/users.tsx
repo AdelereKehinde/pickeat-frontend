@@ -22,6 +22,7 @@ import TitleCase from '@/components/TitleCase';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { TruncatedText } from '@/components/TitleCase';
 import useDebounce from '@/components/Debounce';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function AdminUser(){
     const toastConfig = {
@@ -146,6 +147,11 @@ function AdminUser(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6'>
                         <Search />

@@ -18,6 +18,7 @@ import CharField from '@/components/CharField';
 import OutOfBound from '@/components/OutOfBound';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 
 export default function SetDeliveryAddress(){
@@ -231,6 +232,10 @@ export default function SetDeliveryAddress(){
                   <TitleTag withprevious={true} title='Set kitchen address' withbell={false}/>
                 </View> 
 
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <OutOfBound open={!isInLagos} user='vendor' getValue={(value: boolean)=>{setIsInLagos(!value)}} />
                 {setUpLoading && 
                   <FullScreenLoader />

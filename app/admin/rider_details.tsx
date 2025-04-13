@@ -13,6 +13,7 @@ import Location from '../../assets/icon/location_highlight.svg';
 import LicenseModal from '@/components/License';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function RiderDetails(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -121,9 +122,13 @@ export default function RiderDetails(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Rider Management' withbell={true} />
                 </View>
+                
                 {loading && (
                     <FullScreenLoader />
                 )}
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <LicenseModal full_name={resData?.full_name} face={resData?.face} license={resData?.license} open={openLicenseModal} getValue={(value: boolean)=>{setOpenLicenseModal(value)}}/>
 

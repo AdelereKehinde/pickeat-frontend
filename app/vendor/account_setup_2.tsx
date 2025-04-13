@@ -13,6 +13,7 @@ import CustomToast from '@/components/ToastConfig';
 import Delay from '@/constants/Delay';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function AccountSetup2(){
     const { user } = useUser();
@@ -127,6 +128,10 @@ export default function AccountSetup2(){
             <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
               <TitleTag withprevious={true} title='Create Profile' withbell={false}/>
             </View>
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
 
             <ScrollView className='px-4 w-full mt-4' contentContainerStyle={{ flexGrow: 1 }}>
 

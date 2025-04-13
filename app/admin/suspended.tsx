@@ -23,6 +23,7 @@ import FullScreenLoader from '@/components/FullScreenLoader';
 import { TruncatedText } from '@/components/TitleCase';
 import useDebounce from '@/components/Debounce';
 import TitleTag from '@/components/Title';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function SuspendedAccounts(){
     const toastConfig = {
@@ -150,6 +151,11 @@ function SuspendedAccounts(){
                 {loading && (
                     <FullScreenLoader />
                 )}
+                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full p-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
                         <Search />

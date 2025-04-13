@@ -17,6 +17,7 @@ import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import TitleCase from '@/components/TitleCase';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function Order(){
     const toastConfig = {
@@ -87,6 +88,10 @@ function Order(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-blue-100'} w-full mb-4`}>
                     <TitleTag withprevious={false} title='Orders' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}s
 
                 {loading && (
                     <FullScreenLoader />

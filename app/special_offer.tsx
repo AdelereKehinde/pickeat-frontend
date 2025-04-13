@@ -10,6 +10,7 @@ import ContentLoader, { Rect, Circle } from 'react-content-loader/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import Pagination from '@/components/Pagination';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function SpecialOfferCard(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -48,6 +49,10 @@ function SpecialOfferCard(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Special offer' withbell={false} />
                 </View>
+                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
                 
                 {/* <View className='w-full'> */}
                     <ScrollView className='w-[100%] px-5 space-y-3 mb-4 ' contentContainerStyle={{ flexGrow: 1 }}>

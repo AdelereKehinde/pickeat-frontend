@@ -18,6 +18,7 @@ import { useUser } from '@/context/UserProvider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function CreateProfile3(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -151,6 +152,10 @@ export default function CreateProfile3(){
                 {fetchloading && (
                     <FullScreenLoader />
                 )}
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView className='' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className=' w-[95%] mx-auto'>

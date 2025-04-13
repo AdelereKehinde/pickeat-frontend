@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { Text, View, StatusBar, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import { Link, router } from "expo-router";
 import TitleTag from '@/components/Title';
 import CartItem from '@/components/CartItem';
@@ -16,6 +16,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Cart(){
     const toastConfig = {
@@ -37,31 +38,40 @@ export default function Cart(){
 
     const isFocused = useIsFocused();
     const [ranOnce, setRanOnce] = useState(false)
+    const [refreshing, setRefreshing] = useState(false);
+
+    const fetchMeals = async () => {
+        try {
+            setLoading(true)
+            if(ranOnce){
+                setLoading(true)
+            }else{
+                setRanOnce(true)
+                setLoading(true)
+            }
+            // alert(loading)
+            const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['list']}`, true);
+            // alert(JSON.stringify(response.data))
+            setResData(response.data)
+            setCartItems(response.data.cart_items)
+            setTotalPrice(response.data.total_price)
+            setLoading(false)
+        } catch (error) {
+            // alert(error);
+        }
+    }
+
     useEffect(() => {
         if(isFocused){
-            const fetchMeals = async () => {
-                try {
-                    setLoading(true)
-                    if(ranOnce){
-                        setLoading(true)
-                    }else{
-                        setRanOnce(true)
-                        setLoading(true)
-                    }
-                    // alert(loading)
-                    const response = await getRequest<MealResponse>(`${ENDPOINTS['cart']['list']}`, true);
-                    // alert(JSON.stringify(response.data))
-                    setResData(response.data)
-                    setCartItems(response.data.cart_items)
-                    setTotalPrice(response.data.total_price)
-                    setLoading(false)
-                } catch (error) {
-                    // alert(error);
-                }
-            }
             fetchMeals();
         }
     }, [isFocused]); // Empty dependency array ensures this runs once
+
+    const onRefresh = async () => {
+        // setTransactions([])
+        await fetchMeals()
+    };
+
 
     const handleCheckout = async () => {
       try {
@@ -127,7 +137,15 @@ export default function Cart(){
                     <TitleTag withprevious={false} title='Cart' withbell={true} />
                 </View>
 
-                    <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full space-y-1`} contentContainerStyle={{ flexGrow: 1 }}>
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                    <ScrollView 
+                    className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full space-y-1`} 
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }>
                         {(!loading && cartItems.length == 0) && (
                             <View className='flex items-center w-full my-auto'> 
                                 <Empty/>

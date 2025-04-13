@@ -12,6 +12,7 @@ import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { BarChart, LineChart } from 'react-native-chart-kit';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function AdminReportAnalytics(){
     const toastConfig = {
@@ -88,6 +89,11 @@ function AdminReportAnalytics(){
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'custom-gray-1'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView 
                   refreshControl={
                       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

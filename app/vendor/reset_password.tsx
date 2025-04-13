@@ -14,6 +14,7 @@ import { postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validatePassword from '@/constants/passwordValidator';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ResetPassword(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -113,6 +114,10 @@ export default function ResetPassword(){
 
     return (
       <SafeAreaView>
+        {/* Page requires intermet connection */}
+        <ConnectionModal />
+        {/* Page requires intermet connection */}
+        
         <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full`} contentContainerStyle={{ flexGrow: 1 }}>
           <View 
           className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full h-full flex items-center`}

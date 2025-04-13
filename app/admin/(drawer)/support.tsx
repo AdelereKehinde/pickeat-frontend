@@ -17,6 +17,7 @@ import CharField from '@/components/CharField';
 import PhoneNumber from '@/components/NumberField';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import Delay from '@/constants/Delay';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function AdminContent(){
     const toastConfig = {
@@ -107,6 +108,11 @@ function AdminContent(){
                 {fetchloading && (
                     <FullScreenLoader />
                 )}
+                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+
                 <ScrollView
                 className='w-full flex p-2' contentContainerStyle={{ flexGrow: 1 }}>
                     <View

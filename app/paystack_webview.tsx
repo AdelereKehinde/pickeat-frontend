@@ -8,6 +8,7 @@ const PaystackWebView = () => {
 
     const handleResponse = (data: WebViewNavigation) => {
         // alert(JSON.stringify(data))
+        // router.back()
     };
 
     return (

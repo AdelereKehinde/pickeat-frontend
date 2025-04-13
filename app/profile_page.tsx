@@ -18,6 +18,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import * as ImagePicker from 'expo-image-picker';
 import { TruncatedText } from '@/components/TitleCase';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ProfilePage(){
     const { setUser } = useUser();
@@ -285,9 +286,14 @@ export default function ProfilePage(){
             }
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'}' w-full h-full flex items-center'`}>
             <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
-                <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
-                    <TitleTag withprevious={true} title='' withbell={false} />
-                </View>
+            <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
+                <TitleTag withprevious={true} title='' withbell={false} />
+            </View>
+
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+
 
                 <ScrollView className={`${theme == 'dark'? 'bg-gray-900' : ' bg-gray-100'} w-full space-y-1`}  contentContainerStyle={{ flexGrow: 1 }}>
                     <View style={styles.shadow_box} className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} mx-auto mb-4 rounded-lg p-4 w-[90%] flex flex-row items-center`}>

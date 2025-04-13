@@ -22,6 +22,7 @@ import FullScreenLoader from '@/components/FullScreenLoader';
 import OutOfBound from '@/components/OutOfBound';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import useDebounce from '@/components/Debounce';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function CompleteProfile2(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -213,7 +214,9 @@ export default function CompleteProfile2(){
                     <FullScreenLoader />
                 )}
 
-                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView
                 className='w-full'

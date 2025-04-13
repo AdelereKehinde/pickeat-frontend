@@ -15,6 +15,7 @@ import PromoCode from '../assets/icon/promo_code.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RoundToDecimalPlace from '@/components/RoundToDecimalPlace';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function PaymentPage(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -90,6 +91,10 @@ export default function PaymentPage(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full`}>
                     <TitleTag withprevious={true} title='Payment' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
                 
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     <View className={`${theme == 'dark'? 'bg-gray-800 border-gray-500' : ' bg-white border-gray-200'} w-full border-b-2 mb-5 relative flex flex-row items-start justify-center max-h-80`}>

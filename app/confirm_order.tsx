@@ -23,6 +23,7 @@ import { useIsFocused } from '@react-navigation/native';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import TransactionPinPrompt from '@/components/TransactionPinPrompt';
 import TransactionPinModal from '@/components/SetTransactionPinModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function ConfirmOrder(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -291,6 +292,10 @@ export default function ConfirmOrder(){
                 open={showTransactionPinModal}
                 getValue={(value)=>{setShowTransactionPinModal(value)}}
                 />
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }} className=''>
                     <View className='px-4 mt-4'>

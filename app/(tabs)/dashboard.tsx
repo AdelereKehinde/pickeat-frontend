@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import FoodDisplay from '@/components/FoodList';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import SearchMeal from '@/components/SearchMeal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 
 export default function Dashboard(){
@@ -98,6 +99,10 @@ export default function Dashboard(){
                 <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
 
                 <SearchMeal open={openSearchModal} getValue={(value: boolean)=>{setOpenSearchModal(value)}}/>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView 
                 refreshControl={

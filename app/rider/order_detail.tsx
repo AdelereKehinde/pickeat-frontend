@@ -17,6 +17,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ChevronNext from '../../assets/icon/chevron-next.svg';
 import { isLoading } from 'expo-font';
 import RiderCompleteOrderPrompt from '@/components/RiderCompleteOrderPrompt';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function RiderOrderDetails(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -214,6 +215,10 @@ export default function RiderOrderDetails(){
                 {showPrompt && 
                     <RiderCompleteOrderPrompt order_id={order_id} clickFunction={OnPromptClick}/>
                 }
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}
                 className='px-4'

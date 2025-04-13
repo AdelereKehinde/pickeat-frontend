@@ -18,6 +18,8 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import Pagination from '@/components/Pagination';
 import AdminProductList from '@/components/AdminProductList';
 import useDebounce from '@/components/Debounce';
+import ConnectionModal from '@/components/ConnectionModal';
+
 
 export default function VendorMenu(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -118,6 +120,10 @@ export default function VendorMenu(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={true} title='Vendor Menu' withbell={false} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
 
                 <View className='w-full my-3 px-4 relative flex flex-row items-center justify-center'>
                     <View className='absolute left-6 z-10'>

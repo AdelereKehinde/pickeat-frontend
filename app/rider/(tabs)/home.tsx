@@ -24,7 +24,7 @@ import TodayOrder from '../../../assets/icon/todays-order.svg'
 import Caution from '../../../assets/icon/caution.svg'
 import ChevronNext from '../../../assets/icon/chevron-next.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function Home(){
     const {name} = useGlobalSearchParams()
@@ -98,7 +98,11 @@ export default function Home(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={false} title='My Dashboard' withbell={true} />
                 </View>
-
+                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView 
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

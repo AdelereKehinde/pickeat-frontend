@@ -13,6 +13,7 @@ import CustomToast from '@/components/ToastConfig';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import ArrowRightCircle from '../../../assets/icon/arrow-right-circle.svg';
 import ArrowRight from '../../../assets/icon/arrow_right.svg';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function AdminContent(){
     const toastConfig = {
@@ -40,6 +41,11 @@ function AdminContent(){
         <SafeAreaView>
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>
                 <StatusBar barStyle="light-content"  backgroundColor={(theme == 'dark')? "#1f2937" :"#228B22"} />
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
+                
                 <ScrollView 
                   refreshControl={
                       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

@@ -23,6 +23,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import Calender from '../../../assets/icon/calender.svg';
 import TitleCase from '@/components/TitleCase';
 import FilterModal from '@/components/FilterModal';
+import ConnectionModal from '@/components/ConnectionModal';
 
 function AdminTransaction(){
     const toastConfig = {
@@ -112,6 +113,10 @@ function AdminTransaction(){
 
     return (
         <SafeAreaView>
+            {/* Page requires intermet connection */}
+            <ConnectionModal />
+            {/* Page requires intermet connection */}
+            
             <View className={`${theme == 'dark'? 'bg-gray-900' : 'bg-white'} w-full h-full flex items-center`}>   
 
                 {showPopUp && (

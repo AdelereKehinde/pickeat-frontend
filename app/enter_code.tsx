@@ -15,6 +15,7 @@ import Delay from '@/constants/Delay';
 import { getRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function EnterCode(){
     const { theme, toggleTheme } = useContext(ThemeContext);
@@ -138,6 +139,10 @@ export default function EnterCode(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Enter code' withbell={false}/>
                 </View>
+                
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
                 
                 <ScrollView className='w-full' contentContainerStyle={{ flexGrow: 1 }}>
                     

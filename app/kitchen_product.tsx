@@ -18,6 +18,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Check from '../assets/icon/check.svg'
 import useDebounce from '@/components/Debounce';
+import ConnectionModal from '@/components/ConnectionModal';
 
 export default function KitchenPageProduct(){
     const {kitchen_id} = useGlobalSearchParams()
@@ -121,6 +122,10 @@ export default function KitchenPageProduct(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-gray-100'} w-full mb-4`}>
                     <TitleTag withprevious={true} title='Kitchen' withbell={true} />
                 </View>
+
+                {/* Page requires intermet connection */}
+                <ConnectionModal />
+                {/* Page requires intermet connection */}
                 
                 <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} w-full my-3 px-4 relative flex flex-row items-center justify-center`}>
                     <View className='absolute left-6 z-10'>
