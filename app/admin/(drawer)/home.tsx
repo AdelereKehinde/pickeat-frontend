@@ -22,6 +22,7 @@ import ENDPOINTS from '@/constants/Endpoint';
 import FullScreenLoader from '@/components/FullScreenLoader';
 import { BarChart, LineChart } from 'react-native-chart-kit';
 import ConnectionModal from '@/components/ConnectionModal';
+import PushNotificationComponent from '@/components/PushNotifiComponent';
 
 export default function AdminHome(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -135,6 +136,8 @@ export default function AdminHome(){
                     <FullScreenLoader />
                 )}
 
+                <PushNotificationComponent />
+                
                 {/* Page requires intermet connection */}
                 <ConnectionModal />
                 {/* Page requires intermet connection */}

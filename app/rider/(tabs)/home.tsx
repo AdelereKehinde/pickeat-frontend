@@ -25,6 +25,7 @@ import Caution from '../../../assets/icon/caution.svg'
 import ChevronNext from '../../../assets/icon/chevron-next.svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConnectionModal from '@/components/ConnectionModal';
+import PushNotificationComponent from '@/components/PushNotifiComponent';
 
 export default function Home(){
     const {name} = useGlobalSearchParams()
@@ -98,6 +99,8 @@ export default function Home(){
                 <View className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} w-full`}>
                     <TitleTag withprevious={false} title='My Dashboard' withbell={true} />
                 </View>
+                
+                <PushNotificationComponent />
                 
                 {/* Page requires intermet connection */}
                 <ConnectionModal />

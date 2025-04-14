@@ -23,6 +23,7 @@ const ENDPOINTS = {
         'reset-transaction-pin': `${ACOOUNT_BASE}transaction/reset`,
         'match-transaction-pin': `${ACOOUNT_BASE}transaction/match`,
         'support': `${ACOOUNT_BASE}support`,
+        'push-notification': `${ACOOUNT_BASE}push-token`,
     },
     'buyer': { 
         'signin': `${BUYER_BASE}signin`,

@@ -22,6 +22,7 @@ import FoodDisplay from '@/components/FoodList';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import SearchMeal from '@/components/SearchMeal';
 import ConnectionModal from '@/components/ConnectionModal';
+import PushNotificationComponent from '@/components/PushNotifiComponent';
 
 
 export default function Dashboard(){
@@ -100,6 +101,8 @@ export default function Dashboard(){
 
                 <SearchMeal open={openSearchModal} getValue={(value: boolean)=>{setOpenSearchModal(value)}}/>
 
+                <PushNotificationComponent />
+                
                 {/* Page requires intermet connection */}
                 <ConnectionModal />
                 {/* Page requires intermet connection */}

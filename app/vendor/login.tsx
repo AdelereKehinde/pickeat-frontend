@@ -19,6 +19,7 @@ import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import validatePassword from '@/constants/passwordValidator';
 import validateEmail from '@/constants/emailValidator';
 import ConnectionModal from '@/components/ConnectionModal';
+import getOrCreateDeviceUUID from '@/constants/GetORCreateDeviceUUID';
 
 
 export default function VendorLogin(){
@@ -32,6 +33,7 @@ export default function VendorLogin(){
 
     const deviceName = Device.modelName; // e.g., "iPhone 12"
     const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
+    const [UUID, setUUID] = useState<string | null>();
 
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('');
@@ -102,6 +104,7 @@ export default function VendorLogin(){
             password: password,
             device_name: deviceName,
             device_type: deviceType,
+            device_uuid: UUID, 
           }, true);
 
           await AsyncStorage.setItem('token', res.data.token);
@@ -147,6 +150,15 @@ export default function VendorLogin(){
         setError(error.data?.data?.message || 'Unknown Error'); // Set error message
       }
     };
+
+    const getUUID = async () =>{
+      const uuid = await getOrCreateDeviceUUID()
+      setUUID(uuid)
+    }
+    
+    useEffect(() => {
+      getUUID()
+    }, []); 
 
     return (
       <SafeAreaView>

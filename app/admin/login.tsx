@@ -20,6 +20,7 @@ import validateEmail from '@/constants/emailValidator';
 import validatePhoneNumber from '@/constants/phonenumberValidator';
 import validatePassword from '@/constants/passwordValidator';
 import ConnectionModal from '@/components/ConnectionModal';
+import getOrCreateDeviceUUID from '@/constants/GetORCreateDeviceUUID';
 
 export default function AdminLogin(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -36,6 +37,7 @@ export default function AdminLogin(){
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('');
     const [showPassword, setShowPassword] = useState(false)
+    const [UUID, setUUID] = useState<string | null>();
 
     const [pswdValidation, setPswdValidation] = useState({
       isValid: true,
@@ -86,6 +88,7 @@ export default function AdminLogin(){
             password: password,
             device_name: deviceName,
             device_type: deviceType,
+            device_uuid: UUID, 
           }, true);
 
           await AsyncStorage.setItem('token', res.data.token);
@@ -130,6 +133,15 @@ export default function AdminLogin(){
         setError(error.data?.data?.message || 'Unknown Error'); // Set error message
       }
     };
+
+    const getUUID = async () =>{
+      const uuid = await getOrCreateDeviceUUID()
+      setUUID(uuid)
+    }
+    
+    useEffect(() => {
+      getUUID()
+    }, []); 
 
     return (
       <SafeAreaView>
