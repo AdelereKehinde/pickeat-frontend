@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon/logo_png.png",
     "scheme": "pickeat",
+    "deepLinking": true,
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

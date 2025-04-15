@@ -11,8 +11,8 @@ export const getAuthToken = async (): Promise<string | null> => {
 };
 
 const apiClient = axios.create({
-  baseURL: 'https://ffa5-102-89-85-149.ngrok-free.app/api/v1/', 
-  // baseURL: 'https://pickeat-backend.onrender.com/api/v1/',
+  // baseURL: 'https://543b-102-89-76-198.ngrok-free.app/api/v1/', 
+  baseURL: 'https://pickeat-backend.onrender.com/api/v1/',
   // timeout: 10000,
   // headers: {  
   //   'Content-Type': 'multipart/form-data',

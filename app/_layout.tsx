@@ -1,11 +1,25 @@
 import { Stack } from "expo-router";
 import { NativeWindStyleSheet } from "nativewind";
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen'
 import { UserProvider } from "@/context/UserProvider";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { ConnectionContext, ConnectionProvider } from "@/context/ConnectionProvider";
+import { Platform, } from 'react-native';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+import getOrCreateDeviceUUID from "@/constants/GetORCreateDeviceUUID";
+import ENDPOINTS from "@/constants/Endpoint";
+import { postRequest } from "@/api/RequestHandler";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 NativeWindStyleSheet.setOutput({
   default: "native",
@@ -26,6 +40,77 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded, error])
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+      });
+    }
+
+    // Foreground notifications handler
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log("📬 Notification received while in foreground:", notification);
+    });
+
+    // Handle background notifications
+    const backgroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("📬 Notification clicked in background:", response);
+    });
+
+    return () => {
+      foregroundSubscription.remove();
+      backgroundSubscription.remove();
+    };
+  }, []);
+
+  const [UUID, setUUID] = useState<string | null>();
+  
+      const getUUID = async () =>{
+          const uuid = await getOrCreateDeviceUUID()
+          setUUID(uuid) 
+          return uuid;
+      }
+  
+      useEffect(() => {
+        const init = async () => {
+          const uuid = await getUUID(); // ✅ Wait for UUID before proceeding
+          await requestPermission(uuid); // ✅ Pass it in when it's ready
+        };
+      
+        const requestPermission = async (uuid: string | null) => {
+          if (!Device.isDevice) return;
+      
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+      
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+      
+          if (finalStatus !== 'granted') return;
+      
+          try {
+            const { data: token } = await Notifications.getExpoPushTokenAsync();
+            console.log('Expo Push Token:', token);
+      
+            await postRequest(
+              ENDPOINTS['account']['push-notification'],
+              {
+                'push_token': token,
+                'uuid': uuid // ✅ Now this is guaranteed to be defined
+              },
+              true
+            );
+          } catch (error) {
+            // console.error('Error sending token to backend:', error);
+          }
+        };
+      
+        init(); // Start it
+      }, []);
 
   if(!loaded && !error){
     return null

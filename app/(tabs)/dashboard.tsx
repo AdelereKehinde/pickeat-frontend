@@ -22,7 +22,6 @@ import FoodDisplay from '@/components/FoodList';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import SearchMeal from '@/components/SearchMeal';
 import ConnectionModal from '@/components/ConnectionModal';
-import PushNotificationComponent from '@/components/PushNotifiComponent';
 
 
 export default function Dashboard(){
@@ -100,8 +99,6 @@ export default function Dashboard(){
                 <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
 
                 <SearchMeal open={openSearchModal} getValue={(value: boolean)=>{setOpenSearchModal(value)}}/>
-
-                <PushNotificationComponent />
                 
                 {/* Page requires intermet connection */}
                 <ConnectionModal />
