@@ -113,7 +113,7 @@ export default function WalletPage(){
         setRefreshing(true);
     
         // setTransactions([])
-        const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['wallet-dashboard']}?page_size=${pageSize}&page=${currentPage}`, true);
+        const response = await getRequest<ApiResponse>(`${ENDPOINTS['payment']['wallet-dashboard']}?page_size=${pageSize}&page=${currentPage}&type=${filter}`, true);
         // alert(JSON.stringify(response))
         setCards(response.data.cards) 
         setCount(response.data.transactions.count)

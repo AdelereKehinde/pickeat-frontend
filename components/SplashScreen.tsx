@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, StatusBar } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import Delay from "@/constants/Delay";
 import Logo from '../assets/images/Logo.svg';
@@ -29,6 +29,7 @@ const CustomSplashScreen: React.FC<CustomSplashScreenProps> = ({ onReady }) => {
 
   return (
     <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-white'} flex justify-center items-center w-full h-full`}>
+      <StatusBar barStyle={(theme == 'dark')? "light-content" : "dark-content"} backgroundColor={(theme == 'dark')? "#1f2937" :"#f3f4f6"} />
       <Logo width={200} height={200} />
     </View>
   );

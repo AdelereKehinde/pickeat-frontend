@@ -21,6 +21,7 @@ import validatePhoneNumber from '@/constants/phonenumberValidator';
 import validatePassword from '@/constants/passwordValidator';
 import ConnectionModal from '@/components/ConnectionModal';
 import getOrCreateDeviceUUID from '@/constants/GetORCreateDeviceUUID';
+import Constants from 'expo-constants';
 
 export default function AdminLogin(){
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -33,6 +34,7 @@ export default function AdminLogin(){
 
     const deviceName = Device.modelName; // e.g., "iPhone 12"
     const deviceType = Device.deviceType === 1 ? "Mobile" : "Desktop";
+    const projectId =  Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
     const [password, setPassword] = useState('')
     const [email, setEmail] = useState('');
@@ -88,7 +90,7 @@ export default function AdminLogin(){
             password: password,
             device_name: deviceName,
             device_type: deviceType,
-            device_uuid: UUID, 
+            project_id: projectId, 
           }, true);
 
           await AsyncStorage.setItem('token', res.data.token);
@@ -133,15 +135,6 @@ export default function AdminLogin(){
         setError(error.data?.data?.message || 'Unknown Error'); // Set error message
       }
     };
-
-    const getUUID = async () =>{
-      const uuid = await getOrCreateDeviceUUID()
-      setUUID(uuid)
-    }
-    
-    useEffect(() => {
-      getUUID()
-    }, []); 
 
     return (
       <SafeAreaView>

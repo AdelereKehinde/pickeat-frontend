@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { NativeWindStyleSheet } from "nativewind";
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, useRef } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from 'expo-splash-screen'
 import { UserProvider } from "@/context/UserProvider";
@@ -12,18 +12,75 @@ import * as Device from 'expo-device';
 import getOrCreateDeviceUUID from "@/constants/GetORCreateDeviceUUID";
 import ENDPOINTS from "@/constants/Endpoint";
 import { postRequest } from "@/api/RequestHandler";
+import Constants from 'expo-constants';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
   }),
 });
+
+function handleRegistrationError(errorMessage: string) {
+  // alert(errorMessage);
+  console.log("push token error", errorMessage)
+  throw new Error(errorMessage);
+}
+
+async function registerForPushNotificationsAsync() {
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  if (Device.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      handleRegistrationError('Permission not granted to get push token for push notification!');
+      return;
+    }
+    const projectId =
+      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+    if (!projectId) {
+      handleRegistrationError('Project ID not found');
+    }
+    try {
+      const pushTokenString = (
+        await Notifications.getExpoPushTokenAsync({
+          projectId,
+        })
+      ).data;
+
+      await postRequest(
+        ENDPOINTS['account']['push-notification'],
+        {
+          'push_token': pushTokenString,
+          'project_id': projectId
+        },
+        true
+      );
+    } catch (e: unknown) {
+      handleRegistrationError(`${e}`);
+    }
+  } else {
+    handleRegistrationError('Must use physical device for push notifications');
+  }
+}
 
 NativeWindStyleSheet.setOutput({
   default: "native",
 })
+
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -35,82 +92,40 @@ export default function RootLayout() {
     'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
     'Inter-Black': require('../assets/fonts/Inter-Black.ttf'),
   })
+
   useEffect(()=>{
     if(loaded || error){
       SplashScreen.hideAsync();
     }
   }, [loaded, error])
 
-  useEffect(() => {
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-      });
-    }
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
+    undefined
+  );
+  const notificationListener = useRef<Notifications.EventSubscription>();
+  const responseListener = useRef<Notifications.EventSubscription>();
 
-    // Foreground notifications handler
-    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log("📬 Notification received while in foreground:", notification);
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+      .then(token => setExpoPushToken(token ?? ''))
+      .catch((error: any) => setExpoPushToken(`${error}`));
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
     });
 
-    // Handle background notifications
-    const backgroundSubscription = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log("📬 Notification clicked in background:", response);
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
     });
 
     return () => {
-      foregroundSubscription.remove();
-      backgroundSubscription.remove();
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
-  const [UUID, setUUID] = useState<string | null>();
-  
-      const getUUID = async () =>{
-          const uuid = await getOrCreateDeviceUUID()
-          setUUID(uuid) 
-          return uuid;
-      }
-  
-      useEffect(() => {
-        const init = async () => {
-          const uuid = await getUUID(); // ✅ Wait for UUID before proceeding
-          await requestPermission(uuid); // ✅ Pass it in when it's ready
-        };
-      
-        const requestPermission = async (uuid: string | null) => {
-          if (!Device.isDevice) return;
-      
-          const { status: existingStatus } = await Notifications.getPermissionsAsync();
-          let finalStatus = existingStatus;
-      
-          if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-          }
-      
-          if (finalStatus !== 'granted') return;
-      
-          try {
-            const { data: token } = await Notifications.getExpoPushTokenAsync();
-            console.log('Expo Push Token:', token);
-      
-            await postRequest(
-              ENDPOINTS['account']['push-notification'],
-              {
-                'push_token': token,
-                'uuid': uuid // ✅ Now this is guaranteed to be defined
-              },
-              true
-            );
-          } catch (error) {
-            // console.error('Error sending token to backend:', error);
-          }
-        };
-      
-        init(); // Start it
-      }, []);
 
   if(!loaded && !error){
     return null
