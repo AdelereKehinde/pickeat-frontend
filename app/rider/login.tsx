@@ -120,7 +120,8 @@ export default function RiderLogin(){
             first_name: res.data.first_name,
             last_name: res.data.last_name,
             full_name: "",
-            store_name: ""
+            store_name: "",
+            transaction_pin: res.data.set_pin,
           })
           setData(res); // Display or use response data as needed
           // alert(JSON.stringify(res))
@@ -133,7 +134,7 @@ export default function RiderLogin(){
 
           await Delay(1500)
           router.push({
-            pathname: res.data.set_profile_1? res.data.set_identity? res.data.set_profile_2? res.data.set_profile_3? res.data.set_availability? res.data.set_pin? '/rider/(tabs)/home' : '/rider/transaction_pin' : '/rider/availability' : '/rider/create_profile_3' : '/rider/create_profile_2' : '/rider/identity_verification' : '/rider/create_profile'
+            pathname: res.data.set_profile_1? res.data.set_identity? res.data.set_profile_2? res.data.set_profile_3? res.data.set_availability? '/rider/(tabs)/home' : '/rider/availability' : '/rider/create_profile_3' : '/rider/create_profile_2' : '/rider/identity_verification' : '/rider/create_profile'
           }); 
         }
 

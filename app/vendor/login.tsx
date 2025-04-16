@@ -120,7 +120,8 @@ export default function VendorLogin(){
             first_name: res.data.first_name,
             full_name: res.data.full_name,
             last_name: "",
-            store_name: res.data.store_name
+            store_name: res.data.store_name,
+            transaction_pin: res.data.set_pin,
           })
           setData(res); // Display or use response data as needed
           // alert(JSON.stringify(res))
@@ -133,7 +134,7 @@ export default function VendorLogin(){
 
           await Delay(1500)
           router.push({
-            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? res.data.set_profile_4? res.data.set_pin? '/vendor/(tabs)/home' : '/vendor/transaction_pin' : '/vendor/account_setup_4' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
+            pathname: res.data.onboarded? res.data.set_profile? res.data.set_availability? res.data.address? res.data.set_profile_4? '/vendor/(tabs)/home' : '/vendor/account_setup_4' : '/vendor/set_store_address' : '/vendor/account_setup_3' : '/vendor/account_setup_2' : '/vendor/account_setup_1',
           }); 
         }
 

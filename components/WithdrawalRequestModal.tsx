@@ -11,8 +11,9 @@ import OTPPrompt from './OPTPrompt';
 import Toast from 'react-native-toast-message';
 import CustomToast from '@/components/ToastConfig';
 import FullScreenLoader from './FullScreenLoader';
-import { postRequest } from '@/api/RequestHandler';
+import { postRequest, getRequest } from '@/api/RequestHandler';
 import ENDPOINTS from '@/constants/Endpoint';
+import TransactionPinModal from './SetTransactionPinModal';
 
 type OptionType = {
     label: string;
@@ -105,6 +106,26 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
         }
     }, [startWithdrawal]); // Empty dependency array ensures this runs once
 
+    const [showTransactionPinModal, setShowTransactionPinModal] = useState(false);
+    const getPinStatus = async() =>{
+        type PinApiResponse = {
+            status: string; 
+            message: string; 
+            data: {
+                status: boolean;
+            }
+        }
+        setLoading(true)
+        const response = await getRequest<PinApiResponse>(`${ENDPOINTS['account']['transaction-pin']}`, true); // Authenticated
+        if (response.data.status == true){
+            await handleRequest()
+        }else{
+            setShowTransactionPinModal(true)
+        }
+        
+        setLoading(false)
+    }
+
     return (
             <Modal
             transparent={true}
@@ -132,6 +153,11 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
                 {startWithdrawal && (
                     <FullScreenLoader/>
                 )}
+
+                <TransactionPinModal 
+                open={showTransactionPinModal}
+                getValue={(value)=>{setShowTransactionPinModal(value)}}
+                />
 
                 {showSuccessPopUp && (
                     <View 
@@ -276,11 +302,11 @@ const WithdrawalRequest: React.FC<Properties> = ({open,  getValue, user, acc_nam
                         
                         <View className='mt-3'>
                             <TouchableOpacity
-                            onPress={handleRequest}
+                            onPress={getPinStatus}
                             className={`text-center ${(loading || amount.length == 0)? 'bg-custom-inactive-green' : 'bg-custom-green'} relative rounded-xl p-2 w-full self-center mt-2 flex items-center justify-around`}
                             >
                                 {loading && (
-                                <View className='absolute w-full top-4'>
+                                <View className='absolute w-full top-2'>
                                     <ActivityIndicator size="small" color="#fff" />
                                 </View>
                                 )}

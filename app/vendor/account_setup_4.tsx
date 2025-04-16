@@ -120,7 +120,7 @@ export default function CreateProfile4(){
                 });
                 // await Delay(3000)
                 router.replace({
-                    pathname: '/vendor/transaction_pin',
+                    pathname: '/vendor/(tabs)/home',
                 }); 
             
             } catch (error: any) {

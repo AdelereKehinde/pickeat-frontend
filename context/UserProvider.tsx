@@ -8,6 +8,7 @@ type User = {
   first_name?: string;
   last_name?: string;
   store_name?: string;
+  transaction_pin?: boolean;
 };
 
 type UserContextType = {

@@ -17,6 +17,7 @@ import Logo from '../../assets/images/Logo.svg';
 import { getRequest, patchRequest, postRequest } from '@/api/RequestHandler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
+import { useUser } from '@/context/UserProvider';
 
 interface Properties {
     open: boolean,
@@ -26,6 +27,8 @@ interface Properties {
 const TransactionPinModal: React.FC<Properties> = ({open,  getValue}) => {
     const { theme, toggleTheme } = useContext(ThemeContext);
     const {email, id} = useGlobalSearchParams()
+    const { user, setUser } = useUser();
+
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -58,6 +61,10 @@ const TransactionPinModal: React.FC<Properties> = ({open,  getValue}) => {
                         visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
                         autoHide: true,
                     });
+                    setUser({
+                        ...user,
+                        transaction_pin: true
+                    })
                     await Delay(1500)
                     getValue(false)
             }else{

@@ -100,7 +100,7 @@ export default function Availability(){
             });
             await Delay(1000)
             router.replace({
-                pathname: '/rider/transaction_pin',
+                pathname: '/rider/all_set',
             }); 
         
         } catch (error: any) {

@@ -15,7 +15,7 @@ import DeleteAccountModal from '@/components/DeleteAccountModal';
 
 export default function VendorSettings(){
     const { theme, toggleTheme } = useContext(ThemeContext);
-    const { setUser } = useUser();
+    const { user, setUser } = useUser();
     const [openDeleteModal, setOpenDeleteModal] = useState(false); 
 
     return (
@@ -45,19 +45,23 @@ export default function VendorSettings(){
 
                         <ChevronNext />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                    onPress={()=>{router.push({pathname: '/vendor/reset_transaction_pin'});}}
-                    className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-500'} border-b py-3 flex flex-row items-center justify-between`}
-                    >   
-                        <Text
-                        style={{fontFamily: 'Inter-SemiBold'}}
-                        className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px] `}
-                        >
-                            Reset PIN
-                        </Text>
 
-                        <ChevronNext />
-                    </TouchableOpacity>
+                    {user?.transaction_pin && (
+                        <TouchableOpacity
+                        onPress={()=>{router.push({pathname: '/vendor/reset_transaction_pin'});}}
+                        className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-500'} border-b py-3 flex flex-row items-center justify-between`}
+                        >   
+                            <Text
+                            style={{fontFamily: 'Inter-SemiBold'}}
+                            className={`${theme == 'dark'? 'text-gray-200' : ' text-gray-800'} text-[12px] `}
+                            >
+                                Reset PIN
+                            </Text>
+    
+                            <ChevronNext />
+                        </TouchableOpacity>
+                    )}
+                    
                     <TouchableOpacity
                     onPress={()=>{setOpenDeleteModal(true)}}
                     className={`${theme == 'dark'? 'border-gray-600' : ' border-gray-500'} border-b py-3 flex flex-row items-center justify-between`}

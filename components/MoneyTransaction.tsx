@@ -18,7 +18,7 @@ const MoneyTransaction: React.FC<Properties> = ({receiver, type, amount, commiss
     return(
         <View
         // style={styles.shadow_box}
-        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-1 my-2 p-2 rounded-lg w-full`}
+        className={`${theme == 'dark'? 'bg-gray-800' : ' bg-white'} flex flex-row items-center space-x-1 my-1 p-2 rounded-lg w-full`}
         >
             <View className={`${theme == 'dark'? 'bg-gray-900' : ' bg-blue-100'} w-8 h-8 rounded-full flex items-center justify-around`}>
                 <ArrowUp />

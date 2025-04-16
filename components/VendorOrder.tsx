@@ -84,10 +84,10 @@ const VendorOrder: React.FC<Properties> = ({id, image, name, address, time, stat
                 className='bg-custom-green rounded-md py-1 px-4 flex items-center'
                 >
                     <Text
-                        className='text-white text-[11px]'
-                        style={{fontFamily: 'Inter-Medium'}}
-                        >
-                            View
+                    className='text-white text-[11px]'
+                    style={{fontFamily: 'Inter-Medium'}}
+                    >
+                        View
                     </Text>
                     {(loading) && (
                         <View className='absolute w-full top-[4px] '>
