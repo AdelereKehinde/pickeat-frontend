@@ -43,7 +43,7 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
             focused 
-              ? <HomeFill width={34} height={34} />
+              ? <HomeFill width={30} height={30} />
               : <HomeOutline width={34} height={34} />
           ), 
         }} 

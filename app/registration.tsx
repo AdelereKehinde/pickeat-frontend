@@ -102,12 +102,12 @@ export default function Registration(){
         // alert(JSON.stringify(error))
         Toast.show({
           type: 'error',
-          text1: "An error occured",
-          text2: error.data?.data?.message || 'Unknown Error',
+          text1: error.data?.message || "An error occured",
+          // text2: error.data?.data?.message || 'Unknown Error',
           visibilityTime: 8000, // time in milliseconds (5000ms = 5 seconds)
           autoHide: true,
         });
-        setError(error.data?.data?.message || 'Unknown Error'); // Set error message
+        setError(error.data?.message || 'Unknown Error'); // Set error message
       }
     };
 

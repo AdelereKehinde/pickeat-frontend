@@ -22,8 +22,7 @@ import ConnectionModal from '@/components/ConnectionModal';
 
 export default function CreateProfile(){
     const { theme, toggleTheme } = useContext(ThemeContext);
-    const { setUser } = useUser();
-    const { user } = useUser();
+    const { user, setUser } = useUser();
     const toastConfig = {
         success: CustomToast,
         error: CustomToast,
@@ -86,13 +85,10 @@ export default function CreateProfile(){
                     autoHide: true,
                 });
                 setUser({
-                    email: user?.email,
-                    phone_number:  user?.phone_number,
-                    avatar: user?.avatar,
-                    first_name: user?.first_name,
-                    last_name: user?.last_name,
-                    full_name: user?.full_name,
-                    // store_name: data.business_name
+                    ...user,
+                    phone_number:  data.phone_number,
+                    first_name: data.first_name,
+                    last_name: data.last_name,
                   })
                 await Delay(1000)
                 router.replace({
