@@ -6,13 +6,15 @@
     "orientation": "portrait",
     "icon": "./assets/icon/logo_png.png",
     "scheme": "pickeat",
-    "deepLinking": true,
+
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "devhaywhy"
     },
+
     "android": {
       "permissions": [
         "INTERNET",
@@ -23,17 +25,33 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.dev_haywhy.Pickeat",
+
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "category": ["BROWSABLE", "DEFAULT"],
+          "data": [
+            {
+              "scheme": "pickeat",
+              "host": "*"
+            }
+          ]
+        }
+      ],
+
       "config": {
         "googleMaps": {
           "apiKey": ""
         }
       }
     },
+
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/icon/logo_png.png"
     },
+
     "plugins": [
       "expo-router",
       "expo-font",
@@ -53,9 +71,11 @@
       ],
       "react-native-vision-camera"
     ],
+
     "experiments": {
       "typedRoutes": true
     },
+
     "extra": {
       "eas": {
         "projectId": "8d931e4d-7f0b-452d-9300-23b9f10f7318"

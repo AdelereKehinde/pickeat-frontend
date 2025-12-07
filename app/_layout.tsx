@@ -7,74 +7,15 @@ import { UserProvider } from "@/context/UserProvider";
 import { ThemeContext, ThemeProvider } from '@/context/ThemeProvider';
 import { ConnectionContext, ConnectionProvider } from "@/context/ConnectionProvider";
 import { Platform, } from 'react-native';
-import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import getOrCreateDeviceUUID from "@/constants/GetORCreateDeviceUUID";
 import ENDPOINTS from "@/constants/Endpoint";
 import { postRequest } from "@/api/RequestHandler";
 import Constants from 'expo-constants';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
 function handleRegistrationError(errorMessage: string) {
-  // alert(errorMessage);
   console.log("push token error", errorMessage)
   throw new Error(errorMessage);
-}
-
-async function registerForPushNotificationsAsync() {
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
-      return;
-    }
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-    if (!projectId) {
-      handleRegistrationError('Project ID not found');
-    }
-    try {
-      const pushTokenString = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
-
-      await postRequest(
-        ENDPOINTS['account']['push-notification'],
-        {
-          'push_token': pushTokenString,
-          'project_id': projectId
-        },
-        true
-      );
-    } catch (e: unknown) {
-      handleRegistrationError(`${e}`);
-    }
-  } else {
-    handleRegistrationError('Must use physical device for push notifications');
-  }
 }
 
 NativeWindStyleSheet.setOutput({
@@ -100,30 +41,104 @@ export default function RootLayout() {
   }, [loaded, error])
 
   const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState<Notifications.Notification | undefined>(
-    undefined
-  );
-  const notificationListener = useRef<Notifications.EventSubscription>();
-  const responseListener = useRef<Notifications.EventSubscription>();
+  const [notification, setNotification] = useState<any>(undefined);
+  const notificationListener = useRef<any>(null);
+  const responseListener = useRef<any>(null);
 
   useEffect(() => {
-    registerForPushNotificationsAsync()
-      .then(token => setExpoPushToken(token ?? ''))
-      .catch((error: any) => setExpoPushToken(`${error}`));
+    if (Platform.OS === 'web') return;
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    let isMounted = true;
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    (async () => {
+      try {
+        const Notifications = await import('expo-notifications');
+
+        Notifications.setNotificationHandler({
+          handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: true,
+          }),
+        });
+
+        async function registerForPushNotificationsAsync() {
+          if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('default', {
+              name: 'default',
+              importance: Notifications.AndroidImportance.MAX,
+              vibrationPattern: [0, 250, 250, 250],
+              lightColor: '#FF231F7C',
+            });
+          }
+
+          if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+              const { status } = await Notifications.requestPermissionsAsync();
+              finalStatus = status;
+            }
+            if (finalStatus !== 'granted') {
+              handleRegistrationError('Permission not granted to get push token for push notification!');
+              return;
+            }
+            const projectId =
+              Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+            if (!projectId) {
+              handleRegistrationError('Project ID not found');
+            }
+            try {
+              const pushTokenString = (
+                await Notifications.getExpoPushTokenAsync({
+                  projectId,
+                })
+              ).data;
+
+              await postRequest(
+                ENDPOINTS['account']['push-notification'],
+                {
+                  'push_token': pushTokenString,
+                  'project_id': projectId
+                },
+                true
+              );
+              return pushTokenString;
+            } catch (e: unknown) {
+              handleRegistrationError(`${e}`);
+            }
+          } else {
+            handleRegistrationError('Must use physical device for push notifications');
+          }
+        }
+
+        const token = await registerForPushNotificationsAsync();
+        if (isMounted) setExpoPushToken(token ?? '');
+
+        notificationListener.current = Notifications.addNotificationReceivedListener((n: any) => {
+          if (isMounted) setNotification(n);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener((r: any) => {
+          console.log(r);
+        });
+      } catch (err) {
+        console.log('Failed to load notifications module:', err);
+      }
+    })();
 
     return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
+      isMounted = false;
+      try {
+        if (notificationListener.current && typeof notificationListener.current.remove === 'function') {
+          notificationListener.current.remove();
+        }
+        if (responseListener.current && typeof responseListener.current.remove === 'function') {
+          responseListener.current.remove();
+        }
+      } catch (e) {
+        // ignore cleanup errors
+      }
     };
   }, []);
 
